@@ -1,6 +1,7 @@
 import './App.css';
 import SearchFields from './components/SearchFields/SearchFields.js'
 import ArticlesCard from './components/ArticleCard/ArticleCard';
+import NeighborhoodCard from './components/Neighborhood/NeighborhoodCard';
 
 function App() {
   return (
@@ -8,6 +9,8 @@ function App() {
       <SearchFields></SearchFields>
       <br></br>
       <ArticlesCard style={{marginLeft: 10}} topic="Technology"></ArticlesCard>
+      <br></br>
+      <NeighborhoodCard></NeighborhoodCard>
     </div>
   );
 }
