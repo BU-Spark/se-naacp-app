@@ -5,6 +5,7 @@
 .word {
     display: flex;
     margin-left: 50px;
+    font-size: 12px;
 }
 
 .searchInputs {
@@ -15,7 +16,7 @@
     display: flex;
     border: 2px solid #ccc;
     border-radius: 2px;
-    width: 190px;
+    width: 150px;
   }
   
   .search input {
@@ -43,7 +44,7 @@
     background-color: white;
     display: grid;
     place-items: center;
-    margin-left: 30px;
+    margin-left: 0;
   }
 
   .dateIcon{
@@ -81,7 +82,7 @@
   }
   
   .dataItem p {
-    margin-left: 10px;
+    margin-left: 5px;
   }
   a {
     text-decoration: none;

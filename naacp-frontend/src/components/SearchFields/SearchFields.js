@@ -1,8 +1,13 @@
 import SearchBar from './SearchBar'
 import DateBar from './DateBar'
-import { Grid } from "@mui/material";
+import Button, { ButtonProps } from '@mui/material/Button';
+import { purple } from '@mui/material/colors';
+import { styled } from '@mui/material/styles';
+import { Grid } from '@mui/material';
+
 
 function SearchFields(){
+
     return (
       <div>
         <Grid container spacing={1}>
@@ -20,6 +25,9 @@ function SearchFields(){
             </Grid>
             <Grid item xs={2}>
               <DateBar word="To" placeholder="Date"></DateBar>
+            </Grid>
+            <Grid item xs={2}>
+              <Button variant="contained" style={{marginTop: 38, marginLeft: 10}}>Download</Button>
             </Grid>
         </Grid>
         </div>
