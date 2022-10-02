@@ -3,10 +3,12 @@ import SearchFields from './components/SearchFields/SearchFields.js'
 import ArticlesCard from './components/ArticleCard/ArticleCard';
 import NeighborhoodCard from './components/Neighborhood/NeighborhoodCard';
 import { Grid } from '@mui/material';
+import { TopNavBar } from './components/TopNavBar/TopNavBar';
 
 function App() {
   return (
     <div className="App">
+      <TopNavBar></TopNavBar>
       <Grid style={{marginTop: 100}} container spacing={1}>
         <Grid item xs={3}>
           <h>Logo</h>
