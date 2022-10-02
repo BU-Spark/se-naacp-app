@@ -13,17 +13,17 @@ export const TrendBoard = () => (
         legendData={[{ name: 'Sports' }, { name: 'Crime'}, { name: 'Weather' }, { name: 'Technology' }, { name: 'Dining' }]}
         legendOrientation="horizontal"
         legendPosition="bottom"
-        height={250}
+        height={600}
         maxDomain={{y: 100}}
         minDomain={{y: 0}}
         name="chart1"
         padding={{
             bottom: 70,
             left: 50,
-            right: 200, // Adjusted to accommodate legend
+            right: 60, // Adjusted to accommodate legend
             top: 50
         }}
-        width={600}
+        width={1000}
         >
             <ChartGroup>
                 <ChartLine

@@ -12,7 +12,7 @@ export const NeighborhoodDemoBoard = () => (
             ariaTitle="Bar chart example"
             containerComponent={<ChartVoronoiContainer labels={({ datum }) => `${datum.name}: ${datum.y}`} constrainToVisibleArea />}
             domain={{y: [0,400]}}
-            domainPadding={{ x: [10, 100] }}
+            domainPadding={{ x: [10, 20] }}
             legendData={[{ name: 'Cats' },{ name: 'White'}, { name: 'Black'}, { name: 'Asian'}, { name: 'American Indian or Alaskan Native'}, { name: 'Native Hawaiian or Pacific Islander'}]}
             legendOrientation="vertical"
             legendPosition="right"
