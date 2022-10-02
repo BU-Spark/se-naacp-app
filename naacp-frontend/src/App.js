@@ -5,6 +5,7 @@ import NeighborhoodCard from './components/Neighborhood/NeighborhoodCard';
 import { Grid } from '@mui/material';
 import { TopNavBar } from './components/TopNavBar/TopNavBar';
 import { NeighborhoodDemoBoard } from './components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
+import { TrendBoard } from './components/TrendBoard/TrendBoard';
 
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
           <NeighborhoodCard></NeighborhoodCard>
         </Grid>
         <Grid item xs={6}>
-          <h>Card 2</h>
+          <TrendBoard></TrendBoard>
         </Grid>
         <Grid item xs={6}>
           <NeighborhoodDemoBoard></NeighborhoodDemoBoard>
