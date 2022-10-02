@@ -4,6 +4,8 @@ import ArticlesCard from './components/ArticleCard/ArticleCard';
 import NeighborhoodCard from './components/Neighborhood/NeighborhoodCard';
 import { Grid } from '@mui/material';
 import { TopNavBar } from './components/TopNavBar/TopNavBar';
+import { NeighborhoodDemoBoard } from './components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
+
 
 function App() {
   return (
@@ -27,7 +29,7 @@ function App() {
           <h>Card 2</h>
         </Grid>
         <Grid item xs={6}>
-          <h>Card 3</h>
+          <NeighborhoodDemoBoard></NeighborhoodDemoBoard>
         </Grid>
         <Grid item xs={6}>
         <ArticlesCard style={{marginLeft: 20}} topic="Technology"></ArticlesCard>
