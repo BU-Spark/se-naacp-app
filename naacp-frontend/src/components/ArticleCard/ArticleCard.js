@@ -33,14 +33,19 @@ const ArticlesCard = (props, topic) => {
         { id: "date", label: "Publishing Date", minWidth: 50 },
       ];
     const data = [
-        { id: "title", label: "title 1", minWidth: 120 },
+        { id: "title", label: "Article About Jamacia Plain", minWidth: 120 },
         { id: "author", label: "by John Chai", minWidth: 50 },
         { id: "date", label: "2019-09-09", minWidth: 50 },
     ];
     const data2 = [
-        { id: "title2", label: "title 2", minWidth: 120 },
+        { id: "title2", label: "Article About Dorchester", minWidth: 120 },
         { id: "author", label: "by Asad", minWidth: 50 },
         { id: "date", label: "2019-03-09", minWidth: 50 },
+    ];
+    const data3 = [
+        { id: "title2", label: "Article About Arlington", minWidth: 120 },
+        { id: "author", label: "by Daniel", minWidth: 50 },
+        { id: "date", label: "2019-04-04", minWidth: 50 },
     ];
 
     
@@ -79,6 +84,18 @@ const ArticlesCard = (props, topic) => {
 
                     <TableRow>
                         {data2.map((column) => (
+                        <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth}}
+                        >
+                        {column.label}
+                        </TableCell>
+                        ))}
+                    </TableRow>
+
+                    <TableRow>
+                        {data3.map((column) => (
                         <TableCell
                         key={column.id}
                         align={column.align}

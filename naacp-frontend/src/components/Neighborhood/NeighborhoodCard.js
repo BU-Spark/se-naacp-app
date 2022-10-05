@@ -13,6 +13,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import GoogleMapReact from 'google-map-react';
 import { Grid } from "@mui/material";
+import gm from'./gm.jpg';
 
 
 const NeighborhoodCard = (props) => {
@@ -35,11 +36,15 @@ const NeighborhoodCard = (props) => {
 
       ];
     const data = [
-        { id: "name", label: "N1", minWidth: 50 },
+        { id: "name", label: "Allston", minWidth: 50 },
         { id: "coverage", label: "8", minWidth: 50 },
     ];
     const data2 = [
-        { id: "name", label: "N2", minWidth: 50 },
+        { id: "name", label: "Back Bay", minWidth: 50 },
+        { id: "coverage", label: "7", minWidth: 50 },
+    ];
+    const data3 = [
+        { id: "name", label: "North End", minWidth: 50 },
         { id: "coverage", label: "7", minWidth: 50 },
     ];
 
@@ -91,6 +96,18 @@ const NeighborhoodCard = (props) => {
                                 </TableCell>
                                 ))}
                             </TableRow>
+
+                            <TableRow>
+                                {data3.map((column) => (
+                                <TableCell
+                                key={column.id}
+                                align={column.align}
+                                style={{ minWidth: column.minWidth}}
+                                >
+                                {column.label}
+                                </TableCell>
+                                ))}
+                            </TableRow>
                             
                         </TableHead>
                         </Table>
@@ -104,7 +121,9 @@ const NeighborhoodCard = (props) => {
                     bootstrapURLKeys={{ key: 'asfdsafeafsf' }}
                     >
                     </GoogleMapReact> */}
-                    <p>Google Maps</p>
+                    <a href="https://www.google.com/maps/place/Back+Bay,+Boston,+MA/@42.3492608,-71.0895385,15z/data=!3m1!4b1!4m5!3m4!1s0x89e37a0ef815f5b1:0xbca3cc92599b5bc4!8m2!3d42.3495236!4d-71.0794717">
+                      <img src={gm} width="310" height="400"></img>
+                    </a>
                     </div>
                 </Grid>
             </Grid>
