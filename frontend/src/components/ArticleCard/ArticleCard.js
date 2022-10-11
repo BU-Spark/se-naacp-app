@@ -14,6 +14,7 @@ import CardContent from '@mui/material/CardContent';
 
 
 const ArticlesCard = (props, topic) => {
+    const [articles, setArticles] = useState([])
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [listingData, setListingData] = useState([]);
@@ -22,30 +23,30 @@ const ArticlesCard = (props, topic) => {
         border: "none",
         boxShadow: "none"
       };
-  
+
     // useEffect(() => {
     //   getPostings();
     // }, []);
 
     const columns = [
-        { id: "title", label: "Title", minWidth: 120 },
-        { id: "author", label: "Author", minWidth: 50 },
-        { id: "date", label: "Publishing Date", minWidth: 50 },
+        { id: "articleTitle", label: "Title", minWidth: 120 },
+        { id: "authorName", label: "Author", minWidth: 50 },
+        { id: "publishingDate", label: "Publishing Date", minWidth: 50 },
       ];
     const data = [
-        { id: "title", label: "Article About Jamacia Plain", minWidth: 120 },
-        { id: "author", label: "by John Chai", minWidth: 50 },
-        { id: "date", label: "2019-09-09", minWidth: 50 },
+        { id: "articleTitle", label: "Article About Jamacia Plain", minWidth: 120 },
+        { id: "authorName", label: "by John Chai", minWidth: 50 },
+        { id: "publishingDate", label: "2019-09-09", minWidth: 50 },
     ];
     const data2 = [
-        { id: "title2", label: "Article About Dorchester", minWidth: 120 },
-        { id: "author", label: "by Asad", minWidth: 50 },
-        { id: "date", label: "2019-03-09", minWidth: 50 },
+        { id: "articleTitle", label: "Article About Dorchester", minWidth: 120 },
+        { id: "authorName", label: "by Asad", minWidth: 50 },
+        { id: "publishingDate", label: "2019-03-09", minWidth: 50 },
     ];
     const data3 = [
-        { id: "title2", label: "Article About Arlington", minWidth: 120 },
-        { id: "author", label: "by Daniel", minWidth: 50 },
-        { id: "date", label: "2019-04-04", minWidth: 50 },
+        { id: "articleTitle", label: "Article About Arlington", minWidth: 120 },
+        { id: "authorName", label: "by Daniel", minWidth: 50 },
+        { id: "publishingDate", label: "2019-04-04", minWidth: 50 },
     ];
 
     
