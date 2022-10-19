@@ -6,12 +6,14 @@ import { Grid } from '@mui/material';
 import { TopNavBar } from './components/TopNavBar/TopNavBar';
 import { NeighborhoodDemoBoard } from './components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
 import { TrendBoard } from './components/TrendBoard/TrendBoard';
+import Read from './components/DataRetrieve/data';
 import Logo from "./logo.png";
 
 function App() {
   return (
     <div className="App">
       <TopNavBar></TopNavBar>
+      <Read></Read>
       <Grid container spacing={1}>
         <Grid item xs={3}>
           <img style={{marginLeft: 10, marginTop: 10}}src={Logo}></img>

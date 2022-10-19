@@ -1,19 +1,20 @@
 // Import Firestore database
-import db from './firbase';
-import { useState } from 'react';
+import db from '../firebase/config';
+import { useState, useEffect } from 'react';
+import { getDatabase, ref, onValue} from "firebase/database";
 
 const Read = () => {
     // article component
-    const [articles, setArticles] = useState([ArticleInput]);
-    let ArticleInput = {articleTitle: "", authorName: "", publishingDate: Date};
+	let ArticleInput = {articleTitle: "", authorName: "", publishingDate: Date};
+    const [articles, setArticles] = useState([]);
 
     // topics component
+	let TopicInput = {topicLabel: "", NumberofArticles: 0, totalScore: 0};
     const [topics, setTopics] = useState([TopicInput]);
-    let TopicInput = {topicLabel: "", NumberofArticles: 0, totalScore: 0};
 
     // most covered component
+	let MostCoveredInput = {Neighborhood: "", articleCount: 0}
     const [mostcovered, setMostcovered] = useState([MostCoveredInput]);
-    let MostCoveredInput = {Neighborhood: "", articleCount: 0}
 
     // neighborhood component
     const [neighborhoods, setNeighborhoods] = useState([""]);
@@ -22,49 +23,44 @@ const Read = () => {
     const [maxDate, setMaxdate] = useState(Date);
 
 	// fetch the data
-	window.addEventListener('load', () => {
-		FetchArticles();
-        FetchTopics();
-        FetchNeighborhoods();
-        FetchSubNeighborhoods();
-	});
+	useEffect(() => {
+		FetchArticlesFromFB();
+        // FetchTopics();
+        // FetchNeighborhoods();
+        // FetchSubNeighborhoods();
+	  }, []);
 
 	// Fetch the required datas using the get() method
-	const FetchArticles = ()=>{
-		db.collection("data").get().then((querySnapshot) => {
-			querySnapshot.forEach(element => {
-				let data = element.data();
-				setArticles(arr => [...arr , data]);
-			});
-		})
+	const FetchArticlesFromFB = ()=>{
+		const starCountRef = ref(db, '/articles');
+		onValue(starCountRef, (snapshot) => {
+			const data = snapshot.val();
+			setArticles(data)
+		  });
 	}
 	
-    const FetchTopics = ()=>{
-		db.collection("data").get().then((querySnapshot) => {
-			querySnapshot.forEach(element => {
-				let data = element.data();
-				setTopics(arr => [...arr , data]);
-			});
-		})
-	}
+    // const FetchNeighborhoods = ()=>{
+	// 	const starCountRef = ref(db, '/neighborhood');
+	// 	onValue(starCountRef, (snapshot) => {
+	// 		const data = snapshot.val();
+	// 	  });
+	// }
 
-    const FetchNeighborhoods = ()=>{
-		db.collection("data").get().then((querySnapshot) => {
-			querySnapshot.forEach(element => {
-				let data = element.data();
-				setNeighborhoods(arr => [...arr , data]);
-			});
-		})
-	}
+    // const FetchSubNeighborhoods = ()=>{
+	// 	const starCountRef = ref(db, '/subneighborhood');
+	// 	onValue(starCountRef, (snapshot) => {
+	// 		const data = snapshot.val();
+	// 	  });
+	// }
 
-    const FetchSubNeighborhoods = ()=>{
-		db.collection("data").get().then((querySnapshot) => {
-			querySnapshot.forEach(element => {
-				let data = element.data();
-				setSubNeighborhoods(arr => [...arr , data]);
-			});
-		})
-	}
+	// const FetchTopics = ()=>{
+	// 	db.collection("topics").get().then((querySnapshot) => {
+	// 		querySnapshot.forEach(element => {
+	// 			let data = element.data();
+	// 			setTopics(arr => [...arr , data]);
+	// 		});
+	// 	})
+	// }
 
 
 	// Display the result on the page
