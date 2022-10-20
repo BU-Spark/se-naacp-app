@@ -1,0 +1,14 @@
+.navbar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-color: black;
+    color: white;
+    padding: none;
+    margin: none;
+}
+
+.navitem {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
