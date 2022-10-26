@@ -2,7 +2,7 @@
 import db from '../firebase/config';
 import { useState, useEffect } from 'react';
 import { getDatabase, ref, onValue} from "firebase/database";
-
+import React, { createContext } from "react";
 
 const Read = () => {
     // article component
@@ -10,8 +10,8 @@ const Read = () => {
     const [articles, setArticles] = useState([]);
 
     // topics component
-	// let TopicInput = {topicLabel: "", NumberofArticles: 0, totalScore: 0};
-    // const [topics, setTopics] = useState([TopicInput]);
+	let TopicInput = {topicLabel: "", NumberofArticles: 0, totalScore: 0};
+    const [topics, setTopics] = useState([TopicInput]);
 
     // most covered component
 	let MostCoveredInput = {Neighborhood: "", articleCount: 0}
@@ -25,7 +25,7 @@ const Read = () => {
 
 	// fetch the data
 	useEffect(() => {
-		//FetchArticlesFromFB();
+		// FetchArticlesFromFB();
         // FetchTopics();
         FetchNeighborhoods();
         // FetchSubNeighborhoods();
@@ -50,15 +50,15 @@ const Read = () => {
 		return {day: d, month: m, year: y}
 	  }
 	
-    const FetchNeighborhoods = ()=>{
-		const starCountRef = ref(db, '/neighborhoods');
-		onValue(starCountRef, (snapshot) => {
-			const data = snapshot.val();
-		  });
-	}
+    // const FetchNeighborhoods = ()=>{
+	// 	const starCountRef = ref(db, '/neighborhoods');
+	// 	onValue(starCountRef, (snapshot) => {
+	// 		const data = snapshot.val();
+	// 	  });
+	// }
 
     // const FetchSubNeighborhoods = ()=>{
-	// 	const starCountRef = ref(db, '/subneighborhood');
+	// 	const starCountRef = ref(db, '/subneighborhoods');
 	// 	onValue(starCountRef, (snapshot) => {
 	// 		const data = snapshot.val();
 	// 	  });

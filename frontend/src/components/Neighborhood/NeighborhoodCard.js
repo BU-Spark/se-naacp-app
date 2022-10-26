@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -14,12 +14,22 @@ import CardContent from '@mui/material/CardContent';
 import GoogleMapReact from 'google-map-react';
 import { Grid } from "@mui/material";
 import gm from'./gm.jpg';
+import { NeighborhoodsContext } from "../../context/NeighborhoodsContext";
+import { SubneighborhoodsContext } from "../../context/SubneighborhoodsContext";
 
 
 const NeighborhoodCard = (props) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [listingData, setListingData] = useState([]);
+
+    // testing neighborhoods context
+    const {neighborhoodsTestVal} = useContext(NeighborhoodsContext)
+    console.log(neighborhoodsTestVal)
+
+    // testing subneighborhoods context
+    const {subneighborhoodsTestVal} = useContext(SubneighborhoodsContext)
+    console.log(subneighborhoodsTestVal)
 
     const tableStyle = {
         border: "none",

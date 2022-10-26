@@ -11,6 +11,8 @@ import Container from '@mui/material/Container';
 import "./ArticleCard.css";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import { useContext } from "react";
+import {ArticlesContext} from "../../context/ArticlesContext";
 
 
 const ArticlesCard = (props, topic) => {
@@ -18,6 +20,10 @@ const ArticlesCard = (props, topic) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [listingData, setListingData] = useState([]);
+
+    // testing context is working
+    const {articlesTestVal} = useContext(ArticlesContext)
+    console.log(articlesTestVal)
 
     const tableStyle = {
         border: "none",
