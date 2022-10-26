@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "se-naacp-journalism-bias",
+  "private_key_id": "4008d0b7c1d979a3aa58e80df89f4ed9c5ecd7b8",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCupgXtVYPz8FrO\nHFCGRa7dRgT2wSvBtOQqJ24ndEUmCTL+BSWmp2a3L7TvEe5CzZAVgkgA6fWE4AH9\nQye2Tjc3VCnPMWOM556fjZmjyNJxk2sSnVqOg2ahylmhsvrJ+/ui0VPM8C7iBtt+\nLnVUjaw0RO1BBzu39qJl/wlsV0SDP4UYN9VLmwRlFoDiAycgaqhbjuAsPa6Lm8mA\naSQIeDiB1QlNjkX6jN/aL3V3wCnhdmqpKQ74+BZj8c8RFmuj42uzVA42Zh8nGPuK\nZdEssJHVeQHWGOZG5/ZL5uba3HdE1VAYet17kQO9BLTsFivPQVBk9djGgEXp47Px\nrP/9FB/hAgMBAAECggEAAMabxuG+/e/KxXjeejQ3ykOX/M0fn8MJEu9dJ8d2UayP\niY2WDNsYQ5bOidPVcD5HxjKvlXJ0nOAeXiTE2cRX7jLdYy5b2/nA7IJFZRL8rVS7\ncGgayYCHrY8Prh5Uix5nkCH4KnRELwya/8De1E7zTYGjYKsyrpblwoh7Hxw1oZQe\nIeAlOeD5zN7cQepW7WjOpue9pXDgs9QBlDclNTXTUAiTKM0aMVsR3b3Y13J8Dsu6\nSvLFodZ5Qfe+8yynILeVf2l16e4pm+yQTYnoD5y++eAYtB52PQxoDabgQGzYgdvL\ngdJNrQoPfkb78ET1r1jCR7A0NndmpNc7FBuzStTLIQKBgQD1Ugl/46W57nSTnxBP\neVhaKLWq5Y2KKNTfjQ3l48U5mjpSr/jU9uHC/xFVmz63eXMMYuD1cXw2iEDygWJR\nMT5N6IWq7nqI/kqk2LbtaDQhWzc3ECUviIY8fBEIvhX1Xyueyy57u48bDPIXPYqX\nIvZcJfa/L2/nc8MzZFC3GN/9sQKBgQC2QGLJBNqknyk71J120L5+YDqpFItNpN/W\nTNpEGJQyzOIZwtX4B/G0fUeZuNM4yEU9zcEMkn4ZSX8H8HOJB7pcjyg8Bqvovexd\n29FRAoo2HTPDVELCtzgyc3TI2miyTSj8fmDwV7Tv+aDFP9ZBakf8GMJKyyzZzBVc\nh9bSQvzhMQKBgEeKbQrGsIXQbF7AfFkw4fso9BGqb+Rik/G9iNgJ3HI379o9RyuT\n87KR/9QfOeL3n/10uHXbaoXcplQSN0HGQo0lyhVXBpT803fPW0lQoiM4HpoIM0/x\nWHQ7GhyaknzEDEx6pEuhHtKcq9zrLYd1wrKMv7BxfQjaUYqjLoa20luBAoGAdloj\njIURc3xEa60rwJ/YRPs6vNgxim96SJFJ4JTRkJfKcI49I0ANb3c3yxTiXep4RKVc\nK0zqhINc8gvtC1ywYjE5IJn4g0DqwRzhtijfFjsqhTsvy4DuBp1BhrmG6dr/tdBg\nJVPflUNXayCEg6CANK7jZWzBqIJGkPtJvutvitECgYBgQbWgHm1IgNWG4O9P6Wqx\nLrbnJSuHeFfJP7oufwgkfnYcQjRtT9KqKKAGpEpNuiUND4VAe/MUVm6Nnfbxr8IE\n1+0wdmYk5xc6F5K2s/b9eWoDl41NC4x7OOH3uuyP1PpjsdjI8uTv1wnqtegglXKS\nvSacqfZ+BRV/5QPoUsZOhg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-5y1u9@se-naacp-journalism-bias.iam.gserviceaccount.com",
+  "client_id": "102544339900774463439",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-5y1u9%40se-naacp-journalism-bias.iam.gserviceaccount.com"
+}

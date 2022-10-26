@@ -9,7 +9,7 @@ export function SubneighborhoodsProvider({children}){
 
     // fetch the data
 	useEffect(() => {
-        FetchSubNeighborhoods();
+        //FetchSubNeighborhoods();
     }, []);
 
     const FetchSubNeighborhoods = ()=>{
