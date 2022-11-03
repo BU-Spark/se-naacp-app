@@ -1,5 +1,6 @@
 import db from '../components/firebase/config';
 import { ref, onValue} from "firebase/database";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { createContext, useState, useEffect } from "react";
 
 export const NeighborhoodsContext = createContext({})
