@@ -4,13 +4,14 @@ import ArticlesCard from './components/ArticleCard/ArticleCard';
 import NeighborhoodCard from './components/Neighborhood/NeighborhoodCard';
 import { Grid } from '@mui/material';
 import { TopNavBar } from './components/TopNavBar/TopNavBar';
-import { NeighborhoodDemoBoard } from './components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
+import NeighborhoodDemoBoard from './components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
 import { TrendBoard } from './components/TrendBoard/TrendBoard';
 import Read from './components/DataRetrieve/data';
 import Logo from "./logo.svg";
 import { ArticlesContext, ArticlesProvider } from './context/ArticlesContext';
 import {NeighborhoodsContext, NeighborhoodsProvider} from './context/NeighborhoodsContext'
 import {SubneighborhoodsContext, SubneighborhoodsProvider } from './context/SubneighborhoodsContext';
+import {FilteredContext, FilteredProvider } from './context/FilteredContext';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <ArticlesProvider>
       <NeighborhoodsProvider>
       <SubneighborhoodsProvider>
+      <FilteredProvider>
         <TopNavBar></TopNavBar>
         <Grid container spacing={1}>
           <Grid item xs={3}>
@@ -44,6 +46,7 @@ function App() {
           </Grid>
 
         </Grid>
+      </FilteredProvider>
       </SubneighborhoodsProvider>
       </NeighborhoodsProvider>
       </ArticlesProvider>
