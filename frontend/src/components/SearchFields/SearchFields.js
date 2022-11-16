@@ -12,7 +12,7 @@ function SearchFields(){
       <div>
         <Grid container spacing={1}>
             <Grid item xs={2}>
-              <SearchBar word="Neighborhood" placeholder="Search"></SearchBar>
+                <SearchBar word="Neighborhood" placeholder="Search"></SearchBar>
             </Grid>
             <Grid item xs={2}>
               <SearchBar word="Sub-Neighborhood" placeholder="Search"></SearchBar>

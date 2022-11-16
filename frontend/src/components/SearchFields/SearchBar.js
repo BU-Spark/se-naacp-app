@@ -1,24 +1,38 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./SearchBar.css";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
+import { FilteredContext, FilteredProvider } from "../../context/FilteredContext";
 
 function SearchBar({ word, placeholder, data }) {
   const [filteredData, setFilteredData] = useState([]);
   const [wordEntered, setWordEntered] = useState("");
 
+  const {setNeighName} = useContext(FilteredContext)
+
+  const handleKeyPress = (event) => {
+    if(event.key === 'Enter'){
+      setNeighName(wordEntered)
+      localStorage.setItem('neighborhoodInput', wordEntered)
+      //console.log(localStorage.getItem('neighborhoodInput'))
+    }
+  }
+
   const handleFilter = (event) => {
     const searchWord = event.target.value;
     setWordEntered(searchWord);
-    const newFilter = data.filter((value) => {
-      return value.title.toLowerCase().includes(searchWord.toLowerCase());
-    });
+    // localStorage.setItem('neighborhoodInput',searchWord)
+    // console.log(localStorage.getItem('neighborhoodInput'))
+    // const newFilter = data.filter((value) => {
+    //   return value.title.toLowerCase().includes(searchWord.toLowerCase());
+    // });
 
-    if (searchWord === "") {
-      setFilteredData([]);
-    } else {
-      setFilteredData(newFilter);
-    }
+
+    // if (searchWord === "") {
+    //   setFilteredData([]);
+    // } else {
+    //   setFilteredData(newFilter);
+    // }
   };
 
   const clearInput = () => {
@@ -42,6 +56,7 @@ function SearchBar({ word, placeholder, data }) {
           placeholder={placeholder}
           value={wordEntered}
           onChange={handleFilter}
+          onKeyPress={handleKeyPress}
         />
       </div>
       {filteredData.length != 0 && (

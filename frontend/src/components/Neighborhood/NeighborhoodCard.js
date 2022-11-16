@@ -16,6 +16,7 @@ import { Grid } from "@mui/material";
 import gm from'./gm.jpg';
 import { NeighborhoodsContext } from "../../context/NeighborhoodsContext";
 import { SubneighborhoodsContext } from "../../context/SubneighborhoodsContext";
+import { FilteredContext } from "../../context/FilteredContext";
 
 
 const NeighborhoodCard = (props) => {

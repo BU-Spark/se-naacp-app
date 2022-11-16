@@ -5,9 +5,13 @@ import { SubneighborhoodsContext ,SubneighborhoodsProvider } from "./Subneighbor
 import db from '../components/firebase/config';
 import { collection, query, where, getDocs } from "firebase/firestore";
 
-export const Filtered = createContext({})
+export const FilteredContext = createContext({})
 
-export async function FilteredContext({children}){
+export function FilteredProvider({children}){
+    const [demoData, setDemoData] = useState({})
+    const [neighName, setNeighName] = useState("")
+
+
     // const {articles} = useContext(ArticlesContext)
     // const {neighborhoods} = useContext(NeighborhoodsContext)
     // const {subneighborhoods} = useContext(SubneighborhoodsContext)
@@ -54,7 +58,14 @@ export async function FilteredContext({children}){
     //     results['A'] += doc.data.demographic_data.asian;
     //     results['W'] += doc.data.demographic_data.white;
     // });
-    // console.log(demographic);
+    // console.log(demographic); 
+    let demographic_dic = {'B': 111583, 'A': 60012, 'W': 260296, 'N': 4189};
+
+    return (
+        <FilteredContext.Provider value={{neighName, setNeighName, demoData, setDemoData, demographic_dic}}>
+            {children}
+        </FilteredContext.Provider>
+    )
 
 
     // //query for topics
