@@ -2,6 +2,7 @@ import './App.css';
 import SearchFields from './components/SearchFields/SearchFields.js'
 import ArticlesCard from './components/ArticleCard/ArticleCard';
 import NeighborhoodCard from './components/Neighborhood/NeighborhoodCard';
+import { TopicsCount } from './components/TopicsCount/TopicsCount';
 import { Grid } from '@mui/material';
 import { TopNavBar } from './components/TopNavBar/TopNavBar';
 import { NeighborhoodDemoBoard } from './components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
@@ -42,7 +43,9 @@ function App() {
           <Grid item xs={6}>
           <ArticlesCard style={{marginLeft: 20}} topic="Technology"></ArticlesCard>
           </Grid>
-
+          <Grid item xs={12}>
+            <TopicsCount></TopicsCount>
+          </Grid>
         </Grid>
       </SubneighborhoodsProvider>
       </NeighborhoodsProvider>
