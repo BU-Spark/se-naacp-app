@@ -7,8 +7,9 @@ import db from '../firebase/config';
 
 
 export function TopicsCount() {
-    const s_date = "0317015";
+    const s_date = "03172015";
     const e_date = "09182016";
+    const n_name = "back_bay";
     const [topics_freq, setTopics_freq] = useState([]);
     const [topics, setTopics] = useState([]);
 
@@ -30,9 +31,24 @@ export function TopicsCount() {
             });
     }
 
-    async function getTopicFreq() {
+    async function filterNH() {
         await filterDate();
-        let aids = localStorage.getItem("aid").split(",");
+        db.collection("filter_neighborhood").where("name", "==", n_name)
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                n_articles += doc.data()['article_keys'];
+            });
+            localStorage.setItem("n_aids", n_articles);
+        })
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
+      }
+
+    async function getTopicFreq() {
+        await filterNH();
+        let aids = localStorage.getItem("n_aids").split(",");
 
         console.log(aids);
         db.collection("filter_topics")
