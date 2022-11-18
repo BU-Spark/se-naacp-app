@@ -9,7 +9,7 @@ import db from '../firebase/config';
 export function TopicsCount() {
     const s_date = "03172015";
     const e_date = "09182016";
-    const n_name = "back_bay";
+    const n_name = "dorchester";
     const [topics_freq, setTopics_freq] = useState([]);
     const [topics, setTopics] = useState([]);
 
@@ -33,6 +33,7 @@ export function TopicsCount() {
 
     async function filterNH() {
         await filterDate();
+        let n_articles = []
         db.collection("filter_neighborhood").where("name", "==", n_name)
         .get()
         .then((querySnapshot) => {

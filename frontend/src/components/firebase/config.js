@@ -5,24 +5,24 @@ import { getDatabase, ref } from "firebase/database";
 import { collection, query, where, getDocs } from "firebase/firestore";
 // import db from '../components/firebase/config';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyBs56-JElWsyrecEnTIDRntockDmXRl3zE",
-    authDomain: "se-naacp-journalism-bias.firebaseapp.com",
-    databaseURL: "https://se-naacp-journalism-bias-default-rtdb.firebaseio.com",
-    projectId: "se-naacp-journalism-bias",
-    storageBucket: "se-naacp-journalism-bias.appspot.com",
-    messagingSenderId: "163164284037",
-    appId: "1:163164284037:web:6e6b48b67efd93746fb5ec"
-  };
 // const firebaseConfig = {
-//   apiKey: "AIzaSyB2F5d8jyeNEnwcKAVAqnYAYArJg43tyuQ",
-//   authDomain: "test-naacp.firebaseapp.com",
-//   databaseURL: "https://test-naacp-default-rtdb.firebaseio.com",
-//   projectId: "test-naacp",
-//   storageBucket: "test-naacp.appspot.com",
-//   messagingSenderId: "152016517221",
-//   appId: "1:152016517221:web:9f33a25ec079e4b5846e8c"
-// };
+//     apiKey: "AIzaSyBs56-JElWsyrecEnTIDRntockDmXRl3zE",
+//     authDomain: "se-naacp-journalism-bias.firebaseapp.com",
+//     databaseURL: "https://se-naacp-journalism-bias-default-rtdb.firebaseio.com",
+//     projectId: "se-naacp-journalism-bias",
+//     storageBucket: "se-naacp-journalism-bias.appspot.com",
+//     messagingSenderId: "163164284037",
+//     appId: "1:163164284037:web:6e6b48b67efd93746fb5ec"
+//   };
+const firebaseConfig = {
+  apiKey: "AIzaSyB2F5d8jyeNEnwcKAVAqnYAYArJg43tyuQ",
+  authDomain: "test-naacp.firebaseapp.com",
+  databaseURL: "https://test-naacp-default-rtdb.firebaseio.com",
+  projectId: "test-naacp",
+  storageBucket: "test-naacp.appspot.com",
+  messagingSenderId: "152016517221",
+  appId: "1:152016517221:web:9f33a25ec079e4b5846e8c"
+};
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const db = firebaseApp.firestore();

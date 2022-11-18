@@ -1,6 +1,7 @@
 import React from 'react';
 import { Chart, ChartAxis, ChartGroup, ChartLine, ChartVoronoiContainer } from '@patternfly/react-charts';
 import {Card, CardTitle, CardBody, CardFooter} from '@patternfly/react-core';
+import { useState } from 'react';
 import "./TrendBoard.css";
 import db from '../firebase/config';
 
