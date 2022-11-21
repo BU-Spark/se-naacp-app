@@ -1,15 +1,15 @@
 import React from 'react';
 import { Chart, ChartAxis, ChartGroup, ChartLine, ChartVoronoiContainer } from '@patternfly/react-charts';
-import {Card, CardTitle, CardBody, CardFooter} from '@patternfly/react-core';
-import { useState } from 'react';
+import {Card, CardTitle, CardBody, CardFooter, ContextSelectorFooter} from '@patternfly/react-core';
+import { useState, useEffect } from 'react';
 import "./TrendBoard.css";
 import db from '../firebase/config';
 
 export function TrendBoard() {
     const s_date = "0317015";
     const e_date = "09182016";
-    const [topics_freq, setTopics_freq] = useState([]);
-    const [topics, setTopics] = useState([]);
+    const [terms_freq, setTerm_freq] = useState([]);
+    const [terms, setTerms] = useState([]);
 
     // query for article
     async function filterDate() {
@@ -29,26 +29,31 @@ export function TrendBoard() {
             });
     }
 
-    async function getTopicFreq() {
+    async function getTermsFreq() {
         await filterDate();
-        let aids = localStorage.getItem("aid").split(",");
-
-        console.log(aids);
-        db.collection("filter_topics")
+        setTerm_freq([]);
+        setTerms([]);
+        // let aids = localStorage.getItem("aid").split(",");
+        db.collection("test_collection")
         .get()
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-                    let filteredArray = doc.data()['article_keys'].filter(value => aids.includes(value));
-                    let frqdic = { name: doc.id, x: doc.id, y: filteredArray.length }
+                    // let filteredArray = doc.data()['article_ids'].filter(value => aids.includes(value));
+                    let filteredArray = doc.data()['article_ids'];
                     let topicdic = { name: doc.id }
+                    let termarr = [];
 
-                    setTopics_freq(prevState =>
-                        [...prevState, frqdic]   
+                    filteredArray.forEach((article) => {
+                        let frqdic = { name: doc.id, x: article['date'], y: article['count'] }
+                        termarr.push(frqdic);
+                    })
+
+                    setTerm_freq(prevState =>
+                        [...prevState, termarr]   
                     );
-                    setTopics(prevState =>
+                    setTerms(prevState =>
                         [...prevState, topicdic]
                     );
-        
             });
         })
         .catch((error) => {
@@ -56,6 +61,9 @@ export function TrendBoard() {
         });
         }
 
+    useEffect(() => {
+        getTermsFreq();
+    }, []);
 
     return(
         <div>
@@ -65,7 +73,7 @@ export function TrendBoard() {
             ariaDesc="Average number of pets"
             ariaTitle="Line chart example"
             containerComponent={<ChartVoronoiContainer labels={({ datum }) => `${datum.name}: ${datum.y}`} constrainToVisibleArea />}
-            legendData={[{ name: 'Sports' }, { name: 'Crime'}, { name: 'Weather' }, { name: 'Technology' }, { name: 'Dining' }]}
+            legendData={terms}
             legendOrientation="horizontal"
             legendPosition="bottom"
             height={600}
@@ -82,22 +90,12 @@ export function TrendBoard() {
             >
                 <ChartGroup>
                     <ChartLine
-                        data={[
-                            { name: 'Sports', x: '2015', y: 20 },
-                            { name: 'Sports', x: '2016', y: 23 },
-                            { name: 'Sports', x: '2017', y: 26 },
-                            { name: 'Sports', x: '2018', y: 30 }
-                        ]}
+                        data={terms_freq[0]}
                         />
                     <ChartLine
-                    data={[
-                            { name: 'Crime', x: '2015', y: 60 },
-                            { name: 'Crime', x: '2016', y: 35 },
-                            { name: 'Crime', x: '2017', y: 70 },
-                            { name: 'Crime', x: '2018', y: 50 }
-                        ]}
+                        data={terms_freq[1]}
                         />
-                    <ChartLine
+                    {/* <ChartLine
                     data={[
                             { name: 'Weather', x: '2015', y: 80 },
                             { name: 'Weather', x: '2016', y: 70 },
@@ -120,7 +118,7 @@ export function TrendBoard() {
                             { name: 'Dining', x: '2017', y: 35 },
                             { name: 'Dining', x: '2018', y: 40 }
                         ]}
-                    />
+                    /> */}
                 </ChartGroup>
             </Chart>
         </Card>

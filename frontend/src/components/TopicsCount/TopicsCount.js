@@ -49,9 +49,10 @@ export function TopicsCount() {
 
     async function getTopicFreq() {
         await filterNH();
+        setTopics_freq([]);
+        setTopics([]);
         let aids = localStorage.getItem("n_aids").split(",");
 
-        console.log(aids);
         db.collection("filter_topics")
         .get()
         .then((querySnapshot) => {
@@ -75,8 +76,6 @@ export function TopicsCount() {
         }
 
     useEffect(() => {
-        setTopics_freq([]);
-        setTopics([]);
         getTopicFreq();
     }, []);
 
