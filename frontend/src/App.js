@@ -40,7 +40,7 @@ function App() {
             <TrendBoard></TrendBoard>
           </Grid>
           <Grid item xs={6}>
-            <NeighborhoodDemoBoard></NeighborhoodDemoBoard>
+            {/* <NeighborhoodDemoBoard></NeighborhoodDemoBoard> */}
           </Grid>
           <Grid item xs={6}>
           <ArticlesCard style={{marginLeft: 20}} topic="Technology"></ArticlesCard>

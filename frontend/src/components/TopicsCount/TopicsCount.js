@@ -32,7 +32,7 @@ export function TopicsCount() {
     }
 
     async function filterNH() {
-        await filterDate();
+        // await filterDate();
         let n_articles = []
         db.collection("filter_neighborhood").where("name", "==", n_name)
         .get()

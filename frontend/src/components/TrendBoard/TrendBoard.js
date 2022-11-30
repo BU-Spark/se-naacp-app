@@ -89,12 +89,12 @@ export function TrendBoard() {
             width={1000}
             >
                 <ChartGroup>
-                    <ChartLine
-                        data={terms_freq[0]}
+                    {terms_freq.map((term) =>
+                        <ChartLine
+                        key={term}
+                        data={term}
                         />
-                    <ChartLine
-                        data={terms_freq[1]}
-                        />
+                    )}
                     {/* <ChartLine
                     data={[
                             { name: 'Weather', x: '2015', y: 80 },
