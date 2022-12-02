@@ -19,8 +19,6 @@ export function FilteredProvider({children}){
 
     useEffect(() => {
         getTopicFreq(neighName)
-        console.log("Topics: ",topics)
-        console.log("Topics Freq: ",topics_freq)
     }, [neighName]);
 
     const s_date = "03172015";
@@ -82,6 +80,8 @@ export function FilteredProvider({children}){
                     setTopics(prevState =>
                         [...prevState, topicdic]
                     );        
+                    console.log("Topics: ",topics)
+                    console.log("Topics Freq: ",topics_freq)
             });
         })
         .catch((error) => {
