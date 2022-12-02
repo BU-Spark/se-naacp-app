@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useState, useEffect, useContext, useReducer } from "react";
 import { ArticlesContext, ArticlesProvider } from "./ArticlesContext";
 import { NeighborhoodsContext, NeighborhoodsProvider } from "./NeighborhoodsContext";
 import { SubneighborhoodsContext ,SubneighborhoodsProvider } from "./SubneighborhoodsContext";
@@ -9,60 +9,88 @@ export const FilteredContext = createContext({})
 
 export function FilteredProvider({children}){
     const [demoData, setDemoData] = useState({})
-    const [neighName, setNeighName] = useState("")
+    const [neighName, setNeighName] = useState("dorchester")
 
-
-    // const {articles} = useContext(ArticlesContext)
-    // const {neighborhoods} = useContext(NeighborhoodsContext)
-    // const {subneighborhoods} = useContext(SubneighborhoodsContext)
-
-    // // params: s_date, e_date, n_name, sn_name
-    // // query for articlesxw
-    // const id_query = query(collection(db, "date"), where("date", ">=", s_date), where(where("date", "<=", e_date)));
-    // const aids = await getDocs(id_query);
-    // const n_query = query(collection(db, "neighborhoods2"), where("name", "==", n_name));
-    // const n_articles = await getDocs(n_query);
-    // const sn_query = query(collection(db, "subneighborhood"), where("name", "==", sn_name));
-    // const sn_articles = await getDocs(sn_query);
-
-    // const art_ids = aids.filter(value => n_articles.includes(value) && sn_articles(value));
-    // // get a the list of articles and the data
-    // const query = query(collection(db, "articles"), where("id", "in", art_ids));
-    // articles = await getDocs(query);
-    // // log articles
-    // articles.forEach((article) => {xw
-    //     console.log(article.title);
-    // });
-
-
-    // // get neighborhoods count data
-    // neighborhoods = {}
-    // articles.forEach((article) => {
-    //     // doc.data() is never undefined for query doc snapshots
-    //     if (article.neighborhood in neighborhoods){
-    //         neighborhoods[article.neighborhood] = 0;
-    //     }
-    //     else{
-    //         neighborhoods[article.neighborhood] += 1;
-    //     }
-    // });
-    // console.log(neighborhoods)
-
-
-    // // query for demographic
-    // const collection = db.collection("neighorhoods");
-    // const Snapshot  = await collection.get();
-    // const demographic = {'B': 0, 'A': 0, 'W': 0};
-    // Snapshot.forEach(doc => {
-    //     results['B'] += doc.data.demographic_data.black;
-    //     results['A'] += doc.data.demographic_data.asian;
-    //     results['W'] += doc.data.demographic_data.white;
-    // });
-    // console.log(demographic); 
+    const [topics_freq, setTopics_freq] = useState([]);
+    const [topics, setTopics] = useState([]);
+    
     let demographic_dic = {'B': 111583, 'A': 60012, 'W': 260296, 'N': 4189};
+    
+
+    useEffect(() => {
+        getTopicFreq(neighName)
+        console.log("Topics: ",topics)
+        console.log("Topics Freq: ",topics_freq)
+    }, [neighName]);
+
+    const s_date = "03172015";
+    const e_date = "09182016";
+    let n_name = "dorchester";
+    // query for article
+    async function filterDate() {
+        let aids = []
+        db.collection("filter_date")
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    if (s_date <= doc.data()['date'] <= e_date){
+                    aids += doc.data()['article_keys'];
+                    }
+                });
+                localStorage.setItem("aid", aids);
+            })
+            .catch((error) => {
+                console.log("Error getting documents: ", error);
+            });
+    }
+
+    async function filterNH(nameVal) {
+        await filterDate();
+        let n_articles = []
+        db.collection("filter_neighborhood").where("name", "==", nameVal)
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                n_articles += doc.data()['article_keys'];
+            });
+            localStorage.setItem("n_aids", n_articles);
+        })
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
+      }
+
+    async function getTopicFreq(nameVal) {
+        console.log("Fetch is executed")
+        await filterNH(nameVal);
+        setTopics_freq([]);
+        setTopics([]);
+        console.log("INside fetchL: ", nameVal)
+        let aids = localStorage.getItem("n_aids").split(",");
+
+        db.collection("filter_topics")
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                    let filteredArray = doc.data()['article_keys'].filter(value => aids.includes(value));
+                    let frqdic = { name: doc.id, x: doc.id, y: filteredArray.length }
+                    let topicdic = { name: doc.id }
+
+                    setTopics_freq(prevState =>
+                        [...prevState, frqdic]   
+                    );
+                    setTopics(prevState =>
+                        [...prevState, topicdic]
+                    );        
+            });
+        })
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
+        }
 
     return (
-        <FilteredContext.Provider value={{neighName, setNeighName, demoData, setDemoData, demographic_dic}}>
+        <FilteredContext.Provider value={{neighName, setNeighName, demoData, setDemoData, demographic_dic, topics, topics_freq}}>
             {children}
         </FilteredContext.Provider>
     )

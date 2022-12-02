@@ -16,20 +16,18 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 export default function NeighborhoodDemoBoard() {
     const [data, setData] = useState({})
     const {neighName, demographic_dic, demoData, setDemoData} = useContext(FilteredContext)
-    let testVal = {}
-
     
 
     if (neighName.length !== 0) {
         let name = neighName.toLowerCase().replace(" ", "_")
         let response = async function() {
-            let testVal = await getDemographic(name)
+            await getDemographic(name)
         };
         response()
     }
     useEffect(() => {
         setData(demographic_dic)
-        }, []);
+    }, []);
 
 
     async function getDemographic(n_name){

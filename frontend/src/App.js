@@ -46,7 +46,7 @@ function App() {
           <ArticlesCard style={{marginLeft: 20}} topic="Technology"></ArticlesCard>
           </Grid>
           <Grid item xs={12}>
-            {/* <TopicsCount></TopicsCount> */}
+            <TopicsCount></TopicsCount>
           </Grid>
         </Grid>
       </FilteredProvider>

@@ -14,15 +14,23 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 //     messagingSenderId: "163164284037",
 //     appId: "1:163164284037:web:6e6b48b67efd93746fb5ec"
 //   };
+// const firebaseConfig = {
+//   apiKey: "AIzaSyB2F5d8jyeNEnwcKAVAqnYAYArJg43tyuQ",
+//   authDomain: "test-naacp.firebaseapp.com",
+//   databaseURL: "https://test-naacp-default-rtdb.firebaseio.com",
+//   projectId: "test-naacp",
+//   storageBucket: "test-naacp.appspot.com",
+//   messagingSenderId: "152016517221",
+//   appId: "1:152016517221:web:9f33a25ec079e4b5846e8c"
+// };
 const firebaseConfig = {
-  apiKey: "AIzaSyB2F5d8jyeNEnwcKAVAqnYAYArJg43tyuQ",
-  authDomain: "test-naacp.firebaseapp.com",
-  databaseURL: "https://test-naacp-default-rtdb.firebaseio.com",
-  projectId: "test-naacp",
-  storageBucket: "test-naacp.appspot.com",
-  messagingSenderId: "152016517221",
-  appId: "1:152016517221:web:9f33a25ec079e4b5846e8c"
-};
+    apiKey: "AIzaSyCVvuBs50IYfb9tqi_SJnUBqG0CZg5GWQs",
+    authDomain: "test-naacp-2.firebaseapp.com",
+    projectId: "test-naacp-2",
+    storageBucket: "test-naacp-2.appspot.com",
+    messagingSenderId: "158512181013",
+    appId: "1:158512181013:web:b5ab0485398631dbd4431c"
+  };
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const db = firebaseApp.firestore();
