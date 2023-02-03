@@ -15,11 +15,9 @@ export default function MainNavigatot() {
             <div>
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    {/* <Route path="/about" element={<About />} /> */}
                 </Routes>
             </div>
         </BrowserRouter>
     </>
-    );
-    
+    ); 
 }
