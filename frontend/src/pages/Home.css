@@ -1,0 +1,21 @@
+.search_container {
+    display: flex;
+    flex-direction: row;
+}
+
+.master_content_container {
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.row_left {
+    width: 50%;
+    margin-right: 10px;
+}
+
+.row_right {
+    width: 50%;
+    margin-left: 10px;
+}

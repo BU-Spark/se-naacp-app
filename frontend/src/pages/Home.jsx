@@ -8,36 +8,36 @@ import { TrendBoard } from '../components/TrendBoard/TrendBoard';
 import Read from '../components/DataRetrieve/data';
 import Logo from "../logo.svg";
 
+import './Home.css'
+
 export default function Home() {
     return (
         <>
-            <div className="App">
-            <TopNavBar></TopNavBar>
-            <Read></Read>
-            <Grid container spacing={1}>
-                <Grid item xs={3}>
-                <img style={{marginLeft: 10, marginTop: 10, width: 150}}src={Logo}></img>
-                </Grid>
-                <Grid item xs={9}>
-                <SearchFields></SearchFields>
-                </Grid>
-            </Grid>
-            <br></br>
+            <div className="home_container">
+                <TopNavBar></TopNavBar>
+                <Read></Read>
+                {/* Filter Options */}
+                <div className='search_container'>
+                    <img style={{marginLeft: 10, marginTop: 10, marginRight: 10, width: 150}}src={Logo}></img>
+                    <div style={{flex: 1}}></div>
+                    <SearchFields></SearchFields>
+                </div>
+                <br></br>
 
-            <Grid container spacing={2}>
-                <Grid item xs={6}>
-                <NeighborhoodCard></NeighborhoodCard>
-                </Grid>
-                <Grid item xs={6}>
-                <TrendBoard></TrendBoard>
-                </Grid>
-                <Grid item xs={6}>
-                <NeighborhoodDemoBoard></NeighborhoodDemoBoard>
-                </Grid>
-                <Grid item xs={6}>
-                <ArticlesCard style={{marginLeft: 20}} topic="Technology"></ArticlesCard>
-                </Grid>
-            </Grid>
+                {/* Card UI View */}
+                <div className='master_content_container'>
+                    <div className='row_left'>
+                        <NeighborhoodCard></NeighborhoodCard>
+                        <br></br>
+                        <NeighborhoodDemoBoard></NeighborhoodDemoBoard>
+                    </div>
+
+                    <div className='row_right'>
+                        <TrendBoard></TrendBoard>
+                        <br></br>
+                        <ArticlesCard style={{marginLeft: 20}} topic="Technology"></ArticlesCard>
+                    </div>
+                </div>
             </div>
         </>
     );

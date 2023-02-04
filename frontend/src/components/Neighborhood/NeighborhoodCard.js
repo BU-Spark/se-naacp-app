@@ -51,7 +51,7 @@ const NeighborhoodCard = (props) => {
     
       return (
         <>
-        <Card className="body" sx={{ maxWidth: 800, minHeight:400}}>
+        <Card className="body" sx={{ maxWidth: 800, minHeight: 400}}>
         <CardContent>
             <h3 className="card">Neighborhoods Covered Most</h3>
 
