@@ -8,15 +8,13 @@ import {
 // Pages
 import Home from '../pages/Home'
 
-export default function MainNavigatot() {
+export default function MainNavigator() {
     return(
     <>
         <BrowserRouter>
-            <div>
                 <Routes>
                     <Route path="/" element={<Home />} />
                 </Routes>
-            </div>
         </BrowserRouter>
     </>
     ); 
