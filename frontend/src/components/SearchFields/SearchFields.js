@@ -1,9 +1,6 @@
 import SearchBar from './SearchBar'
 import DateBar from './DateBar'
-import Button, { ButtonProps } from '@mui/material/Button';
-import { purple } from '@mui/material/colors';
-import { styled } from '@mui/material/styles';
-import { Grid } from '@mui/material';
+import Button from '@mui/material/Button';
 
 
 function SearchFields(){
@@ -13,10 +10,10 @@ function SearchFields(){
           <SearchBar word="Neighborhood" placeholder="Search"></SearchBar>
           <SearchBar word="Sub-Neighborhood" placeholder="Search"></SearchBar>
           <SearchBar word="Topics" placeholder="Search"></SearchBar>
-          <DateBar word="From" placeholder="Date"></DateBar>
-          <DateBar word="To" placeholder="Date"></DateBar>
+          <DateBar word="From" from_bool={true}></DateBar>
+          <DateBar word="To" from_bool={false}></DateBar>
           <div style={{display: "flex", justifyContent:"center", alignItems: "center", height: "90px", width: "170px"}}>
-            <Button variant="contained" style={{height: "40px", width: "130px", marginTop: 12}}>Download</Button>
+            <Button onClick={() => console.log("Downloading Data...")} variant="contained" sx={{textTransform: "none"}} style={{height: "35px", width: "135px", marginTop: 21, marginLeft: 5, fontWeight: 500, fontSize: 14, backgroundColor: "rgb(93, 63, 211)"}}>Download Data</Button>
           </div>
         </div>
     );

@@ -1,16 +1,19 @@
+import React from "react";
+
 import SearchFields from '../components/SearchFields/SearchFields.js'
 import ArticlesCard from '../components/ArticleCard/ArticleCard';
 import NeighborhoodCard from '../components/Neighborhood/NeighborhoodCard';
-import { Grid } from '@mui/material';
 import { TopNavBar } from '../components/TopNavBar/TopNavBar';
 import { NeighborhoodDemoBoard } from '../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
 import { TrendBoard } from '../components/TrendBoard/TrendBoard';
 import Read from '../components/DataRetrieve/data';
 import Logo from "../logo.svg";
 
+// CSS
 import './Home.css'
 
 export default function Home() {
+
     return (
         <>
             <div className="home_container">
@@ -18,7 +21,7 @@ export default function Home() {
                 <Read></Read>
                 {/* Filter Options */}
                 <div className='search_container'>
-                    <img style={{marginLeft: 10, marginTop: 10, marginRight: 10, width: 150}}src={Logo}></img>
+                    <img style={{marginLeft: 10, marginTop: 10, marginRight: 10, width: 150}} src={Logo} alt={"Logo"}></img>
                     <div style={{flex: 1}}></div>
                     <SearchFields></SearchFields>
                 </div>

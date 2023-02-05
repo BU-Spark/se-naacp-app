@@ -1,12 +1,22 @@
+import React from "react";
+
+// CSS
 import './App.css';
 
 // Main navigator
 import MainNavigator from './routes/MainNavigator'
 
+// Universal Contexts
+import { DateContext } from './contexts/dateContext'
+
 function App() {
+  const [dates, setDates] = React.useState([null,null]);
+
   return (
     <>
-      <MainNavigator />
+      <DateContext.Provider value={{dates, setDates}}>
+        <MainNavigator />
+      </DateContext.Provider>
     </>
   );
 }

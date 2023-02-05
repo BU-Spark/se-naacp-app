@@ -1,10 +1,15 @@
 .search {
+    display: flex;
+    flex-direction: column;
     width: 170px;
 }
 
 .word {
     display: flex;
-    margin-left: 10px;
+    font-weight: 600;
+    margin: unset;
+    padding-left: 10px;
+    padding-top: 20px;
     font-size: 12px;
 }
 
