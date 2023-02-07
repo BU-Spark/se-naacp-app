@@ -2,32 +2,76 @@ import React, { useState, useEffect } from "react";
 import "./Neighborhood.css";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import gm from'./gm.jpg';
+
+// Temporary Map API (Pigeon Maps)
+import { Map, Marker } from "pigeon-maps"
 
 // MUI List
 import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
-import SendIcon from '@mui/icons-material/Send';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import StarBorder from '@mui/icons-material/StarBorder';
 
 // React Contexts/Context Methods
 import { DateContext, DateMethods } from '../../contexts/dateContext.js';
-import { Button } from "@mui/material";
 
-function createData(name, calories, fat) {
-    return { name, calories, fat };
-  }
   
 const NeighborhoodCard = () => {
     const {dates} = React.useContext(DateContext);  // Global Context of dates
+
+    // Map Data
+    const mapData = [
+        {
+            name: "Allston Village",
+            latitude: 42.353450,
+            longitude: -71.132180
+        },
+        {
+            name: "Dorchester",
+            latitude: 42.299782,
+            longitude: -71.078842
+        },
+        {
+            name: "Boston University",
+            latitude: 42.351170,
+            longitude: -71.110870
+        },
+        {
+            name: "Mattapan Square",
+            latitude: 42.279625,
+            longitude: -71.093216
+        },
+        {
+            name: "Roslindale",
+            latitude: 42.2799644,
+            longitude: -71.11892
+        },
+        {
+            name: "Prudential",
+            latitude: 42.347000,
+            longitude: -71.07964
+        },
+        {
+            name: "Roxbury",
+            latitude: 42.31460,
+            longitude: -71.0883
+        },
+    ];
+
+    // React Maps Objects recieved by data
+    const [currLocation, SetCurrLocation] = React.useState(mapData[0]);
+    const [locations, SetLocations] = React.useState(mapData);
+
+    // Default center is Boston
+    const BostonMapAPI = () => {
+        return (
+          <Map defaultCenter={[mapData[0].latitude, mapData[0].longitude]} defaultZoom={13} center={[currLocation.latitude,currLocation.longitude]}>
+            {mapData.map( (v) => {
+                return <Marker width={30} anchor={[v.latitude, v.longitude]} />
+            })}
+          </Map>
+        )
+    };
 
     React.useEffect(() => {
         console.log("The Dates: ", dates);
@@ -56,8 +100,10 @@ const NeighborhoodCard = () => {
                                 <p>Coverage</p>
                             </div>
                             </ListSubheader>}>
-                                <ListItemButton>
-                                    <ListItemText primary="Allston Village" />
+                                {mapData.map( (v) => { return <ListItemButton 
+                                onClick={() => {SetCurrLocation(v)}}
+                                selected={currLocation.name === v.name ? true:false}>
+                                    <ListItemText primary={`${v.name}`} />
                                     <div style={{flex: 1}}></div>
                                     <p style={{
                                         backgroundColor: "#0080FF", 
@@ -67,74 +113,7 @@ const NeighborhoodCard = () => {
                                         display: "flex", 
                                         justifyContent: "center"}}>17</p>
                                 </ListItemButton>
-                                <ListItemButton>
-                                    <ListItemText primary="Dorchester" />
-                                    <div style={{flex: 1}}></div>
-                                    <p style={{
-                                        backgroundColor: "#0080FF", 
-                                        borderRadius: 100, 
-                                        width: 30, 
-                                        color: "white", 
-                                        display: "flex", 
-                                        justifyContent: "center"}}>17</p>
-                                </ListItemButton>
-                                <ListItemButton selected={true}>
-                                    <ListItemText primary="Greater Ashmont" />
-                                    <div style={{flex: 1}}></div>
-                                    <p style={{
-                                        backgroundColor: "#0080FF", 
-                                        borderRadius: 100, 
-                                        width: 30, 
-                                        color: "white", 
-                                        display: "flex", 
-                                        justifyContent: "center"}}>17</p>
-                                </ListItemButton>
-                                <ListItemButton>
-                                    <ListItemText primary="Mattapan Square" />
-                                    <div style={{flex: 1}}></div>
-                                    <p style={{
-                                        backgroundColor: "#0080FF", 
-                                        borderRadius: 100, 
-                                        width: 30, 
-                                        color: "white", 
-                                        display: "flex", 
-                                        justifyContent: "center"}}>17</p>
-                                </ListItemButton>
-                                <ListItemButton>
-                                    <ListItemText primary="Roslindale" />
-                                    <div style={{flex: 1}}></div>
-                                    <p style={{
-                                        backgroundColor: "#0080FF", 
-                                        borderRadius: 100, 
-                                        width: 30, 
-                                        color: "white", 
-                                        display: "flex", 
-                                        justifyContent: "center"}}>17</p>
-                                </ListItemButton>
-                                <ListItemButton>
-                                    <ListItemText primary="Prudential" />
-                                    <div style={{flex: 1}}></div>
-                                    <p style={{
-                                        backgroundColor: "#0080FF", 
-                                        borderRadius: 100, 
-                                        width: 30, 
-                                        color: "white", 
-                                        display: "flex", 
-                                        justifyContent: "center"}}>17</p>
-                                </ListItemButton>
-                                <ListItemButton>
-                                    <ListItemText primary="Boston University" />
-                                    <div style={{flex: 1}}></div>
-                                    <p style={{
-                                        backgroundColor: "#0080FF", 
-                                        borderRadius: 100, 
-                                        width: 30, 
-                                        color: "white", 
-                                        display: "flex", 
-                                        justifyContent: "center"}}>17</p>
-                                </ListItemButton>
-                                
-                                
+                                })}
                             </List>
                         </div>
                             
@@ -142,9 +121,7 @@ const NeighborhoodCard = () => {
 
                         {/* Maps API */}
                         <div style={{ height: '350px', width: '250px' }}>
-                            <a href="https://www.google.com/maps/place/Back+Bay,+Boston,+MA/@42.3492608,-71.0895385,15z/data=!3m1!4b1!4m5!3m4!1s0x89e37a0ef815f5b1:0xbca3cc92599b5bc4!8m2!3d42.3495236!4d-71.0794717">
-                            <img src={gm} width="250" height="350"></img>
-                            </a>
+                            {BostonMapAPI()}
                         </div>
                     </div>
             </CardContent>
