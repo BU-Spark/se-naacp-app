@@ -34,7 +34,9 @@ export default function Home() {
                     <div className='row_left'>
                         <NeighborhoodCard></NeighborhoodCard>
                         <br></br>
-                        <NeighborhoodDemoBoard data={info}></NeighborhoodDemoBoard>
+                        <div className="neigh_bar">
+                            <NeighborhoodDemoBoard data={info}></NeighborhoodDemoBoard>
+                        </div>
                     </div>
 
                     <div className='row_right'>

@@ -21,6 +21,7 @@
 }
 
 .neigh_bar{
-    width: 50vw;
+    width: 45vw;
     height: 50vh;
+    border: solid red;
 }

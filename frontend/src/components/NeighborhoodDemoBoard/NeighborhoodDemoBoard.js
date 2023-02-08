@@ -10,8 +10,8 @@ import CardContent from '@mui/material/CardContent';
 // website examples showcase many properties,
 // you'll often use just a few of them.
 export const NeighborhoodDemoBoard = ({ data /* see data tab */ }) => (
-    <Card className="body" sx={{ maxWidth: 800, minHeight:400}}>
-        <CardContent>
+    // <Card className="body" sx={{ maxWidth: 800, minHeight:400}}>
+    //     <CardContent>
         <ResponsiveBar
             data={data}
             keys={[
@@ -128,6 +128,6 @@ export const NeighborhoodDemoBoard = ({ data /* see data tab */ }) => (
             ariaLabel="Nivo bar chart demo"
             barAriaLabel={function(e){return e.id+": "+e.formattedValue+" in country: "+e.indexValue}}
         />
-        </CardContent>
-    </Card>
+    //     </CardContent>
+    // </Card>
 )
