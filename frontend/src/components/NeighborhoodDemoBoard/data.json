@@ -1,21 +1,21 @@
 [
     {
-      "country": "white",
+      "race": "white",
       "white": 21,
       "whiteColor": "hsl(281, 70%, 50%)"
     },
     {
-      "country": "black",
+      "race": "black",
       "black": 172,
       "blackColor": "hsl(55, 70%, 50%)"
     },
     {
-      "country": "asian",
+      "race": "asian",
       "asian": 128,
       "asianColor": "hsl(147, 70%, 50%)"
     },
     {
-      "country": "hispanic",
+      "race": "hispanic",
       "hispanic": 126,
       "hispanicColor": "hsl(9, 70%, 50%)"
     }
