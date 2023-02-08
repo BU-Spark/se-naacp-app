@@ -15,12 +15,10 @@ export const NeighborhoodDemoBoard = ({ data /* see data tab */ }) => (
         <ResponsiveBar
             data={data}
             keys={[
-                'hot dog',
-                'burger',
-                'sandwich',
-                'kebab',
-                'fries',
-                'donut'
+                'white',
+                'black',
+                'asian',
+                'hispanic'
             ]}
             indexBy="country"
             margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
@@ -48,36 +46,13 @@ export const NeighborhoodDemoBoard = ({ data /* see data tab */ }) => (
                     spacing: 10
                 }
             ]}
-            fill={[
-                {
-                    match: {
-                        id: 'fries'
-                    },
-                    id: 'dots'
-                },
-                {
-                    match: {
-                        id: 'sandwich'
-                    },
-                    id: 'lines'
-                }
-            ]}
-            borderColor={{
-                from: 'color',
-                modifiers: [
-                    [
-                        'darker',
-                        1.6
-                    ]
-                ]
-            }}
             axisTop={null}
             axisRight={null}
             axisBottom={{
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: 'country',
+                legend: 'Race',
                 legendPosition: 'middle',
                 legendOffset: 32
             }}
@@ -85,7 +60,7 @@ export const NeighborhoodDemoBoard = ({ data /* see data tab */ }) => (
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: 'food',
+                legend: 'Population',
                 legendPosition: 'middle',
                 legendOffset: -40
             }}
