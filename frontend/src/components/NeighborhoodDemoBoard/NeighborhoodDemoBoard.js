@@ -1,33 +1,133 @@
-import React from 'react';
-import {Card, CardTitle, CardBody, CardFooter} from '@patternfly/react-core';
-import { Chart, ChartBar, ChartVoronoiContainer } from '@patternfly/react-charts';
-import "./NeighborhoodDemoBoard.css";
+// install (please make sure versions match peerDependencies)
+// yarn add @nivo/core @nivo/bar
+import { ResponsiveBar } from '@nivo/bar'
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
-export const NeighborhoodDemoBoard = () => (
-    <Card className="demo-board-card">
-        <CardTitle className='demo-board-title'>Demographic Data</CardTitle>
-        <CardBody>
-            <Chart
-            ariaDesc="Average number of pets"
-            ariaTitle="Bar chart example"
-            containerComponent={<ChartVoronoiContainer labels={({ datum }) => `${datum.name}: ${datum.y}`} constrainToVisibleArea />}
-            domain={{y: [0,400]}}
-            domainPadding={{ x: [10, 20] }}
-            legendData={[{ name: 'Cats' },{ name: 'White'}, { name: 'Black'}, { name: 'Asian'}, { name: 'American Indian or Alaskan Native'}, { name: 'Native Hawaiian or Pacific Islander'}]}
-            legendOrientation="vertical"
-            legendPosition="right"
-            height={200}
-            name="chart4"
-            padding={{
-                bottom: 70,
-                left: 58,
-                right: 250, // Adjusted to accommodate legend
-                top: 50
+// make sure parent container have a defined height when using
+// responsive component, otherwise height will be 0 and
+// no chart will be rendered.
+// website examples showcase many properties,
+// you'll often use just a few of them.
+export const NeighborhoodDemoBoard = ({ data /* see data tab */ }) => (
+    <Card className="body" sx={{ maxWidth: 800, minHeight:400}}>
+        <CardContent>
+        <ResponsiveBar
+            data={data}
+            keys={[
+                'hot dog',
+                'burger',
+                'sandwich',
+                'kebab',
+                'fries',
+                'donut'
+            ]}
+            indexBy="country"
+            margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+            padding={0.3}
+            valueScale={{ type: 'linear' }}
+            indexScale={{ type: 'band', round: true }}
+            colors={{ scheme: 'nivo' }}
+            defs={[
+                {
+                    id: 'dots',
+                    type: 'patternDots',
+                    background: 'inherit',
+                    color: '#38bcb2',
+                    size: 4,
+                    padding: 1,
+                    stagger: true
+                },
+                {
+                    id: 'lines',
+                    type: 'patternLines',
+                    background: 'inherit',
+                    color: '#eed312',
+                    rotation: -45,
+                    lineWidth: 6,
+                    spacing: 10
+                }
+            ]}
+            fill={[
+                {
+                    match: {
+                        id: 'fries'
+                    },
+                    id: 'dots'
+                },
+                {
+                    match: {
+                        id: 'sandwich'
+                    },
+                    id: 'lines'
+                }
+            ]}
+            borderColor={{
+                from: 'color',
+                modifiers: [
+                    [
+                        'darker',
+                        1.6
+                    ]
+                ]
             }}
-            width={500}
-            >
-                <ChartBar data={[{ name: 'White', x: 'Q1', y: 400 }, { name: 'Black', x: 'Q2', y: 350 }, { name: 'Asian', x: 'Q3', y: 325 }, { name: 'American Indian or Alaskan Native', x: 'Q4', y: 175 }, { name: 'Native Hawaiian or Pacific Islander', x: 'Q5', y: 360 }]} />
-            </Chart>
-        </CardBody>
+            axisTop={null}
+            axisRight={null}
+            axisBottom={{
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: 'country',
+                legendPosition: 'middle',
+                legendOffset: 32
+            }}
+            axisLeft={{
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: 'food',
+                legendPosition: 'middle',
+                legendOffset: -40
+            }}
+            labelSkipWidth={12}
+            labelSkipHeight={12}
+            labelTextColor={{
+                from: 'color',
+                modifiers: [
+                    [
+                        'darker',
+                        1.6
+                    ]
+                ]
+            }}
+            legends={[
+                {
+                    dataFrom: 'keys',
+                    anchor: 'bottom-right',
+                    direction: 'column',
+                    justify: false,
+                    translateX: 120,
+                    translateY: 0,
+                    itemsSpacing: 2,
+                    itemWidth: 100,
+                    itemHeight: 20,
+                    itemDirection: 'left-to-right',
+                    itemOpacity: 0.85,
+                    symbolSize: 20,
+                    effects: [
+                        {
+                            on: 'hover',
+                            style: {
+                                itemOpacity: 1
+                            }
+                        }
+                    ]
+                }
+            ]}
+            role="application"
+            ariaLabel="Nivo bar chart demo"
+            barAriaLabel={function(e){return e.id+": "+e.formattedValue+" in country: "+e.indexValue}}
+        />
+        </CardContent>
     </Card>
 )
