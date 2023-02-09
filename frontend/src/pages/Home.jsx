@@ -34,9 +34,10 @@ export default function Home() {
                     <div className='row_left'>
                         <NeighborhoodCard></NeighborhoodCard>
                         <br></br>
-                        <div className="neigh_bar">
+                        <div className="graph_card">
                             <NeighborhoodDemoBoard data={info}></NeighborhoodDemoBoard>
                         </div>
+                        
                     </div>
 
                     <div className='row_right'>

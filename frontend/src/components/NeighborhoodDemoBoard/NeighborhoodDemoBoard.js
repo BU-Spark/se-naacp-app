@@ -4,15 +4,20 @@ import { ResponsiveBar } from '@nivo/bar'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 
+//import './NeighborhoodDemoBoard.css'
+
 // make sure parent container have a defined height when using
 // responsive component, otherwise height will be 0 and
 // no chart will be rendered.
 // website examples showcase many properties,
 // you'll often use just a few of them.
 export const NeighborhoodDemoBoard = ({ data /* see data tab */ }) => (
-    // <Card className="body" sx={{ maxWidth: 800, minHeight:400}}>
-    //     <CardContent>
+    <>
+    {/* <Card className="body" sx={{ maxWidth: 800, minHeight:400}}>
+         <CardContent> */}
+         <h3 className="card_title">Demographic Data</h3>
         <ResponsiveBar
+            id="something"
             data={data}
             keys={[
                 'white',
@@ -83,6 +88,7 @@ export const NeighborhoodDemoBoard = ({ data /* see data tab */ }) => (
             ariaLabel="Nivo bar chart demo"
             barAriaLabel={function(e){return e.id+": "+e.formattedValue+" in country: "+e.indexValue}}
         />
-    //     </CardContent>
-    // </Card>
+         {/* </CardContent>
+     </Card> */}
+    </>
 )

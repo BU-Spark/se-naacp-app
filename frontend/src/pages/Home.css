@@ -20,8 +20,19 @@
     margin-left: 10px;
 }
 
-.neigh_bar{
+.graph_card{
     width: 48vw;
     height: 50vh;
+    padding-bottom: 8vh;
+    padding-top: 3vh;
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+
+.card_title {
+    font-weight: bold;
+    font-size: larger;
+    padding-left: 1rem;
+    margin-top: 1rem;
+    margin-bottom: none;
+    padding-bottom: none;
 }
