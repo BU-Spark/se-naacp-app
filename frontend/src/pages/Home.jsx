@@ -9,6 +9,8 @@ import { TrendBoard } from '../components/TrendBoard/TrendBoard';
 import Read from '../components/DataRetrieve/data';
 import Logo from "../logo.svg";
 
+import info from '../components/NeighborhoodDemoBoard/data.json'
+
 // CSS
 import './Home.css'
 
@@ -32,7 +34,10 @@ export default function Home() {
                     <div className='row_left'>
                         <NeighborhoodCard></NeighborhoodCard>
                         <br></br>
-                        <NeighborhoodDemoBoard></NeighborhoodDemoBoard>
+                        <div className="graph_card">
+                            <NeighborhoodDemoBoard data={info}></NeighborhoodDemoBoard>
+                        </div>
+                        
                     </div>
 
                     <div className='row_right'>
