@@ -1,3 +1,7 @@
+.body {
+    font-family: -apple-system, system-ui;
+}
+
 .trend-card {
     max-width: 100%;
     max-height: fit-content;
