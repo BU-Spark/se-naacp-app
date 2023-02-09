@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -6,115 +6,53 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import "./ArticleCard.css";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import "./ArticleCard.css";
 
 
-const ArticlesCard = (props, topic) => {
-    const [articles, setArticles] = useState([])
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [listingData, setListingData] = useState([]);
-
-    const tableStyle = {
-        border: "none",
-        boxShadow: "none"
-      };
-
-    // useEffect(() => {
-    //   getPostings();
-    // }, []);
-
-    const columns = [
-        { id: "articleTitle", label: "Title", minWidth: 120 },
-        { id: "authorName", label: "Author", minWidth: 50 },
-        { id: "publishingDate", label: "Publishing Date", minWidth: 50 },
-      ];
-    const data = [
-        { id: "articleTitle", label: "Article About Jamacia Plain", minWidth: 120 },
-        { id: "authorName", label: "by John Chai", minWidth: 50 },
-        { id: "publishingDate", label: "2019-09-09", minWidth: 50 },
-    ];
-    const data2 = [
-        { id: "articleTitle", label: "Article About Dorchester", minWidth: 120 },
-        { id: "authorName", label: "by Asad", minWidth: 50 },
-        { id: "publishingDate", label: "2019-03-09", minWidth: 50 },
-    ];
-    const data3 = [
-        { id: "articleTitle", label: "Article About Arlington", minWidth: 120 },
-        { id: "authorName", label: "by Daniel", minWidth: 50 },
-        { id: "publishingDate", label: "2019-04-04", minWidth: 50 },
-    ];
-
-    
-      return (
-        <>
-        <Card className="body" sx={{ maxWidth: 800, minHeight:400}}>
-        <CardContent>
-            <h3 className="card">Articles on Topic</h3>
-            <Container maxWidth="md">
-            <TableContainer>
-                <Table className="body" stickyHeader aria-label="sticky table">
-                <TableHead>
-                    <TableRow>
-                        {columns.map((column) => (
-                        <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth}}
-                        >
-                        {column.label}
-                        </TableCell>
-                        ))}
-                    </TableRow>
-
-                    <TableRow>
-                        {data.map((column) => (
-                        <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth}}
-                        >
-                        {column.label}
-                        </TableCell>
-                        ))}
-                    </TableRow>
-
-                    <TableRow>
-                        {data2.map((column) => (
-                        <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth}}
-                        >
-                        {column.label}
-                        </TableCell>
-                        ))}
-                    </TableRow>
-
-                    <TableRow>
-                        {data3.map((column) => (
-                        <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth}}
-                        >
-                        {column.label}
-                        </TableCell>
-                        ))}
-                    </TableRow>
-                    
-                </TableHead>
-                </Table>
-            </TableContainer>
-        </Container>
-        </CardContent>
-        </Card>
-    </>
-    );
+function createData(title, author, publishingDate) {
+    author = "by ".concat(author)
+    return { title, author , publishingDate };
 }
 
-export default ArticlesCard;
+const rows = [
+  createData('Article About Neighborhood', 'Daniel Gonzalez', '02-08-2023'),
+  createData('Article About Neighborhood', 'Zach Gou', '02-08-2023'),
+  createData('Article About Neighborhood', 'Asad Malik', '02-08-2023'),
+  createData('Article About Neighborhood', 'Michelle Voong', '02-08-2023'),
+  createData('Article About Neighborhood', 'Ziba', '02-08-2023'),
+];
+
+export default function ArticleCard() {
+  return (
+    <Card className="body" sx={{ maxWidth: 800, minHeight:400}}>
+    <CardContent>
+        <h3 className="card">Articles on Topic</h3>
+        <Table sx={{ minWidth: 650 }} size="medium" aria-label="a dense table">
+            <TableHead>
+            <TableRow>
+                <TableCell style={{borderBottom:"none"}}><strong>Title</strong></TableCell>
+                <TableCell style={{borderBottom:"none"}} align="left"><strong>Author</strong></TableCell>
+                <TableCell style={{borderBottom:"none"}} align="left"><strong>Publishing Date</strong></TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {rows.map((row) => (
+                <TableRow
+                key={row.title}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                <TableCell style={{borderBottom:"none"}} component="th" scope="row">
+                    {row.title}
+                </TableCell>
+                <TableCell  style={{borderBottom:"none"}} align="left">{row.author}</TableCell>
+                <TableCell style={{borderBottom:"none"}} align="left">{row.publishingDate}</TableCell>
+                </TableRow>
+            ))}
+            </TableBody>
+        </Table>
+    </CardContent>
+    </Card>
+  );
+}
