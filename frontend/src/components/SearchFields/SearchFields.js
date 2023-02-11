@@ -1,13 +1,16 @@
-import SearchBar from './SearchBar'
-import DateBar from './DateBar'
 import Button from '@mui/material/Button';
+
+// Class Component
+import SearchBarDropdown from './SearchBarDropdown';
+import SearchBar from './SearchBar';
+import DateBar from './DateBar';
 
 
 function SearchFields(){
 
     return (
       <div style={{display: "flex", flexDirection: "row", overflowX: "auto"}}>
-          <SearchBar word="Neighborhood" placeholder="Search"></SearchBar>
+          <SearchBarDropdown word="Sub-Neighborhoods"></SearchBarDropdown>
           <SearchBar word="Sub-Neighborhood" placeholder="Search"></SearchBar>
           <SearchBar word="Topics" placeholder="Search"></SearchBar>
           <DateBar word="From" from_bool={true}></DateBar>

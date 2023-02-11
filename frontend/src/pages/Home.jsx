@@ -41,7 +41,9 @@ export default function Home() {
                     </div>
 
                     <div className='row_right'>
-                        <TrendBoard></TrendBoard>
+                        <div className="graph_card">
+                            <TrendBoard></TrendBoard>
+                        </div>
                         <br></br>
                         <ArticlesCard style={{marginLeft: 20}} topic="Technology"></ArticlesCard>
                     </div>

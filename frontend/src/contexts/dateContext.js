@@ -12,6 +12,18 @@ const toEmpty = (d) => {
     return ((isEmpty(d) === true) ? (true) : ((d[1] === null) ? true : false));
 };
 
+const dateValidation = (from, to) => {
+    if (fromEmpty(from) || toEmpty(to)) {
+        return false;
+    } else if ( 
+        (true)
+    ) {
+        return true
+    } else {
+        return false;
+    }
+}
+
 const DateMethods = {
     isEmpty : isEmpty,
     fromEmpty : fromEmpty,

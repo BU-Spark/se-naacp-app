@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./Neighborhood.css";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -15,6 +15,8 @@ import ListItemText from '@mui/material/ListItemText';
 // React Contexts/Context Methods
 import { DateContext, DateMethods } from '../../contexts/dateContext.js';
 
+// Uniqid for unique keys
+import uniqid from 'uniqid';
   
 const NeighborhoodCard = () => {
     const {dates} = React.useContext(DateContext);  // Global Context of dates
@@ -60,14 +62,14 @@ const NeighborhoodCard = () => {
 
     // React Maps Objects recieved by data
     const [currLocation, SetCurrLocation] = React.useState(mapData[0]);
-    const [locations, SetLocations] = React.useState(mapData);
+    // const [locations, SetLocations] = React.useState(mapData);
 
     // Default center is Boston
     const BostonMapAPI = () => {
         return (
           <Map defaultCenter={[mapData[0].latitude, mapData[0].longitude]} defaultZoom={13} center={[currLocation.latitude,currLocation.longitude]}>
             {mapData.map( (v) => {
-                return <Marker width={30} anchor={[v.latitude, v.longitude]} />
+                return <Marker key={uniqid()} width={30} anchor={[v.latitude, v.longitude]} />
             })}
           </Map>
         )
@@ -101,6 +103,7 @@ const NeighborhoodCard = () => {
                             </div>
                             </ListSubheader>}>
                                 {mapData.map( (v) => { return <ListItemButton 
+                                key={uniqid()}
                                 onClick={() => {SetCurrLocation(v)}}
                                 selected={currLocation.name === v.name ? true:false}>
                                     <ListItemText primary={`${v.name}`} />
