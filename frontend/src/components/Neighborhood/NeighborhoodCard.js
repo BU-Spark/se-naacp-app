@@ -80,11 +80,13 @@ const NeighborhoodCard = () => {
         console.log("Is dates Empty? ", DateMethods.isEmpty(dates));
         console.log("Is from date Empty? ", DateMethods.fromEmpty(dates));
         console.log("Is to date Empty? ", DateMethods.toEmpty(dates));
+
+        console.log(DateMethods.dateValidation(dates[0], dates[1]));
     },[dates])
     
     return (
     <>
-        <Card className="body" sx={{ maxWidth: 800, maxHeight: 450}}>
+        <Card className="body" sx={{ maxWidth: 800, maxHeight: 450, width: "48vw", height: "61.5vh"}}>
             <CardContent>
                     <h3 className="card">Neighborhoods Covered Most</h3>
                     <div style={{display: "flex", flexDirection: "row"}}>
