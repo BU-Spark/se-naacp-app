@@ -1,8 +1,6 @@
 // install (please make sure versions match peerDependencies)
 // yarn add @nivo/core @nivo/bar
 import { ResponsiveBar } from '@nivo/bar'
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 
 //import './NeighborhoodDemoBoard.css'
 
@@ -11,7 +9,7 @@ import CardContent from '@mui/material/CardContent';
 // no chart will be rendered.
 // website examples showcase many properties,
 // you'll often use just a few of them.
-export const NeighborhoodDemoBoard = ({ data /* see data tab */ }) => (
+export const NeighborhoodDemoBoard = ({ data }) => (
     <>
     {/* <Card className="body" sx={{ maxWidth: 800, minHeight:400}}>
          <CardContent> */}

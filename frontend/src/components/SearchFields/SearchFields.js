@@ -11,7 +11,7 @@ function SearchFields(){
     return (
       <div style={{display: "flex", flexDirection: "row", overflowX: "auto"}}>
           <SearchBarDropdown word="Sub-Neighborhoods"></SearchBarDropdown>
-          <SearchBar word="Sub-Neighborhood" placeholder="Search"></SearchBar>
+          {/* <SearchBar word="Sub-Neighborhood" placeholder="Search"></SearchBar> */}
           <SearchBar word="Topics" placeholder="Search"></SearchBar>
           <DateBar word="From" from_bool={true}></DateBar>
           <DateBar word="To" from_bool={false}></DateBar>

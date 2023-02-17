@@ -86,7 +86,7 @@ const NeighborhoodCard = () => {
     
     return (
     <>
-        <Card className="body" sx={{ maxWidth: 800, maxHeight: 450, width: "48vw", height: "61.5vh"}}>
+        <Card className="body" sx={{ maxWidth: 800, width: "48vw", height: "61.5vh"}}>
             <CardContent>
                     <h3 className="card">Neighborhoods Covered Most</h3>
                     <div style={{display: "flex", flexDirection: "row"}}>

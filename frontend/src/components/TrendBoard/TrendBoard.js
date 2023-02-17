@@ -3,10 +3,6 @@ import React from 'react';
 // CSS
 import "./TrendBoard.css";
 
-// MUI UI
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-
 // Nivo Graphs
 import { ResponsiveLine } from '@nivo/line'
 
@@ -286,7 +282,8 @@ export const TrendBoard = () => {
       ];
 
     const MyResponsiveLine = (data) => {
-        return(<ResponsiveLine
+        return(
+        <ResponsiveLine
             data={data}
             margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
             xScale={{ type: 'point' }}
@@ -355,7 +352,7 @@ export const TrendBoard = () => {
 
     return(
     <>
-        {MyResponsiveLine(data)}
+      { MyResponsiveLine(data) }
     </>
 )};
 
