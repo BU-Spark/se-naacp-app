@@ -14,12 +14,14 @@ import ListItemText from '@mui/material/ListItemText';
 
 // React Contexts/Context Methods
 import { DateContext, DateMethods } from '../../contexts/dateContext.js';
+import { StateContext, StateMethods } from '../../contexts/stateContext.js';
 
 // Uniqid for unique keys
 import uniqid from 'uniqid';
   
 const NeighborhoodCard = () => {
-    const {dates} = React.useContext(DateContext);  // Global Context of dates
+    const { dates } = React.useContext(DateContext);  // Global Context of dates
+    const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
 
     // Map Data
     const mapData = [
@@ -76,13 +78,13 @@ const NeighborhoodCard = () => {
     };
 
     React.useEffect(() => {
-        console.log("The Dates: ", dates);
-        console.log("Is dates Empty? ", DateMethods.isEmpty(dates));
-        console.log("Is from date Empty? ", DateMethods.fromEmpty(dates));
-        console.log("Is to date Empty? ", DateMethods.toEmpty(dates));
+        // console.log("The Dates: ", dates);
+        // console.log("Is dates Empty? ", DateMethods.isEmpty(dates));
+        // console.log("Is from date Empty? ", DateMethods.fromEmpty(dates));
+        // console.log("Is to date Empty? ", DateMethods.toEmpty(dates));
 
-        console.log(DateMethods.dateValidation(dates[0], dates[1]));
-    },[dates])
+        // console.log(DateMethods.dateValidation(dates[0], dates[1]));
+    },[dates, currentState])
     
     return (
     <>

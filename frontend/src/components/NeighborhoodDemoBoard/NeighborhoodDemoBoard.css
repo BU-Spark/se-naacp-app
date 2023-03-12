@@ -1,15 +1,11 @@
-.demo-board-card {
-    max-width: 100%;
-    max-height: fit-content;
-    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-    border-radius: 2px;
+.empty-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 }
-
-.card-title {
+.empty-text {
+    margin-top: 20px;
     font-weight: bold;
-    font-size: larger;
-    padding-left: 1rem;
-    margin-top: 1rem;
-    margin-bottom: none;
-    padding-bottom: none;
 }

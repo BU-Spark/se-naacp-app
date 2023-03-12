@@ -1,3 +1,4 @@
+import React from "react";
 import Button from '@mui/material/Button';
 
 // Class Component
@@ -5,8 +6,16 @@ import SearchBarDropdown from './SearchBarDropdown';
 import SearchBar from './SearchBar';
 import DateBar from './DateBar';
 
+// React Contexts/Context Methods
+import { StateContext, StateMethods } from '../../contexts/stateContext.js';
+
 
 function SearchFields(){
+  const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
+
+  React.useEffect(() => {
+
+  },[currentState]);
 
     return (
       <div style={{display: "flex", flexDirection: "row", overflowX: "auto"}}>
@@ -16,7 +25,10 @@ function SearchFields(){
           <DateBar word="From" from_bool={true}></DateBar>
           <DateBar word="To" from_bool={false}></DateBar>
           <div style={{display: "flex", justifyContent:"center", alignItems: "center", height: "90px", width: "170px"}}>
-            <Button onClick={() => console.log("Downloading Data...")} variant="contained" sx={{textTransform: "none"}} style={{height: "35px", width: "135px", marginTop: 21, marginLeft: 5, fontWeight: 500, fontSize: 14, backgroundColor: "rgb(93, 63, 211)"}}>Download Data</Button>
+            <Button onClick={() => {
+              console.log("Downloading Data...")
+              setState({Test: "Hello"})
+          }} variant="contained" sx={{textTransform: "none"}} style={{height: "35px", width: "135px", marginTop: 21, marginLeft: 5, fontWeight: 500, fontSize: 14, backgroundColor: "rgb(93, 63, 211)"}}>Download Data</Button>
           </div>
         </div>
     );

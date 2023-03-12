@@ -8,15 +8,19 @@ import MainNavigator from './routes/MainNavigator'
 
 // Universal Contexts
 import { DateContext } from './contexts/dateContext'
+import { StateContext } from './contexts/stateContext'
 
 function App() {
   const [dates, setDates] = React.useState([null,null]);
+  const [currentState, setState] = React.useState({});
 
   return (
     <>
-      <DateContext.Provider value={{dates, setDates}}>
-        <MainNavigator />
-      </DateContext.Provider>
+      <StateContext.Provider value={{currentState, setState}}>
+        <DateContext.Provider value={{dates, setDates}}>
+          <MainNavigator />
+        </DateContext.Provider>
+      </StateContext.Provider>
     </>
   );
 }

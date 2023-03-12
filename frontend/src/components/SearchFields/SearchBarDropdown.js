@@ -9,20 +9,24 @@ import Select from '@mui/material/Select';
 // Uniqid for unique keys
 import uniqid from 'uniqid';
 
+// React Contexts/Context Methods
+import { StateContext, StateMethods } from '../../contexts/stateContext.js';
+
+// A Constant...
+const neighListPlaceholder = ['None'];
+
 export default function SearchBarDropdown({word}) {
 
-    const neighList = [
-    'brighton', 'allston', 'fenway', 
-    'longwood medical area', 'back bay', 
-    'beacon hill', 'west end', 'north end', 
-    'downtown', 'charlestown', 'east boston', 
-    'south boston', 'south boston waterfront', 
-    'south end', 'roxbury', 'mission hill', 
-    'jamaica plain', 'dorchester', 'mattapan', 
-    'roslindale', 'west roxbury', 'hyde park', 
-    'harbor islands'];
-
+    const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
     const [subneighbor, setSubNeighborhood] = React.useState('');
+    const [neighborhoodList, setSubNeighborhoodList] = React.useState(neighListPlaceholder);
+
+    React.useEffect(() => {
+      console.log("Universal State: ", currentState);
+      if (currentState.v != undefined) {         // Quick and Dirty
+        setSubNeighborhoodList(currentState.v);
+      }
+    },[currentState]);
 
     const handleChange = (event) => {
         setSubNeighborhood(event.target.value);
@@ -42,7 +46,7 @@ export default function SearchBarDropdown({word}) {
                 <MenuItem value="">
                     <em>Boston City</em>
                 </MenuItem>
-                {neighList.map( (v) => {
+                {neighborhoodList.map( (v) => {
                     return (
                         <MenuItem key={uniqid()} value={v}>{v}</MenuItem>
                     );

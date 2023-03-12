@@ -3,24 +3,58 @@ import React from "react";
 import SearchFields from '../components/SearchFields/SearchFields.js'
 import ArticlesCard from '../components/ArticleCard/ArticleCard';
 import NeighborhoodCard from '../components/Neighborhood/NeighborhoodCard';
-import { TopNavBar } from '../components/TopNavBar/TopNavBar';
-import { NeighborhoodDemoBoard } from '../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
-import { TrendBoard } from '../components/TrendBoard/TrendBoard';
-import Read from '../components/DataRetrieve/data';
-import Logo from "../logo.svg";
 
-import info from '../components/NeighborhoodDemoBoard/data.json'
+import { TopNavBar } from '../components/TopNavBar/TopNavBar';
+import  NeighborhoodDemoBoard from '../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
+import { TrendBoard } from '../components/TrendBoard/TrendBoard';
+
+import Logo from "../logo.svg"; // GBH Logo
 
 // CSS
 import './Home.css'
 
+// React Contexts/Context Methods
+import { DateContext, DateMethods } from "../contexts/dateContext";
+import { StateContext, stateMethods } from '../contexts/stateContext.js';
+
+// Data Methods 
+import DataMethods from '../Pipelines/data';
+
 export default function Home() {
+    const { dates } = React.useContext(DateContext);  // Global Context of Dates
+    const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
+
+    const fetchNeighborhoodAndDateData = async(currentState) => {
+        let newState = currentState;
+        const data = await DataMethods.getNeighborhoodAndDateData(dates[0], dates[1], 'roxbury');
+        console.log("The Data recieved at Home.jsx", data);
+        // If the data is not the same
+        if (!stateMethods.equalStateLabel(currentState, "CensusTract", data)) {
+            newState = stateMethods.modify(currentState, "CensusTract", data);
+        }
+
+        return newState;
+    }
+
+    // To Test Dates, use data from: 12/20/2018 up to: 01/20/2019 in roxbury
+    React.useEffect( () => {
+        console.log("This is the current universal state BEFORE:", currentState);
+        // Invoke Date data fetching when date has been changed
+        if (!DateMethods.fromEmpty(dates) && !DateMethods.toEmpty(dates) && DateMethods.dateValidation(dates[0], dates[1])) {
+            console.log("Valid Dates!");
+            let newState = fetchNeighborhoodAndDateData(currentState, setState);
+            Promise.resolve(newState).then( (res) => {
+                setState(res);
+            })
+            console.log("This is the current universal state AFTER:", currentState);
+        }
+    },[dates]);
 
     return (
         <>
             <div className="home_container">
                 <TopNavBar></TopNavBar>
-                <Read></Read>
+                {/* <Read></Read> */}
                 {/* Filter Options */}
                 <div className='search_container'>
                     <img style={{marginLeft: 10, marginTop: 10, marginRight: 10, width: 150}} src={Logo} alt={"Logo"}></img>
@@ -35,7 +69,7 @@ export default function Home() {
                         <NeighborhoodCard></NeighborhoodCard>
                         <br></br>
                         <div className="graph_card">
-                            <NeighborhoodDemoBoard data={info}></NeighborhoodDemoBoard>
+                            <NeighborhoodDemoBoard></NeighborhoodDemoBoard>
                         </div>
                         
                     </div>

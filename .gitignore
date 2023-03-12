@@ -169,3 +169,6 @@ $RECYCLE.BIN/
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
 frontend/src/firebase/config.js
+frontend/src/firebase/naacp_key.json
+cloud_functions/functions/scripts/JSON_data/testnaacpdata.json
+cloud_functions/functions/scripts/JSON_data/naacpdata.json
