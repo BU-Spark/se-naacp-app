@@ -23,9 +23,9 @@ const db = getFirestore();
 // firebase emulators:start
 
 // Population Script
-populate_first_order_data(db, MASTER_DATA, 'articles_meta', 'articles');
+(db, MASTER_DATA, 'articles_meta', 'articles');
 populate_first_order_data(db, MASTER_DATA, 'dates_meta', 'dates_filter');
-populate_first_order_data(db, MASTER_DATA, 'subneighborhood_meta', 'neighs_filter');
+populate_first_order_data(db, MASTER_DATA, 'subneigpopulate_first_order_datahborhood_meta', 'neighs_filter');
 // populate_first_order_data(db, MASTER_DATA, 'topics_meta', 'topics_filter');  // Errors in writing this...
 populate_first_order_data(db, MASTER_DATA, 'tracts_meta', 'tracts_filter');
 
@@ -124,7 +124,7 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
     // Parse and Pack data payload
     let packing = Promise.allSettled(ArrayOfCensusData).then((r) => {
       // index 0 - k, where follows the order: p2_001n, p2_002n, ... ,p2_001kn
-      let demoArr = new Array(r.length).fill(0); 
+      let demoArr = new Array(10).fill(0); 
       let countyInfo = [];
 
       r.forEach( (demographic) => {

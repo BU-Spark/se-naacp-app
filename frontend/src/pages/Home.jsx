@@ -23,6 +23,7 @@ import DataMethods from '../Pipelines/data';
 export default function Home() {
     const { dates } = React.useContext(DateContext);  // Global Context of Dates
     const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
+    
 
     const fetchNeighborhoodAndDateData = async(currentState) => {
         let newState = currentState;
@@ -42,7 +43,7 @@ export default function Home() {
         // Invoke Date data fetching when date has been changed
         if (!DateMethods.fromEmpty(dates) && !DateMethods.toEmpty(dates) && DateMethods.dateValidation(dates[0], dates[1])) {
             console.log("Valid Dates!");
-            let newState = fetchNeighborhoodAndDateData(currentState, setState);
+            let newState = fetchNeighborhoodAndDateData(currentState);
             Promise.resolve(newState).then( (res) => {
                 setState(res);
             })
