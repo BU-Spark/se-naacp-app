@@ -25,8 +25,10 @@ export default function MainNavigator() {
     React.useEffect(() => {
         MasterPipeline.getInitData().then( (v) => {
             console.log("After data fetching, pushing to universal state:", v);
-            setState({v});
-        })
+            setState({Subneighborhoods: v[0], Topics: v[1]});
+
+            console.log("The Universal State after Init Pipeline:", currentState);
+        });
     }, []);
 
     return(

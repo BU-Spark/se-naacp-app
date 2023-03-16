@@ -10,10 +10,9 @@
     font-size: larger;
     padding-left: 1rem;
     margin-top: 1rem;
-    margin-bottom: none;
+    margin-bottom: -20px;
     padding-bottom: none;
 }
-
 /* .body {
     font-family: -apple-system, system-ui;
 }
