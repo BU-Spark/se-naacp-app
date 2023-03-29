@@ -33,8 +33,8 @@ populate_first_order_data(db, MASTER_DATA, 'tracts_meta', 'tracts_filter');
 exports.getSubNeighborhoods = functions.https.onRequest(async (request, response) => {
     sn_list = [];
 
-    const subneighborhoodRef = db.collection('subneighborhood_meta');
-    const sn_response = await subneighborhoodRef.get();
+    const neighborhoodRef = db.collection('subneighborhood_meta');
+    const sn_response = await neighborhoodRef.get();
     sn_response.forEach( (doc) => {
       sn_list.push(doc.id);
     });
@@ -89,12 +89,14 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
   const SetOfArticleDataNeigh = new Set();
 
   const ArrayOfCensusData = [];
+  const ArrayOfCensusTracts = [];
   // [0] Arts, [1] Education, [2] News, [3] Opinion
   const ArrayOfTopicsData = new Array(Object.keys(MASTER_DATA.topics_filter).length).fill(0); 
 
   const data = {
     censusData: "None", 
-    topicsData: "None"
+    topicsData: "None",
+    censusTracts: "None"
   };
 
   const queryResult = await datesRef
@@ -130,6 +132,9 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
 
     // Find relevant data with each article
     ArrayIntersectArticles.forEach( (article) => {
+
+        // THIS NEEDS TO BE REFACTORED
+        // Demographic Data for all the tracts
         let tract_data = tractRef.where('articles', 'array-contains', article).get().then( (res_tract) => {
           if (res_tract.empty) {
             console.log("[exports.getDateAndNeighborhood] No matching articles in census data.");
@@ -137,7 +142,19 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
           }
 
           let data_tract = res_tract.docs[0].data();
+          console.log("Tract Data:", data_tract.county_name);
           return ({county: `${data_tract.county_name}`,demographics: data_tract.demographics});
+        }); 
+
+        // Get the tracts themselves
+        let raw_tract_data = tractRef.where('articles', 'array-contains', article).get().then( (res_tract) => {
+          if (res_tract.empty) {
+            console.log("[exports.getDateAndNeighborhood] No matching articles in census data.");
+            return;
+          }
+
+          let data_tract = res_tract.docs[0].data();
+          return ({id: `${res_tract.docs[0].id}`,county: `${data_tract.county_name}`,demographics: data_tract.demographics});
         }); 
 
         let topics_data = topicsRef.where('articles', 'array-contains', article).get().then( (res_topics) => {
@@ -146,7 +163,7 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
             return;
           }
 
-          console.log("Looking at topics article:", article);
+          // console.log("Looking at topics article:", article);
           let data_topics_id = res_topics.docs[0].id;
           if (data_topics_id === 'arts'){
             ArrayOfTopicsData[0] = ArrayOfTopicsData[0] + 1;
@@ -160,9 +177,11 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
           return ArrayOfTopicsData;
         });
         ArrayOfCensusData.push(tract_data);
+        ArrayOfCensusTracts.push(raw_tract_data);
     });    
 
     // Parse and Pack data payload (Census Data)
+    // First Round of packing (Census Data & Topics Counter)
     let packing = Promise.allSettled(ArrayOfCensusData).then((r) => {
       // index 0 - k, where follows the order: p2_001n, p2_002n, ... ,p2_001kn
       let demoArr = new Array(10).fill(0); 
@@ -190,8 +209,6 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
         demoArr[i] = demoArr[i] / demoArr.length;
       }
 
-      // console.log("The Demographic Mean Array:", demoArr);
-      // console.log("The Demographic County Array:", countyInfo);
       data.topicsData = ArrayOfTopicsData;
       
       data.censusData = {
@@ -211,16 +228,26 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
       return data;
     });
 
+    // Second Round of packing (Census Tracts specific to the parameters)
+    packing = Promise.allSettled(ArrayOfCensusData).then((r) => {
+      let tractList = [];
+      r.forEach((census) => {
+        tractList.push(census.value);
+      });
+      data.censusTracts = tractList;
+      return data;
+    });
+
     return packing;
   });
 
   console.log("The Resultant data:", data);
 
-  if (data.censusData != 'None' || data.topicsData != 'None') {
+  if (data.censusData != 'None' || data.topicsData != 'None' || data.censusTracts != 'None') {
     response.set('Access-Control-Allow-Origin', '*');
     response.send(JSON.stringify(data));
     response.end();
-  } else if (data.censusData == 'None' && data.topicsData == 'None') {
+  } else if (data.censusData == 'None' && data.topicsData == 'None' && data.censusTracts == 'None') {
     response.set('Access-Control-Allow-Origin', '*');
     response.send(JSON.stringify(data));
     response.end();

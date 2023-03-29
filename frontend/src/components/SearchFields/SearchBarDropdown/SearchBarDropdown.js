@@ -1,5 +1,5 @@
 import React from "react";
-import "./SearchBar.css";
+import "./SearchBarDropdown.css";
 
 // MUI UI
 import FormControl from '@mui/material/FormControl';
@@ -10,8 +10,8 @@ import Select from '@mui/material/Select';
 import uniqid from 'uniqid';
 
 // React Contexts/Context Methods
-import { StateContext, stateMethods } from '../../contexts/stateContext.js';
-import { NeighborhoodContext } from '../../contexts/neighborhoodContext.js';
+import { StateContext, stateMethods } from '../../../contexts/stateContext.js';
+import { NeighborhoodContext } from '../../../contexts/neighborhoodContext.js';
 
 // A Constant...
 const neighListPlaceholder = ['None'];

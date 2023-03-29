@@ -1,6 +1,7 @@
 import React from "react";
 
-import { ResponsiveBar } from '@nivo/bar'
+// import { ResponsiveBar } from '@nivo/bar'
+import { ResponsivePie } from '@nivo/pie'
 import Lottie from 'react-lottie-player'
 
 import './NeighborhoodDemoBoard.css'
@@ -24,29 +25,6 @@ const colors = [
 "hsl(78, 70%, 50%)", 
 "hsl(39, 70%, 50%)", 
 ];
-
-const data = [
-    {
-      "race": "white",
-      "white": 21,
-      "whiteColor": "hsl(281, 70%, 50%)"
-    },
-    {
-      "race": "black",
-      "black": 172,
-      "blackColor": "hsl(55, 70%, 50%)"
-    },
-    {
-      "race": "asian",
-      "asian": 128,
-      "asianColor": "hsl(147, 70%, 50%)"
-    },
-    {
-      "race": "hispanic",
-      "hispanic": 126,
-      "hispanicColor": "hsl(9, 70%, 50%)"
-    }
-  ];
 
 export default function NeighborhoodDemoBoard() {
     const [demographicData, setDemogaphicData] = React.useState([]);
@@ -77,12 +55,13 @@ export default function NeighborhoodDemoBoard() {
                     }
 
                     for (let i = 0; i < demoKeys.length; i++) {
-                        let histogram = {
-                            "population": `${demoKeys[i]}`,
+                        let piechart = {
+                            "id": `${demoKeys[i]}`,
+                            "label": `${demoKeys[i]}`,
                             "color": colors[i]
                         }
-                        histogram[`${demoKeys[i]}`] = demoCounts[i];
-                        demoData.push(histogram); 
+                        piechart["value"] = demoCounts[i];
+                        demoData.push(piechart); 
                     }
 
                     setDemographicKeys(demoKeys);
@@ -101,7 +80,7 @@ export default function NeighborhoodDemoBoard() {
 
     return(
         <>
-            <h3 className="card_title">Demographic Data</h3>
+            <h3 className="card_title">Overall Demographic Data</h3>
             {demographicData.length === 0 || demographicKeys.length === 0 ? 
                 <React.Fragment>
                     <div className="empty-container">
@@ -110,72 +89,132 @@ export default function NeighborhoodDemoBoard() {
                     </div>
                 </React.Fragment>
             :
-                <ResponsiveBar
-                    id="DemographicChart"
+                <ResponsivePie
                     data={demographicData}
-                    keys={demographicKeys}
-                    indexBy="population"
                     margin={{ top: 20, right: 130, bottom: 50, left: 60 }}
-                    padding={0.3}
-                    valueScale={{ type: 'linear' }}
-                    indexScale={{ type: 'band', round: true }}
-                    colors={{ scheme: 'nivo' }}
-                    axisTop={null}
-                    axisRight={null}
-                    axisBottom={{
-                        tickSize: 5,
-                        tickPadding: 5,
-                        tickRotation: 0,
-                        legend: 'Race',
-                        legendPosition: 'middle',
-                        legendOffset: 32
-                    }}
-                    axisLeft={{
-                        tickSize: 5,
-                        tickPadding: 5,
-                        tickRotation: 0,
-                        legend: 'Population',
-                        legendPosition: 'middle',
-                        legendOffset: -40
-                    }}
-                    labelSkipWidth={12}
-                    labelSkipHeight={12}
-                    labelTextColor={{
+                    innerRadius={0.5}
+                    padAngle={0.7}
+                    cornerRadius={3}
+                    activeOuterRadiusOffset={8}
+                    borderWidth={1}
+                    borderColor={{
                         from: 'color',
                         modifiers: [
                             [
                                 'darker',
-                                1.6
+                                0.2
                             ]
                         ]
                     }}
+                    arcLinkLabelsSkipAngle={10}
+                    arcLinkLabelsTextColor="#333333"
+                    arcLinkLabelsThickness={2}
+                    arcLinkLabelsColor={{ from: 'color' }}
+                    arcLabelsSkipAngle={10}
+                    arcLabelsTextColor={{
+                        from: 'color',
+                        modifiers: [
+                            [
+                                'darker',
+                                2
+                            ]
+                        ]
+                    }}
+                    defs={[
+                        {
+                            id: 'dots',
+                            type: 'patternDots',
+                            background: 'inherit',
+                            color: 'rgba(255, 255, 255, 0.3)',
+                            size: 4,
+                            padding: 1,
+                            stagger: true
+                        },
+                        {
+                            id: 'lines',
+                            type: 'patternLines',
+                            background: 'inherit',
+                            color: 'rgba(255, 255, 255, 0.3)',
+                            rotation: -45,
+                            lineWidth: 6,
+                            spacing: 10
+                        }
+                    ]}
+                    // fill={[
+                    //     {
+                    //         match: {
+                    //             id: "Total_Population"
+                    //         },
+                    //         id: 'dots'
+                    //     },
+                    //     {
+                    //         match: {
+                    //             id: 'c'
+                    //         },
+                    //         id: 'dots'
+                    //     },
+                    //     {
+                    //         match: {
+                    //             id: 'go'
+                    //         },
+                    //         id: 'dots'
+                    //     },
+                    //     {
+                    //         match: {
+                    //             id: 'python'
+                    //         },
+                    //         id: 'dots'
+                    //     },
+                    //     {
+                    //         match: {
+                    //             id: 'scala'
+                    //         },
+                    //         id: 'lines'
+                    //     },
+                    //     {
+                    //         match: {
+                    //             id: 'lisp'
+                    //         },
+                    //         id: 'lines'
+                    //     },
+                    //     {
+                    //         match: {
+                    //             id: 'elixir'
+                    //         },
+                    //         id: 'lines'
+                    //     },
+                    //     {
+                    //         match: {
+                    //             id: 'javascript'
+                    //         },
+                    //         id: 'lines'
+                    //     }
+                    // ]}
                     legends={[
                         {
-                            dataFrom: 'keys',
-                            anchor: 'bottom-right',
+                            anchor: 'left',
                             direction: 'column',
                             justify: false,
-                            translateX: 120,
+                            translateX: 360,
                             translateY: 0,
-                            itemsSpacing: 2,
+                            itemsSpacing: 0,
                             itemWidth: 100,
-                            itemHeight: 20,
+                            itemHeight: 15,
+                            itemTextColor: '#999',
                             itemDirection: 'left-to-right',
-                            itemOpacity: 0.85,
-                            symbolSize: 20,
+                            itemOpacity: 1,
+                            symbolSize: 10,
+                            symbolShape: 'circle',
                             effects: [
                                 {
                                     on: 'hover',
                                     style: {
-                                        itemOpacity: 1
+                                        itemTextColor: '#000'
                                     }
                                 }
                             ]
                         }
                     ]}
-                    role="application"
-                    ariaLabel="Demographics based on Census data"
-                    barAriaLabel={function(e){return e.id+": "+e.formattedValue+" in country: "+e.indexValue}}
                 />
                 }
         </>
@@ -192,3 +231,71 @@ export default function NeighborhoodDemoBoard() {
 // no chart will be rendered.
 // website examples showcase many properties,
 // you'll often use just a few of them.
+
+// <ResponsiveBar
+//     id="DemographicChart"
+//     data={demographicData}
+//     keys={demographicKeys}
+//     indexBy="population"
+//     margin={{ top: 20, right: 130, bottom: 50, left: 60 }}
+//     padding={0.3}
+//     valueScale={{ type: 'linear' }}
+//     indexScale={{ type: 'band', round: true }}
+//     colors={{ scheme: 'nivo' }}
+//     axisTop={null}
+//     axisRight={null}
+//     axisBottom={{
+//         tickSize: 5,
+//         tickPadding: 5,
+//         tickRotation: 0,
+//         legend: 'Race',
+//         legendPosition: 'middle',
+//         legendOffset: 32
+//     }}
+//     axisLeft={{
+//         tickSize: 5,
+//         tickPadding: 5,
+//         tickRotation: 0,
+//         legend: 'Population',
+//         legendPosition: 'middle',
+//         legendOffset: -40
+//     }}
+//     labelSkipWidth={12}
+//     labelSkipHeight={12}
+//     labelTextColor={{
+//         from: 'color',
+//         modifiers: [
+//             [
+//                 'darker',
+//                 1.6
+//             ]
+//         ]
+//     }}
+//     legends={[
+//         {
+//             dataFrom: 'keys',
+//             anchor: 'bottom-right',
+//             direction: 'column',
+//             justify: false,
+//             translateX: 120,
+//             translateY: 0,
+//             itemsSpacing: 2,
+//             itemWidth: 100,
+//             itemHeight: 20,
+//             itemDirection: 'left-to-right',
+//             itemOpacity: 0.85,
+//             symbolSize: 20,
+//             effects: [
+//                 {
+//                     on: 'hover',
+//                     style: {
+//                         itemOpacity: 1
+//                     }
+//                 }
+//             ]
+//         }
+//     ]}
+//     role="application"
+//     ariaLabel="Demographics based on Census data"
+//     barAriaLabel={function(e){return e.id+": "+e.formattedValue+" in country: "+e.indexValue}}
+// />

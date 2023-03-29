@@ -1,10 +1,11 @@
 import React from "react";
 
-import SearchFields from '../components/SearchFields/SearchFields.js'
+import SearchFields from '../components/SearchFields/SearchFields'
 import ArticlesCard from '../components/ArticleCard/ArticleCard';
 import NeighborhoodCard from '../components/Neighborhood/NeighborhoodCard';
 
 import { TopNavBar } from '../components/TopNavBar/TopNavBar';
+import NeighborhoodCensus from "../components/NeighborhoodCensus/NeighborhoodCensus";
 import  NeighborhoodDemoBoard from '../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
 import { TrendBoard } from '../components/TrendBoard/TrendBoard';
 
@@ -72,7 +73,7 @@ export default function Home() {
         <>
             <div className="home_container">
                 <TopNavBar></TopNavBar>
-                {/* <Read></Read> */}
+
                 {/* Filter Options */}
                 <div className='search_container'>
                     <img style={{marginLeft: 10, marginTop: 10, marginRight: 10, width: 150}} src={Logo} alt={"Logo"}></img>
@@ -83,20 +84,31 @@ export default function Home() {
 
                 {/* Card UI View */}
                 <div className='master_content_container'>
-                    <div className='row_left'>
-                        <NeighborhoodCard></NeighborhoodCard>
-                        <br></br>
-                        <div className="graph_card-temp">
+
+                    {/* 1st Data Cards */}
+                    <div className="data-cards">
+                        <div className="graph_card">
                             <NeighborhoodDemoBoard></NeighborhoodDemoBoard>
                         </div>
-                        
-                    </div>
-
-                    <div className='row_right'>
                         <div className="graph_card">
                             <TrendBoard></TrendBoard>
                         </div>
-                        <br></br>
+                    </div>
+
+                    {/* 2nd Data Cards */}
+                    {/* <div className="data-cards">
+                        <div className="graph_card">
+                            <NeighborhoodCensus></NeighborhoodCensus>
+                        </div>
+                    </div> */}
+
+                    {/* Map Card */}
+                    <div className="neighborhood-container">
+                        <NeighborhoodCard></NeighborhoodCard>
+                    </div>
+
+                     {/* Article Card */}
+                    <div className="article-container">
                         <ArticlesCard style={{marginLeft: 20}} topic="Technology"></ArticlesCard>
                     </div>
                 </div>

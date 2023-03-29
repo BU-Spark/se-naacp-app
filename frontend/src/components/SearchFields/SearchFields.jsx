@@ -2,9 +2,10 @@ import React from "react";
 import Button from '@mui/material/Button';
 
 // Class Component
-import SearchBarDropdown from './SearchBarDropdown';
+import SearchBarDropdown from './SearchBarDropdown/SearchBarDropdown';
 import Warning from "./Warning";
-import DateBar from './DateBar';
+import DateBar from './DateBar/DateBar';
+import CensusDropdown from "./CensusDropdown/CensusDropdown";
 
 // React Contexts/Context Methods
 import { StateContext, stateMethods } from '../../contexts/stateContext.js';
@@ -36,9 +37,8 @@ function SearchFields(){
 
     return (
       <div style={{display: "flex", flexDirection: "row", overflowX: "auto"}}>
-          <SearchBarDropdown word="Sub-Neighborhoods"></SearchBarDropdown>
-          {/* <SearchBar word="Sub-Neighborhood" placeholder="Search"></SearchBar> */}
-          {/* <SearchBar word="Topics" placeholder="Search"></SearchBar> */}
+          <SearchBarDropdown word="Neighborhoods"></SearchBarDropdown>
+          {/* <CensusDropdown word="Census Tract"></CensusDropdown> */}
           {WarningBtn(warn)}
           <DateBar word="From" from_bool={true}></DateBar>
           <DateBar word="To" from_bool={false}></DateBar>

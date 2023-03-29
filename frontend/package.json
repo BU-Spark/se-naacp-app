@@ -12,6 +12,7 @@
     "@nivo/bar": "^0.80.0",
     "@nivo/core": "^0.80.0",
     "@nivo/line": "^0.80.0",
+    "@nivo/pie": "^0.80.0",
     "@patternfly/react-charts": "^6.92.0",
     "@patternfly/react-core": "^4.239.0",
     "@testing-library/jest-dom": "^5.16.5",

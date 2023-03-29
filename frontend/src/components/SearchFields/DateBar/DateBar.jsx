@@ -1,7 +1,7 @@
 import React from "react";
 
 // CSS
-import "./SearchBar.css";
+import "./DateBar.css";
 
 // MUI Material
 import TextField from '@mui/material/TextField';
@@ -13,7 +13,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 // React Contexts
-import { DateContext } from '../../contexts/dateContext.js';
+import { DateContext } from '../../../contexts/dateContext.js';
 
 // Quick note: from_bool just lets the component know if this is a from date or to date
 // The context date format is two objects (dayjs Objects) stored in a array --> ["",""], [0] = From [1] = To

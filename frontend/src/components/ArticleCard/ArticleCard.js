@@ -27,7 +27,7 @@ const rows = [
 
 export default function ArticleCard() {
   return (
-    <Card className="body" sx={{ maxWidth: 800, minHeight:400}}>
+    <Card className="body" sx={{ width: "100%", height: "61.5vh" }}>
     <CardContent>
         <h3 className="card">Articles on Topic</h3>
         <Table sx={{ minWidth: 650 }} size="medium" aria-label="a dense table">

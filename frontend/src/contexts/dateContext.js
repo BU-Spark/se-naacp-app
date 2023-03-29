@@ -18,7 +18,7 @@ const toEmpty = (d) => {
 const dateValidation = (from, to) => {
     if (fromEmpty(from) || toEmpty(to)) {
         return false;
-    } else if ( (dayjs(from).add(1, 'month').add(1, 'day')).isAfter(to) ) {
+    } else if ( (dayjs(from).add(5, 'year').add(1, 'day')).isAfter(to) ) {
         return true
     } else {
         return false;
