@@ -12,7 +12,7 @@ const APIKey = require('./config.js');
 const a = new APIKey();
 
 // JSON DATA
-const MASTER_DATA = require('./scripts/JSON_data/new_naacp.json');
+const MASTER_DATA = require('./scripts/JSON_data/NAACP_Updated.json');
 
 // Init firestore
 initializeApp();
@@ -29,7 +29,7 @@ populate_first_order_data(db, MASTER_DATA, 'subneighborhood_meta', 'neighs_filte
 populate_first_order_data(db, MASTER_DATA, 'topics_meta', 'topics_filter');
 populate_first_order_data(db, MASTER_DATA, 'tracts_meta', 'tracts_filter');
 
-// Subneighborhood Master List Query Endpoint
+// Neighborhood Master List Query Endpoint
 exports.getSubNeighborhoods = functions.https.onRequest(async (request, response) => {
     sn_list = [];
 
@@ -37,6 +37,7 @@ exports.getSubNeighborhoods = functions.https.onRequest(async (request, response
     const sn_response = await neighborhoodRef.get();
     sn_response.forEach( (doc) => {
       sn_list.push(doc.id);
+      console.log("The Neighborhood data:", doc.data());
     });
 
     if (sn_list.length != 0) {
@@ -50,7 +51,7 @@ exports.getSubNeighborhoods = functions.https.onRequest(async (request, response
     }
 });
 
-// Topics Master List Query Endpoint
+// Gets all possible topics to construct a topics master list
 exports.getTopicList = functions.https.onRequest(async (request, response) => {
   topics_list = [];
 
@@ -96,7 +97,8 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
   const data = {
     censusData: "None", 
     topicsData: "None",
-    censusTracts: "None"
+    censusTracts: "None",
+    articles: "None"
   };
 
   const queryResult = await datesRef
@@ -128,7 +130,7 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
     // console.log("The Articles of Dates:", SetOfArticleDataDates)
     // console.log("The Articles of Neighborhood:", SetOfArticleDataNeigh);
     let ArrayIntersectArticles = Array.from(new Set([...SetOfArticleDataDates].filter((x) => SetOfArticleDataNeigh.has(x))));
-    console.log("Intersection:", ArrayIntersectArticles);
+    // console.log("Intersection:", ArrayIntersectArticles);
 
     // Find relevant data with each article
     ArrayIntersectArticles.forEach( (article) => {
@@ -176,6 +178,7 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
           }
           return ArrayOfTopicsData;
         });
+
         ArrayOfCensusData.push(tract_data);
         ArrayOfCensusTracts.push(raw_tract_data);
     });    
@@ -210,7 +213,8 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
       }
 
       data.topicsData = ArrayOfTopicsData;
-      
+      data.articles = ArrayIntersectArticles
+
       data.censusData = {
         counties: `${countyInfo}`,
         Total_Population: `${demoArr[0]}`,

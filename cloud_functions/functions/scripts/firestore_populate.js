@@ -1,7 +1,7 @@
 const functions = require("firebase-functions");
 
 // You can delete this req, this is just for debug purposes...
-const MASTER_DATA = require('./JSON_data/new_naacp.json');
+const MASTER_DATA = require('./JSON_data/NAACP_Updated.json');
 const ARTICLE_DATA = require('./JSON_data/naacpdata.json')
 
 console.log("The Keys for MASTER_DATA:", Object.keys(MASTER_DATA));
