@@ -26,11 +26,17 @@ export default function SearchBarDropdown({word}) {
 
     React.useEffect(() => {
       if (currentState.Subneighborhoods !== undefined) {         // Quick and Dirty
-        let cleanedSubneighborhoods = stateMethods.updateModified(currentState.Subneighborhoods);
-        for (let i = 0; i < cleanedSubneighborhoods.length; i++) {
-            cleanedSubneighborhoods[i] = cleanedSubneighborhoods[i].charAt(0).toUpperCase() + cleanedSubneighborhoods[i].slice(1).replaceAll('_', ' ');
+        let cleanedNeighborhoods = stateMethods.updateModified(currentState.Subneighborhoods);
+        for (let i = 0; i < cleanedNeighborhoods.length; i++) {
+            let nameList = cleanedNeighborhoods[i].neighborhood.replaceAll('_', ' ').split(" ");
+            let name = ""
+            nameList.forEach((e) => {
+                name = name + " " + e.charAt(0).toUpperCase() + e.slice(1);
+                name = name.trim();
+            });
+            cleanedNeighborhoods[i] = name
         }
-        setSubNeighborhoodList(cleanedSubneighborhoods);
+        setSubNeighborhoodList(cleanedNeighborhoods);
       } 
 
       if (!currentState.hasOwnProperty('currentNeigh')) {

@@ -36,8 +36,7 @@ exports.getSubNeighborhoods = functions.https.onRequest(async (request, response
     const neighborhoodRef = db.collection('subneighborhood_meta');
     const sn_response = await neighborhoodRef.get();
     sn_response.forEach( (doc) => {
-      sn_list.push(doc.id);
-      console.log("The Neighborhood data:", doc.data());
+      sn_list.push({neighborhood: doc.id, tracts: doc.data().tracts});
     });
 
     if (sn_list.length != 0) {
