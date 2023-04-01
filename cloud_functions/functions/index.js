@@ -25,15 +25,25 @@ const db = getFirestore();
 // Population Script
 populate_first_order_data(db, MASTER_DATA, 'articles_meta', 'articles');
 populate_first_order_data(db, MASTER_DATA, 'dates_meta', 'dates_filter');
-populate_first_order_data(db, MASTER_DATA, 'subneighborhood_meta', 'neighs_filter');
+populate_first_order_data(db, MASTER_DATA, 'neighborhood_meta', 'neighs_filter');
 populate_first_order_data(db, MASTER_DATA, 'topics_meta', 'topics_filter');
 populate_first_order_data(db, MASTER_DATA, 'tracts_meta', 'tracts_filter');
 
-// Neighborhood Master List Query Endpoint
-exports.getSubNeighborhoods = functions.https.onRequest(async (request, response) => {
-    sn_list = [];
 
-    const neighborhoodRef = db.collection('subneighborhood_meta');
+// ==================================================================================================
+
+// (NEIGHBORHOOD AND CENSUS TRACT MASTER LIST QUERY) [Initialization Endpoint]
+// PARAMETERS:
+// ------------------------
+// None
+//
+// RETURNS:
+// ------------------------
+// --> ( A list of neighborhoods & all the associated tracts for each neighborhood )
+exports.getNeighborhoods = functions.https.onRequest(async (request, response) => {
+    let sn_list = [];
+
+    const neighborhoodRef = db.collection('neighborhood_meta');
     const sn_response = await neighborhoodRef.get();
     sn_response.forEach( (doc) => {
       sn_list.push({neighborhood: doc.id, tracts: doc.data().tracts});
@@ -45,14 +55,21 @@ exports.getSubNeighborhoods = functions.https.onRequest(async (request, response
         response.end();
     } else {
         response.set('Access-Control-Allow-Origin', '*');
-        response.send("Error 404: [exports.getSubNeighborhoods] Data Not Found!");
+        response.send("Error 404: [exports.getNeighborhoods] Data Not Found!");
         response.end();
     }
 });
 
-// Gets all possible topics to construct a topics master list
+// (TOPICS MASTER LIST QUERY) [Initialization Endpoint]
+// PARAMETERS:
+// ------------------------
+// None
+//
+// RETURNS:
+// ------------------------
+// --> ( A list of known Topics )
 exports.getTopicList = functions.https.onRequest(async (request, response) => {
-  topics_list = [];
+  let topics_list = [];
 
   const topicsRef = db.collection('topics_meta');
   const topics_response = await topicsRef.get();
@@ -72,7 +89,7 @@ exports.getTopicList = functions.https.onRequest(async (request, response) => {
 });
 
 // UNOPTIMIZED & NOT YET FAULT TOLERANT (it was quick and dirty)
-// Date Query based on Subneighborhoods and vice versa Endpoint
+// Date Query based on Neighborhoods and vice versa Endpoint
 // Query Pipeline:
 // Query Dates that Satisfies Parameters =>
 // Query Neighborhood that Satisfies Parameters =>
@@ -262,24 +279,16 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
 
 });
 
-// Place holder for Query Demographic Information from tracts (Random)
+// (SELECT BY CENSUS TRACT)
+// PARAMETERS:
+// ------------------------
+// <-- (Date)
+// <-- (Census Tract)
+// <-- (Neighborhood)
+//
+// RETURNS:
+// ------------------------
+// --> ( Specific Demographic information & topics of that census)
 exports.getCensusData = functions.https.onRequest(async (request, response) => {
-  let some_Census_data_nums = ['071201', '358100', '981800', '731700', '000302'];
-  let randomIndex = Math.floor(Math.random() * (4 - 0 + 1) + 0);
-
-  const tractsRef = db.collection('tracts_meta').doc(some_Census_data_nums[randomIndex]);
-  const tract_response = await tractsRef.get().then(
-    (value) => {
-      if (value.data() !== undefined) {
-        console.log('Census data:', value.data());
-        response.set('Access-Control-Allow-Origin', '*'); // Quick and dirty way of doing CORS
-        response.send(JSON.stringify(value.data()));
-        response.end();
-      } else {
-          response.set('Access-Control-Allow-Origin', '*');
-          response.send("Error 404: [exports.getCensusData] Data Not Found!");
-          response.end();
-      }
-    }
-  )
+  // To be done...
 });

@@ -110,7 +110,7 @@ export const TrendBoard = () => {
 
   React.useEffect(() => {
     // If we have any Census Tract data
-    console.log("Trend Board Current State:", currentState);
+    // console.log("Trend Board Current State:", currentState);
 
     if (currentState !== undefined) {
         if (currentState.hasOwnProperty('Topics')) {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const getInitData = async() => {
-  let message_neigh_list = await axios.get(`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getSubNeighborhoods`)
+  let message_neigh_list = await axios.get(`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getNeighborhoods`)
   .then(res => {
     return res;
   });

@@ -36,7 +36,7 @@ export default function NeighborhoodDemoBoard() {
     // use data from: 12/20/2018 up to: 01/20/2019 in roxbury
     React.useEffect(() => {
         // If we have any Census Tract data
-        console.log("Demographics Board CURRENT STATE:", currentState);
+        // console.log("Demographics Board CURRENT STATE:", currentState);
 
         if (currentState !== undefined) {
             if (currentState.hasOwnProperty('CensusTract')) {

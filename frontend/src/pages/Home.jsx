@@ -22,11 +22,16 @@ import { NeighborhoodContext } from '../contexts/neighborhoodContext.js';
 // Data Methods 
 import DataMethods from '../Pipelines/data';
 
+// Redux
+import { useSelector } from 'react-redux'
+
 export default function Home() {
     const { dates } = React.useContext(DateContext);  // Global Context of Dates
     const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
     const { neighborhood } = React.useContext(NeighborhoodContext); // Global Neighborhood
     
+    const state = useSelector((state) => state.masterState) // Redux master state
+    const state_neigh = useSelector((state) => state.masterState.neighborhoods_master) // Redux master state
 
     const fetchNeighborhoodAndDateData = async(currentState) => {
         let newState = currentState;
@@ -67,7 +72,7 @@ export default function Home() {
                 setState(newState);
             }
         }
-    },[dates, neighborhood]);
+    },[dates, neighborhood, state]);
 
     return (
         <>
