@@ -1,58 +1,90 @@
 import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
+import { DataGrid } from '@mui/x-data-grid';
+import dayjs from 'dayjs';
+
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import "./ArticleCard.css";
+import queryMethods from '../../Pipelines/data';
 
 // Uniqid for unique keys
 import uniqid from 'uniqid';
 
+// Contexts
+import { StateContext, stateMethods } from '../../contexts/stateContext';
 
-function createData(title, author, publishingDate) {
-    author = "by ".concat(author)
-    return { title, author , publishingDate };
-}
-
-const rows = [
-  createData('Article About Neighborhood', 'Daniel Gonzalez', '02-08-2023'),
-  createData('Article About Neighborhood', 'Zach Gou', '02-08-2023'),
-  createData('Article About Neighborhood', 'Asad Malik', '02-08-2023'),
-  createData('Article About Neighborhood', 'Michelle Voong', '02-08-2023'),
-  createData('Article About Neighborhood', 'Ziba', '02-08-2023'),
+const columns = [
+  { field: 'title', headerName: 'Title', width: 180 },
+  { field: 'publisher', headerName: 'Publisher', width: 180 },
+  {field: 'publishingDate', headerName: 'Publishing Date', width: 150,},
+  {field: 'neighborhood', headerName: 'Neighborhood', width: 110,},
+  {field: 'censusTract', headerName: 'Census Tract', type: 'number', width: 100,},
+  {field: 'category', headerName: 'Category', width: 90,},
 ];
 
+const rows = [
+  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
+  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
+  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
+  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
+  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
+  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
+  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+];
+
+
 export default function ArticleCard() {
+
+  const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
+
+  const [articleData, setArticleData] = React.useState([]);
+
+  React.useEffect(() => {
+    
+    if (currentState !== undefined) {
+      if (currentState.hasOwnProperty('CensusTract')) {
+        if (currentState.CensusTract.articles !== 'None') {
+          let data = currentState.CensusTract.articles;
+          let articles = queryMethods.getArticleData(data).then((articles) => {
+            let articleRow = []
+            for (const article of articles) {
+              articleRow.push({
+                id: uniqid(), 
+                title: `${article.content_id}`, 
+                publisher: `${article.pub_name}`, 
+                publishingDate: `${dayjs(article.pub_date).format('MMMM D YYYY')}`,
+                neighborhood: `${currentState.currentNeigh.charAt(0).toUpperCase()+currentState.currentNeigh.slice(1)}`,
+                censusTract: `${article.tracts[0]}`,
+                category: `${article.position_section}`
+              }) 
+            }
+            setArticleData(articleRow)
+          })
+          
+          console.log("ArticleCards article data: ", articles)
+
+
+  
+          
+        }
+      }
+    }
+  }, [currentState])
+
   return (
     <Card className="body" sx={{ width: "100%", height: "61.5vh" }}>
     <CardContent>
         <h3 className="card">Articles on Topic</h3>
-        <Table sx={{ minWidth: 650 }} size="medium" aria-label="a dense table">
-            <TableHead>
-            <TableRow>
-                <TableCell style={{borderBottom:"none"}}><strong>Title</strong></TableCell>
-                <TableCell style={{borderBottom:"none"}} align="left"><strong>Author</strong></TableCell>
-                <TableCell style={{borderBottom:"none"}} align="left"><strong>Publishing Date</strong></TableCell>
-            </TableRow>
-            </TableHead>
-            <TableBody>
-            {rows.map((row) => (
-                <TableRow
-                key={uniqid()}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                <TableCell style={{borderBottom:"none"}} component="th" scope="row">
-                    {row.title}
-                </TableCell>
-                <TableCell  style={{borderBottom:"none"}} align="left">{row.author}</TableCell>
-                <TableCell style={{borderBottom:"none"}} align="left">{row.publishingDate}</TableCell>
-                </TableRow>
-            ))}
-            </TableBody>
-        </Table>
+        <div style={{ height: 400, width: '100%' }}>
+          <DataGrid
+            rows={articleData}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+          />
+        </div>
     </CardContent>
     </Card>
   );

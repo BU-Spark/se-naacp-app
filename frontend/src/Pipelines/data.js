@@ -36,8 +36,31 @@ const getNeighborhoodAndDateData = async(dateFrom, dateTo, Neighborhood) => {
 };	
 
 
+const getArticleData = async(articleData) => {
+	const parameter_payload = {
+		articleData: articleData
+	}
+
+	let article_data = await axios.get(
+		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getArticleData`,
+		{
+			params: {
+				QueryParam: parameter_payload
+			}
+		}
+	)
+	.then(res => {
+		return res
+	});
+
+	article_data = article_data.data;
+	return article_data
+}
+
+
 const queryMethods = {
-	getNeighborhoodAndDateData: getNeighborhoodAndDateData
+	getNeighborhoodAndDateData: getNeighborhoodAndDateData,
+	getArticleData: getArticleData
 }
 
 

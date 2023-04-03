@@ -98,7 +98,7 @@ exports.getTopicList = functions.https.onRequest(async (request, response) => {
 exports.getDateAndNeighborhood = functions.https.onRequest(async (request, response) => {
   const queryParameters = request.query.QueryParam;
   const datesRef = db.collection('dates_meta');
-  const neighborhoodRef = db.collection('subneighborhood_meta');
+  const neighborhoodRef = db.collection('neighborhood_meta');
   const tractRef = db.collection('tracts_meta');
   const topicsRef = db.collection('topics_meta');
 
@@ -291,4 +291,41 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
 // --> ( Specific Demographic information & topics of that census)
 exports.getCensusData = functions.https.onRequest(async (request, response) => {
   // To be done...
+});
+
+
+//takes in article keys returns article objects
+exports.getArticleData = functions.https.onRequest(async (request, response) => {
+  const articlesRef = db.collection('articles_meta');
+  const queryParameters = request.query.QueryParam;
+  const articleKeys = Object.values(queryParameters.articleData);
+  const articleValues = []
+
+  for (const articleKey of articleKeys) {
+    const doc = await articlesRef.doc(articleKey).get()
+    .then(res => {
+      if (res.empty) {
+        console.log(`[exports.getArticleData] Article ${articleKey} not found.`);
+        return;
+      }
+
+      let data_article = res.data();
+      return data_article;
+    })
+    articleValues.push(doc)
+    // console.log("ArticleValues are : ", articleValues)
+  }
+
+  console.log("ArticleValues are : ", articleValues)
+  
+  if (articleValues.length != 0) {
+    response.set('Access-Control-Allow-Origin', '*'); // Quick and dirty way of doing CORS
+    response.send(JSON.stringify(articleValues));
+    response.end();
+  } else {
+    response.set('Access-Control-Allow-Origin', '*');
+    response.send("Error 404: [exports.getArticleData] Data Not Found!");
+    response.end();
+  }
+
 });
