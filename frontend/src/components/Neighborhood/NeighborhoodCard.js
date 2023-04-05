@@ -33,6 +33,9 @@ import { useSelector } from 'react-redux'
 
 // Uniqid for unique keys
 import uniqid from 'uniqid';
+
+// Helper collapse component
+import NeighHelper from "./neighHelper";
   
 const NeighborhoodCard = () => {
     const { dates } = React.useContext(DateContext);  // Global Context of dates
@@ -235,9 +238,10 @@ const NeighborhoodCard = () => {
                                     <p>Coverage</p>
                                 </div>
                                 </ListSubheader>}>
+                                    
 
                                     { locations.map( (v) => { return <>
-                                    <ListItemButton 
+                                    {/* <ListItemButton 
                                         key={uniqid()}
                                         id={`${v.name}`}
                                         onClick={(c) => {onSelection(v.tracts, v, c)}}
@@ -263,7 +267,8 @@ const NeighborhoodCard = () => {
                                             <ListItemText primary="Starred" />
                                         </ListItemButton>
                                         </List>
-                                    </Collapse>
+                                    </Collapse> */}
+                                        <NeighHelper location={v} currLoc={currLocation}></NeighHelper>
                                     </>
                                     })}
                                 </List>
