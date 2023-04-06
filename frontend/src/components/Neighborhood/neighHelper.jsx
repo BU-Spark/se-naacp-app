@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 // MUI List
-import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
@@ -10,7 +9,6 @@ import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import StarBorder from '@mui/icons-material/StarBorder';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import ListItemIcon from '@mui/material/ListItemIcon';
 

@@ -14,15 +14,6 @@ import { GeoJson, Map, Marker, ZoomControl } from "pigeon-maps"
 // MUI List
 import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-
-// MUI collapse
-import Collapse from '@mui/material/Collapse';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import StarBorder from '@mui/icons-material/StarBorder';
-import ListItemIcon from '@mui/material/ListItemIcon';
 
 // React Contexts/Context Methods
 import { DateContext, DateMethods } from '../../contexts/dateContext.js';
@@ -61,7 +52,6 @@ const NeighborhoodCard = () => {
         }
     );
     const [locations, SetLocations] = React.useState([]);
-    const [open, setOpen] = React.useState(true);
 
     // Use this to see individual tract
     // const geoJsonSample = {
@@ -98,7 +88,6 @@ const NeighborhoodCard = () => {
     const onSelection = (tracts, value, c) => {
         SetCurrLocation(value);
         setTractShapes(tracts);
-        setOpen(!open);
     }
 
     // Handle Map API click
@@ -240,36 +229,13 @@ const NeighborhoodCard = () => {
                                 </ListSubheader>}>
                                     
 
-                                    { locations.map( (v) => { return <>
-                                    {/* <ListItemButton 
-                                        key={uniqid()}
-                                        id={`${v.name}`}
-                                        onClick={(c) => {onSelection(v.tracts, v, c)}}
-                                        selected={currLocation.name === v.name ? true:false}>
-                                            <ListItemText primary={`${v.name}`} />
-                                            <div style={{flex: 1}}></div>
-                                            <p style={{
-                                                backgroundColor: "#0080FF", 
-                                                borderRadius: 100, 
-                                                width: 30, 
-                                                color: "white", 
-                                                display: "flex", 
-                                                justifyContent: "center"}}>{v.tracts.length}</p>
-                                            {open ? <ExpandLess /> : <ExpandMore />}
-                                    </ListItemButton>
-
-                                    <Collapse key={uniqid()} in={open} timeout="auto" unmountOnExit>
-                                        <List component="div" disablePadding>
-                                        <ListItemButton sx={{ pl: 4 }}>
-                                            <ListItemIcon>
-                                            <StarBorder />
-                                            </ListItemIcon>
-                                            <ListItemText primary="Starred" />
-                                        </ListItemButton>
-                                        </List>
-                                    </Collapse> */}
-                                        <NeighHelper location={v} currLoc={currLocation}></NeighHelper>
-                                    </>
+                                    {locations.map( (v) => { return (<>
+                                        <NeighHelper 
+                                            key={uniqid()} 
+                                            location={v} 
+                                            currLoc={currLocation}>
+                                        </NeighHelper>
+                                    </>)
                                     })}
                                 </List>
                             </div>
@@ -286,5 +252,34 @@ const NeighborhoodCard = () => {
     </>
     );
 }
+
+
+{/* <ListItemButton 
+        key={uniqid()}
+        id={`${v.name}`}
+        onClick={(c) => {onSelection(v.tracts, v, c)}}
+        selected={currLocation.name === v.name ? true:false}>
+            <ListItemText primary={`${v.name}`} />
+            <div style={{flex: 1}}></div>
+            <p style={{
+                backgroundColor: "#0080FF", 
+                borderRadius: 100, 
+                width: 30, 
+                color: "white", 
+                display: "flex", 
+                justifyContent: "center"}}>{v.tracts.length}</p>
+            {open ? <ExpandLess /> : <ExpandMore />}
+    </ListItemButton>
+
+    <Collapse key={uniqid()} in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+        <ListItemButton sx={{ pl: 4 }}>
+            <ListItemIcon>
+            <StarBorder />
+            </ListItemIcon>
+            <ListItemText primary="Starred" />
+        </ListItemButton>
+        </List>
+    </Collapse> */}
 
 export default NeighborhoodCard;
