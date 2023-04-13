@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 // MUI List
 import List from '@mui/material/List';
@@ -12,15 +12,32 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import ListItemIcon from '@mui/material/ListItemIcon';
 
+// Lazy callbacks
+import { useStateWithCallbackLazy } from 'use-state-with-callback';
+
 // Uniqid for unique keys
 import uniqid from 'uniqid';
 
 const NeighHelper = (props) => {
-    const [open, setOpen] = useState(false);
 
-    const onSelect = (c) => {
-        setOpen(!open)
+    const [open, setOpen] = useStateWithCallbackLazy(false);
+
+    // Handle Map API Selection
+    const onSelection = () => {
+        setOpen(!open, (v) => {
+            if (v){
+                console.log("1", v);
+                // props.funcSetCurrLoc(props.location)
+                // props.funcSetTracts(props.location.tracts)
+            }
+            console.log("2", v)
+        })
     };
+
+    const onSelectionSpecificTrack = (tract) => {
+        console.log(tract)
+        // props.funcSetTracts(props.location.tracts)
+    }
 
     //console.log("In neighHelper Props.locaiton: ", props.location.tracts)
     //console.log("In neighHelper Props.currLoc: ", props.currLoc)
@@ -29,7 +46,7 @@ const NeighHelper = (props) => {
         <ListItemButton 
             key={uniqid()}
             id={`${props.location.name}`}
-            onClick={(c) => {onSelect(c)}}
+            onClick={(c) => {onSelection()}}
             selected={props.currLoc.name === props.location.name ? true:false}>
                 <ListItemText primary={`${props.location.name}`} />
                 <div style={{flex: 1}}></div>
@@ -47,7 +64,7 @@ const NeighHelper = (props) => {
             <List component="div" disablePadding>
                 {(props.location.tracts).map((v) => {
                     return <> 
-                        <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemButton sx={{ pl: 4 }} onClick={onSelectionSpecificTrack(v)}>
                             <ListItemIcon>
                                 <PushPinIcon />
                             </ListItemIcon>
