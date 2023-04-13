@@ -14,12 +14,13 @@ import uniqid from 'uniqid';
 import { StateContext, stateMethods } from '../../contexts/stateContext';
 
 const columns = [
-  { field: 'title', headerName: 'Title', width: 180 },
-  { field: 'publisher', headerName: 'Publisher', width: 180 },
-  {field: 'publishingDate', headerName: 'Publishing Date', width: 150,},
-  {field: 'neighborhood', headerName: 'Neighborhood', width: 110,},
-  {field: 'censusTract', headerName: 'Census Tract', type: 'number', width: 100,},
-  {field: 'category', headerName: 'Category', width: 90,},
+  { field: 'title', headerName: 'Title', width: 200 },
+  { field: 'publisher', headerName: 'Publisher', width: 200 },
+  {field: 'publishingDate', headerName: 'Publishing Date', width: 200,},
+  {field: 'neighborhood', headerName: 'Neighborhood', width: 150,},
+  {field: 'censusTract', headerName: 'Census Tract', width: 150},
+  {field: 'category', headerName: 'Category', width: 150,},
+  
 ];
 
 const rows = [
@@ -41,6 +42,7 @@ export default function ArticleCard() {
 
   const [articleData, setArticleData] = React.useState([]);
 
+
   React.useEffect(() => {
     
     if (currentState !== undefined) {
@@ -61,6 +63,7 @@ export default function ArticleCard() {
               }) 
             }
             setArticleData(articleRow)
+            console.log("ArticleData: ", articleData)
           })
           
           console.log("ArticleCards article data: ", articles)
@@ -74,18 +77,24 @@ export default function ArticleCard() {
   }, [currentState])
 
   return (
-    <Card className="body" sx={{ width: "100%", height: "61.5vh" }}>
+    <>
+    
+        <Card className="body" sx={{ width: "100%", height: "62vh" }}>
     <CardContent>
         <h3 className="card">Articles on Topic</h3>
-        <div style={{ height: 400, width: '100%' }}>
+        <div style={{ height: 350, width: '100%' }}>
           <DataGrid
             rows={articleData}
             columns={columns}
-            pageSize={5}
+            pageSize={articleData.length}
             rowsPerPageOptions={[5]}
+            hideFooter={true}
           />
         </div>
+        
     </CardContent>
     </Card>
+    </>
+
   );
 }
