@@ -90,16 +90,6 @@ export default function Home() {
                 {/* Card UI View */}
                 <div className='master_content_container'>
 
-                    {/* 1st Data Cards */}
-                    <div className="data-cards">
-                        <div className="graph_card">
-                            <NeighborhoodDemoBoard></NeighborhoodDemoBoard>
-                        </div>
-                        <div className="graph_card">
-                            <TrendBoard></TrendBoard>
-                        </div>
-                    </div>
-
                     {/* 2nd Data Cards */}
                     {/* <div className="data-cards">
                         <div className="graph_card">
@@ -116,6 +106,17 @@ export default function Home() {
                     <div className="article-container">
                         <ArticlesCard style={{marginLeft: 20}} topic="Technology"></ArticlesCard>
                     </div>
+
+                    {/* 1st Data Cards */}
+                    <div className="data-cards">
+                        <div className="graph_card">
+                            <NeighborhoodDemoBoard></NeighborhoodDemoBoard>
+                        </div>
+                        <div className="graph_card">
+                            <TrendBoard></TrendBoard>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </>

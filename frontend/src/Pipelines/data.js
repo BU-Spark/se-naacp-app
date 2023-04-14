@@ -36,6 +36,41 @@ const getNeighborhoodAndDateData = async(dateFrom, dateTo, Neighborhood) => {
 };	
 
 
+// GET request to query given valid date and census tract
+// Using Axios Params to send specification
+// <-- dateFrom: start date, Date.JS object
+// <-- dateTo: end date, Date.JS object
+// <-- tract: tract as a string
+// --> Returns a resolved void promise
+const getCensusDateData = async(dateFrom, dateTo, tract) => { 
+	let formattedDateFrom = dayjs(dateFrom).format('YYYYMMDD');
+	let formattedDateTo = dayjs(dateTo).format('YYYYMMDD');
+
+	const parameter_payload = {
+		dateFrom: `${formattedDateFrom}`,
+		dateTo: `${formattedDateTo}`,
+		Tract: `${tract}`
+	}
+
+	console.log("The Parameter Payload:", parameter_payload);
+
+	let tract_date_data = await axios.get(
+		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getCensusData`,
+		{
+			params: {
+				QueryParam: parameter_payload
+			}
+		}
+	)
+  	.then(res => {
+    	return res
+  	});
+
+	tract_date_data = tract_date_data.data;
+	return tract_date_data;
+};	
+
+
 const getArticleData = async(articleData) => {
 	const parameter_payload = {
 		articleData: articleData
@@ -60,7 +95,8 @@ const getArticleData = async(articleData) => {
 
 const queryMethods = {
 	getNeighborhoodAndDateData: getNeighborhoodAndDateData,
-	getArticleData: getArticleData
+	getArticleData: getArticleData,
+	getCensusDateData: getCensusDateData
 }
 
 

@@ -12,7 +12,7 @@ const APIKey = require('./config.js');
 const a = new APIKey();
 
 // JSON DATA
-const MASTER_DATA = require('./scripts/JSON_data/NAACP_Updated.json');
+const MASTER_DATA = require('./scripts/JSON_data/GBH_NAACP.json');
 
 // Init firestore
 initializeApp();
@@ -181,13 +181,13 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
             return;
           }
 
-          // console.log("Looking at topics article:", article);
           let data_topics_id = res_topics.docs[0].id;
-          if (data_topics_id === 'arts'){
+          // console.log("Looking at topics article:", data_topics_id);
+          if (data_topics_id === 'education'){
             ArrayOfTopicsData[0] = ArrayOfTopicsData[0] + 1;
-          } else if (data_topics_id === 'education') {
+          } else if (data_topics_id === 'local') {
             ArrayOfTopicsData[1] = ArrayOfTopicsData[1] + 1;
-          } else if (data_topics_id === 'news') {
+          } else if (data_topics_id === 'politics') {
             ArrayOfTopicsData[2] = ArrayOfTopicsData[2] + 1;
           } else if (data_topics_id === 'opinion') {
             ArrayOfTopicsData[3] = ArrayOfTopicsData[3] + 1;
@@ -261,8 +261,6 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
     return packing;
   });
 
-  console.log("The Resultant data:", data);
-
   if (data.censusData != 'None' || data.topicsData != 'None' || data.censusTracts != 'None') {
     response.set('Access-Control-Allow-Origin', '*');
     response.send(JSON.stringify(data));
@@ -284,14 +282,131 @@ exports.getDateAndNeighborhood = functions.https.onRequest(async (request, respo
 // ------------------------
 // <-- (Date)
 // <-- (Census Tract)
-// <-- (Neighborhood)
 //
 // RETURNS:
 // ------------------------
 // --> ( Specific Demographic information & topics of that census)
 exports.getCensusData = functions.https.onRequest(async (request, response) => {
-  // To be done...
+  const queryParameters = request.query.QueryParam;
+  const datesRef = db.collection('dates_meta');
+  const tractRef = db.collection('tracts_meta');
+  const topicsRef = db.collection('topics_meta');
+
+  const SetOfArticleDataDates = new Set();
+  const SetOfArticleDataTract = new Set();
+
+  // [0] Arts, [1] Education, [2] News, [3] Opinion
+  const ArrayOfTopicsData = new Array(Object.keys(MASTER_DATA.topics_filter).length).fill(0); 
+
+  const data = {
+    censusData: "None", 
+    topicsData: "None",
+    censusTracts: "None",
+    articles: "None"
+  };
+
+  const queryResult = await datesRef
+  .where('dateSum', '>=', parseInt(queryParameters.dateFrom))
+  .where('dateSum', '<=', parseInt(queryParameters.dateTo)).get().then( (res_dates) => {
+    if (res_dates.empty) {
+      console.log('[exports.getDateAndNeighborhood] No matching documents in dates.');
+      return;
+    }  
+    // O(N^2), dont like it, point of optimization
+    res_dates.forEach( (doc) => {
+      doc.data().articles.forEach( (article) => {
+        SetOfArticleDataDates.add(article);
+      })
+    });
+  }).then( async () => {
+    let t = await tractRef.doc(queryParameters.Tract).get()
+    .then( (res_tract) => {
+      if (res_tract.data() === undefined) {
+        console.log('[exports.getDateAndNeighborhood] No matching documents in neighborhood.');
+        return;
+      }  
+
+      data.censusData = {
+        counties: `${res_tract.data().county_name}`,
+        Total_Population: `${res_tract.data().demographics.p2_001n}`,
+        Total_H_and_L: `${res_tract.data().demographics.p2_002n}`,
+        Total_not_H_and_L: `${res_tract.data().demographics.p2_003n}`,
+        Other_Pop: `${res_tract.data().demographics.p2_004n}`,
+        White: `${res_tract.data().demographics.p2_005n}`,
+        Black: `${res_tract.data().demographics.p2_006n}`,
+        American_Indian: `${res_tract.data().demographics.p2_007n}`,
+        Asian: `${res_tract.data().demographics.p2_008n}`,
+        Pacific_Islander: `${res_tract.data().demographics.p2_009n}`,
+        Other: `${res_tract.data().demographics.p2_010n}`
+      }
+
+      res_tract.data().articles.forEach( (article) => {
+        SetOfArticleDataTract.add(article);
+      });
+
+    });
+  }).finally( async () => {
+    let ArrayIntersectArticles = Array.from(new Set([...SetOfArticleDataDates].filter((x) => SetOfArticleDataTract.has(x))));
+    let topicsCount = [];
+
+    // Find relevant data with each article
+    for (let i = 0; i < ArrayIntersectArticles.length; i++) {
+      // THIS NEEDS TO BE REFACTORED
+      // Demographic Data for all the tracts
+      let topics_data = topicsRef.where('articles', 'array-contains', ArrayIntersectArticles[i]).get().then( (res_topics) => {
+        if (res_topics.empty) {
+          console.log("[exports.getDateAndNeighborhood] No matching articles in topics data.");
+          return;
+        }
+
+        let data_topics_id = res_topics.docs[0].id;
+        if (data_topics_id === 'education'){
+          ArrayOfTopicsData[0] = ArrayOfTopicsData[0] + 1;
+        } else if (data_topics_id === 'local') {
+          ArrayOfTopicsData[1] = ArrayOfTopicsData[1] + 1;
+        } else if (data_topics_id === 'politics') {
+          ArrayOfTopicsData[2] = ArrayOfTopicsData[2] + 1;
+        } else if (data_topics_id === 'opinion') {
+          ArrayOfTopicsData[3] = ArrayOfTopicsData[3] + 1;
+        }
+
+        return ArrayOfTopicsData;
+      });
+
+      topicsCount = topics_data;
+    } // For each Article
+
+    let packing = Promise.resolve(topicsCount).then((v) => {
+      data.topicsData = v;
+      data.articles = ArrayIntersectArticles;
+
+      // Send the data
+      if (data.censusData != 'None' && data.topicsData != 'None') {
+        response.set('Access-Control-Allow-Origin', '*');
+        response.send(JSON.stringify(data));
+        response.end();
+      } else {
+        response.set('Access-Control-Allow-Origin', '*');
+        response.send("Error 501: [exports.getDateAndNeighborhood] Collections Not Found!");
+        response.end();
+      }
+
+      return data;
+    });
+  });
+
+  
 });
+
+
+
+
+
+
+
+
+
+
 
 
 //takes in article keys returns article objects
@@ -316,7 +431,7 @@ exports.getArticleData = functions.https.onRequest(async (request, response) => 
     // console.log("ArticleValues are : ", articleValues)
   }
 
-  console.log("ArticleValues are : ", articleValues)
+  // console.log("ArticleValues are : ", articleValues)
   
   if (articleValues.length != 0) {
     response.set('Access-Control-Allow-Origin', '*'); // Quick and dirty way of doing CORS

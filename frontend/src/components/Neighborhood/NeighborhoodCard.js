@@ -22,7 +22,10 @@ import { useSelector } from 'react-redux'
 import uniqid from 'uniqid';
 
 // AntDesign
-import { Collapse, Menu } from 'antd';
+import { Menu } from 'antd';
+
+// Data Methods 
+import DataMethods from '../../Pipelines/data';
 
 function getItem(label, key, icon, children, type) {
     return {
@@ -98,8 +101,36 @@ const NeighborhoodCard = () => {
         console.log("Tract Name:", v.payload.properties.NAME20)
     }
 
+    const setTractDataToAll =  async (tract) => {
+        const data = await DataMethods.getCensusDateData(dates[0], dates[1], tract).then((v) => {
+            let v_string = JSON.stringify(v);
+            if (v_string.includes("Error")){
+                console.log("Specific tract information not found!");
+                let newState = currentState;
+                delete newState.CensusTract;
+                newState = stateMethods.updateModified(newState);
+                setState(newState);
+            } else {
+                let newState = {
+                    ...currentState,
+                    CensusTract: v
+                }
+                newState = stateMethods.updateModified(newState);
+                setState(newState);
+            }
+        })
+    }
+
     const selectTrack = (e) => {
-        console.log('click ', e);
+        console.log(e);
+        if (e.key.includes("all")) {
+            let deconstruct_str = e.key.slice(4);
+            let tract_list = deconstruct_str.split(",");
+            setTractShapes(tract_list);
+        } else {
+            setTractShapes([e.key]);
+            setTractDataToAll(e.key);
+        }
     };
 
     // Default center is Boston City
@@ -211,6 +242,11 @@ const NeighborhoodCard = () => {
                     )
                 }
 
+                // Push a All option
+                tract_arr.push(
+                    getItem(`All`, `all_${tracts}`)
+                )
+
                 _items.push(
                     getItem(`${name}`, `${name}`, <></>, tract_arr)
                 );
@@ -240,7 +276,7 @@ const NeighborhoodCard = () => {
                                     onOpenChange={(v) => {onSelectionNeigh(v)}}
                                     style={{
                                         width: "100%",
-                                        maxHeight: "43%",
+                                        maxHeight: "63%",
                                         overflow: "auto",
                                     }}
                                     mode="inline"
@@ -260,34 +296,5 @@ const NeighborhoodCard = () => {
     </>
     );
 }
-
-
-{/* <ListItemButton 
-        key={uniqid()}
-        id={`${v.name}`}
-        onClick={(c) => {onSelection(v.tracts, v, c)}}
-        selected={currLocation.name === v.name ? true:false}>
-            <ListItemText primary={`${v.name}`} />
-            <div style={{flex: 1}}></div>
-            <p style={{
-                backgroundColor: "#0080FF", 
-                borderRadius: 100, 
-                width: 30, 
-                color: "white", 
-                display: "flex", 
-                justifyContent: "center"}}>{v.tracts.length}</p>
-            {open ? <ExpandLess /> : <ExpandMore />}
-    </ListItemButton>
-
-    <Collapse key={uniqid()} in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-        <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-            <StarBorder />
-            </ListItemIcon>
-            <ListItemText primary="Starred" />
-        </ListItemButton>
-        </List>
-    </Collapse> */}
 
 export default NeighborhoodCard;

@@ -115,6 +115,7 @@ export const TrendBoard = () => {
     if (currentState !== undefined) {
         if (currentState.hasOwnProperty('Topics')) {
           let topics = currentState.Topics
+          console.log("The topics:", topics)
           setArticleKeys(topics);
 
           // Check for Article Data
