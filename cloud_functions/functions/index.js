@@ -4,7 +4,7 @@ const functions = require("firebase-functions");
 const { populate_first_order_data } = require('./scripts/firestore_populate.js')
 
 // Some context specific functions
-const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+const { initializeApp } = require('firebase-admin/app');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 
 // Custom Config function, I used a class because I don't wanna enable modules
@@ -95,6 +95,8 @@ exports.getTopicList = functions.https.onRequest(async (request, response) => {
 // Query Neighborhood that Satisfies Parameters =>
 // Set intersection and then for each article find all relevant census and topic data =>
 // Finally pack data and Resolve
+
+
 exports.getDateAndNeighborhood = functions.https.onRequest(async (request, response) => {
   const queryParameters = request.query.QueryParam;
   const datesRef = db.collection('dates_meta');
