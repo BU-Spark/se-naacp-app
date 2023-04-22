@@ -118,7 +118,7 @@ export const TrendBoard = () => {
           console.log("The topics:", topics)
           setArticleKeys(topics);
 
-          // Check for Article Data
+        //   Check for Article Data
           if (currentState.hasOwnProperty('CensusTract')) {
             if (currentState.CensusTract.topicsData !== 'None') {
               let data = [];

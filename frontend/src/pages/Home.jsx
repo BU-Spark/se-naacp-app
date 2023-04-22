@@ -63,7 +63,7 @@ export default function Home() {
                 let newState = stateMethods.updateModified(res);
                 setState(newState);
             })
-            // console.log("This is the current universal state AFTER:", currentState);
+            console.log("This is the current universal state AFTER:", currentState);
         } else {
             if (currentState.hasOwnProperty('CensusTract')) {
                 let newState = currentState
