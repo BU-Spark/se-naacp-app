@@ -29,9 +29,16 @@ const getNeighborhoodAndDateData = async(dateFrom, dateTo, Neighborhood) => {
 	)
   	.then(res => {
     	return res
-  	});
+  	}).catch((error) => {
+		return {header: "Internal Server Error!", reason: error}
+	});
 
-	neigh_date_data = neigh_date_data.data;
+	if (neigh_date_data.header.includes("Error")) {
+		console.log("ERROR HAS OCCURED!");
+	} else {
+		neigh_date_data = neigh_date_data.data;
+	}
+
 	return neigh_date_data;
 };	
 
@@ -67,6 +74,9 @@ const getCensusDateData = async(dateFrom, dateTo, tract) => {
   	});
 
 	tract_date_data = tract_date_data.data;
+
+	console.log("Tract_date_data:", tract_date_data);
+
 	return tract_date_data;
 };	
 

@@ -8,6 +8,10 @@ import geoData from '../../assets/mapsJSON/Census2020_Tracts.json'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 
+// MUI Loading
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
+
 // Map API (Pigeon Maps)
 import { GeoJson, Map, Marker, ZoomControl } from "pigeon-maps"
 
@@ -49,6 +53,9 @@ const NeighborhoodCard = () => {
         latitude: 42.360953,
         longitude:-71.058304
     }
+
+    // Loading data
+    const [fetchingData, setfetchingData] = React.useState(true);
 
     // React Maps Objects recieved by data
     const [currLocation, SetCurrLocation] = React.useState(defaultLoc);
@@ -216,7 +223,32 @@ const NeighborhoodCard = () => {
         
     }
 
+    const loadingState = (fetching) => {
+        if (fetching) {
+            return (
+                <Stack sx={{ 
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    maxHeight: "63%",
+                    alignItems: 'center',
+                    color: 'grey.500',
+                    marginTop: "10px" 
+                     }} spacing={2}>
+                    {/* <LinearProgress color="secondary" /> */}
+                    <CircularProgress size={50} color="secondary" />
+                </Stack>
+            );
+        } 
+    }
+
     React.useEffect(() => {
+        if(items.length === 0) {
+            setfetchingData(true);
+        } else {
+            setfetchingData(false);
+        }
+
         if (currentState.Subneighborhoods !== undefined) {         // Quick and Dirt
             let neighborhoodTractMapData = stateMethods.updateModified(currentState.Subneighborhoods);
             let _items = [];
@@ -287,14 +319,16 @@ const NeighborhoodCard = () => {
                         {/* Table */}
                         <div style={{display: "flex", width: "40%", flexDirection: "column", marginRight: 20}}>
                             <h3 className="card">Neighborhoods Covered Most</h3>
-                            <div style={{width: "100%"}}>
+                            {loadingState(fetchingData)}
+                            <div style={{width: "100%", overflow: "auto"}}>
                                 <Menu
                                     onClick={selectTrack}
                                     onOpenChange={(v) => {onSelectionNeigh(v)}}
                                     style={{
                                         width: "100%",
-                                        maxHeight: "63%",
+                                        maxHeight: "490px", //Temporary CSS Measure
                                         overflow: "auto",
+                                        visibility: `${fetchingData ? "hidden" : "visible"}`
                                     }}
                                     mode="inline"
                                     items={items}
