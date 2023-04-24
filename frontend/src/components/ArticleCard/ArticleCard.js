@@ -50,7 +50,7 @@ export default function ArticleCard() {
     if (currentState !== undefined) {
       if (currentState.hasOwnProperty('CensusTract')) {
         if (currentState.CensusTract.articles !== 'None') {
-          let data = currentState.CensusTract.articles;
+          let data = currentState.CensusTract.articleData;
           let articles = queryMethods.getArticleData(data).then((articles) => {
             let articleRow = []
             for (const article of articles) {
@@ -69,9 +69,6 @@ export default function ArticleCard() {
           
           
 
-
-  
-          
         }
       } else {
         setArticleData([]);
@@ -84,7 +81,7 @@ export default function ArticleCard() {
     
         <Card className="body" sx={{ width: "100%", height: "62vh" }}>
     <CardContent>
-        <h3 className="card">Articles on Topic</h3>
+        <h3 className="card">Articles based on Neighborhood/Tract</h3>
         <div style={{ height: 350, width: '100%' }}>
           <DataGrid
             rows={articleData}

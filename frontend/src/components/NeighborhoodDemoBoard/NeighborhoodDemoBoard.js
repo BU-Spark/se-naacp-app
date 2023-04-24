@@ -26,6 +26,13 @@ const colors = [
 "hsl(39, 70%, 50%)", 
 ];
 
+// Truncate Numbers
+function toFixed(num, fixed) {
+    var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+    return num.toString().match(re)[0];
+}
+
+
 export default function NeighborhoodDemoBoard() {
     const [demographicData, setDemogaphicData] = React.useState([]);
     const [demographicKeys, setDemographicKeys] = React.useState([]);
@@ -42,15 +49,17 @@ export default function NeighborhoodDemoBoard() {
             if (currentState.hasOwnProperty('CensusTract')) {
                 if (currentState.CensusTract.censusData !== 'None') {
                     // Set Demographic Data & Demographic Keys
-                    let data = currentState.CensusTract.censusData;
+                    let data = currentState.CensusTract.demographics;
                     let demoCounts = [];
                     let demoKeys = [];
                     let demoData = [];
+                    let demoSum = 0;
 
                     for (const [key, value] of Object.entries(data)) {
                         if (`${key}` !== 'counties') {
-                            demoKeys.push(`${key}`)
-                            demoCounts.push(`${value}`)
+                            demoKeys.push(`${key}`);
+                            demoCounts.push(`${value}`);
+                            demoSum += value;
                         }
                     }
 
@@ -60,7 +69,8 @@ export default function NeighborhoodDemoBoard() {
                             "label": `${demoKeys[i]}`,
                             "color": colors[i]
                         }
-                        piechart["value"] = demoCounts[i];
+                        let val = (demoCounts[i] / demoSum) * 100;
+                        piechart["value"] = parseFloat(toFixed(val, 2));
                         demoData.push(piechart); 
                     }
 
@@ -95,6 +105,9 @@ export default function NeighborhoodDemoBoard() {
                     innerRadius={0.5}
                     padAngle={0.7}
                     cornerRadius={3}
+                    valueFormat={function (e) {
+                        return e + '%'
+                      }}
                     activeOuterRadiusOffset={8}
                     borderWidth={1}
                     borderColor={{

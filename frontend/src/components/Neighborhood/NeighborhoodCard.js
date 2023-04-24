@@ -63,6 +63,10 @@ const NeighborhoodCard = () => {
     const [locations, SetLocations] = React.useState([]);
     const [items, setItems] = React.useState([]);
 
+    const returnRawNeighborhoodNames = (str) => {
+        return str.replaceAll(" ", "_").toLowerCase();
+    }
+
     // Find and set relevant Tract Shapes
     const setTractShapes = (tracts) => {
         let GEOJSON_All = geoData.features;
@@ -256,8 +260,20 @@ const NeighborhoodCard = () => {
             SetLocations(neighborhoodTractMapData);
         }
 
-        if (state_neigh !== undefined) {
-            console.log(state_neigh);
+        if (currentState.currentNeigh !== undefined){
+            if (currentState.currentNeigh !== "boston_city") {
+                let neigh = items.filter(obj => {
+                    return returnRawNeighborhoodNames(obj.key) === currentState.currentNeigh
+                });
+                let tract_arr = [];
+                neigh[0].children.map((v) => {
+                    if (!v.key.includes("all")) {
+                        tract_arr.push(v.key);
+                    }
+                });
+
+                setTractShapes(tract_arr);
+            }
         }
 
     },[dates, currentState, state_neigh])

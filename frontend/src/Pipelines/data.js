@@ -20,7 +20,7 @@ const getNeighborhoodAndDateData = async(dateFrom, dateTo, Neighborhood) => {
 	console.log("The Parameter Payload:", parameter_payload);
 
 	let neigh_date_data = await axios.get(
-		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getDateAndNeighborhood`,
+		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/queryDateAndNeighborhood`,
 		{
 			params: {
 				QueryParam: parameter_payload
@@ -77,7 +77,7 @@ const getArticleData = async(articleData) => {
 	}
 
 	let article_data = await axios.get(
-		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getArticleData`,
+		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/queryArticleKeys`,
 		{
 			params: {
 				QueryParam: parameter_payload
