@@ -38,7 +38,7 @@ export default function SearchBarDropdown({word}) {
         }
         setSubNeighborhoodList(cleanedNeighborhoods);
       } 
-
+      //loook heerererererererre for 
       if (!currentState.hasOwnProperty('currentNeigh')) {
         let newState = stateMethods.updateModified(stateMethods.modify(currentState, "currentNeigh", "boston_city"));
         setState(newState);

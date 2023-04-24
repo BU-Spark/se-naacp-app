@@ -43,13 +43,19 @@ export default function NeighborhoodDemoBoard() {
     // use data from: 12/20/2018 up to: 01/20/2019 in roxbury
     React.useEffect(() => {
         // If we have any Census Tract data
-        // console.log("Demographics Board CURRENT STATE:", currentState);
+        console.log("Demographics Board CURRENT STATE:", currentState);
 
         if (currentState !== undefined) {
             if (currentState.hasOwnProperty('CensusTract')) {
                 if (currentState.CensusTract.censusData !== 'None') {
                     // Set Demographic Data & Demographic Keys
                     let data = currentState.CensusTract.demographics;
+                    
+                    //Remove datapoints from data obj
+                    delete data["Total_Population"]
+                    delete data["Other_Pop"]
+                    delete data["Total_not_H_and_L"]
+
                     let demoCounts = [];
                     let demoKeys = [];
                     let demoData = [];
@@ -57,8 +63,13 @@ export default function NeighborhoodDemoBoard() {
 
                     for (const [key, value] of Object.entries(data)) {
                         if (`${key}` !== 'counties') {
-                            demoKeys.push(`${key}`);
-                            demoCounts.push(`${value}`);
+                            let k = `${key}`
+                            let v = `${value}`
+                            if (k === "Total_H_and_L"){
+                                k = "Hispanic/Latine"
+                            }
+                            demoKeys.push((k).replace('_', ' '));
+                            demoCounts.push(v);
                             demoSum += value;
                         }
                     }
@@ -73,12 +84,8 @@ export default function NeighborhoodDemoBoard() {
                         piechart["value"] = parseFloat(toFixed(val, 2));
                         demoData.push(piechart); 
                     }
-
                     setDemographicKeys(demoKeys);
                     setDemogaphicData(demoData);
-
-                    console.log("Demographic Keys:", demographicKeys);
-                    console.log("Demographic Data:", demographicData);
                 } 
             } else {
                 setDemogaphicData([]);
