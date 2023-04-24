@@ -12,16 +12,31 @@ import uniqid from 'uniqid';
 
 // Contexts
 import { StateContext, stateMethods } from '../../contexts/stateContext';
+import { Link } from '@mui/material';
+
+function getHTML(str){
+  const htmlString = str;
+  const parser = new DOMParser();
+  const html = parser.parseFromString(htmlString, 'text/html');
+  const body = html.body.lastChild;
+  console.log("HOST: ", body.hostname)
+  console.log("href: ", body.href)
+  return body
+}
 
 const columns = [
-  { field: 'title', headerName: 'Title', width: 200 },
-  { field: 'publisher', headerName: 'Publisher', width: 200 },
+  {field: 'title', headerName: 'Title', width: 300, 
+    renderCell:(params) => <Link href={`${params.row.title.link}`} target='_blank'>{params.row.title.title}</Link>},
+  {field: 'publisher', headerName: 'Publisher', width: 110 },
   {field: 'publishingDate', headerName: 'Publishing Date', width: 200,},
   {field: 'neighborhood', headerName: 'Neighborhood', width: 150,},
   {field: 'censusTract', headerName: 'Census Tract', width: 150},
   {field: 'category', headerName: 'Category', width: 150,},
-  
 ];
+
+
+
+
 
 export default function ArticleCard() {
 
@@ -41,19 +56,18 @@ export default function ArticleCard() {
             for (const article of articles) {
               articleRow.push({
                 id: uniqid(), 
-                title: `${article.content_id}`, 
+                title: {link: article.link, title: article.hl1}, 
                 publisher: `${article.pub_name}`, 
-                publishingDate: `${dayjs(article.pub_date).format('MMMM D YYYY')}`,
+                publishingDate: `${dayjs(article.pub_date).format('MMMM D, YYYY')}`,
                 neighborhood: `${currentState.currentNeigh.charAt(0).toUpperCase()+currentState.currentNeigh.slice(1)}`,
                 censusTract: `${article.tracts[0]}`,
                 category: `${article.position_section}`
               }) 
             }
             setArticleData(articleRow)
-            console.log("ArticleData: ", articleData)
           })
           
-          console.log("ArticleCards article data: ", articles)
+          
 
 
   

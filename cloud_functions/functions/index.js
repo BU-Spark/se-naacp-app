@@ -427,6 +427,7 @@ exports.getArticleData = functions.https.onRequest(async (request, response) => 
       }
 
       let data_article = res.data();
+
       return data_article;
     })
     articleValues.push(doc)
