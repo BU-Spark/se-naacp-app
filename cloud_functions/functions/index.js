@@ -133,10 +133,10 @@ exports.getCensusData = functions.https.onRequest(async (request, response) => {
   const ArrayOfTopicsData = new Array(Object.keys(MASTER_DATA.topics_filter).length).fill(0); 
 
   const data = {
-    censusData: "None", 
+    demographics: "None", 
     topicsData: "None",
     censusTracts: "None",
-    articles: "None"
+    articleData: "None"
   };
 
   const queryResult = await datesRef
@@ -160,7 +160,7 @@ exports.getCensusData = functions.https.onRequest(async (request, response) => {
         return;
       }  
 
-      data.censusData = {
+      data.demographics = {
         counties: `${res_tract.data().county_name}`,
         Total_Population: `${res_tract.data().demographics.p2_001n}`,
         Total_H_and_L: `${res_tract.data().demographics.p2_002n}`,
@@ -212,7 +212,7 @@ exports.getCensusData = functions.https.onRequest(async (request, response) => {
 
     let packing = Promise.resolve(topicsCount).then((v) => {
       data.topicsData = v;
-      data.articles = ArrayIntersectArticles;
+      data.articleData = ArrayIntersectArticles;
 
       // Send the data
       if (data.censusData != 'None' && data.topicsData != 'None') {
