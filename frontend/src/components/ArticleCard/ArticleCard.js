@@ -27,8 +27,8 @@ function getHTML(str){
 const columns = [
   {field: 'title', headerName: 'Title', width: 580, 
     renderCell:(params) => <Link href={`${params.row.title.link}`} target='_blank'>{params.row.title.title}</Link>},
-  {field: 'publisher', headerName: 'Publisher', width: 110 },
-  {field: 'publishingDate', headerName: 'Publishing Date', width: 150,},
+  {field: 'author', headerName: 'Author', width: 130 },
+  {field: 'publishingDate', headerName: 'Publishing Date', width: 120,},
   {field: 'neighborhood', headerName: 'Neighborhood', width: 110,},
   {field: 'censusTract', headerName: 'Census Tract', width: 110},
   {field: 'category', headerName: 'Category', width: 90,},
@@ -54,10 +54,11 @@ export default function ArticleCard() {
           let articles = queryMethods.getArticleData(data).then((articles) => {
             let articleRow = []
             for (const article of articles) {
+              console.log("ARTICLE: ", article)
               articleRow.push({
                 id: uniqid(), 
                 title: {link: article.link, title: article.hl1}, 
-                publisher: `${article.pub_name}`, 
+                author: `${article.author}`, 
                 publishingDate: `${dayjs(article.pub_date).format('MMM D, YYYY')}`,
                 neighborhood: `${currentState.currentNeigh.charAt(0).toUpperCase()+currentState.currentNeigh.slice(1)}`,
                 censusTract: `${article.tracts[0]}`,

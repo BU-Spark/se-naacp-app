@@ -94,7 +94,7 @@ export default function NeighborhoodDemoBoard() {
                 setDemographicKeys([]);
             }
         }
-
+        
     },[currentState]);
 
     return(

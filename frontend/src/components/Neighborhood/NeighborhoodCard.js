@@ -133,7 +133,13 @@ const NeighborhoodCard = () => {
     }
 
     const selectTrack = (e) => {
-        console.log(e);
+        console.log("Tract Val: ", e.key);
+        //UPDATE currentState here to add tract val
+        // let newState = stateMethods.updateModified(stateMethods.modify(currentState, "currentTract", "030302"));
+        // setState(newState);
+
+
+
         if (e.key.includes("all")) {
             let deconstruct_str = e.key.slice(4);
             let tract_list = deconstruct_str.split(",");

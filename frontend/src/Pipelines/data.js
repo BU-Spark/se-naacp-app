@@ -33,11 +33,12 @@ const getNeighborhoodAndDateData = async(dateFrom, dateTo, Neighborhood) => {
 		return {header: "Internal Server Error!", reason: error}
 	});
 
-	if (neigh_date_data.header.includes("Error")) {
-		console.log("ERROR HAS OCCURED!");
-	} else {
-		neigh_date_data = neigh_date_data.data;
-	}
+	// if (neigh_date_data.header.includes("Error")) {
+	// 	console.log("ERROR HAS OCCURED!");
+	// } else {
+	// 	neigh_date_data = neigh_date_data.data;
+	// }
+	neigh_date_data = neigh_date_data.data;
 
 	return neigh_date_data;
 };	
