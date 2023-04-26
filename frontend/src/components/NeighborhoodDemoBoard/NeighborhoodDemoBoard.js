@@ -9,9 +9,17 @@ import './NeighborhoodDemoBoard.css'
 // Assets
 import emptyAstro from '../../assets/lottieFiles/astro_empty.json';
 
+// MUI Loading
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
+import LinearProgress from '@mui/material/LinearProgress';
+
 // Contexts
 import { StateContext, stateMethods } from '../../contexts/stateContext';
 import { DateContext, DateMethods } from "../../contexts/dateContext";
+
+// Redux
+import { useSelector } from 'react-redux'
 
 const colors = [
 "hsl(281, 70%, 50%)", 
@@ -32,8 +40,25 @@ function toFixed(num, fixed) {
     return num.toString().match(re)[0];
 }
 
+const loadingState = (fetching) => {
+    if (fetching) {
+        return (
+            <Stack sx={{ 
+                width: '100%',
+                color: 'grey.500',
+                marginTop: "10px" 
+                 }} spacing={2}>
+                <LinearProgress color="secondary" />
+                {/* <CircularProgress size={50} color="secondary" /> */}
+            </Stack>
+        );
+    } 
+}
+
 
 export default function NeighborhoodDemoBoard() {
+    const data_fetching = useSelector((state) => state.masterState.universal_loading_state.payload) // Redux Neighborhood Master List
+
     const [demographicData, setDemogaphicData] = React.useState([]);
     const [demographicKeys, setDemographicKeys] = React.useState([]);
 
@@ -94,12 +119,14 @@ export default function NeighborhoodDemoBoard() {
                 setDemographicKeys([]);
             }
         }
-
-    },[currentState]);
+        console.log("DATA FETCHING:", data_fetching);
+    },[currentState, data_fetching]);
 
     return(
         <>
+            <>
             <h3 className="card_title">Overall Demographic Data</h3>
+            {/* {loadingState(data_fetching)} */}
             {demographicData.length === 0 || demographicKeys.length === 0 ? 
                 <React.Fragment>
                     <div className="empty-container">
@@ -116,7 +143,7 @@ export default function NeighborhoodDemoBoard() {
                     cornerRadius={3}
                     valueFormat={function (e) {
                         return e + '%'
-                      }}
+                    }}
                     activeOuterRadiusOffset={8}
                     borderWidth={1}
                     borderColor={{
@@ -188,7 +215,8 @@ export default function NeighborhoodDemoBoard() {
                         }
                     ]}
                 />
-                }
+            }
+            </>
         </>
     );
 }
