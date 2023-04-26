@@ -7,6 +7,7 @@ export const masterStateSlice = createSlice({
       neighborhoods_master:[],
       topics_master: [],
       tracts_master: [],
+      universal_loading_state: false
     },
     reducers: {
       setNeighborhoodMaster: (state, neighs) => {
@@ -18,9 +19,12 @@ export const masterStateSlice = createSlice({
       setTractsMaster: (state, tracts) => {
         state.tracts_master = tracts;
       },
+      setLoadingState: (state, bool) => {
+        state.universal_loading_state = bool
+      }
     },
   })
 
-export const { setNeighborhoodMaster, setTopicsMaster, setTractsMaster } = masterStateSlice.actions
+export const { setNeighborhoodMaster, setTopicsMaster, setTractsMaster, setLoadingState } = masterStateSlice.actions
 
 export default masterStateSlice.reducer

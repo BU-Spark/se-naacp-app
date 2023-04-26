@@ -126,6 +126,8 @@ exports.getCensusData = functions.https.onRequest(async (request, response) => {
   const tractRef = db.collection('tracts_meta');
   const topicsRef = db.collection('topics_meta');
 
+  console.log("QUERY PARAMTERS:", queryParameters);
+
   const SetOfArticleDataDates = new Set();
   const SetOfArticleDataTract = new Set();
 
@@ -215,7 +217,7 @@ exports.getCensusData = functions.https.onRequest(async (request, response) => {
       data.articleData = ArrayIntersectArticles;
 
       // Send the data
-      if (data.censusData != 'None' && data.topicsData != 'None') {
+      if (data.demographics != 'None') {
         response.set('Access-Control-Allow-Origin', '*');
         response.send(JSON.stringify(data));
         response.end();

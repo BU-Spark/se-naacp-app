@@ -20,7 +20,8 @@ import { DateContext, DateMethods } from '../../contexts/dateContext.js';
 import { StateContext, stateMethods } from '../../contexts/stateContext.js';
 
 // Redux
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setLoadingState } from '../../redux/masterState/masterStateSlice'
 
 // Uniqid for unique keys
 import uniqid from 'uniqid';
@@ -45,7 +46,12 @@ const NeighborhoodCard = () => {
     const { dates } = React.useContext(DateContext);  // Global Context of dates
     const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
 
+    const state = useSelector((state) => state.masterState) // Redux master state
     const state_neigh = useSelector((state) => state.masterState.neighborhoods_master.payload) // Redux Neighborhood Master List
+    const dispatch = useDispatch();
+
+    // Loading data
+    const [fetchingData, setfetchingData] = React.useState(true);
 
     // Default Location
     const defaultLoc = {
@@ -54,11 +60,9 @@ const NeighborhoodCard = () => {
         longitude:-71.058304
     }
 
-    // Loading data
-    const [fetchingData, setfetchingData] = React.useState(true);
-
     // React Maps Objects recieved by data
     const [currLocation, SetCurrLocation] = React.useState(defaultLoc);
+    const [currTractLocation, SetTractCurrLocation] = React.useState("");
     const [tractGEOJSON, setTractGEOJSON] = React.useState(
         {
             "type": "FeatureCollection",
@@ -112,41 +116,44 @@ const NeighborhoodCard = () => {
         console.log("Tract Name:", v.payload.properties.NAME20)
     }
 
-    const setTractDataToAll =  async (tract) => {
-        const data = await DataMethods.getCensusDateData(dates[0], dates[1], tract).then((v) => {
-            let v_string = JSON.stringify(v);
-            if (v_string.includes("Error")){
-                console.log("Specific tract information not found!");
-                let newState = currentState;
-                delete newState.CensusTract;
-                newState = stateMethods.updateModified(newState);
-                setState(newState);
-            } else {
-                let newState = {
-                    ...currentState,
-                    CensusTract: v
+    const setTractDataToAllGraphs =  async (tract) => {
+        if (!DateMethods.fromEmpty(dates) && !DateMethods.toEmpty(dates) && DateMethods.dateValidation(dates[0], dates[1])) {
+            dispatch(setLoadingState(true)); // Set Loading state
+            const data = await DataMethods.getCensusDateData(dates[0], dates[1], tract).then((v) => {
+                let v_string = JSON.stringify(v);
+                if (v_string.includes("Error")){
+                    console.log("Specific tract information not found!");
+                    let newState = currentState;
+                    delete newState.CensusTract;
+                    newState = stateMethods.updateModified(newState);
+                    setState(newState);
+                } else {
+                    let newState = {
+                        ...currentState,
+                        CensusTract: v
+                    }
+                    newState = stateMethods.updateModified(newState);
+                    setState(newState);
                 }
-                newState = stateMethods.updateModified(newState);
-                setState(newState);
-            }
-        })
+                // setTimeout(() => {
+                //     dispatch(setLoadingState(false)); // Set Loading state
+                // }, "1000");
+                dispatch(setLoadingState(false)); // Set Loading state
+            });
+        }
     }
 
     const selectTrack = (e) => {
-        console.log("Tract Val: ", e.key);
-        //UPDATE currentState here to add tract val
-        // let newState = stateMethods.updateModified(stateMethods.modify(currentState, "currentTract", "030302"));
-        // setState(newState);
-
-
-
+        console.log("Selected track:", e);
         if (e.key.includes("all")) {
             let deconstruct_str = e.key.slice(4);
             let tract_list = deconstruct_str.split(",");
             setTractShapes(tract_list);
         } else {
-            setTractShapes([e.key]);
-            setTractDataToAll(e.key);
+            SetTractCurrLocation(e.key);
+            // setTractShapes(tract_list);
+            // setTractShapes([e.key]);
+            setTractDataToAllGraphs(e.key);
         }
     };
 
@@ -161,9 +168,12 @@ const NeighborhoodCard = () => {
                 }}
                 data={tractGEOJSON}
                 styleCallback={(feature, hover) => {
-                    return hover
-                      ? { fill: '#93c0d099', strokeWidth: '2'}
-                      : { fill: '#0026ff', strokeWidth: '1', opacity: '0.5'}
+
+                        if (feature.properties.TRACTCE20 === currTractLocation) {
+                            return hover ? { fill: '#93c0d099', strokeWidth: '2'} : { fill: '#ff0000', strokeWidth: '1', opacity: '0.5'}
+                        } else {
+                            return hover ? { fill: '#93c0d099', strokeWidth: '2'} : { fill: '#0026ff', strokeWidth: '1', opacity: '0.5'}
+                        }
                     }
                 }
             />
@@ -332,7 +342,7 @@ const NeighborhoodCard = () => {
                                     onOpenChange={(v) => {onSelectionNeigh(v)}}
                                     style={{
                                         width: "100%",
-                                        maxHeight: "490px", //Temporary CSS Measure
+                                        maxHeight: "480px", //Temporary CSS Measure
                                         overflow: "auto",
                                         visibility: `${fetchingData ? "hidden" : "visible"}`
                                     }}
