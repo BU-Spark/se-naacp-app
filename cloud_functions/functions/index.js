@@ -12,7 +12,7 @@ const APIKey = require('./config.js');
 const a = new APIKey();
 
 // JSON DATA
-const MASTER_DATA = require('./scripts/JSON_data/GBH_NAACP.json');
+const MASTER_DATA = require('./scripts/JSON_data/GBH_DEMO_DATA.json');
 
 // Init firestore
 initializeApp();
@@ -196,15 +196,19 @@ exports.getCensusData = functions.https.onRequest(async (request, response) => {
         }
 
         let data_topics_id = res_topics.docs[0].id;
-        if (data_topics_id === 'education'){
+        if (data_topics_id === 'arts'){
           ArrayOfTopicsData[0] = ArrayOfTopicsData[0] + 1;
-        } else if (data_topics_id === 'local') {
-          ArrayOfTopicsData[1] = ArrayOfTopicsData[1] + 1;
+        } else if (data_topics_id === 'education') {
+            ArrayOfTopicsData[1] = ArrayOfTopicsData[1] + 1;
+        } else if (data_topics_id === 'lifestyle') {
+            ArrayOfTopicsData[2] = ArrayOfTopicsData[2] + 1;
+        } else if (data_topics_id === 'news') {
+            ArrayOfTopicsData[3] = ArrayOfTopicsData[3] + 1;
         } else if (data_topics_id === 'politics') {
-          ArrayOfTopicsData[2] = ArrayOfTopicsData[2] + 1;
-        } else if (data_topics_id === 'opinion') {
-          ArrayOfTopicsData[3] = ArrayOfTopicsData[3] + 1;
-        }
+          ArrayOfTopicsData[4] = ArrayOfTopicsData[3] + 1;
+        } else if (data_topics_id === 'specials') {
+          ArrayOfTopicsData[5] = ArrayOfTopicsData[3] + 1;
+        } 
 
         return ArrayOfTopicsData;
       });

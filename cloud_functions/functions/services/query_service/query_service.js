@@ -118,15 +118,19 @@ async function queryDateAndNeighborhood(db, queryParameters, MASTER_DATA, verbos
                 }
 
                 let data_topics_id = res_topics.docs[0].id;
-                if (data_topics_id === 'education'){
-                    ArrayOfTopicsData[0] = ArrayOfTopicsData[0] + 1;
-                } else if (data_topics_id === 'local') {
+                if (data_topics_id === 'arts'){
+                  ArrayOfTopicsData[0] = ArrayOfTopicsData[0] + 1;
+                } else if (data_topics_id === 'education') {
                     ArrayOfTopicsData[1] = ArrayOfTopicsData[1] + 1;
-                } else if (data_topics_id === 'politics') {
+                } else if (data_topics_id === 'lifestyle') {
                     ArrayOfTopicsData[2] = ArrayOfTopicsData[2] + 1;
-                } else if (data_topics_id === 'opinion') {
+                } else if (data_topics_id === 'news') {
                     ArrayOfTopicsData[3] = ArrayOfTopicsData[3] + 1;
-                }
+                } else if (data_topics_id === 'politics') {
+                  ArrayOfTopicsData[4] = ArrayOfTopicsData[3] + 1;
+                } else if (data_topics_id === 'specials') {
+                  ArrayOfTopicsData[5] = ArrayOfTopicsData[3] + 1;
+                } 
                 
                 let result = {
                   pipeline: "topics_data",

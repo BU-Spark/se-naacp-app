@@ -21,7 +21,7 @@ const colors = ["hsl(281, 70%, 50%)", "hsl(55, 70%, 50%)", "hsl(147, 70%, 50%)",
 const ArticleCountsNeighborhoods = (articleData, articleKeys) => {
   return(
     <>
-        <h3 className="card_title">Article Data</h3>
+        <h3 className="card_title">Topic Data</h3>
         {articleData.length === 0 || articleKeys.length === 0 ? 
             <React.Fragment>
             <div className="empty-container">
