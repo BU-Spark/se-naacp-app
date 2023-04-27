@@ -125,7 +125,7 @@ export default function NeighborhoodDemoBoard() {
     return(
         <>
             <>
-            <h3 className="card_title">Overall Demographic Data</h3>
+            <h3 className="card_title">Demographic Data</h3>
             {/* {loadingState(data_fetching)} */}
             {demographicData.length === 0 || demographicKeys.length === 0 ? 
                 <React.Fragment>
