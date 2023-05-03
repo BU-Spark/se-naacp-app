@@ -1,133 +1,364 @@
-import React, { useState, useEffect } from "react";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
+import React from "react";
 import "./Neighborhood.css";
+
+// GeoJSON
+import geoData from '../../assets/mapsJSON/Census2020_Tracts.json'
+
+// MUI Card
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import GoogleMapReact from 'google-map-react';
-import { Grid } from "@mui/material";
-import gm from'./gm.jpg';
 
+// MUI Loading
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
 
-const NeighborhoodCard = (props) => {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [listingData, setListingData] = useState([]);
+// Map API (Pigeon Maps)
+import { GeoJson, Map, Marker, ZoomControl } from "pigeon-maps"
 
-    const tableStyle = {
-        border: "none",
-        boxShadow: "none"
-      };
+// React Contexts/Context Methods
+import { DateContext, DateMethods } from '../../contexts/dateContext.js';
+import { StateContext, stateMethods } from '../../contexts/stateContext.js';
+
+// Redux
+import { useSelector, useDispatch } from 'react-redux'
+import { setLoadingState } from '../../redux/masterState/masterStateSlice'
+
+// Uniqid for unique keys
+import uniqid from 'uniqid';
+
+// AntDesign
+import { Menu } from 'antd';
+
+// Data Methods 
+import DataMethods from '../../Pipelines/data';
+
+function getItem(label, key, icon, children, type) {
+    return {
+      key,
+      icon,
+      children,
+      label,
+      type,
+    };
+}
   
-    // useEffect(() => {
-    //   getPostings();
-    // }, []);
+const NeighborhoodCard = () => {
+    const { dates } = React.useContext(DateContext);  // Global Context of dates
+    const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
 
-    const columns = [
-        { id: "name", label: "Name", minWidth: 120 },
-        { id: "coverage", label: "Coverage", minWidth: 50 },
+    const state = useSelector((state) => state.masterState) // Redux master state
+    const state_neigh = useSelector((state) => state.masterState.neighborhoods_master.payload) // Redux Neighborhood Master List
+    const dispatch = useDispatch();
 
-      ];
-    const data = [
-        { id: "name", label: "Allston", minWidth: 50 },
-        { id: "coverage", label: "8", minWidth: 50 },
-    ];
-    const data2 = [
-        { id: "name", label: "Back Bay", minWidth: 50 },
-        { id: "coverage", label: "7", minWidth: 50 },
-    ];
-    const data3 = [
-        { id: "name", label: "North End", minWidth: 50 },
-        { id: "coverage", label: "7", minWidth: 50 },
-    ];
+    // Loading data
+    const [fetchingData, setfetchingData] = React.useState(true);
 
+    // Default Location
+    const defaultLoc = {
+        name: "Boston City",
+        latitude: 42.360953,
+        longitude:-71.058304
+    }
+
+    // React Maps Objects recieved by data
+    const [currLocation, SetCurrLocation] = React.useState(defaultLoc);
+    const [currTractLocation, SetTractCurrLocation] = React.useState("");
+    const [tractGEOJSON, setTractGEOJSON] = React.useState(
+        {
+            "type": "FeatureCollection",
+            "name": "Census2020_Tracts",
+            "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+            "features": []
+        }
+    );
+    const [locations, SetLocations] = React.useState([]);
+    const [items, setItems] = React.useState([]);
+
+    const returnRawNeighborhoodNames = (str) => {
+        return str.replaceAll(" ", "_").toLowerCase();
+    }
+
+    // Find and set relevant Tract Shapes
+    const setTractShapes = (tracts) => {
+        let GEOJSON_All = geoData.features;
+        let features_list = [];
+
+        tracts.forEach((tract) => {
+            let obj = GEOJSON_All.find((v) => v.properties.TRACTCE20 === ("" + tract)); 
+            features_list.push(obj)
+        });
+
+        setTractGEOJSON(
+            {
+                "type": "FeatureCollection",
+                "name": "Census2020_Tracts",
+                "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+                "features": features_list
+            }
+        )
+        return;
+    }
+
+    // Show Neighborhood and collection of Tracts
+    const onSelectionNeigh = (v) => {
+        if (v.length !== 0){
+            let result = locations.filter( (obj) => {
+                return obj.name === v[v.length - 1]
+            })
+            SetCurrLocation(result[0]);
+            setTractShapes(result[0].tracts)
+        }
+    }
+
+    // Handle Map API click
+    const onTractMapAPIClick = (v) => {
+        console.log("Tract:", v.payload.properties.TRACTCE20)
+        console.log("Tract Name:", v.payload.properties.NAME20)
+    }
+
+    const setTractDataToAllGraphs =  async (tract) => {
+        if (!DateMethods.fromEmpty(dates) && !DateMethods.toEmpty(dates) && DateMethods.dateValidation(dates[0], dates[1])) {
+            dispatch(setLoadingState(true)); // Set Loading state
+            const data = await DataMethods.getCensusDateData(dates[0], dates[1], tract).then((v) => {
+                let v_string = JSON.stringify(v);
+                if (v_string.includes("Error")){
+                    console.log("Specific tract information not found!");
+                    let newState = currentState;
+                    delete newState.CensusTract;
+                    newState = stateMethods.updateModified(newState);
+                    setState(newState);
+                } else {
+                    let newState = {
+                        ...currentState,
+                        CensusTract: v
+                    }
+                    newState = stateMethods.updateModified(newState);
+                    setState(newState);
+                }
+                // setTimeout(() => {
+                //     dispatch(setLoadingState(false)); // Set Loading state
+                // }, "1000");
+                dispatch(setLoadingState(false)); // Set Loading state
+            });
+        }
+    }
+
+    const selectTrack = (e) => {
+        console.log("Selected track:", e);
+        if (e.key.includes("all")) {
+            let deconstruct_str = e.key.slice(4);
+            let tract_list = deconstruct_str.split(",");
+            setTractShapes(tract_list);
+        } else {
+            SetTractCurrLocation(e.key);
+            // setTractShapes(tract_list);
+            // setTractShapes([e.key]);
+            setTractDataToAllGraphs(e.key);
+        }
+    };
+
+    // Default center is Boston City
+    const BostonMapAPI = () => {
+        return (
+          <Map defaultCenter={[defaultLoc.latitude, defaultLoc.longitude]} defaultZoom={13} center={[currLocation.latitude,currLocation.longitude]}>
+            <ZoomControl />
+            <GeoJson
+                onClick={ (v) => {
+                    onTractMapAPIClick(v)
+                }}
+                data={tractGEOJSON}
+                styleCallback={(feature, hover) => {
+
+                        if (feature.properties.TRACTCE20 === currTractLocation) {
+                            return hover ? { fill: '#93c0d099', strokeWidth: '2'} : { fill: '#ff0000', strokeWidth: '1', opacity: '0.5'}
+                        } else {
+                            return hover ? { fill: '#93c0d099', strokeWidth: '2'} : { fill: '#0026ff', strokeWidth: '1', opacity: '0.5'}
+                        }
+                    }
+                }
+            />
+            {locations.map( (v) => {
+                return <Marker key={uniqid()} width={30} anchor={[v.latitude, v.longitude]} />
+            })}
+          </Map>
+        )
+    };
+
+    // Temporary Latitude and longitudes (hardcoded)
+    const fixedLatLong = (neigh) => {
+        switch (neigh) {
+            case "Allston":
+                return {latitude: 42.353450, longitude: -71.132180};
+            case "Back Bay":
+                return {latitude: 42.348722, longitude: -71.079539};
+            case "Beacon Hill":
+                return {latitude: 42.359207, longitude: -71.067730};
+            case "Brighton":
+                return {latitude: 42.348378, longitude: -71.160506};
+            case "Charlestown":
+                return {latitude: 42.378250, longitude: -71.061559};
+            case "Dorchester":
+                return {latitude: 42.298543, longitude: -71.064899};  
+            case "Downtown":
+                return {latitude: 42.356037, longitude: -71.056680};
+            case "East Boston":
+                return {latitude: 42.379753, longitude: -71.025569};
+            case "Fenway":
+                return {latitude: 42.346434, longitude: -71.097272};
+            case "Harbor Islands":
+                return {latitude: 42.329368, longitude: -70.957648};
+            case "Hyde Park":
+                return {latitude: 42.255345, longitude: -71.125637}; 
+            case "Jamaica Plain":
+                return {latitude: 42.311641, longitude: -71.113521};
+            case "Longwood Medical Area":
+                return {latitude: 42.338214, longitude: -71.105204};
+            case "Mattapan":
+                return {latitude: 42.276680, longitude: -71.093567};
+            case "Mission Hill":
+                return {latitude: 42.329583, longitude: -71.106271};
+            case "North End":
+                return {latitude: 42.364957, longitude: -71.055490}; 
+            case "Roslindale":
+                return {latitude: 42.282620, longitude: -71.126447};
+            case "Roxbury":
+                return {latitude: 42.311231, longitude: -71.089716};
+            case "South Boston":
+                return {latitude: 42.334638, longitude: -71.045805};
+            case "South Boston Waterfront":
+                return {latitude: 42.345244, longitude: -71.042565}; 
+            case "South End":
+                return {latitude: 42.340366, longitude: -71.070795};
+            case "West End":
+                return {latitude: 42.365006, longitude: -71.064297};
+            case "West Roxbury":
+                return {latitude: 42.277277, longitude: -71.160691}; 
+            default:
+                return {latitude: 42.360081, longitude: -71.058884};
+        }
+        
+    }
+
+    const loadingState = (fetching) => {
+        if (fetching) {
+            return (
+                <Stack sx={{ 
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    maxHeight: "63%",
+                    alignItems: 'center',
+                    color: 'grey.500',
+                    marginTop: "10px" 
+                     }} spacing={2}>
+                    {/* <LinearProgress color="secondary" /> */}
+                    <CircularProgress size={50} color="secondary" />
+                </Stack>
+            );
+        } 
+    }
+
+    React.useEffect(() => {
+        if(items.length === 0) {
+            setfetchingData(true);
+        } else {
+            setfetchingData(false);
+        }
+
+        if (currentState.Subneighborhoods !== undefined) {         // Quick and Dirt
+            let neighborhoodTractMapData = stateMethods.updateModified(currentState.Subneighborhoods);
+            let _items = [];
+
+            for (let i = 0; i < neighborhoodTractMapData.length; i++) {
+                // Create the names
+                let nameList = neighborhoodTractMapData[i].neighborhood.replaceAll('_', ' ').split(" ");
+                let name = ""
+                nameList.forEach((e) => {
+                    name = name + " " + e.charAt(0).toUpperCase() + e.slice(1);
+                    name = name.trim();
+                });
+                // Get Lat Long information
+                let latlongBlock = fixedLatLong(name);
+
+                neighborhoodTractMapData[i] = {
+                    name: name,
+                    longitude: latlongBlock.longitude,
+                    latitude: latlongBlock.latitude,
+                    tracts: neighborhoodTractMapData[i].tracts
+                }
+
+                let tract_arr = [];
+                let tracts = neighborhoodTractMapData[i].tracts;
+                for (var k = 0; k < tracts.length; k++) {
+                    tract_arr.push(
+                        getItem(`Tract: ${tracts[k]}`, `${tracts[k]}`)
+                    )
+                }
+
+                // Push a All option
+                tract_arr.push(
+                    getItem(`All`, `all_${tracts}`)
+                )
+
+                _items.push(
+                    getItem(`${name}`, `${name}`, <></>, tract_arr)
+                );
+            }
+
+            setItems(_items);
+            SetLocations(neighborhoodTractMapData);
+        }
+
+        // if (currentState.currentNeigh !== undefined){
+        //     if (currentState.currentNeigh !== "boston_city") {
+        //         let neigh = items.filter(obj => {
+        //             return returnRawNeighborhoodNames(obj.key) === currentState.currentNeigh
+        //         });
+        //         let tract_arr = [];
+        //         neigh[0].children.map((v) => {
+        //             if (!v.key.includes("all")) {
+        //                 tract_arr.push(v.key);
+        //             }
+        //         });
+
+        //         setTractShapes(tract_arr);
+        //     }
+        // }
+
+    },[dates, currentState, state_neigh])
     
-      return (
-        <>
-        <Card className="body" sx={{ maxWidth: 800, minHeight:400}}>
-        <CardContent>
-            <h3 className="card">Neighborhoods Covered Most</h3>
+    return (
+    <>
+        <Card className="body" sx={{width: "100%", height: "80.5vh"}}>
+            <CardContent>
+                    <div style={{display: "flex", flexDirection: "row"}}>
+                        {/* Table */}
+                        <div style={{display: "flex", width: "40%", flexDirection: "column", marginRight: 20}}>
+                            <h3 className="card">Neighborhoods Covered Most</h3>
+                            {loadingState(fetchingData)}
+                            <div style={{width: "100%", overflow: "auto"}}>
+                                <Menu
+                                    onClick={selectTrack}
+                                    onOpenChange={(v) => {onSelectionNeigh(v)}}
+                                    style={{
+                                        width: "100%",
+                                        maxHeight: "480px", //Temporary CSS Measure
+                                        overflow: "auto",
+                                        visibility: `${fetchingData ? "hidden" : "visible"}`
+                                    }}
+                                    mode="inline"
+                                    items={items}
+                                />
+                            </div>
+                        </div> 
+                        <div style={{flex: 1}}></div>
 
-            <Grid container spacing={1}>
-                <Grid item xs={6}>
-                    <Container maxWidth="sm">
-                    <TableContainer sx={{ maxWidth: 300, maxHeight: 300}} >
-                        <Table className="body" stickyHeader aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-                                {columns.map((column) => (
-                                <TableCell
-                                key={column.id}
-                                align={column.align}
-                                style={{ minWidth: column.minWidth}}
-                                >
-                                {column.label}
-                                </TableCell>
-                                ))}
-                            </TableRow>
-
-                            <TableRow>
-                                {data.map((column) => (
-                                <TableCell
-                                key={column.id}
-                                align={column.align}
-                                style={{ minWidth: column.minWidth}}
-                                >
-                                {column.label}
-                                </TableCell>
-                                ))}
-                            </TableRow>
-
-                            <TableRow>
-                                {data2.map((column) => (
-                                <TableCell
-                                key={column.id}
-                                align={column.align}
-                                style={{ minWidth: column.minWidth}}
-                                >
-                                {column.label}
-                                </TableCell>
-                                ))}
-                            </TableRow>
-
-                            <TableRow>
-                                {data3.map((column) => (
-                                <TableCell
-                                key={column.id}
-                                align={column.align}
-                                style={{ minWidth: column.minWidth}}
-                                >
-                                {column.label}
-                                </TableCell>
-                                ))}
-                            </TableRow>
-                            
-                        </TableHead>
-                        </Table>
-                    </TableContainer>
-                </Container>
-                </Grid>
-
-                <Grid item xs={6}>
-                    <div style={{ height: '450px', width: '380px' }}>
-                    {/* <GoogleMapReact
-                    bootstrapURLKeys={{ key: 'asfdsafeafsf' }}
-                    >
-                    </GoogleMapReact> */}
-                    <a href="https://www.google.com/maps/place/Back+Bay,+Boston,+MA/@42.3492608,-71.0895385,15z/data=!3m1!4b1!4m5!3m4!1s0x89e37a0ef815f5b1:0xbca3cc92599b5bc4!8m2!3d42.3495236!4d-71.0794717">
-                      <img src={gm} width="310" height="400"></img>
-                    </a>
+                        {/* Maps API */}
+                        <div style={{ height: "75vh", width: '70%' }}>
+                            {BostonMapAPI()}
+                        </div>
                     </div>
-                </Grid>
-            </Grid>
-        </CardContent>
+            </CardContent>
         </Card>
     </>
     );

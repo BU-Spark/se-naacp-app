@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./SearchBar.css";
+
+// MUI UI
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -28,33 +30,33 @@ function SearchBar({ word, placeholder, data }) {
 
   return (
     <div className="search">
-    <p className="word">{word}</p>
-      <div className="searchInputs">
-        <div className="dateIcon">
-          {filteredData.length === 0 ? (
-            <SearchIcon fontSize="medium"/>
-          ) : (
-            <CloseIcon id="clearBtn" onClick={clearInput} />
-          )}
+      <p className="word">{word}</p>
+        <div className="searchInputs">
+          <div className="dateIcon">
+            {filteredData.length === 0 ? (
+              <SearchIcon fontSize="medium"/>
+            ) : (
+              <CloseIcon id="clearBtn" onClick={clearInput} />
+            )}
+          </div>
+          <input
+            type="text"
+            placeholder={placeholder}
+            value={wordEntered}
+            onChange={handleFilter}
+          />
         </div>
-        <input
-          type="text"
-          placeholder={placeholder}
-          value={wordEntered}
-          onChange={handleFilter}
-        />
-      </div>
-      {filteredData.length != 0 && (
-        <div className="dataResult">
-          {filteredData.slice(0, 15).map((value, key) => {
-            return (
-              <a className="dataItem" href={value.link} target="_blank">
-                <p>{value.title} </p>
-              </a>
-            );
-          })}
-        </div>
-      )}
+        {filteredData.length != 0 && (
+          <div className="dataResult">
+            {filteredData.slice(0, 15).map((value, key) => {
+              return (
+                <a className="dataItem" href={value.link} target="_blank">
+                  <p>{value.title} </p>
+                </a>
+              );
+            })}
+          </div>
+        )}
     </div>
   );
 }

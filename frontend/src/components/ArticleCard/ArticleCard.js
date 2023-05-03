@@ -1,120 +1,101 @@
-import React, { useState, useEffect } from "react";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import "./ArticleCard.css";
+import * as React from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import dayjs from 'dayjs';
+
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import "./ArticleCard.css";
+import queryMethods from '../../Pipelines/data';
 
+// Uniqid for unique keys
+import uniqid from 'uniqid';
 
-const ArticlesCard = (props, topic) => {
-    const [articles, setArticles] = useState([])
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [listingData, setListingData] = useState([]);
+// Contexts
+import { StateContext, stateMethods } from '../../contexts/stateContext';
+import { Link } from '@mui/material';
 
-    const tableStyle = {
-        border: "none",
-        boxShadow: "none"
-      };
-
-    // useEffect(() => {
-    //   getPostings();
-    // }, []);
-
-    const columns = [
-        { id: "articleTitle", label: "Title", minWidth: 120 },
-        { id: "authorName", label: "Author", minWidth: 50 },
-        { id: "publishingDate", label: "Publishing Date", minWidth: 50 },
-      ];
-    const data = [
-        { id: "articleTitle", label: "Article About Jamacia Plain", minWidth: 120 },
-        { id: "authorName", label: "by John Chai", minWidth: 50 },
-        { id: "publishingDate", label: "2019-09-09", minWidth: 50 },
-    ];
-    const data2 = [
-        { id: "articleTitle", label: "Article About Dorchester", minWidth: 120 },
-        { id: "authorName", label: "by Asad", minWidth: 50 },
-        { id: "publishingDate", label: "2019-03-09", minWidth: 50 },
-    ];
-    const data3 = [
-        { id: "articleTitle", label: "Article About Arlington", minWidth: 120 },
-        { id: "authorName", label: "by Daniel", minWidth: 50 },
-        { id: "publishingDate", label: "2019-04-04", minWidth: 50 },
-    ];
-
-    
-      return (
-        <>
-        <Card className="body" sx={{ maxWidth: 800, minHeight:400}}>
-        <CardContent>
-            <h3 className="card">Articles on Topic</h3>
-            <Container maxWidth="md">
-            <TableContainer>
-                <Table className="body" stickyHeader aria-label="sticky table">
-                <TableHead>
-                    <TableRow>
-                        {columns.map((column) => (
-                        <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth}}
-                        >
-                        {column.label}
-                        </TableCell>
-                        ))}
-                    </TableRow>
-
-                    <TableRow>
-                        {data.map((column) => (
-                        <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth}}
-                        >
-                        {column.label}
-                        </TableCell>
-                        ))}
-                    </TableRow>
-
-                    <TableRow>
-                        {data2.map((column) => (
-                        <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth}}
-                        >
-                        {column.label}
-                        </TableCell>
-                        ))}
-                    </TableRow>
-
-                    <TableRow>
-                        {data3.map((column) => (
-                        <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth}}
-                        >
-                        {column.label}
-                        </TableCell>
-                        ))}
-                    </TableRow>
-                    
-                </TableHead>
-                </Table>
-            </TableContainer>
-        </Container>
-        </CardContent>
-        </Card>
-    </>
-    );
+function getHTML(str){
+  const htmlString = str;
+  const parser = new DOMParser();
+  const html = parser.parseFromString(htmlString, 'text/html');
+  const body = html.body.lastChild;
+  console.log("HOST: ", body.hostname)
+  console.log("href: ", body.href)
+  return body
 }
 
-export default ArticlesCard;
+const columns = [
+  {field: 'title', headerName: 'Title', width: 580, 
+    renderCell:(params) => <Link href={`${params.row.title.link}`} target='_blank'>{params.row.title.title}</Link>},
+  {field: 'author', headerName: 'Author', width: 130 },
+  {field: 'publishingDate', headerName: 'Publishing Date', width: 120,},
+  {field: 'neighborhood', headerName: 'Neighborhood', width: 110,},
+  {field: 'censusTract', headerName: 'Census Tract', width: 110},
+  {field: 'category', headerName: 'Category', width: 90,},
+];
+
+
+
+
+
+export default function ArticleCard() {
+
+  const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
+
+  const [articleData, setArticleData] = React.useState([]);
+
+
+  React.useEffect(() => {
+    
+    if (currentState !== undefined) {
+      if (currentState.hasOwnProperty('CensusTract')) {
+        if (currentState.CensusTract.articles !== 'None') {
+          let data = currentState.CensusTract.articleData;
+          let articles = queryMethods.getArticleData(data).then((articles) => {
+            let articleRow = []
+            for (const article of articles) {
+              console.log("ARTICLE: ", article)
+              articleRow.push({
+                id: uniqid(), 
+                title: {link: article.link, title: article.hl1}, 
+                author: `${article.author}`, 
+                publishingDate: `${dayjs(article.pub_date).format('MMM D, YYYY')}`,
+                neighborhood: `${currentState.currentNeigh.charAt(0).toUpperCase()+currentState.currentNeigh.slice(1)}`,
+                censusTract: `${article.tracts[0]}`,
+                category: `${article.position_section}`
+              }) 
+            }
+            setArticleData(articleRow)
+          })
+          
+          
+
+        }
+      } else {
+        setArticleData([]);
+      }
+    }
+  }, [currentState])
+
+  return (
+    <>
+    
+        <Card className="body" sx={{ width: "100%", height: "62vh" }}>
+    <CardContent>
+        <h3 className="card">Articles From Neighborhood/Tract</h3>
+        <div style={{ height: 350, width: '100%' }}>
+          <DataGrid
+            rows={articleData}
+            columns={columns}
+            pageSize={articleData.length}
+            rowsPerPageOptions={[5]}
+            hideFooter={true}
+          />
+        </div>
+        
+    </CardContent>
+    </Card>
+    </>
+
+  );
+}

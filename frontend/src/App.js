@@ -1,45 +1,31 @@
+import React from "react";
+
+// CSS
 import './App.css';
-import SearchFields from './components/SearchFields/SearchFields.js'
-import ArticlesCard from './components/ArticleCard/ArticleCard';
-import NeighborhoodCard from './components/Neighborhood/NeighborhoodCard';
-import { Grid } from '@mui/material';
-import { TopNavBar } from './components/TopNavBar/TopNavBar';
-import { NeighborhoodDemoBoard } from './components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
-import { TrendBoard } from './components/TrendBoard/TrendBoard';
-import Read from './components/DataRetrieve/data';
-import Logo from "./logo.svg";
+
+// Main navigator
+import MainNavigator from './routes/MainNavigator'
+
+// Universal Contexts
+import { DateContext } from './contexts/dateContext'
+import { StateContext } from './contexts/stateContext'
+import { NeighborhoodContext } from './contexts/neighborhoodContext'
 
 function App() {
+  const [dates, setDates] = React.useState([null,null]);
+  const [currentState, setState] = React.useState({});
+  const [neighborhood, setNeigh] = React.useState("boston_city");
+
   return (
-    <div className="App">
-      <TopNavBar></TopNavBar>
-      <Read></Read>
-      <Grid container spacing={1}>
-        <Grid item xs={3}>
-          <img style={{marginLeft: 10, marginTop: 10, width: 150}}src={Logo}></img>
-        </Grid>
-        <Grid item xs={9}>
-        <SearchFields></SearchFields>
-        </Grid>
-      </Grid>
-      <br></br>
-
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <NeighborhoodCard></NeighborhoodCard>
-        </Grid>
-        <Grid item xs={6}>
-          <TrendBoard></TrendBoard>
-        </Grid>
-        <Grid item xs={6}>
-          <NeighborhoodDemoBoard></NeighborhoodDemoBoard>
-        </Grid>
-        <Grid item xs={6}>
-        <ArticlesCard style={{marginLeft: 20}} topic="Technology"></ArticlesCard>
-        </Grid>
-
-      </Grid>
-    </div>
+    <>
+      <StateContext.Provider value={{currentState, setState}}>
+        <DateContext.Provider value={{dates, setDates}}>
+          <NeighborhoodContext.Provider value={{neighborhood, setNeigh}}>
+            <MainNavigator />
+          </NeighborhoodContext.Provider>
+        </DateContext.Provider>
+      </StateContext.Provider>
+    </>
   );
 }
 

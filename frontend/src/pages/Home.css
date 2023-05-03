@@ -1,0 +1,59 @@
+.search_container {
+    display: flex;
+    flex-direction: row;
+}
+
+.master_content_container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 50px;
+}
+
+.neighborhood-container {
+    display: flex;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.article-container {
+    display: flex;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.data-cards {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+/* .row_left {
+    width: 50%;
+    margin-right: 10px;
+}
+
+.row_right {
+    width: 50%;
+    margin-left: 10px;
+} */
+
+.graph_card{
+    width: 45vw;
+    height: 50.5vh;
+    padding-bottom: 8vh;
+    padding-top: 3vh;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    border-radius: 4px;
+}
+
+.card_title {
+    font-weight: bold;
+    font-size: larger;
+    padding-left: 1rem;
+    margin-top: 1rem;
+    margin-bottom: none;
+    padding-bottom: none;
+}
