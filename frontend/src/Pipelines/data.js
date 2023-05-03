@@ -20,7 +20,7 @@ const getNeighborhoodAndDateData = async(dateFrom, dateTo, Neighborhood) => {
 	console.log("The Parameter Payload:", parameter_payload);
 
 	let neigh_date_data = await axios.get(
-		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getDateAndNeighborhood`,
+		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/queryDateAndNeighborhood`,
 		{
 			params: {
 				QueryParam: parameter_payload
@@ -29,18 +29,29 @@ const getNeighborhoodAndDateData = async(dateFrom, dateTo, Neighborhood) => {
 	)
   	.then(res => {
     	return res
-  	});
+  	}).catch((error) => {
+		return {header: "Internal Server Error!", reason: error}
+	});
+
+	// if (neigh_date_data.header.includes("Error")) {
+	// 	console.log("ERROR HAS OCCURED!");
+	// } else {
+	// 	neigh_date_data = neigh_date_data.data;
+	// }
 
 	neigh_date_data = neigh_date_data.data;
+
 	return neigh_date_data;
 };	
 
 
 // GET request to query given valid date and census tract
+// ======================================================
 // Using Axios Params to send specification
 // <-- dateFrom: start date, Date.JS object
 // <-- dateTo: end date, Date.JS object
 // <-- tract: tract as a string
+// ======================================================
 // --> Returns a resolved void promise
 const getCensusDateData = async(dateFrom, dateTo, tract) => { 
 	let formattedDateFrom = dayjs(dateFrom).format('YYYYMMDD');
@@ -67,6 +78,9 @@ const getCensusDateData = async(dateFrom, dateTo, tract) => {
   	});
 
 	tract_date_data = tract_date_data.data;
+
+	console.log("Tract_date_data:", tract_date_data);
+
 	return tract_date_data;
 };	
 
@@ -77,7 +91,7 @@ const getArticleData = async(articleData) => {
 	}
 
 	let article_data = await axios.get(
-		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getArticleData`,
+		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/queryArticleKeys`,
 		{
 			params: {
 				QueryParam: parameter_payload

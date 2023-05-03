@@ -8,6 +8,10 @@ import geoData from '../../assets/mapsJSON/Census2020_Tracts.json'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 
+// MUI Loading
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
+
 // Map API (Pigeon Maps)
 import { GeoJson, Map, Marker, ZoomControl } from "pigeon-maps"
 
@@ -16,7 +20,8 @@ import { DateContext, DateMethods } from '../../contexts/dateContext.js';
 import { StateContext, stateMethods } from '../../contexts/stateContext.js';
 
 // Redux
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setLoadingState } from '../../redux/masterState/masterStateSlice'
 
 // Uniqid for unique keys
 import uniqid from 'uniqid';
@@ -41,7 +46,12 @@ const NeighborhoodCard = () => {
     const { dates } = React.useContext(DateContext);  // Global Context of dates
     const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
 
+    const state = useSelector((state) => state.masterState) // Redux master state
     const state_neigh = useSelector((state) => state.masterState.neighborhoods_master.payload) // Redux Neighborhood Master List
+    const dispatch = useDispatch();
+
+    // Loading data
+    const [fetchingData, setfetchingData] = React.useState(true);
 
     // Default Location
     const defaultLoc = {
@@ -52,6 +62,7 @@ const NeighborhoodCard = () => {
 
     // React Maps Objects recieved by data
     const [currLocation, SetCurrLocation] = React.useState(defaultLoc);
+    const [currTractLocation, SetTractCurrLocation] = React.useState("");
     const [tractGEOJSON, setTractGEOJSON] = React.useState(
         {
             "type": "FeatureCollection",
@@ -62,6 +73,10 @@ const NeighborhoodCard = () => {
     );
     const [locations, SetLocations] = React.useState([]);
     const [items, setItems] = React.useState([]);
+
+    const returnRawNeighborhoodNames = (str) => {
+        return str.replaceAll(" ", "_").toLowerCase();
+    }
 
     // Find and set relevant Tract Shapes
     const setTractShapes = (tracts) => {
@@ -101,35 +116,44 @@ const NeighborhoodCard = () => {
         console.log("Tract Name:", v.payload.properties.NAME20)
     }
 
-    const setTractDataToAll =  async (tract) => {
-        const data = await DataMethods.getCensusDateData(dates[0], dates[1], tract).then((v) => {
-            let v_string = JSON.stringify(v);
-            if (v_string.includes("Error")){
-                console.log("Specific tract information not found!");
-                let newState = currentState;
-                delete newState.CensusTract;
-                newState = stateMethods.updateModified(newState);
-                setState(newState);
-            } else {
-                let newState = {
-                    ...currentState,
-                    CensusTract: v
+    const setTractDataToAllGraphs =  async (tract) => {
+        if (!DateMethods.fromEmpty(dates) && !DateMethods.toEmpty(dates) && DateMethods.dateValidation(dates[0], dates[1])) {
+            dispatch(setLoadingState(true)); // Set Loading state
+            const data = await DataMethods.getCensusDateData(dates[0], dates[1], tract).then((v) => {
+                let v_string = JSON.stringify(v);
+                if (v_string.includes("Error")){
+                    console.log("Specific tract information not found!");
+                    let newState = currentState;
+                    delete newState.CensusTract;
+                    newState = stateMethods.updateModified(newState);
+                    setState(newState);
+                } else {
+                    let newState = {
+                        ...currentState,
+                        CensusTract: v
+                    }
+                    newState = stateMethods.updateModified(newState);
+                    setState(newState);
                 }
-                newState = stateMethods.updateModified(newState);
-                setState(newState);
-            }
-        })
+                // setTimeout(() => {
+                //     dispatch(setLoadingState(false)); // Set Loading state
+                // }, "1000");
+                dispatch(setLoadingState(false)); // Set Loading state
+            });
+        }
     }
 
     const selectTrack = (e) => {
-        console.log(e);
+        console.log("Selected track:", e);
         if (e.key.includes("all")) {
             let deconstruct_str = e.key.slice(4);
             let tract_list = deconstruct_str.split(",");
             setTractShapes(tract_list);
         } else {
-            setTractShapes([e.key]);
-            setTractDataToAll(e.key);
+            SetTractCurrLocation(e.key);
+            // setTractShapes(tract_list);
+            // setTractShapes([e.key]);
+            setTractDataToAllGraphs(e.key);
         }
     };
 
@@ -143,10 +167,14 @@ const NeighborhoodCard = () => {
                     onTractMapAPIClick(v)
                 }}
                 data={tractGEOJSON}
-                styleCallback={(feature, hover) =>
-                    hover
-                      ? { fill: '#93c0d099', strokeWidth: '2'}
-                      : { fill: '#0026ff', strokeWidth: '1', opacity: '0.5'}
+                styleCallback={(feature, hover) => {
+
+                        if (feature.properties.TRACTCE20 === currTractLocation) {
+                            return hover ? { fill: '#93c0d099', strokeWidth: '2'} : { fill: '#ff0000', strokeWidth: '1', opacity: '0.5'}
+                        } else {
+                            return hover ? { fill: '#93c0d099', strokeWidth: '2'} : { fill: '#0026ff', strokeWidth: '1', opacity: '0.5'}
+                        }
+                    }
                 }
             />
             {locations.map( (v) => {
@@ -211,7 +239,32 @@ const NeighborhoodCard = () => {
         
     }
 
+    const loadingState = (fetching) => {
+        if (fetching) {
+            return (
+                <Stack sx={{ 
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    maxHeight: "63%",
+                    alignItems: 'center',
+                    color: 'grey.500',
+                    marginTop: "10px" 
+                     }} spacing={2}>
+                    {/* <LinearProgress color="secondary" /> */}
+                    <CircularProgress size={50} color="secondary" />
+                </Stack>
+            );
+        } 
+    }
+
     React.useEffect(() => {
+        if(items.length === 0) {
+            setfetchingData(true);
+        } else {
+            setfetchingData(false);
+        }
+
         if (currentState.Subneighborhoods !== undefined) {         // Quick and Dirt
             let neighborhoodTractMapData = stateMethods.updateModified(currentState.Subneighborhoods);
             let _items = [];
@@ -256,9 +309,21 @@ const NeighborhoodCard = () => {
             SetLocations(neighborhoodTractMapData);
         }
 
-        if (state_neigh !== undefined) {
-            console.log(state_neigh);
-        }
+        // if (currentState.currentNeigh !== undefined){
+        //     if (currentState.currentNeigh !== "boston_city") {
+        //         let neigh = items.filter(obj => {
+        //             return returnRawNeighborhoodNames(obj.key) === currentState.currentNeigh
+        //         });
+        //         let tract_arr = [];
+        //         neigh[0].children.map((v) => {
+        //             if (!v.key.includes("all")) {
+        //                 tract_arr.push(v.key);
+        //             }
+        //         });
+
+        //         setTractShapes(tract_arr);
+        //     }
+        // }
 
     },[dates, currentState, state_neigh])
     
@@ -270,14 +335,16 @@ const NeighborhoodCard = () => {
                         {/* Table */}
                         <div style={{display: "flex", width: "40%", flexDirection: "column", marginRight: 20}}>
                             <h3 className="card">Neighborhoods Covered Most</h3>
-                            <div style={{width: "100%"}}>
+                            {loadingState(fetchingData)}
+                            <div style={{width: "100%", overflow: "auto"}}>
                                 <Menu
                                     onClick={selectTrack}
                                     onOpenChange={(v) => {onSelectionNeigh(v)}}
                                     style={{
                                         width: "100%",
-                                        maxHeight: "63%",
+                                        maxHeight: "480px", //Temporary CSS Measure
                                         overflow: "auto",
+                                        visibility: `${fetchingData ? "hidden" : "visible"}`
                                     }}
                                     mode="inline"
                                     items={items}

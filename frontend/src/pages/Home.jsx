@@ -63,7 +63,6 @@ export default function Home() {
                 let newState = stateMethods.updateModified(res);
                 setState(newState);
             })
-            // console.log("This is the current universal state AFTER:", currentState);
         } else {
             if (currentState.hasOwnProperty('CensusTract')) {
                 let newState = currentState
@@ -72,7 +71,7 @@ export default function Home() {
                 setState(newState);
             }
         }
-    },[dates, neighborhood, state]);
+    },[dates, neighborhood]);
 
     return (
         <>
@@ -102,11 +101,6 @@ export default function Home() {
                         <NeighborhoodCard></NeighborhoodCard>
                     </div>
 
-                     {/* Article Card */}
-                    <div className="article-container">
-                        <ArticlesCard style={{marginLeft: 20}} topic="Technology"></ArticlesCard>
-                    </div>
-
                     {/* 1st Data Cards */}
                     <div className="data-cards">
                         <div className="graph_card">
@@ -115,6 +109,11 @@ export default function Home() {
                         <div className="graph_card">
                             <TrendBoard></TrendBoard>
                         </div>
+                    </div>
+
+                     {/* Article Card */}
+                    <div className="article-container">
+                        <ArticlesCard style={{marginLeft: 20}} topic="Technology"></ArticlesCard>
                     </div>
                     
                 </div>

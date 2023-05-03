@@ -21,7 +21,7 @@ const colors = ["hsl(281, 70%, 50%)", "hsl(55, 70%, 50%)", "hsl(147, 70%, 50%)",
 const ArticleCountsNeighborhoods = (articleData, articleKeys) => {
   return(
     <>
-        <h3 className="card_title">Article Data</h3>
+        <h3 className="card_title">Category Data</h3>
         {articleData.length === 0 || articleKeys.length === 0 ? 
             <React.Fragment>
             <div className="empty-container">
@@ -118,7 +118,7 @@ export const TrendBoard = () => {
           console.log("The topics:", topics)
           setArticleKeys(topics);
 
-          // Check for Article Data
+        //   Check for Article Data
           if (currentState.hasOwnProperty('CensusTract')) {
             if (currentState.CensusTract.topicsData !== 'None') {
               let data = [];
