@@ -1,10 +1,14 @@
 const express = require("express")
+const cors = require("cors");
 const { graphqlHTTP } = require("express-graphql")
 
-// Import GraphQL Schemas
+// Import GraphQL Schemas and Resolvers
 const { masterSchema, masterResolver } = require("./services/master_service.js");
 
-var app = express()
+const app = express();
+const PORT = 4000;
+
+app.use(cors());
 app.use(
   "/universalValues",
   graphqlHTTP({
@@ -12,6 +16,8 @@ app.use(
     rootValue: masterResolver,
     graphiql: true,
   })
-)
-app.listen(4000)
-console.log("Running a GraphQL API server at http://localhost:4000/universalValues")
+);
+
+
+app.listen(PORT)
+console.log(`Running a GraphQL API server at http://localhost:${PORT}`)

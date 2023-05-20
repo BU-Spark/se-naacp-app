@@ -25,9 +25,22 @@ const masterResolver = {
       try{
         const db = client.db(dbName);
         const neighCollection = db.collection("neighborhood_data");
-        queryResult = await neighCollection.distinct("value");
+        queryResult = await neighCollection.distinct("value").then((val) => {
+          if (val.length === 0) {
+            console.log("[getNeighborhoodList] WARNING: Query Result is Empty!")
+          } else if (val === null) {
+            let err = mongoError("[501] Internal Server Error", 
+            "GraphQL Resolver suffered an Error. Please check MongoDB or API.",
+            );
+
+            return err
+          }
+
+          return val;
+        });
+        
       } catch(error) {
-        let err = mongoError("[501] Internal Server Error", 
+        let err = mongoError("[502] Internal Mongo Error", 
         "[getNeighborhoodList] Mongo failed to retrieve Master Neighborhood List",
         error,
         );
@@ -44,10 +57,23 @@ const masterResolver = {
       let queryResult = [];
       try{
         const db = client.db(dbName);
-        const neighCollection = db.collection("topics_data");
-        queryResult = await neighCollection.distinct("value");
+        const topicsCollection = db.collection("topics_data");
+        queryResult = await topicsCollection.distinct("value").then((val) => {
+          if (val.length === 0) {
+            console.log("[getTopicList] WARNING: Query Result is Empty!")
+          } else if (val === null) {
+            let err = mongoError("[501] Internal Server Error", 
+            "GraphQL Resolver suffered an Error. Please check MongoDB or API.",
+            );
+
+            return err
+          }
+
+          return val;
+        });
+        
       } catch(error) {
-        let err = mongoError("[501] Internal Server Error", 
+        let err = mongoError("[502] Internal Mongo Error", 
         "[getTopicList] Mongo failed to retrieve Master Topics List",
         error,
         );
