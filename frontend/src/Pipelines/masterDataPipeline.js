@@ -28,11 +28,12 @@ const getInitData = async() => {
     return res;
   });
 
-  // Set in raw data format
+  let  message_neigh_list_save = message_neigh_list
+  let message_topics_list_save = message_topics_list
   message_neigh_list = JSON.parse(message_neigh_list.data.data.getNeighborhoodList);
   message_topics_list = message_topics_list.data.data.getTopicList;
 
-  return [message_neigh_list, message_topics_list]
+  return [message_neigh_list, message_topics_list, message_neigh_list_save, message_topics_list_save]
 }
 
 
