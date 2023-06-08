@@ -5,7 +5,6 @@ import ArticlesCard from '../components/ArticleCard/ArticleCard';
 import NeighborhoodCard from '../components/Neighborhood/NeighborhoodCard';
 
 import { TopNavBar } from '../components/TopNavBar/TopNavBar';
-import NeighborhoodCensus from "../components/NeighborhoodCensus/NeighborhoodCensus";
 import  NeighborhoodDemoBoard from '../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
 import { TrendBoard } from '../components/TrendBoard/TrendBoard';
 
@@ -51,7 +50,7 @@ export default function Home() {
 
         return newState;
     }
-
+    
     // To Test Dates, use data from: 12/20/2018 up to: 01/20/2019 in roxbury
     React.useEffect( () => {
         // console.log("This is the current universal state BEFORE:", currentState);

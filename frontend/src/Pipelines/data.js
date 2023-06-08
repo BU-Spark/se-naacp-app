@@ -2,32 +2,36 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 
 // GET request to query given valid date and neighborhood
+// ======================================================
 // Using Axios Params to send specification
 // <-- dateFrom: start date, Date.JS object
 // <-- dateTo: end date, Date.JS object
 // <-- Neighborhood: Neighborhood as a string
+// ======================================================
 // --> Returns a resolved void promise
-const getNeighborhoodAndDateData = async(dateFrom, dateTo, Neighborhood) => { 
+const getNeighborhoodAndDateData = async(dateFrom, dateTo, neighborhood) => { 
 	let formattedDateFrom = dayjs(dateFrom).format('YYYYMMDD');
 	let formattedDateTo = dayjs(dateTo).format('YYYYMMDD');
 
-	const parameter_payload = {
-		dateFrom: `${formattedDateFrom}`,
-		dateTo: `${formattedDateTo}`,
-		Neighborhood: `${Neighborhood}`
-	}
+	const query = `query queryDateAndNeighborhood($dateFrom: Int, $dateTo: Int, $neighborhood: String) {
+		queryDateAndNeighborhood($dateFrom: dateFrom, $dateTo: dateTo, $neighborhood: Neighborhood)
+	}`
 
-	console.log("The Parameter Payload:", parameter_payload);
-
-	let neigh_date_data = await axios.get(
-		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/queryDateAndNeighborhood`,
-		{
-			params: {
-				QueryParam: parameter_payload
-			}
-		}
-	)
-  	.then(res => {
+	let neigh_date_data = await axios({
+		method: 'POST',
+		url: 'http://localhost:4000/queryValues',
+		headers: {
+		  "Content-Type": "application/json",
+		},
+		data: JSON.stringify({ 
+			query: `{ queryDateAndNeighborhood }`,
+			variables: { dateFrom: formattedDateFrom, dateTo: formattedDateTo, Neighborhood: neighborhood }
+		})
+		// data: JSON.stringify({ 
+		// 	query,
+		// 	variables: { dateFrom, dateTo, Neighborhood },
+		// })
+	}).then(res => {
     	return res
   	}).catch((error) => {
 		return {header: "Internal Server Error!", reason: error}
@@ -39,7 +43,7 @@ const getNeighborhoodAndDateData = async(dateFrom, dateTo, Neighborhood) => {
 	// 	neigh_date_data = neigh_date_data.data;
 	// }
 
-	neigh_date_data = neigh_date_data.data;
+	neigh_date_data = JSON.parse(neigh_date_data.data);
 
 	return neigh_date_data;
 };	

@@ -13,7 +13,7 @@ import Home from '../pages/Home'
 import MasterPipeline from '../Pipelines/masterDataPipeline'
 
 // Universal Context
-import { StateContext } from "../contexts/stateContext";
+import { StateContext, stateMethods } from "../contexts/stateContext";
 
 // Date Context
 import { DateContext, DateMethods } from "../contexts/dateContext";
@@ -24,6 +24,7 @@ import { setNeighborhoodMaster } from '../redux/masterState/masterStateSlice'
 
 export default function MainNavigator() {
     const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
+
     const { dates } = React.useContext(DateContext);  // Global Context of Dates
 
     const state = useSelector((state) => state.masterState) // Redux master state
@@ -32,7 +33,8 @@ export default function MainNavigator() {
     React.useEffect(() => {
         MasterPipeline.getInitData().then( async (v) => {
             console.log("After data fetching, pushing to universal state:", v);
-            setState({Subneighborhoods: v[0], Topics: v[1]});
+            let newState = stateMethods.updateModified({Subneighborhoods: v[0], Topics: v[1]});
+            setState(newState);
 
             // Using Redux
             try {

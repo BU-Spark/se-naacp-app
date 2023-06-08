@@ -9,7 +9,7 @@ const client = new MongoClient(url);
 
 const masterSchema = buildSchema(`
   type Query {
-    getNeighborhoodList: [String]
+    getNeighborhoodList: String
     getTopicList: [String]
   }
 `);
@@ -25,18 +25,30 @@ const masterResolver = {
       try{
         const db = client.db(dbName);
         const neighCollection = db.collection("neighborhood_data");
-        queryResult = await neighCollection.distinct("value").then((val) => {
-          if (val.length === 0) {
+        let neighborhoodCursor = await neighCollection.find({});
+
+        queryResult = await Promise.resolve(neighborhoodCursor.toArray()).then((_res) => {
+          let neighAndTract = [];
+
+          // Need to change this to a reject furfill block...
+          if (_res.length === 0) {
             console.log("[getNeighborhoodList] WARNING: Query Result is Empty!")
-          } else if (val === null) {
+          } else if (_res === null) {
             let err = mongoError("[501] Internal Server Error", 
             "GraphQL Resolver suffered an Error. Please check MongoDB or API.",
             );
-
             return err
           }
 
-          return val;
+          for (let i = 0; i < _res.length; i++) {
+            let neighborhoodDataBlock = {
+              neighborhood: `${_res[i].value}`,
+              tracts: _res[i].tracts
+            }
+            neighAndTract.push(neighborhoodDataBlock);
+          }
+
+          return neighAndTract;
         });
         
       } catch(error) {
@@ -48,6 +60,7 @@ const masterResolver = {
         return err;
       }
 
+      queryResult = JSON.stringify(queryResult);
       return queryResult
     },
     getTopicList: async () => {

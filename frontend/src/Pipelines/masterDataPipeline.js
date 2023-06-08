@@ -29,9 +29,9 @@ const getInitData = async() => {
   });
 
   // Set in raw data format
-  message_neigh_list = message_neigh_list.data.data.getNeighborhoodList;
+  message_neigh_list = JSON.parse(message_neigh_list.data.data.getNeighborhoodList);
   message_topics_list = message_topics_list.data.data.getTopicList;
-  
+
   return [message_neigh_list, message_topics_list]
 }
 
