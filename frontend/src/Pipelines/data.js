@@ -1,6 +1,16 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
 
+import { gql, ApolloClient, InMemoryCache } from '@apollo/client';
+
+// Apollo Client Object
+const queryURI = 'http://localhost:4000/queryValues' // Will be automated
+
+const clientQuery = new ApolloClient({
+	uri: queryURI,
+	cache: new InMemoryCache(),
+  });
+
 // GET request to query given valid date and neighborhood
 // ======================================================
 // Using Axios Params to send specification
@@ -9,44 +19,37 @@ import dayjs from 'dayjs';
 // <-- Neighborhood: Neighborhood as a string
 // ======================================================
 // --> Returns a resolved void promise
-const getNeighborhoodAndDateData = async(dateFrom, dateTo, neighborhood) => { 
-	let formattedDateFrom = dayjs(dateFrom).format('YYYYMMDD');
-	let formattedDateTo = dayjs(dateTo).format('YYYYMMDD');
+const getgetNeighborhoodAndDateData = async(dateFrom, dateTo, neighborhood) => {
+	let formattedDateFrom = parseInt(dayjs(dateFrom).format('YYYYMMDD'));
+	let formattedDateTo = parseInt(dayjs(dateTo).format('YYYYMMDD'));
+	let types = [typeof 1, typeof 1, typeof ""]; // It's dirty, but javascript won't let me access the number type
+	let given = [typeof formattedDateFrom, typeof formattedDateTo, typeof neighborhood];
 
-	const query = `query queryDateAndNeighborhood($dateFrom: Int, $dateTo: Int, $neighborhood: String) {
-		queryDateAndNeighborhood($dateFrom: dateFrom, $dateTo: dateTo, $neighborhood: Neighborhood)
-	}`
+	const QUERY = gql`query queryDateAndNeighborhood($formattedDateFrom: Int, $formattedDateTo: Int, $neighborhood: String) {
+		queryDateAndNeighborhood(dateFrom: $formattedDateFrom, dateTo: $formattedDateTo, neighborhood: $neighborhood)
+	}
+	`;
 
-	let neigh_date_data = await axios({
-		method: 'POST',
-		url: 'http://localhost:4000/queryValues',
-		headers: {
-		  "Content-Type": "application/json",
-		},
-		data: JSON.stringify({ 
-			query: `{ queryDateAndNeighborhood }`,
-			variables: { dateFrom: formattedDateFrom, dateTo: formattedDateTo, Neighborhood: neighborhood }
-		})
-		// data: JSON.stringify({ 
-		// 	query,
-		// 	variables: { dateFrom, dateTo, Neighborhood },
-		// })
-	}).then(res => {
-    	return res
-  	}).catch((error) => {
-		return {header: "Internal Server Error!", reason: error}
+	if (!typeChecker(types, given)) {
+		console.log("Killed Query before leaving!");
+		return;
+	}
+
+	neighborhood = neighborhood.charAt(0).toUpperCase() + neighborhood.slice(1); // Might move this on the frontend
+
+	let neigh_date_data = await clientQuery.query({
+		query: QUERY,
+		variables: {formattedDateFrom, formattedDateTo, neighborhood}
+	}).then((_res) => {
+		return _res
 	});
 
-	// if (neigh_date_data.header.includes("Error")) {
-	// 	console.log("ERROR HAS OCCURED!");
-	// } else {
-	// 	neigh_date_data = neigh_date_data.data;
-	// }
+	// Definitely needs error checking and custom apollo type checker here...
 
-	neigh_date_data = JSON.parse(neigh_date_data.data);
+	neigh_date_data = JSON.parse(neigh_date_data.data.queryDateAndNeighborhood); // Need to change this...
 
 	return neigh_date_data;
-};	
+}
 
 
 // GET request to query given valid date and census tract
@@ -110,11 +113,28 @@ const getArticleData = async(articleData) => {
 	return article_data
 }
 
+// Private Methods
+var typeChecker = (typeArr, given) => {
+	if (given.length !== typeArr.length) {
+		console.log(`[TypeChecker] Bad Arr Length (not equal). Comparing: ${typeArr.length}, ${given.length}`)
+		return false;
+	}
+
+	for (let i = 0; i < typeArr.length; i++) {
+		if (typeArr[i] != given[i]) {
+			console.log(`[TypeChecker] Did not recieve equal types. Expected: ${typeArr[i]}, Given: ${given[i]}.`)
+			return false;
+		}
+	}
+
+	return true;
+};
+
 
 const queryMethods = {
-	getNeighborhoodAndDateData: getNeighborhoodAndDateData,
+	getgetNeighborhoodAndDateData: getgetNeighborhoodAndDateData,
 	getArticleData: getArticleData,
-	getCensusDateData: getCensusDateData
+	getCensusDateData: getCensusDateData,
 }
 
 

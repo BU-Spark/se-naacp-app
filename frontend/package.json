@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.7.15",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.6",
@@ -25,6 +26,7 @@
     "dayjs": "^1.11.7",
     "firebase": "^9.17.1",
     "google-map-react": "^2.2.0",
+    "graphql": "^16.6.0",
     "moment": "^2.29.4",
     "pigeon-maps": "^0.21.3",
     "react": "^18.2.0",

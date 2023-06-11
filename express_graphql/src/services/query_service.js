@@ -25,7 +25,7 @@ const querySchema = buildSchema(`
 const queryResolver = {
   queryDateAndNeighborhood: async ({dateFrom, dateTo, neighborhood}) => { // Remember to use the deconstructor operator
     await client.connect();
-    infoLogger("[queryDateAndNeighborhood]", "Querying Pipeline...");
+    infoLogger("[queryDateAndNeighborhood]", `Querying Pipeline with parameters: dateFrom: ${dateFrom}, dateTo: ${dateTo}, neighborhood: ${neighborhood}`);
 
     const SetOfArticleDataDates = new Set();
     const SetOfArticleDataNeigh = new Set();

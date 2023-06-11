@@ -2,6 +2,9 @@ const express = require("express")
 const cors = require("cors");
 const { graphqlHTTP } = require("express-graphql")
 
+// Main Schemas
+const { rootSchema, rootResolver } = require("./schemas/rootSchema.js");
+
 // Import GraphQL Schemas and Resolvers
 const { masterSchema, masterResolver } = require("./services/master_service.js");
 const { querySchema, queryResolver } = require("./services/query_service.js");
@@ -26,6 +29,16 @@ app.use(
     schema: querySchema,
     rootValue: queryResolver,
     graphiql: true,
+  })
+);
+
+// Make sure that root path is always last in the graphQL API's
+app.use(
+  "/",
+  graphqlHTTP({
+    schema: rootSchema,
+    rootValue: rootResolver,
+    graphiql: true
   })
 );
 

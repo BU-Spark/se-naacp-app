@@ -1,56 +1,68 @@
-import { useState, useEffect } from "react";
 import React from "react";
-import "./DevMode.css";
-import MasterPipeline from "../Pipelines/masterDataPipeline";
 import { useNavigate } from "react-router-dom";
 
-export default function DevMode(Props) {
-  console.log("Hey", Props.first);
-  const [jsonData, setJsonData] = useState([]);
+// MUI
+import TextField from '@mui/material/TextField';
+import { Layout, Button } from 'antd'; // Ant Design
 
-  const CallMasterPip = () => {
-    MasterPipeline.getInitData().then(async (v) => {
-      setJsonData([v[2], v[3]]);
-    });
-  };
+import APIQueryBlock from "../components/Development/apiQueryBlock.jsx";
+import MasterPipeline from "../Pipelines/masterDataPipeline";
+import DataMethods from "../Pipelines/data.js";
 
+import "./DevMode.css";
+
+const { Header } = Layout;
+
+export default function DevMode() {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
     navigate("/");
   };
 
+  const callMasterPip = (reactSetterFunction) => {
+    MasterPipeline.rootPathInitData().then( async(v) => {
+      reactSetterFunction(JSON.stringify([v[0], v[1]]));
+    });
+  };
+
+  const presetQueryProp = (reactSetterFunction) => {
+    DataMethods.getgetNeighborhoodAndDateData(20200607, 20210607, "Roxbury").then( async(v) => {
+      reactSetterFunction(JSON.stringify(v));
+    });
+  }
+
   return (
-    <div className="container">
-      <div className="element">
-       
+    <>
+      <Layout>
+          <Header
+            style={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 1,
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <button
+            onClick={handleButtonClick}
+            type="button"
+            id="dev-button"
+            class="btn btn-outline-warning"
+            >
+              Exit Developer Mode
+            </button>
+            
+          </Header>
+      </Layout>
+      <div className="dev-container">
 
-        <button
-          onClick={CallMasterPip}
-          type="button"
-          className="btn btn-outline-primary"
-        >
-          Click to run Master pipeline
-        </button>
+        <APIQueryBlock queryFunction={callMasterPip} />
+        <APIQueryBlock queryFunction={presetQueryProp} />
 
-        <button
-          onClick={handleButtonClick}
-          type="button"
-          id="dev-button"
-          class="btn btn-outline-warning"
-        >
-          Exit Devolper Mode
-        </button>
       </div>
-      <div className="element">
-        <div>
-          {jsonData.length > 0 ? (
-            <pre>{JSON.stringify(jsonData, null, 2)}</pre>
-          ) : (
-            <p></p>
-          )}
-        </div>
-      </div>
-    </div>
+    </>
   );
 }

@@ -41,7 +41,7 @@ export default function Home() {
             console.log("Boston City No Data.")
             return newState;
         }
-        const data = await DataMethods.getNeighborhoodAndDateData(dates[0], dates[1], currentState.currentNeigh);
+        const data = await DataMethods.getgetNeighborhoodAndDateData(dates[0], dates[1], currentState.currentNeigh);
         console.log("The Data recieved at Home.jsx", data);
         // If the data is not the same
         if (!stateMethods.equalStateLabel(currentState, "CensusTract", data)) {

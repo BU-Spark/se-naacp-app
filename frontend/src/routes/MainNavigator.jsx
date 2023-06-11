@@ -33,7 +33,7 @@ export default function MainNavigator() {
     const [data, setData] = useState([]);
 
     React.useEffect(() => {
-        MasterPipeline.getInitData().then( async (v) => {
+        MasterPipeline.rootPathInitData().then( async (v) => {
             console.log("After data fetching, pushing to universal state:", v);
             let newState = stateMethods.updateModified({Subneighborhoods: v[0], Topics: v[1]});
             setState(newState);
