@@ -42,10 +42,10 @@ export default function Home() {
             return newState;
         }
         const data = await DataMethods.getgetNeighborhoodAndDateData(dates[0], dates[1], currentState.currentNeigh);
-        console.log("The Data recieved at Home.jsx", data);
+        console.log("The Data recieved at Home.jsx", data[0]);
         // If the data is not the same
-        if (!stateMethods.equalStateLabel(currentState, "CensusTract", data)) {
-            newState = stateMethods.modify(currentState, "CensusTract", data);
+        if (!stateMethods.equalStateLabel(currentState, "CensusTract", data[0])) {
+            newState = stateMethods.modify(currentState, "CensusTract", data[0]);
         }
 
         return newState;

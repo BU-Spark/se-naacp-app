@@ -51,7 +51,7 @@ export default function SearchBarDropdown({word}) {
 
     const handleChange = (event) => {
         let original = event.target.value;
-        original = original.toLowerCase().replaceAll(' ', '_');
+        original = original.replaceAll('_', ' ');
         let newState = stateMethods.updateModified(stateMethods.modify(currentState, "currentNeigh", `${original}`));
         setState(newState);
 
