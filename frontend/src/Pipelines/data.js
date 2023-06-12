@@ -27,8 +27,7 @@ const getgetNeighborhoodAndDateData = async(dateFrom, dateTo, neighborhood) => {
 
 	const QUERY = gql`query queryDateAndNeighborhood($formattedDateFrom: Int, $formattedDateTo: Int, $neighborhood: String) {
 		queryDateAndNeighborhood(dateFrom: $formattedDateFrom, dateTo: $formattedDateTo, neighborhood: $neighborhood)
-	}
-	`;
+	}`;
 
 	if (!typeChecker(types, given)) {
 		console.log("Killed Query before leaving!");
@@ -49,7 +48,7 @@ const getgetNeighborhoodAndDateData = async(dateFrom, dateTo, neighborhood) => {
 	neigh_date_data = JSON.parse(neigh_date_data.data.queryDateAndNeighborhood); // Need to change this...
 
 	return neigh_date_data;
-}
+};
 
 
 // GET request to query given valid date and census tract
@@ -91,27 +90,44 @@ const getCensusDateData = async(dateFrom, dateTo, tract) => {
 	return tract_date_data;
 };	
 
-
 const getArticleData = async(articleData) => {
-	const parameter_payload = {
-		articleData: articleData
-	}
+	const QUERY = gql`query queryArticleKeys($articleData: [String]) {
+		queryArticleKeys(articleData: $articleData)
+	}`;
 
-	let article_data = await axios.get(
-		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/queryArticleKeys`,
-		{
-			params: {
-				QueryParam: parameter_payload
-			}
-		}
-	)
-	.then(res => {
-		return res
+	let article_data = await clientQuery.query({
+		query: QUERY,
+		variables: { articleData }
+	}).then( (_res)=> {
+		return _res;
 	});
 
-	article_data = article_data.data;
-	return article_data
-}
+	article_data = JSON.parse(article_data.data.queryArticleKeys); // Need to change this...
+
+	return article_data;
+};
+
+
+// const getArticleData = async(articleData) => {
+// 	const parameter_payload = {
+// 		articleData: articleData
+// 	}
+
+// 	let article_data = await axios.get(
+// 		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/queryArticleKeys`,
+// 		{
+// 			params: {
+// 				QueryParam: parameter_payload
+// 			}
+// 		}
+// 	)
+// 	.then(res => {
+// 		return res
+// 	});
+
+// 	article_data = article_data.data;
+// 	return article_data
+// }
 
 // Private Methods
 var typeChecker = (typeArr, given) => {

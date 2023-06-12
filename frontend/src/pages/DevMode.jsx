@@ -30,6 +30,12 @@ export default function DevMode() {
     DataMethods.getgetNeighborhoodAndDateData(20200607, 20210607, "Roxbury").then( async(v) => {
       reactSetterFunction(JSON.stringify(v));
     });
+  };
+
+  const presetArticleKeyQueryProp = (reactSetterFunction) => {
+    DataMethods.getArticleData(["00000175-75fe-d5c8-a775-f7fe5a7f0001", "00000175-7583-d779-a575-779f0f6b0001"]).then( (_res) => {
+      reactSetterFunction(JSON.stringify(_res));
+    });
   }
 
   return (
@@ -61,6 +67,7 @@ export default function DevMode() {
 
         <APIQueryBlock queryFunction={callMasterPip} />
         <APIQueryBlock queryFunction={presetQueryProp} />
+        <APIQueryBlock queryFunction={presetArticleKeyQueryProp} />
 
       </div>
     </>

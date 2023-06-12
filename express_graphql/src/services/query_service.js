@@ -16,13 +16,14 @@ const querySchema = buildSchema(`
       neighborhood: String
       ): String
     queryArticleKeys(
-      queryParameters: String
+      articleData: [String]
     ): String
   }
 `);
 
 
 const queryResolver = {
+  // QUERY DATE AND NEIGHBORHOOD
   queryDateAndNeighborhood: async ({dateFrom, dateTo, neighborhood}) => { // Remember to use the deconstructor operator
     await client.connect();
     infoLogger("[queryDateAndNeighborhood]", `Querying Pipeline with parameters: dateFrom: ${dateFrom}, dateTo: ${dateTo}, neighborhood: ${neighborhood}`);
@@ -224,19 +225,39 @@ const queryResolver = {
     return queryResult;
   },
 
-  queryArticleKeys: async ({queryParameters}) => {
+  // QUERY ARTICLES
+  queryArticleKeys: async ({articleData}) => {
     await client.connect();
+    infoLogger("[queryArticleKeys]", `Querying Pipeline with parameters: articleData: ${articleData}`);
 
     try {  
       const db = client.db(dbName);
       const articleCollection = db.collection("articles_data");
+      const articleKeys = articleData;
+
+      let articles = [];
+
+      for (const articleKey of articleKeys) {
+        const articleCursor = articleCollection.find(
+          {
+            'content_id': articleKey
+          }
+        );
+
+        let queryResult = await Promise.resolve(articleCursor.toArray()).then( (_res) => {
+          return _res;
+        });
+
+        articles.push(queryResult);
+      }
+      
+      return JSON.stringify(articles);
 
       // Lot more to be done... 
     } catch(e) {
       console.log("Error:", e);
     }
   },
-
 };
 
 // =========================================================================================================
