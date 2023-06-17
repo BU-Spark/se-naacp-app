@@ -36,6 +36,7 @@ const colors = [
 
 // Truncate Numbers
 function toFixed(num, fixed) {
+    console.log(num,fixed);
     var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
     return num.toString().match(re)[0];
 }
@@ -71,10 +72,10 @@ export default function NeighborhoodDemoBoard() {
         console.log("Demographics Board CURRENT STATE:", currentState);
 
         if (currentState !== undefined) {
-            if (currentState.hasOwnProperty('CensusTract')) {
+            if (currentState.hasOwnProperty('CensusTract') && currentState.CensusTract !== null && currentState.CensusTract.articleData.length !== 0 ) {
                 console.log("Current Data in Neighborhood Demo Board:", currentState);
 
-                if (currentState.CensusTract.demographics !== 'None') {
+                if (currentState.CensusTract.demographics !== 'None' ) {
                     // Set Demographic Data & Demographic Keys
                     let data = currentState.CensusTract.demographics;
                     
@@ -121,7 +122,9 @@ export default function NeighborhoodDemoBoard() {
         }
         console.log("DATA FETCHING:", data_fetching);
     },[currentState, data_fetching]);
+    
 
+    // console.log("here", demographicData.length,demographicKeys.length)
     return(
         <>
             <>
