@@ -1,17 +1,36 @@
 import React from 'react';
-import {Nav, NavList} from '@patternfly/react-core';
+
+import { Layout, Button } from 'antd'; // Ant Design
+import { useNavigate } from 'react-router-dom';
 
 // CSS
 import './TopNavBar.css';
 
+const { Header } = Layout;
+
 export const TopNavBar = () => {
+
+  const navigate = useNavigate();
+
+  const navigateDeveloperMode = () => {
+    navigate('/dev-mode');
+  };
+
   return(
-  <Nav variant="horizontal" aria-label="Horizontal subnav global nav" className='navbar'>
-      <NavList>
-        {/* <NavItem className='navitem'>Dashboard</NavItem>
-        <NavItem className='navitem'>Browse</NavItem>
-        <NavItem className='navitem'>Upload</NavItem>
-        <NavItem className='navitem'>Profile</NavItem> */}
-      </NavList>
-    </Nav>);
+    <Layout>
+      <Header
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 1,
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <Button type="primary" id="dev-button" onClick={navigateDeveloperMode} danger>Developer Mode</Button>
+      </Header>
+    </Layout>
+    );
 };

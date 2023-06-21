@@ -1,25 +1,42 @@
-import axios from 'axios';
+import { gql, ApolloClient, InMemoryCache } from '@apollo/client';
 
-const getInitData = async() => {
-  let message_neigh_list = await axios.get(`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getNeighborhoodsList`)
-  .then(res => {
-    return res;
+// Apollo Client Object
+const masterURI = 'http://localhost:4000/universalValues' // Will be automated
+
+const clientMaster = new ApolloClient({
+  uri: masterURI,
+  cache: new InMemoryCache(),
+});
+
+const rootPathInitData = async() => {
+  const GET_NEIGHBORHOOD_LIST = gql`
+  { getNeighborhoodList }
+  `;
+
+  const GET_TOPICS_LIST = gql`
+  { getTopicList }
+  `;
+
+  let message_neigh_list = await clientMaster.query({
+    query: GET_NEIGHBORHOOD_LIST,
+  }).then((_res) => {
+    return _res
   });
 
-  let message_topics_list = await axios.get('http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getTopicList')
-  .then(res => {
-    return res;
+  let message_topics_list = await clientMaster.query({
+    query: GET_TOPICS_LIST,
+  }).then((_res) => {
+    return _res
   });
 
-  // Set in raw data format
-  message_neigh_list = message_neigh_list.data;
-  message_topics_list = message_topics_list.data;
-  
+  message_neigh_list = JSON.parse(message_neigh_list.data.getNeighborhoodList);
+  message_topics_list = message_topics_list.data.getTopicList;
+
   return [message_neigh_list, message_topics_list]
-}
+};
 
 const listenerMethods = {
-  getInitData: getInitData
+  rootPathInitData: rootPathInitData
 }
 
 export default listenerMethods

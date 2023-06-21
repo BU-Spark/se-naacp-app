@@ -119,7 +119,14 @@ const NeighborhoodCard = () => {
     const setTractDataToAllGraphs =  async (tract) => {
         if (!DateMethods.fromEmpty(dates) && !DateMethods.toEmpty(dates) && DateMethods.dateValidation(dates[0], dates[1])) {
             dispatch(setLoadingState(true)); // Set Loading state
-            const data = await DataMethods.getCensusDateData(dates[0], dates[1], tract).then((v) => {
+            const data = await DataMethods.getCensusDateData(dates[0], dates[1], `${tract}`).then((v) => {
+
+                // Quick and Dirty
+                if (v === null) {
+                    console.log("Census Tract Rendered Empty!")
+                    return
+                }
+
                 let v_string = JSON.stringify(v);
                 if (v_string.includes("Error")){
                     console.log("Specific tract information not found!");

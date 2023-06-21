@@ -25,7 +25,7 @@ export default function SearchBarDropdown({word}) {
     const [neighborhoodList, setSubNeighborhoodList] = React.useState(neighListPlaceholder);
 
     React.useEffect(() => {
-      if (currentState.Subneighborhoods !== undefined) {         // Quick and Dirty
+      if (currentState.hasOwnProperty('Subneighborhoods')) {         // Quick and Dirty
         let cleanedNeighborhoods = stateMethods.updateModified(currentState.Subneighborhoods);
         for (let i = 0; i < cleanedNeighborhoods.length; i++) {
             let nameList = cleanedNeighborhoods[i].neighborhood.replaceAll('_', ' ').split(" ");
@@ -38,7 +38,7 @@ export default function SearchBarDropdown({word}) {
         }
         setSubNeighborhoodList(cleanedNeighborhoods);
       } 
-      //loook heerererererererre for 
+
       if (!currentState.hasOwnProperty('currentNeigh')) {
         let newState = stateMethods.updateModified(stateMethods.modify(currentState, "currentNeigh", "boston_city"));
         setState(newState);
