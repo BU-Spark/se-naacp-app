@@ -7,8 +7,8 @@ import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 const queryURI = "http://localhost:4000/queryValues"; // Will be automated
 
 const clientQuery = new ApolloClient({
-  uri: queryURI,
-  cache: new InMemoryCache(),
+	uri: queryURI,
+	cache: new InMemoryCache(),
 });
 
 // GET request to query given valid date and neighborhood
@@ -75,6 +75,7 @@ const getgetNeighborhoodAndDateData = async (
   return [neigh_date_data, neigh_date_data_dev_page];
 };
 
+
 // GET request to query given valid date and census tract
 // ======================================================
 // Using Axios Params to send specification
@@ -83,37 +84,36 @@ const getgetNeighborhoodAndDateData = async (
 // <-- tract: tract as a string
 // ======================================================
 // --> Returns a resolved void promise
-const getCensusDateData = async (dateFrom, dateTo, tract) => {
-  let formattedDateFrom = dayjs(dateFrom).format("YYYYMMDD");
-  let formattedDateTo = dayjs(dateTo).format("YYYYMMDD");
+// const getCensusDateData = async(dateFrom, dateTo, tract) => { 
+// 	let formattedDateFrom = dayjs(dateFrom).format('YYYYMMDD');
+// 	let formattedDateTo = dayjs(dateTo).format('YYYYMMDD');
 
-  const parameter_payload = {
-    dateFrom: `${formattedDateFrom}`,
-    dateTo: `${formattedDateTo}`,
-    Tract: `${tract}`,
-  };
+// 	const parameter_payload = {
+// 		dateFrom: `${formattedDateFrom}`,
+// 		dateTo: `${formattedDateTo}`,
+// 		Tract: `${tract}`
+// 	}
 
-  console.log("The Parameter Payload:", parameter_payload);
+// 	console.log("The Parameter Payload:", parameter_payload);
 
-  let tract_date_data = await axios
-    .get(
-      `http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getCensusData`,
-      {
-        params: {
-          QueryParam: parameter_payload,
-        },
-      }
-    )
-    .then((res) => {
-      return res;
-    });
+// 	let tract_date_data = await axios.get(
+// 		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getCensusData`,
+// 		{
+// 			params: {
+// 				QueryParam: parameter_payload
+// 			}
+// 		}
+// 	)
+//   	.then(res => {
+//     	return res
+//   	});
 
-  tract_date_data = tract_date_data.data;
+// 	tract_date_data = tract_date_data.data;
 
-  console.log("Tract_date_data:", tract_date_data);
+// 	console.log("Tract_date_data:", tract_date_data);
 
-  return tract_date_data;
-};
+// 	return tract_date_data;
+// };	
 
 const getArticleData = async (articleData) => {
   const QUERY = gql`
@@ -143,26 +143,6 @@ const getArticleData = async (articleData) => {
   return [article_data,article_data_dev_page];
 };
 
-// const getArticleData = async(articleData) => {
-// 	const parameter_payload = {
-// 		articleData: articleData
-// 	}
-
-// 	let article_data = await axios.get(
-// 		`http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/queryArticleKeys`,
-// 		{
-// 			params: {
-// 				QueryParam: parameter_payload
-// 			}
-// 		}
-// 	)
-// 	.then(res => {
-// 		return res
-// 	});
-
-// 	article_data = article_data.data;
-// 	return article_data
-// }
 
 // Private Methods
 var typeChecker = (typeArr, given) => {

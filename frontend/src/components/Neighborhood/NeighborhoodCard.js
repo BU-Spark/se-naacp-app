@@ -126,50 +126,32 @@ const NeighborhoodCard = () => {
     console.log("Tract Name:", v.payload.properties.NAME20);
   };
 
-  const setTractDataToAllGraphs = async (tract) => {
-    if (
-      !DateMethods.fromEmpty(dates) &&
-      !DateMethods.toEmpty(dates) &&
-      DateMethods.dateValidation(dates[0], dates[1])
-    ) {
-      dispatch(setLoadingState(true)); // Set Loading state
-      const data = await DataMethods.getCensusDateData(
-        dates[0],
-        dates[1],
-        tract
-      ).then((v) => {
-        let v_string = JSON.stringify(v);
-        if (v_string.includes("Error")) {
-          console.log("Specific tract information not found!");
-          let newState = currentState;
-          delete newState.CensusTract;
-          newState = stateMethods.updateModified(newState);
-          setState(newState);
-        } else {
-          let newState = {
-            ...currentState,
-            CensusTract: v,
-          };
-          newState = stateMethods.updateModified(newState);
-          setState(newState);
+    const setTractDataToAllGraphs =  async (tract) => {
+        if (!DateMethods.fromEmpty(dates) && !DateMethods.toEmpty(dates) && DateMethods.dateValidation(dates[0], dates[1])) {
+            dispatch(setLoadingState(true)); // Set Loading state
+            const data = await DataMethods.getCensusDateData(dates[0], dates[1], tract).then((v) => {
+                let v_string = JSON.stringify(v);
+                if (v_string.includes("Error")){
+                    console.log("Specific tract information not found!");
+                    let newState = currentState;
+                    delete newState.CensusTract;
+                    newState = stateMethods.updateModified(newState);
+                    setState(newState);
+                } else {
+                    let newState = {
+                        ...currentState,
+                        CensusTract: v
+                    }
+                    newState = stateMethods.updateModified(newState);
+                    setState(newState);
+                }
+                // setTimeout(() => {
+                //     dispatch(setLoadingState(false)); // Set Loading state
+                // }, "1000");
+                dispatch(setLoadingState(false)); // Set Loading state
+            });
         }
-        // setTimeout(() => {
-        //     dispatch(setLoadingState(false)); // Set Loading state
-        // }, "1000");
-        dispatch(setLoadingState(false)); // Set Loading state
-      });
     }
-  };
-
-  //   const handleChange = (event) => {
-  //     let original = event.target.value;
-  //     original = original.replaceAll("_", " ");
-  //     let newState = stateMethods.updateModified(
-  //       stateMethods.modify(currentState, "currentNeigh", `${original}`)
-  //     );
-  //     setState(newState);
-  //     setNeigh(original);
-  //   };
 
   const selectTrack = (e) => {
     console.log("Selected track:", e);
