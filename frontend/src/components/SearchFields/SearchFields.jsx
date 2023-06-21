@@ -33,7 +33,10 @@ function SearchFields() {
 
   return (
     <div style={{ display: "flex", flexDirection: "row", overflowX: "auto" }}>
-      <SearchBarDropdown word="Neighborhoods"></SearchBarDropdown>
+      <div style={{display: "none"}}>
+       
+        <SearchBarDropdown word="Neighborhoods"></SearchBarDropdown>
+      </div>
       {/* <CensusDropdown word="Census Tract"></CensusDropdown> */}
       {/* {WarningBtn(warn)} */}
       <DateBar word="From" from_bool={true}></DateBar>

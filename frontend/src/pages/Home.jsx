@@ -79,7 +79,7 @@ export default function Home() {
 
                 {/* Filter Options */}
                 <div className='search_container'>
-                    <img style={{marginLeft: 10, marginTop: 10, marginRight: 10, width: 150}} src={Logo} alt={"Logo"}></img>
+                    <img style={{marginLeft: 50, marginTop: 10, marginRight: 10, width: 150}} src={Logo} alt={"Logo"}></img>
                     <div style={{flex: 1}}></div>
                     <SearchFields></SearchFields>
                 </div>
