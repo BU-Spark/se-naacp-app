@@ -29,7 +29,7 @@ function SearchFields() {
     } else {
       setWarn(false);
     }
-  }, [currentState, dates]);
+  }, [dates]);
 
   return (
     <div style={{ display: "flex", flexDirection: "row", overflowX: "auto" }}>
@@ -38,7 +38,7 @@ function SearchFields() {
         <SearchBarDropdown word="Neighborhoods"></SearchBarDropdown>
       </div>
       {/* <CensusDropdown word="Census Tract"></CensusDropdown> */}
-      {/* {WarningBtn(warn)} */}
+      {WarningBtn(warn)}
       <DateBar word="From" from_bool={true}></DateBar>
       <DateBar word="To" from_bool={false}></DateBar>
       <div

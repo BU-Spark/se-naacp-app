@@ -126,57 +126,49 @@ const NeighborhoodCard = () => {
     console.log("Tract Name:", v.payload.properties.NAME20);
   };
 
-  const setTractDataToAllGraphs = async (tract) => {
-    if (
-      !DateMethods.fromEmpty(dates) &&
-      !DateMethods.toEmpty(dates) &&
-      DateMethods.dateValidation(dates[0], dates[1])
-    ) {
-      dispatch(setLoadingState(true)); // Set Loading state
-      const data = await DataMethods.getCensusDateData(
-        dates[0],
-        dates[1],
-        tract
-      ).then((v) => {
-        let v_string = JSON.stringify(v);
-        if (v_string.includes("Error")) {
-          console.log("Specific tract information not found!");
-          let newState = currentState;
-          delete newState.CensusTract;
-          newState = stateMethods.updateModified(newState);
-          setState(newState);
-        } else {
-          let newState = {
-            ...currentState,
-            CensusTract: v,
-          };
-          newState = stateMethods.updateModified(newState);
-          setState(newState);
-        }
-        // setTimeout(() => {
-        //     dispatch(setLoadingState(false)); // Set Loading state
-        // }, "1000");
-        dispatch(setLoadingState(false)); // Set Loading state
-      });
-    }
-  };
+  const setTractDataToAllGraphs =  async (tract) => {
+    if (!DateMethods.fromEmpty(dates) && !DateMethods.toEmpty(dates) && DateMethods.dateValidation(dates[0], dates[1])) {
+        dispatch(setLoadingState(true)); // Set Loading state
+        const data = await DataMethods.getCensusDateData(dates[0], dates[1], `${tract}`).then((v) => {
+          
+            // Quick and Dirty
+            if (v === null) {
+                console.log("Census Tract Rendered Empty!")
+                return
+            }
 
-  //   const handleChange = (event) => {
-  //     let original = event.target.value;
-  //     original = original.replaceAll("_", " ");
-  //     let newState = stateMethods.updateModified(
-  //       stateMethods.modify(currentState, "currentNeigh", `${original}`)
-  //     );
-  //     setState(newState);
-  //     setNeigh(original);
-  //   };
+            let v_string = JSON.stringify(v);
+           
+            if (v_string.includes("Error")){
+                console.log("Specific tract information not found!");
+                let newState = currentState;
+                delete newState.CensusTract;
+                newState = stateMethods.updateModified(newState);
+                setState(newState);
+            } else {
+                let newState = {
+                    ...currentState,
+                    CensusTract: v
+                }
+                newState = stateMethods.updateModified(newState);
+                setState(newState); 
+                
+                
+            }
+            // setTimeout(() => {
+            //     dispatch(setLoadingState(false)); // Set Loading state
+            // }, "1000");
+            dispatch(setLoadingState(false)); // Set Loading state
+
+        });
+    }
+}
+
 
   const selectTrack = (e) => {
-    console.log("Selected track:", e);
-    // if (dates[0] == null || dates[1] == null) {
-    //   setDates([minDate, maxDate]);
-    // }
+    console.log("Selected track:", e.keyPath[1]);
     if (e.key.includes("all")) {
+      
       let deconstruct_str = e.key.slice(4);
       let tract_list = deconstruct_str.split(",");
       setTractShapes(tract_list);
@@ -186,18 +178,26 @@ const NeighborhoodCard = () => {
           stateMethods.modify(currentState, "currentNeigh", `${e.keyPath[1]}`)
         )
       );
+      
       setNeigh(e.keyPath[1]);
+      setDates([dates[0],dates[1]])
+
+
+
+
+
     } else {
       SetTractCurrLocation(e.key);
       // setTractShapes(tract_list);
       // setTractShapes([e.key]);
-      //   setTractDataToAllGraphs(e.key);
-      setState(
-        stateMethods.updateModified(
-          stateMethods.modify(currentState, "currentNeigh", "boston_city")
-        )
-      );
-      setNeigh("boston_city");
+     
+      setTractDataToAllGraphs(e.key);
+
+      // setState(
+      //   stateMethods.updateModified(
+      //     stateMethods.modify(currentState, "currentNeigh", "boston_city")
+      //   )
+      // );
     }
   };
 
@@ -397,7 +397,7 @@ const NeighborhoodCard = () => {
                 marginRight: 20,
               }}
             >
-              <h3 className="card">Neighborhoods Covered Most</h3>
+              <h3 className="card">Search Neighborhoods</h3>
               {loadingState(fetchingData)}
               <div style={{ width: "100%", overflow: "auto" }}>
                 <Menu

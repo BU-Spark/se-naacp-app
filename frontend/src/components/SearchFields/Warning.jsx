@@ -8,7 +8,7 @@ import './Warning.css';
 import warning from '../../assets/lottieFiles/warning.json';
 
 const toolTipMessage = `
-    Please choose dates within one month time span.
+    Date inputs are incorrect try again!
 `
 
 export default function Warning() {

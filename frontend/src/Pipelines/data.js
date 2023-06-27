@@ -83,36 +83,34 @@ const getgetNeighborhoodAndDateData = async (
 // <-- tract: tract as a string
 // ======================================================
 // --> Returns a resolved void promise
-const getCensusDateData = async (dateFrom, dateTo, tract) => {
-  let formattedDateFrom = dayjs(dateFrom).format("YYYYMMDD");
-  let formattedDateTo = dayjs(dateTo).format("YYYYMMDD");
+const getCensusDateData = async(dateFrom, dateTo, census) => {
+	let formattedDateFrom = parseInt(dayjs(dateFrom).format('YYYYMMDD'));
+	let formattedDateTo = parseInt(dayjs(dateTo).format('YYYYMMDD'));
+	let types = [typeof 1, typeof 1, typeof ""]; // It's dirty, but javascript won't let me access the number type
+	let given = [typeof formattedDateFrom, typeof formattedDateTo, typeof census];
 
-  const parameter_payload = {
-    dateFrom: `${formattedDateFrom}`,
-    dateTo: `${formattedDateTo}`,
-    Tract: `${tract}`,
-  };
+	const QUERY = gql`query queryCensusData($formattedDateFrom: Int, $formattedDateTo: Int, $census: String) {
+		queryCensusData(dateFrom: $formattedDateFrom, dateTo: $formattedDateTo, censusTract: $census)
+	}`;
 
-  console.log("The Parameter Payload:", parameter_payload);
+	if (!typeChecker(types, given)) {
+		console.log("Killed Query before leaving!");
+		return;
+	}
 
-  let tract_date_data = await axios
-    .get(
-      `http://127.0.0.1:5001/se-naacp-journalism-bias/us-central1/getCensusData`,
-      {
-        params: {
-          QueryParam: parameter_payload,
-        },
-      }
-    )
-    .then((res) => {
-      return res;
-    });
+	let tract_data_data = await clientQuery.query({
+		query: QUERY,
+		variables: {formattedDateFrom, formattedDateTo, census}
+	}).then((_res) => {
+		return _res
+	});
 
-  tract_date_data = tract_date_data.data;
+	// Definitely needs error checking and custom apollo type checker here...
 
-  console.log("Tract_date_data:", tract_date_data);
+	tract_data_data = JSON.parse(tract_data_data.data.queryCensusData); // Need to change this...
+	
 
-  return tract_date_data;
+	return tract_data_data;
 };
 
 const getArticleData = async (articleData) => {

@@ -33,6 +33,7 @@ export default function Home() {
     const state_neigh = useSelector((state) => state.masterState.neighborhoods_master) // Redux master state
 
     const fetchNeighborhoodAndDateData = async(currentState) => {
+        console.log("heyyyyy",currentState);
         let newState = currentState;
         if (currentState.currentNeigh === "boston_city" || currentState.currentNeigh === undefined || currentState.currentNeigh === "") {
             if (currentState.hasOwnProperty('CensusTract')) {
@@ -53,6 +54,7 @@ export default function Home() {
     
     // To Test Dates, use data from: 12/20/2018 up to: 01/20/2019 in roxbury
     React.useEffect( () => {
+        // console.log("whats up",dates,neighborhood)
         // console.log("This is the current universal state BEFORE:", currentState);
         // Invoke Date data fetching when date has been changed
         if (!DateMethods.fromEmpty(dates) && !DateMethods.toEmpty(dates) && DateMethods.dateValidation(dates[0], dates[1])) {

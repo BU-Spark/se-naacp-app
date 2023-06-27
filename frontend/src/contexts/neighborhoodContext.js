@@ -6,7 +6,7 @@ const NeighborhoodMethods = {
 };
 
 const NeighborhoodContext = React.createContext({
-    neighborhood: "boston_city",
+    neighborhood: "fenway",
     setNeigh: (v) => {}
 });
 
