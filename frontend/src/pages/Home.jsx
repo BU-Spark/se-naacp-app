@@ -33,6 +33,7 @@ export default function Home() {
     const state_neigh = useSelector((state) => state.masterState.neighborhoods_master) // Redux master state
 
     const fetchNeighborhoodAndDateData = async(currentState) => {
+        console.log("heyyyyy",currentState);
         let newState = currentState;
         if (currentState.currentNeigh === "boston_city" || currentState.currentNeigh === undefined || currentState.currentNeigh === "") {
             if (currentState.hasOwnProperty('CensusTract')) {
@@ -42,10 +43,10 @@ export default function Home() {
             return newState;
         }
         const data = await DataMethods.getgetNeighborhoodAndDateData(dates[0], dates[1], currentState.currentNeigh);
-        console.log("The Data recieved at Home.jsx", data);
+        console.log("The Data recieved at Home.jsx", data[0]);
         // If the data is not the same
-        if (!stateMethods.equalStateLabel(currentState, "CensusTract", data)) {
-            newState = stateMethods.modify(currentState, "CensusTract", data);
+        if (!stateMethods.equalStateLabel(currentState, "CensusTract", data[0])) {
+            newState = stateMethods.modify(currentState, "CensusTract", data[0]);
         }
 
         return newState;
@@ -53,6 +54,7 @@ export default function Home() {
     
     // To Test Dates, use data from: 12/20/2018 up to: 01/20/2019 in roxbury
     React.useEffect( () => {
+        // console.log("whats up",dates,neighborhood)
         // console.log("This is the current universal state BEFORE:", currentState);
         // Invoke Date data fetching when date has been changed
         if (!DateMethods.fromEmpty(dates) && !DateMethods.toEmpty(dates) && DateMethods.dateValidation(dates[0], dates[1])) {
@@ -79,9 +81,9 @@ export default function Home() {
 
                 {/* Filter Options */}
                 <div className='search_container'>
-                    <img style={{marginLeft: 10, marginTop: 10, marginRight: 10, width: 150}} src={Logo} alt={"Logo"}></img>
+                    <img style={{marginLeft: 50, marginTop: 10, marginRight: 10, width: 150}} src={Logo} alt={"Logo"}></img>
                     <div style={{flex: 1}}></div>
-                    <SearchFields></SearchFields>
+                    <SearchFields showDropDown = "false"></SearchFields>
                 </div>
                 <br></br>
 

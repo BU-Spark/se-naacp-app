@@ -48,14 +48,14 @@ export default function ArticleCard() {
   React.useEffect(() => {
     
     if (currentState !== undefined) {
-      if (currentState.hasOwnProperty('CensusTract')) {
+      if (currentState.hasOwnProperty('CensusTract') && currentState.CensusTract !== null) {
         if (currentState.CensusTract.articles !== 'None') {
           let data = currentState.CensusTract.articleData;
           console.log("Sent article data:", data);
           let articles = queryMethods.getArticleData(data).then((articles) => {
             let articleRow = []
-            console.log("Articles:", articles);
-            for (const article_arr of articles) {
+            console.log("Articles:", articles[0]);
+            for (const article_arr of articles[0]) {
               let article = article_arr[0];
               articleRow.push({
                 id: uniqid(), 
@@ -89,7 +89,7 @@ export default function ArticleCard() {
           <DataGrid
             rows={articleData}
             columns={columns}
-            pageSize={articleData.length}
+            pageSize={100} // DataGrid is capped at 100 entries needs premium to go over, I will set the length to 100 to to avoid frontend crashing 
             rowsPerPageOptions={[5]}
             hideFooter={true}
           />

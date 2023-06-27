@@ -22,19 +22,19 @@ export default function DevMode() {
 
   const callMasterPip = (reactSetterFunction) => {
     MasterPipeline.rootPathInitData().then( async(v) => {
-      reactSetterFunction(JSON.stringify([v[0], v[1]]));
+      reactSetterFunction(([v[2], v[3]]));
     });
   };
 
   const presetQueryProp = (reactSetterFunction) => {
     DataMethods.getgetNeighborhoodAndDateData(20200607, 20210607, "Roxbury").then( async(v) => {
-      reactSetterFunction(JSON.stringify(v));
+      reactSetterFunction(v[1]);
     });
   };
 
   const presetArticleKeyQueryProp = (reactSetterFunction) => {
     DataMethods.getArticleData(["00000175-75fe-d5c8-a775-f7fe5a7f0001", "00000175-7583-d779-a575-779f0f6b0001"]).then( (_res) => {
-      reactSetterFunction(JSON.stringify(_res));
+      reactSetterFunction(_res[1]);
     });
   }
 
