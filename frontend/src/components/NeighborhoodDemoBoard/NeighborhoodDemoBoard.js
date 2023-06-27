@@ -36,7 +36,7 @@ const colors = [
 
 // Truncate Numbers
 function toFixed(num, fixed) {
-    console.log(num,fixed);
+    // console.log(num,fixed);
     var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
     return num.toString().match(re)[0];
 }
@@ -69,11 +69,11 @@ export default function NeighborhoodDemoBoard() {
     // use data from: 12/20/2018 up to: 01/20/2019 in roxbury
     React.useEffect(() => {
         // If we have any Census Tract data
-        console.log("Demographics Board CURRENT STATE:", currentState);
+        // console.log("Demographics Board CURRENT STATE:", currentState);
 
         if (currentState !== undefined) {
             if (currentState.hasOwnProperty('CensusTract') && currentState.CensusTract !== null && currentState.CensusTract.articleData.length !== 0 ) {
-                console.log("Current Data in Neighborhood Demo Board:", currentState);
+                // console.log("Current Data in Neighborhood Demo Board:", currentState);
 
                 if (currentState.CensusTract.demographics !== 'None' ) {
                     // Set Demographic Data & Demographic Keys
@@ -120,7 +120,7 @@ export default function NeighborhoodDemoBoard() {
                 setDemographicKeys([]);
             }
         }
-        console.log("DATA FETCHING:", data_fetching);
+        // console.log("DATA FETCHING:", data_fetching);
     },[currentState, data_fetching]);
     
 

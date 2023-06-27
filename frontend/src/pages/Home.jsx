@@ -33,17 +33,19 @@ export default function Home() {
     const state_neigh = useSelector((state) => state.masterState.neighborhoods_master) // Redux master state
 
     const fetchNeighborhoodAndDateData = async(currentState) => {
-        console.log("heyyyyy",currentState);
+        // console.log("heyyyyy",currentState);
         let newState = currentState;
         if (currentState.currentNeigh === "boston_city" || currentState.currentNeigh === undefined || currentState.currentNeigh === "") {
-            if (currentState.hasOwnProperty('CensusTract')) {
-                delete newState.CensusTract; 
-            }
-            console.log("Boston City No Data.")
+            // if (currentState.hasOwnProperty('CensusTract')) {
+            //     delete newState.CensusTract; 
+            // }
+            // console.log("Boston City No Data.")
+
+            console.log(currentState);
             return newState;
         }
         const data = await DataMethods.getgetNeighborhoodAndDateData(dates[0], dates[1], currentState.currentNeigh);
-        console.log("The Data recieved at Home.jsx", data[0]);
+        // console.log("The Data recieved at Home.jsx", data[0]);
         // If the data is not the same
         if (!stateMethods.equalStateLabel(currentState, "CensusTract", data[0])) {
             newState = stateMethods.modify(currentState, "CensusTract", data[0]);

@@ -124,6 +124,10 @@ const NeighborhoodCard = () => {
   const onTractMapAPIClick = (v) => {
     console.log("Tract:", v.payload.properties.TRACTCE20);
     console.log("Tract Name:", v.payload.properties.NAME20);
+    setTractDataToAllGraphs(v.payload.properties.TRACTCE20);
+    SetTractCurrLocation(v.payload.properties.TRACTCE20);
+
+  
   };
 
   const setTractDataToAllGraphs =  async (tract) => {
@@ -133,7 +137,7 @@ const NeighborhoodCard = () => {
           
             // Quick and Dirty
             if (v === null) {
-                console.log("Census Tract Rendered Empty!")
+                // console.log("Census Tract Rendered Empty!")
                 return
             }
 
@@ -166,7 +170,7 @@ const NeighborhoodCard = () => {
 
 
   const selectTrack = (e) => {
-    console.log("Selected track:", e.keyPath[1]);
+    // console.log("Selected track:", e.keyPath[1]);
     if (e.key.includes("all")) {
       
       let deconstruct_str = e.key.slice(4);
@@ -397,7 +401,7 @@ const NeighborhoodCard = () => {
                 marginRight: 20,
               }}
             >
-              <h3 className="card">Search Neighborhoods</h3>
+              <h3 className="card">Filter By Neighborhoods And Tracks</h3>
               {loadingState(fetchingData)}
               <div style={{ width: "100%", overflow: "auto" }}>
                 <Menu
