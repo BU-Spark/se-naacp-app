@@ -83,7 +83,7 @@ export default function Home() {
                 <div className='search_container'>
                     <img style={{marginLeft: 50, marginTop: 10, marginRight: 10, width: 150}} src={Logo} alt={"Logo"}></img>
                     <div style={{flex: 1}}></div>
-                    <SearchFields></SearchFields>
+                    <SearchFields showDropDown = "false"></SearchFields>
                 </div>
                 <br></br>
 

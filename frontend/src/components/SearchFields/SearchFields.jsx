@@ -11,7 +11,7 @@ import CensusDropdown from "./CensusDropdown/CensusDropdown";
 import { StateContext, stateMethods } from "../../contexts/stateContext.js";
 import { DateContext, DateMethods } from "../../contexts/dateContext";
 
-function SearchFields() {
+function SearchFields(Props) {
   const { currentState, setState } = React.useContext(StateContext); // Global Context of States
   const { dates } = React.useContext(DateContext); // Global Context of Dates
 
@@ -33,8 +33,7 @@ function SearchFields() {
 
   return (
     <div style={{ display: "flex", flexDirection: "row", overflowX: "auto" }}>
-      <div style={{display: "none"}}>
-       
+      <div style={{display: Props.showDropDown == "true" ? "block": "none"}}>
         <SearchBarDropdown word="Neighborhoods"></SearchBarDropdown>
       </div>
       {/* <CensusDropdown word="Census Tract"></CensusDropdown> */}

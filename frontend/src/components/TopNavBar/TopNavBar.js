@@ -29,7 +29,7 @@ export const TopNavBar = () => {
           justifyContent: 'flex-end',
         }}
       >
-        <Button type="primary" id="dev-button" onClick={navigateDeveloperMode} danger>Developer Mode</Button>
+        {/* <Button type="primary" id="dev-button" onClick={navigateDeveloperMode} danger>Developer Mode</Button> */}
       </Header>
     </Layout>
     );

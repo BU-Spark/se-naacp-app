@@ -82,7 +82,7 @@ export default function SearchBarDropdown({ word }) {
       <p className="word">{word}</p>
       <FormControl sx={{ m: 1, minWidth: 120, marginTop: 0.9 }}>
         <Select
-          style={{ height: "32px", borderRadius: 0 }}
+          style={{ height: "32px", borderRadius: 0 , backgroundColor: "white"}}
           value={subneighbor}
           onChange={handleChange}
           displayEmpty
