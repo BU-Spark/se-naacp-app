@@ -1,6 +1,7 @@
 import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 
-const deployment_uri = process.env.NAACP_DEPLOYMENT_URI;
+const deployment_uri = "https://naacpbackend-production.up.railway.app"
+// const deployment_uri = process.env.NAACP_DEPLOYMENT_URI;
 const local_uri = 'http://localhost:4000';
 
 // Apollo Client Objects
