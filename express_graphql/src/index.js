@@ -10,7 +10,8 @@ const { masterSchema, masterResolver } = require("./services/master_service.js")
 const { querySchema, queryResolver } = require("./services/query_service.js");
 
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT;
+// const PORT = 4000; Development
 
 app.use(cors()); // Cors Policy
 
@@ -42,6 +43,5 @@ app.use(
   })
 );
 
-
 app.listen(PORT)
-console.log(`Running a GraphQL API server at http://localhost:${PORT}`)
+console.log(`Running a GraphQL API server at http://<deployment-domain>:${PORT}`)
