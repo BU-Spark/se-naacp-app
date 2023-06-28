@@ -3,8 +3,11 @@ import dayjs from "dayjs";
 
 import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 
+const deployment_uri = process.env.NAACP_DEPLOYMENT_URI;
+const local_uri = 'http://localhost:4000';
+
 // Apollo Client Object
-const queryURI = "http://localhost:4000/queryValues"; // Will be automated
+const queryURI = `${deployment_uri}/queryValues`; // Will be automated
 
 const clientQuery = new ApolloClient({
   uri: queryURI,

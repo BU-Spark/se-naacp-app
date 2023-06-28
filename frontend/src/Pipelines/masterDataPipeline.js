@@ -1,7 +1,10 @@
 import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 
-// Apollo Client Object
-const masterURI = "http://localhost:4000/universalValues"; // Will be automated
+const deployment_uri = process.env.NAACP_DEPLOYMENT_URI;
+const local_uri = 'http://localhost:4000';
+
+// Apollo Client Objects
+const masterURI = `${deployment_uri}/universalValues`;
 
 const clientMaster = new ApolloClient({
   uri: masterURI,
