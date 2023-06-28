@@ -32,24 +32,32 @@ function SearchFields(Props) {
   }, [dates]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", overflowX: "auto" }}>
-      <div style={{display: Props.showDropDown == "true" ? "block": "none"}}>
-        <SearchBarDropdown word="Neighborhoods"></SearchBarDropdown>
-      </div>
-      {/* <CensusDropdown word="Census Tract"></CensusDropdown> */}
-      {WarningBtn(warn)}
-      <DateBar word="From" from_bool={true}></DateBar>
-      <DateBar word="To" from_bool={false}></DateBar>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "90px",
-          width: "50px",
-        }}
-      >
-        {/* <Button
+    <div
+      style={{ display: "flex", flexDirection: "column", overflowX: "auto" }}
+    >
+      <p   style={{ marginLeft: "10px",display: Props.showDropDown == "false" ? "block" : "none" }}  >Filter articles by date</p>
+
+      <div style={{ display: "flex", flexDirection: "row", overflowX: "auto" }}>
+        <div
+          style={{ display: Props.showDropDown == "true" ? "block" : "none" }}
+        >
+          <SearchBarDropdown word="Neighborhoods"></SearchBarDropdown>
+        </div>
+        {/* <CensusDropdown word="Census Tract"></CensusDropdown> */}
+
+        {WarningBtn(warn)}
+        <DateBar word="From" from_bool={true}></DateBar>
+        <DateBar word="To" from_bool={false}></DateBar>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "90px",
+            width: "50px",
+          }}
+        >
+          {/* <Button
           onClick={() => {
             console.log("Downloading Data...");
           }}
@@ -67,6 +75,7 @@ function SearchFields(Props) {
         >
           Download Data
         </Button> */}
+        </div>
       </div>
     </div>
   );

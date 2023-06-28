@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import SearchFields from '../components/SearchFields/SearchFields'
 import ArticlesCard from '../components/ArticleCard/ArticleCard';
@@ -35,13 +36,10 @@ export default function Home() {
     const fetchNeighborhoodAndDateData = async(currentState) => {
         // console.log("heyyyyy",currentState);
         let newState = currentState;
-        if (currentState.currentNeigh === "boston_city" || currentState.currentNeigh === undefined || currentState.currentNeigh === "") {
-            // if (currentState.hasOwnProperty('CensusTract')) {
-            //     delete newState.CensusTract; 
-            // }
-            // console.log("Boston City No Data.")
-
-            console.log(currentState);
+        if (currentState.currentNeigh === "boston_city" || currentState.currentNeigh === undefined || currentState.currentNeigh === "" ||currentState.hasOwnProperty("CurrentTrack") ) {
+            const data = await DataMethods.getCensusDateData(dates[0], dates[1], currentState.CurrentTrack);
+            console.log("data",data);
+            newState = stateMethods.modify(currentState, "CensusTract", data)
             return newState;
         }
         const data = await DataMethods.getgetNeighborhoodAndDateData(dates[0], dates[1], currentState.currentNeigh);
@@ -76,6 +74,14 @@ export default function Home() {
         }
     },[dates, neighborhood]);
 
+
+    const navigate = useNavigate();
+
+    const handleButtonClick = () => {
+      navigate("/");
+    };
+
+
     return (
         <>
             <div className="home_container">
@@ -83,7 +89,7 @@ export default function Home() {
 
                 {/* Filter Options */}
                 <div className='search_container'>
-                    <img style={{marginLeft: 50, marginTop: 10, marginRight: 10, width: 150}} src={Logo} alt={"Logo"}></img>
+                    <img onClick = { handleButtonClick}style={{marginLeft: 50, marginTop: 10, marginRight: 10, width: 150}} src={Logo} alt={"Logo"}></img>
                     <div style={{flex: 1}}></div>
                     <SearchFields showDropDown = "false"></SearchFields>
                 </div>

@@ -126,76 +126,76 @@ const NeighborhoodCard = () => {
     console.log("Tract Name:", v.payload.properties.NAME20);
     setTractDataToAllGraphs(v.payload.properties.TRACTCE20);
     SetTractCurrLocation(v.payload.properties.TRACTCE20);
-
-  
   };
 
-  const setTractDataToAllGraphs =  async (tract) => {
-    if (!DateMethods.fromEmpty(dates) && !DateMethods.toEmpty(dates) && DateMethods.dateValidation(dates[0], dates[1])) {
-        dispatch(setLoadingState(true)); // Set Loading state
-        const data = await DataMethods.getCensusDateData(dates[0], dates[1], `${tract}`).then((v) => {
-          
-            // Quick and Dirty
-            if (v === null) {
-                // console.log("Census Tract Rendered Empty!")
-                return
-            }
+  const setTractDataToAllGraphs = async (tract) => {
+    if (
+      !DateMethods.fromEmpty(dates) &&
+      !DateMethods.toEmpty(dates) &&
+      DateMethods.dateValidation(dates[0], dates[1])
+    ) {
+      dispatch(setLoadingState(true)); // Set Loading state
+      const data = await DataMethods.getCensusDateData(
+        dates[0],
+        dates[1],
+        `${tract}`
+      ).then((v) => {
+        // Quick and Dirty
+        if (v === null) {
+          // console.log("Census Tract Rendered Empty!")
+          return;
+        }
+        // console.log("data from Tracks", v);
+        let v_string = JSON.stringify(v);
 
-            let v_string = JSON.stringify(v);
-           
-            if (v_string.includes("Error")){
-                console.log("Specific tract information not found!");
-                let newState = currentState;
-                delete newState.CensusTract;
-                newState = stateMethods.updateModified(newState);
-                setState(newState);
-            } else {
-                let newState = {
-                    ...currentState,
-                    CensusTract: v
-                }
-                newState = stateMethods.updateModified(newState);
-                setState(newState); 
-                
-                
-            }
-            // setTimeout(() => {
-            //     dispatch(setLoadingState(false)); // Set Loading state
-            // }, "1000");
-            dispatch(setLoadingState(false)); // Set Loading state
-
-        });
+        if (v_string.includes("Error")) {
+          console.log("Specific tract information not found!");
+          let newState = currentState;
+          delete newState.CensusTract;
+          newState = stateMethods.updateModified(newState);
+          setState(newState);
+        } else {
+          let newState = {
+            ...currentState,
+            CensusTract: v,
+            CurrentTrack: tract,
+          };
+          newState = stateMethods.updateModified(newState);
+          setState(newState);
+          // setNeigh("boston_city");
+        }
+        // setTimeout(() => {
+        //     dispatch(setLoadingState(false)); // Set Loading state
+        // }, "1000");
+        dispatch(setLoadingState(false)); // Set Loading state
+      });
     }
-}
-
+  };
 
   const selectTrack = (e) => {
-    // console.log("Selected track:", e.keyPath[1]);
+    // console.log("Selected track:", e);
     if (e.key.includes("all")) {
-      
       let deconstruct_str = e.key.slice(4);
       let tract_list = deconstruct_str.split(",");
       setTractShapes(tract_list);
       SetTractCurrLocation("");
+      delete currentState.CurrentTrack;
+
       setState(
         stateMethods.updateModified(
           stateMethods.modify(currentState, "currentNeigh", `${e.keyPath[1]}`)
         )
       );
-      
+
       setNeigh(e.keyPath[1]);
-      setDates([dates[0],dates[1]])
-
-
-
-
-
+      setDates([dates[0], dates[1]]);
     } else {
       SetTractCurrLocation(e.key);
       // setTractShapes(tract_list);
       // setTractShapes([e.key]);
-     
+
       setTractDataToAllGraphs(e.key);
+      // setNeigh("boston_city");
 
       // setState(
       //   stateMethods.updateModified(

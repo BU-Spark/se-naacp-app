@@ -14,7 +14,7 @@ import { NeighborhoodContext } from '../contexts/neighborhoodContext.js';
 
 
 const IntroPage = () => {
-  const { neighborhood } = React.useContext(NeighborhoodContext);
+  const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext);
   const [showError, setshowerror] = React.useState(false); 
   const navigate = useNavigate();
 
@@ -22,6 +22,7 @@ const IntroPage = () => {
     if(neighborhood === "boston_city"){
       setshowerror(true);
     }else{
+      setNeigh("boston_city");
       navigate("/IntroPage");
     }
   };
