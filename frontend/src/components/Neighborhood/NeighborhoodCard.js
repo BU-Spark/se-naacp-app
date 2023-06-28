@@ -401,7 +401,7 @@ const NeighborhoodCard = () => {
                 marginRight: 20,
               }}
             >
-              <h3 className="card">Filter By Neighborhoods And Tracks</h3>
+              <h3 className="card">Filter By Neighborhoods And Tracts</h3>
               {loadingState(fetchingData)}
               <div style={{ width: "100%", overflow: "auto" }}>
                 <Menu
