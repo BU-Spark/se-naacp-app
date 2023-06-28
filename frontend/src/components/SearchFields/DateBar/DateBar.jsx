@@ -8,11 +8,10 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { DateContext } from "../../../contexts/dateContext.js";
 
 function DateBar({ word, from_bool }) {
+  const { setDates, dates } = React.useContext(DateContext);
+  const [date, setDate] = React.useState(from_bool ? dates[0] : dates[1]);
   const minDate = dayjs("2020-11-01"); // November 2020
   const maxDate = dayjs("2021-02-28"); // February 2021
-  const { setDates, dates } = React.useContext(DateContext);
-  const [date, setDate] = React.useState(from_bool ? minDate : maxDate);
-  
   // setDates([minDate,maxDate]);
   const handleChange = (d) => {
     if (dates === undefined) {

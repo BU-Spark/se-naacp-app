@@ -8,12 +8,23 @@ import { Layout, Button } from "antd"; // Ant Design
 import { useNavigate } from "react-router-dom";
 // import Logo from "../logo.svg"; // GBH Logo
 import Logo from "../wgbh-logo.svg"; // GBH Logo
+import { NeighborhoodContext } from '../contexts/neighborhoodContext.js';
+
+
+
 
 const IntroPage = () => {
+  const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext);
+  const [showError, setshowerror] = React.useState(false); 
   const navigate = useNavigate();
 
   const navigateDeveloperMode = () => {
-    navigate("/IntroPage");
+    if(neighborhood === "boston_city"){
+      setshowerror(true);
+    }else{
+      setNeigh("boston_city");
+      navigate("/IntroPage");
+    }
   };
   return (
     <div className="App">
@@ -24,8 +35,10 @@ const IntroPage = () => {
           alt={"Logo"}
         ></img>
 
-        <h1 className="App-title">Welcome to GBH</h1>
-
+        <h1 className="App-title">Welcome To GBH Statistics</h1>
+        <p className="App-intro">
+          Choose a neighborhood and a date range to display statistics
+        </p>
         <div className="search_container">
           <div style={{ flex: 1 }}></div>
           <SearchFields showDropDown = "true"></SearchFields>
@@ -37,6 +50,7 @@ const IntroPage = () => {
         >
           Search Neighborhoods! 
         </Button>
+        <p style={{display: showError ? "block" : "none"}}>Please select a neighborhood</p>
       </header>
     </div>
   );

@@ -51,10 +51,10 @@ export default function ArticleCard() {
       if (currentState.hasOwnProperty('CensusTract') && currentState.CensusTract !== null) {
         if (currentState.CensusTract.articles !== 'None') {
           let data = currentState.CensusTract.articleData;
-          console.log("Sent article data:", data);
+          // console.log("Sent article data:", data);
           let articles = queryMethods.getArticleData(data).then((articles) => {
             let articleRow = []
-            console.log("Articles:", articles[0]);
+            // console.log("Articles:", articles[0]);
             for (const article_arr of articles[0]) {
               let article = article_arr[0];
               articleRow.push({

@@ -41,9 +41,12 @@ const DateMethods = {
     toEmpty : toEmpty,
     dateValidation : dateValidation,
 };
-
+const minDate = dayjs("2020-11-01"); // November 2020
+const maxDate = dayjs("2021-02-28"); // February 2021
 const DateContext = React.createContext({
-    dates: [null, null],
+
+  
+    dates: [minDate, maxDate],
     setDates: (v) => {}
 });
 
