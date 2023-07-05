@@ -49,6 +49,8 @@ const NeighborhoodCard = () => {
   const { setDates, dates } = React.useContext(DateContext); // Global Context of dates
   const { currentState, setState } = React.useContext(StateContext); // Global Context of States
   const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext); // Global Neighborhood
+  
+  const [innerItem, setInnerItem] = React.useState("");
 
   const minDate = dayjs("2020-11-01"); // November 2020
   const maxDate = dayjs("2021-02-28"); // February 2021
@@ -120,10 +122,18 @@ const NeighborhoodCard = () => {
     }
   };
 
+  // React.useEffect(() => {
+  //   const v = [currentState.currentNeigh];
+  //   // onSelectionNeigh(v);
+    
+  // }, [locations]);
+
+
   // Handle Map API click
   const onTractMapAPIClick = (v) => {
-    console.log("Tract:", v.payload.properties.TRACTCE20);
-    console.log("Tract Name:", v.payload.properties.NAME20);
+    // console.log("Tract:", v.payload.properties.TRACTCE20);
+    // console.log("Tract Name:", v.payload.properties.NAME20);
+    setInnerItem(v.payload.properties.TRACTCE20);
     setTractDataToAllGraphs(v.payload.properties.TRACTCE20);
     SetTractCurrLocation(v.payload.properties.TRACTCE20);
   };
@@ -174,6 +184,7 @@ const NeighborhoodCard = () => {
 
   const selectTrack = (e) => {
     // console.log("Selected track:", e);
+    setInnerItem(e.key);
     if (e.key.includes("all")) {
       let deconstruct_str = e.key.slice(4);
       let tract_list = deconstruct_str.split(",");
@@ -368,7 +379,19 @@ const NeighborhoodCard = () => {
 
       setItems(_items);
       SetLocations(neighborhoodTractMapData);
+      if(locations.length !== 0 && currentState.currentNeigh !== "boston_city" && innerItem === ""){
+        const desiredItem = items.find(obj => obj.key === currentState.currentNeigh).children.find(child => child.key.includes("all"));
+        // console.log(desiredItem.key);
+        setInnerItem(desiredItem.key);
+        onSelectionNeigh([currentState.currentNeigh]);
+      }
     }
+
+
+
+
+   
+   
 
     // if (currentState.currentNeigh !== undefined){
     //     if (currentState.currentNeigh !== "boston_city") {
@@ -387,6 +410,17 @@ const NeighborhoodCard = () => {
     // }
   }, [dates, currentState, state_neigh]);
 
+
+  // const handleHomePageSelection = (neighborhood) => {
+  //   const desiredItem = items.find(obj => obj.key === neighborhood).children.find(child => child.key.includes("all"));
+  //   console.log(desiredItem.key);
+  //   setInnerItem(desiredItem.key);
+  //   console.log("hey",innerItem);
+
+  //   // return desiredItem?.key;
+  // };
+
+
   return (
     <>
       <Card className="body" sx={{ width: "100%", height: "80.5vh" }}>
@@ -402,9 +436,12 @@ const NeighborhoodCard = () => {
               }}
             >
               <h3 className="card">Filter By Neighborhoods And Tracts</h3>
+
               {loadingState(fetchingData)}
+
               <div style={{ width: "100%", overflow: "auto" }}>
                 <Menu
+
                   onClick={selectTrack}
                   onOpenChange={(v) => {
                     onSelectionNeigh(v);
@@ -417,7 +454,12 @@ const NeighborhoodCard = () => {
                   }}
                   mode="inline"
                   items={items}
-                />
+
+                  defaultOpenKeys={[currentState.currentNeigh]}
+                  selectedKeys={[innerItem]}
+
+                   // Specify the ID of the dropdown item you want to be open by default
+                  />
               </div>
             </div>
             <div style={{ flex: 1 }}></div>
