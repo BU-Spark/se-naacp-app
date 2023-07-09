@@ -2,13 +2,13 @@
 
 import React from "react";
 import "./IntroPage.css";
-import SearchFields from "../components/SearchFields/SearchFields";
+import SearchFields from "../../components/SearchFields/SearchFields";
 
 import { Layout, Button } from "antd"; // Ant Design
 import { useNavigate } from "react-router-dom";
 // import Logo from "../logo.svg"; // GBH Logo
-import Logo from "../wgbh-logo.svg"; // GBH Logo
-import { NeighborhoodContext } from '../contexts/neighborhoodContext.js';
+import Logo from "../../wgbh-logo.svg"; // GBH Logo
+import { NeighborhoodContext } from '../../contexts/neighborhoodContext.js';
 
 
 
@@ -25,6 +25,10 @@ const IntroPage = () => {
       setNeigh("boston_city");
       navigate("/IntroPage");
     }
+  };
+
+  const navigateSearchByKeyWord = () => {
+      navigate("/SearchByKeyWord");
   };
   return (
     <div className="App">
@@ -49,6 +53,13 @@ const IntroPage = () => {
           
         >
           Search Neighborhoods! 
+        </Button>
+        <Button
+          id="dev-button"
+          onClick={navigateSearchByKeyWord}
+          
+        >
+          Search By Key! 
         </Button>
         <p style={{display: showError ? "block" : "none"}}>Please select a neighborhood</p>
       </header>

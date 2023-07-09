@@ -10,8 +10,8 @@ const { masterSchema, masterResolver } = require("./services/master_service.js")
 const { querySchema, queryResolver } = require("./services/query_service.js");
 
 const app = express();
-const PORT = process.env.PORT;
-// const PORT = 4000; Development
+// const PORT = process.env.PORT;
+const PORT = 4000; //Development
 
 app.use(cors()); // Cors Policy
 

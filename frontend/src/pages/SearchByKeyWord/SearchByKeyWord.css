@@ -1,0 +1,19 @@
+.bubble-chart {
+    height: 1000px;
+    width: 1000px;
+}
+
+  
+.search-container {
+    margin-top: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .search-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  

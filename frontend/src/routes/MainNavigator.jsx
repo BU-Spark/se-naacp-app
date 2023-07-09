@@ -8,9 +8,10 @@ import {
 import {Nav, NavList} from '@patternfly/react-core';
 
 // Pages
-import Home from '../pages/Home'
-import DevMode from "../pages/DevMode";
-import IntroPage from "../pages/IntroPage";
+import Home from '../pages/HomePage/Home'
+import DevMode from "../pages/DevelopmentMode/DevMode";
+import IntroPage from "../pages/LandingPage/IntroPage";
+import SearchByKeyWord from "../pages/SearchByKeyWord/SearchByKeyWord"
 
 // Data Fetching
 import MasterPipeline from '../Pipelines/masterDataPipeline'
@@ -60,7 +61,7 @@ export default function MainNavigator() {
                     <Route path="/IntroPage" element={<Home />} />
                     <Route path="/dev-mode" element={<DevMode />} />
                     <Route path="/" element={<IntroPage />} />
-
+                    <Route path="/SearchByKeyWord" element={<SearchByKeyWord />} />
                 </Routes>
         </BrowserRouter>
     </>

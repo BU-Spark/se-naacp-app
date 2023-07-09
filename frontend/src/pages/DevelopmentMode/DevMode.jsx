@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import { Layout, Button } from 'antd'; // Ant Design
 
-import APIQueryBlock from "../components/Development/apiQueryBlock.jsx";
-import MasterPipeline from "../Pipelines/masterDataPipeline";
-import DataMethods from "../Pipelines/data.js";
+import APIQueryBlock from "../../components/Development/apiQueryBlock.jsx";
+import MasterPipeline from "../../Pipelines/masterDataPipeline.js";
+import DataMethods from "../../Pipelines/data.js";
 
 import "./DevMode.css";
 

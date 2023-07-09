@@ -1,26 +1,29 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import SearchFields from '../components/SearchFields/SearchFields'
-import ArticlesCard from '../components/ArticleCard/ArticleCard';
-import NeighborhoodCard from '../components/Neighborhood/NeighborhoodCard';
+import SearchFields from '../../components/SearchFields/SearchFields'
+import ArticlesCard from '../../components/ArticleCard/ArticleCard';
+import NeighborhoodCard from '../../components/Neighborhood/NeighborhoodCard';
 
-import { TopNavBar } from '../components/TopNavBar/TopNavBar';
-import  NeighborhoodDemoBoard from '../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
-import { TrendBoard } from '../components/TrendBoard/TrendBoard';
 
-import Logo from "../logo.svg"; // GBH Logo
+import { TopNavBar } from '../../components/TopNavBar/TopNavBar';
+import  NeighborhoodDemoBoard from '../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
+import { TrendBoard } from '../../components/TrendBoard/TrendBoard';
+import BubbleChart from "../../components/BubbleChart/BubbleChart";
+
+
+import Logo from "../../logo.svg"; // GBH Logo
 
 // CSS
 import './Home.css'
 
 // React Contexts/Context Methods
-import { DateContext, DateMethods } from "../contexts/dateContext";
-import { StateContext, stateMethods } from '../contexts/stateContext.js';
-import { NeighborhoodContext } from '../contexts/neighborhoodContext.js';
+import { DateContext, DateMethods } from "../../contexts/dateContext";
+import { StateContext, stateMethods } from '../../contexts/stateContext.js';
+import { NeighborhoodContext } from '../../contexts/neighborhoodContext.js';
 
 // Data Methods 
-import DataMethods from '../Pipelines/data';
+import DataMethods from '../../Pipelines/data';
 
 // Redux
 import { useSelector } from 'react-redux'
@@ -35,6 +38,8 @@ export default function Home() {
 
     const fetchNeighborhoodAndDateData = async(currentState) => {
         // console.log("heyyyyy",currentState);
+        const datatesing = await DataMethods.getBubbleChartData("Education");
+        console.log(datatesing);
         let newState = currentState;
         if (currentState.currentNeigh === "boston_city" || currentState.currentNeigh === undefined || currentState.currentNeigh === "" ||currentState.hasOwnProperty("CurrentTrack") ) {
             const data = await DataMethods.getCensusDateData(dates[0], dates[1], currentState.CurrentTrack);
@@ -119,6 +124,7 @@ export default function Home() {
                             <TrendBoard></TrendBoard>
                         </div>
                     </div>
+                    
 
                      {/* Article Card */}
                     <div className="article-container">

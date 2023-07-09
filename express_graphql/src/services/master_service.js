@@ -3,8 +3,8 @@ const { buildSchema } = require("graphql");
 
 const { mongoError } = require("../utilities/error_builder.js");
 
-// const url = 'mongodb://localhost:27017'; // Local development
-const url = process.env.NAACP_MONGODB;
+const url = 'mongodb://localhost:27017'; // Local development
+// const url = process.env.NAACP_MONGODB;
 const dbName = 'se_naacp_gbh'; 
 const client = new MongoClient(url);
 

@@ -3,13 +3,13 @@ import dayjs from "dayjs";
 
 import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 
-const deployment_uri = "https://naacpbackend-production.up.railway.app"
+const deployment_uri = "https://naacpbackend-production.up.railway.app";
 
 // const deployment_uri = process.env.NAACP_DEPLOYMENT_URI;
-const local_uri = 'http://localhost:4000';
+const local_uri = "http://localhost:4000";
 
 // Apollo Client Object
-const queryURI = `${deployment_uri}/queryValues`; // Will be automated
+const queryURI = `${local_uri}/queryValues`; // Will be automated
 
 const clientQuery = new ApolloClient({
   uri: queryURI,
@@ -88,34 +88,45 @@ const getgetNeighborhoodAndDateData = async (
 // <-- tract: tract as a string
 // ======================================================
 // --> Returns a resolved void promise
-const getCensusDateData = async(dateFrom, dateTo, census) => {
-	let formattedDateFrom = parseInt(dayjs(dateFrom).format('YYYYMMDD'));
-	let formattedDateTo = parseInt(dayjs(dateTo).format('YYYYMMDD'));
-	let types = [typeof 1, typeof 1, typeof ""]; // It's dirty, but javascript won't let me access the number type
-	let given = [typeof formattedDateFrom, typeof formattedDateTo, typeof census];
+const getCensusDateData = async (dateFrom, dateTo, census) => {
+  let formattedDateFrom = parseInt(dayjs(dateFrom).format("YYYYMMDD"));
+  let formattedDateTo = parseInt(dayjs(dateTo).format("YYYYMMDD"));
+  let types = [typeof 1, typeof 1, typeof ""]; // It's dirty, but javascript won't let me access the number type
+  let given = [typeof formattedDateFrom, typeof formattedDateTo, typeof census];
 
-	const QUERY = gql`query queryCensusData($formattedDateFrom: Int, $formattedDateTo: Int, $census: String) {
-		queryCensusData(dateFrom: $formattedDateFrom, dateTo: $formattedDateTo, censusTract: $census)
-	}`;
+  const QUERY = gql`
+    query queryCensusData(
+      $formattedDateFrom: Int
+      $formattedDateTo: Int
+      $census: String
+    ) {
+      queryCensusData(
+        dateFrom: $formattedDateFrom
+        dateTo: $formattedDateTo
+        censusTract: $census
+      )
+    }
+  `;
 
-	if (!typeChecker(types, given)) {
-		console.log("Killed Query before leaving!");
-		return;
-	}
+  if (!typeChecker(types, given)) {
+    console.log("Killed Query before leaving!");
+    return;
+  }
 
-	let tract_data_data = await clientQuery.query({
-		query: QUERY,
-		variables: {formattedDateFrom, formattedDateTo, census}
-	}).then((_res) => {
-		return _res
-	});
+  let tract_data_data = await clientQuery
+    .query({
+      query: QUERY,
+      variables: { formattedDateFrom, formattedDateTo, census },
+    })
+    .then((_res) => {
+      return _res;
+    });
 
-	// Definitely needs error checking and custom apollo type checker here...
+  // Definitely needs error checking and custom apollo type checker here...
 
-	tract_data_data = JSON.parse(tract_data_data.data.queryCensusData); // Need to change this...
-	
+  tract_data_data = JSON.parse(tract_data_data.data.queryCensusData); // Need to change this...
 
-	return tract_data_data;
+  return tract_data_data;
 };
 
 const getArticleData = async (articleData) => {
@@ -137,13 +148,37 @@ const getArticleData = async (articleData) => {
         return _res;
       });
 
-	article_data_dev_page = JSON.stringify(JSON.parse(article_data.data.queryArticleKeys));
+    article_data_dev_page = JSON.stringify(
+      JSON.parse(article_data.data.queryArticleKeys)
+    );
     article_data = JSON.parse(article_data.data.queryArticleKeys); // Need to change this...
   } catch (error) {
-	article_data_dev_page = error;
+    article_data_dev_page = error;
   }
 
-  return [article_data,article_data_dev_page];
+  return [article_data, article_data_dev_page];
+};
+
+const getBubbleChartData = async (keyword) => {
+  const QUERY = gql`
+    query queryTractsByTerm($keyword: String) {
+      queryTractsByTerm(keyword: $keyword)
+    }
+  `;
+
+  
+  let article_data = await clientQuery
+    .query({
+      query: QUERY,
+      variables: { keyword },
+    })
+    .then((_res) => {
+      return _res;
+    });
+  console.log("tesing mongo Stuff",article_data);
+  article_data = JSON.parse(article_data.data.queryTractsByTerm); // Need to change this...
+
+  return article_data;
 };
 
 // const getArticleData = async(articleData) => {
@@ -192,6 +227,7 @@ const queryMethods = {
   getgetNeighborhoodAndDateData: getgetNeighborhoodAndDateData,
   getArticleData: getArticleData,
   getCensusDateData: getCensusDateData,
+  getBubbleChartData: getBubbleChartData
 };
 
 export default queryMethods;
