@@ -27,6 +27,7 @@ const querySchema = buildSchema(`
     queryTractsByTerm(
       keyword: String
     ): String
+    queryKeyWords: String
   }
 `);
 
@@ -581,7 +582,6 @@ const queryResolver = {
   },
 
   queryTractsByTerm: async ({ keyword }) => {
-    
     await client.connect();
     infoLogger(
       "[queryTractsByTerm]",
@@ -603,17 +603,20 @@ const queryResolver = {
     ]);
 
     let queryResult = await Promise.resolve(
-      tractCollectionCursor.toArray()).then((_res) => {
+      tractCollectionCursor.toArray()
+    ).then((_res) => {
       return _res;
     });
 
-    // let tracts = queryResult.map(function (obj) {
-    //   return obj.tract;
-    // });
+    console.log(queryResult);
+    let tracts = queryResult.map(function (obj) {
+      return obj.tract;
+    });
+    console.log(tracts);
 
     function getNeighborhoodByTract(tract) {
-      var neighborhood = '';
-      queryResult.forEach(function(obj) {
+      var neighborhood = "";
+      queryResult.forEach(function (obj) {
         if (obj.tract === tract) {
           neighborhood = obj.neighborhood;
         }
@@ -621,90 +624,12 @@ const queryResolver = {
       return neighborhood;
     }
 
-
     const articleCollectionCursor = articleCollection.aggregate([
       {
         $match: {
           position_section: keyword,
           tracts: {
-            $in: [
-              "000102",
-              "000804",
-              "000805",
-              "000806",
-              "010103",
-              "010206",
-              "010300",
-              "010404",
-              "010405",
-              "010600",
-              "010702",
-              "020200",
-              "020301",
-              "020302",
-              "020304",
-              "020305",
-              "030200",
-              "030301",
-              "030302",
-              "040100",
-              "040200",
-              "040300",
-              "040600",
-              "040801",
-              "050101",
-              "050300",
-              "050600",
-              "060501",
-              "060604",
-              "061201",
-              "070102",
-              "070104",
-              "070201",
-              "070202",
-              "070301",
-              "070302",
-              "070501",
-              "070801",
-              "071101",
-              "071201",
-              "080100",
-              "080401",
-              "080601",
-              "081001",
-              "081102",
-              "081301",
-              "081302",
-              "081700",
-              "081800",
-              "082000",
-              "082100",
-              "090901",
-              "091001",
-              "091200",
-              "091600",
-              "092000",
-              "092101",
-              "100500",
-              "100700",
-              "100900",
-              "101102",
-              "110104",
-              "110106",
-              "110401",
-              "110403",
-              "110502",
-              "120201",
-              "120400",
-              "140102",
-              "140300",
-              "980900",
-              "981100",
-              "981300",
-              "981501",
-              "981700",
-              "981800",
-            ],
+            $in: tracts,
           },
         },
       },
@@ -725,14 +650,14 @@ const queryResolver = {
       return _res;
     });
     var totalCount = 0;
-    tractCount.map(function(item) {
-      totalCount += item.count
+    tractCount.map(function (item) {
+      totalCount += item.count;
     });
-    
-    var updatedResults = tractCount.map(function(item) {
+
+    var updatedResults = tractCount.map(function (item) {
       return {
-        name: getNeighborhoodByTract(item._id) + " "+ item._id,
-        value: (item.count/totalCount)*100
+        name: getNeighborhoodByTract(item._id) + " " + item._id,
+        value: (item.count / totalCount) * 100,
       };
 
       // return {
@@ -745,10 +670,20 @@ const queryResolver = {
 
     console.log(updatedResults);
 
-
-
-
     return JSON.stringify(updatedResults);
+  },
+
+  queryKeyWords: async () => {
+    await client.connect();
+    infoLogger("[queryKeyWords]");
+
+    const db = client.db(dbName);
+    const topicsCollection = db.collection("topics_data");
+    const topicsCollectionCursor = await topicsCollection.distinct("value");
+
+
+    return JSON.stringify(topicsCollectionCursor);
+
   },
 };
 
@@ -780,10 +715,6 @@ var topics_data = async (topicsCollection, article_id, topicsCount) => {
 
   return topicsCount;
 };
-
-
-
-
 
 var tract_data = async (
   tractCollection,

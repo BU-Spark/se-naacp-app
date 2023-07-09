@@ -181,6 +181,26 @@ const getBubbleChartData = async (keyword) => {
   return article_data;
 };
 
+const getKeywords = async () => {
+  const QUERY = gql`
+  {
+    queryKeyWords
+  }
+  `;
+
+  
+  let keywords_data = await clientQuery
+    .query({
+      query: QUERY,
+    })
+    .then((_res) => {
+      return _res;
+    });
+    keywords_data = JSON.parse(keywords_data.data.queryKeyWords); // Need to change this...
+
+  return keywords_data;
+};
+
 // const getArticleData = async(articleData) => {
 // 	const parameter_payload = {
 // 		articleData: articleData
@@ -227,7 +247,8 @@ const queryMethods = {
   getgetNeighborhoodAndDateData: getgetNeighborhoodAndDateData,
   getArticleData: getArticleData,
   getCensusDateData: getCensusDateData,
-  getBubbleChartData: getBubbleChartData
+  getBubbleChartData: getBubbleChartData,
+  getKeywords: getKeywords
 };
 
 export default queryMethods;
