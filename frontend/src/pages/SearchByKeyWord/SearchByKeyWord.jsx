@@ -1,5 +1,8 @@
 import "./SearchByKeyWord.css";
 import React, { useState, useEffect } from "react";
+import emptyAstro from '../../assets/lottieFiles/astro_empty.json';
+import Lottie from 'react-lottie-player'
+
 import BubbleChart from "../../components/BubbleChart/BubbleChart";
 import DataMethods from "../../Pipelines/data";
 import { Input, Space } from "antd";
@@ -10,7 +13,7 @@ export default function SearchByKeyWord() {
   const [result, setResult] = useState(null);
 
   const onSearch = async function (value) {
-    const bubbleChartData = await DataMethods.getBubbleChartData(value);
+    const bubbleChartData = await DataMethods.getBubbleChartData(value.charAt(0).toUpperCase() + value.slice(1));
     setResult(bubbleChartData);
     setIsLoading(false);
   };
@@ -20,14 +23,19 @@ export default function SearchByKeyWord() {
       <div className="search-wrapper"> 
         <Search
           className="Search"
-          placeholder="input search text"
+          placeholder="input a term"
           onSearch={onSearch}
           enterButton
         />
       </div>
       
-      {isLoading ? (
-        <p></p>
+      {result?.length === 0 ? (
+        <React.Fragment>
+        <div className="bubble-chart">
+            <Lottie loop animationData={emptyAstro} play style={{ width: "100%", height: "auto" }}/> 
+            <p className="empty-text">{"No Data out there :("}</p>
+        </div>
+    </React.Fragment>
       ) : (
         <div className="bubble-chart">
           <BubbleChart data={result}></BubbleChart>

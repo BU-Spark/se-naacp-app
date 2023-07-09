@@ -1,6 +1,12 @@
 .bubble-chart {
-    height: 1000px;
-    width: 1000px;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  width: 50vw;
+  height: 70vh;
+  padding-bottom: 8vh;
+  padding-top: 3vh;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  border-radius: 4px;
 }
 
   
@@ -17,3 +23,6 @@
     justify-content: center;
   }
   
+.empty-text{
+  text-align: center
+}

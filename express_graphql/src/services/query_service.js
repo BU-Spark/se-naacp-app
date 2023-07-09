@@ -731,7 +731,7 @@ const queryResolver = {
     
     var updatedResults = tractCount.map(function(item) {
       return {
-        name: getNeighborhoodByTract(item._id) + ": Tract " + item._id,
+        name: getNeighborhoodByTract(item._id) + " "+ item._id,
         value: (item.count/totalCount)*100
       };
 
