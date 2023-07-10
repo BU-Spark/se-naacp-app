@@ -1,7 +1,7 @@
 .bubble-chart {
   margin-top: 5vh;
   margin-bottom: 5vh;
-  width: 50vw;
+  width: 60vw;
   height: 70vh;
   padding-bottom: 8vh;
   padding-top: 3vh;
@@ -25,4 +25,9 @@
   
 .empty-text{
   text-align: center
+}
+.bubble-message{
+  text-align: center;
+  font-size: small;
+  color: gray;
 }

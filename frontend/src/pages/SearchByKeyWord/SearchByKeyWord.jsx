@@ -78,6 +78,7 @@ export default function SearchByKeyWord() {
       ) : (
         <div className="bubble-chart">
           <BubbleChart data={result}></BubbleChart>
+          <p className="bubble-message">***If the bubble is empty click on it to show text. We hide the text if it is too large for the bubble***</p>
         </div>
       )}
     </div>

@@ -608,11 +608,9 @@ const queryResolver = {
       return _res;
     });
 
-    console.log(queryResult);
     let tracts = queryResult.map(function (obj) {
       return obj.tract;
     });
-    console.log(tracts);
 
     function getNeighborhoodByTract(tract) {
       var neighborhood = "";
@@ -627,7 +625,7 @@ const queryResolver = {
     const articleCollectionCursor = articleCollection.aggregate([
       {
         $match: {
-          position_section: keyword,
+          openai_labels: { $in: [keyword] },
           tracts: {
             $in: tracts,
           },
@@ -656,8 +654,9 @@ const queryResolver = {
 
     var updatedResults = tractCount.map(function (item) {
       return {
-        name: getNeighborhoodByTract(item._id) + " " + item._id,
+        name: getNeighborhoodByTract(item._id) + " " + item._id + " (Articles: " + item.count +")",
         value: (item.count / totalCount) * 100,
+        
       };
 
       // return {
@@ -678,11 +677,52 @@ const queryResolver = {
     infoLogger("[queryKeyWords]");
 
     const db = client.db(dbName);
-    const topicsCollection = db.collection("topics_data");
-    const topicsCollectionCursor = await topicsCollection.distinct("value");
+    const topicsCollection = db.collection("articles_data");
+    const topicsCollectionCursor = await topicsCollection.aggregate([
+      {
+        $match: {
+          openai_labels: { $exists: true }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          openai_labels: 1
+        }
+      },
+      {
+        $unwind: "$openai_labels"
+      },
+      {
+        $group: {
+          _id: null,
+          labels_array: { $addToSet: "$openai_labels" }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          labels_array: 1
+        }
+      }
+    ]);
 
 
-    return JSON.stringify(topicsCollectionCursor);
+    let queryResult = await Promise.resolve(
+      topicsCollectionCursor.toArray()
+    ).then((_res) => {
+      return _res;
+    });
+
+
+    console.log(queryResult[0].labels_array);
+
+    // queryResult = queryResult[0].labels_array.map(word => word.trimStart());
+    queryResult = queryResult[0].labels_array;
+
+    // console.log(queryResult);
+
+    return JSON.stringify(queryResult);
 
   },
 };

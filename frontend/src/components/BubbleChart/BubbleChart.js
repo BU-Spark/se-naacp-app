@@ -30,10 +30,10 @@ export default function BubbleChart(Props) {
           from: "color",
           modifiers: [["brighter", 0.4]],
         }}
-        padding={1}
+        padding={0}
         leavesOnly={true}
         enableLabels={true}
-        labelsSkipRadius={50}
+        labelsSkipRadius={64}
         zoomedId = {zoomedId}
         onClick={handleNodeClick}
         label={(e) => e.id}
