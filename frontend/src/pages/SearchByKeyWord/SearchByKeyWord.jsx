@@ -11,7 +11,7 @@ export default function SearchByKeyWord() {
   const [result, setResult] = useState(null);
   const [options, setOptions] = useState([]); // Autocomplete options
   const [givenWords, setGivenWords] = useState([]); // Words from getKeywords
-  const [isOpenAI, setIsOpenAI] = useState(true);
+  const [isOpenAI, setIsOpenAI] = useState(false);
   useEffect(() => {
     getKeywords();
   }, [isOpenAI]);
