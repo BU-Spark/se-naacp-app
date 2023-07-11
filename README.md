@@ -68,6 +68,11 @@ To setup the MongoDB server we use docker to contanarize a local image working o
 <table>
   <tbody>
     <tr>
+     <td align="center" valign="top" width="14.28%">
+        <a href="https://github.com/nawafds">
+        <img src="https://avatars.githubusercontent.com/u/60396177?v=4" width="100px;" alt="Zachary1575"/>
+        <br /><sub><b>Nawafds</b></sub></a>
+      </td>
       <td align="center" valign="top" width="14.28%">
         <a href="https://github.com/Zachary1575">
         <img src="https://avatars.githubusercontent.com/u/75510412?v=4" width="100px;" alt="Zachary1575"/>
