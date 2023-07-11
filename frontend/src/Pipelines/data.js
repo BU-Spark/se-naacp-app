@@ -159,10 +159,10 @@ const getArticleData = async (articleData) => {
   return [article_data, article_data_dev_page];
 };
 
-const getBubbleChartData = async (keyword) => {
+const getBubbleChartData = async (keyword, switchBool) => {
   const QUERY = gql`
-    query queryTractsByTerm($keyword: String) {
-      queryTractsByTerm(keyword: $keyword)
+    query queryTractsByTerm($keyword: String $switchBool: Boolean) {
+      queryTractsByTerm(keyword: $keyword switchBool: $switchBool)
     }
   `;
 
@@ -170,7 +170,7 @@ const getBubbleChartData = async (keyword) => {
   let article_data = await clientQuery
     .query({
       query: QUERY,
-      variables: { keyword },
+      variables: { keyword, switchBool },
     })
     .then((_res) => {
       return _res;
@@ -181,10 +181,11 @@ const getBubbleChartData = async (keyword) => {
   return article_data;
 };
 
-const getKeywords = async () => {
+const getKeywords = async (switchBool) => {
+
   const QUERY = gql`
-  {
-    queryKeyWords
+  query queryKeyWords($switchBool: Boolean) {
+    queryKeyWords(switchBool: $switchBool)
   }
   `;
 
@@ -192,6 +193,8 @@ const getKeywords = async () => {
   let keywords_data = await clientQuery
     .query({
       query: QUERY,
+      variables: { switchBool },
+
     })
     .then((_res) => {
       return _res;

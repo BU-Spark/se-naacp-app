@@ -5,29 +5,39 @@
   height: 70vh;
   padding-bottom: 8vh;
   padding-top: 3vh;
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
   border-radius: 4px;
 }
 
-  
 .search-container {
-    margin-top: 5vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-  
-  .search-wrapper {
-    display: flex;
-    justify-content: center;
-  }
-  
-.empty-text{
-  text-align: center
+  margin-top: 5vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
-.bubble-message{
+
+.search-wrapper {
+  display: flex;
+  justify-content: left;
+}
+
+.empty-text {
+  text-align: center;
+}
+.bubble-message {
   text-align: center;
   font-size: small;
   color: gray;
+}
+
+.switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.switch-label {
+  margin: 0 10px;
 }

@@ -25,9 +25,12 @@ const querySchema = buildSchema(`
       censusTract: String
     ): String
     queryTractsByTerm(
-      keyword: String
+      keyword: String,
+      switchBool: Boolean
     ): String
-    queryKeyWords: String
+    queryKeyWords(
+      switchBool: Boolean
+    ): String
   }
 `);
 
@@ -581,7 +584,7 @@ const queryResolver = {
     }
   },
 
-  queryTractsByTerm: async ({ keyword }) => {
+  queryTractsByTerm: async ({ keyword, switchBool }) => {
     await client.connect();
     infoLogger(
       "[queryTractsByTerm]",
@@ -622,25 +625,45 @@ const queryResolver = {
       return neighborhood;
     }
 
-    const articleCollectionCursor = articleCollection.aggregate([
-      {
-        $match: {
-          openai_labels: { $in: [keyword] },
-          tracts: {
-            $in: tracts,
+    const articleCollectionCursor = switchBool
+      ? articleCollection.aggregate([
+          {
+            $match: {
+              position_section: keyword,
+              tracts: {
+                $in: tracts,
+              },
+            },
           },
-        },
-      },
-      {
-        $unwind: "$tracts",
-      },
-      {
-        $group: {
-          _id: "$tracts",
-          count: { $sum: 1 },
-        },
-      },
-    ]);
+          {
+            $unwind: "$tracts",
+          },
+          {
+            $group: {
+              _id: "$tracts",
+              count: { $sum: 1 },
+            },
+          },
+        ])
+      : articleCollection.aggregate([
+          {
+            $match: {
+              openai_labels: { $in: [keyword] },
+              tracts: {
+                $in: tracts,
+              },
+            },
+          },
+          {
+            $unwind: "$tracts",
+          },
+          {
+            $group: {
+              _id: "$tracts",
+              count: { $sum: 1 },
+            },
+          },
+        ]);
 
     let tractCount = await Promise.resolve(
       articleCollectionCursor.toArray()
@@ -654,9 +677,14 @@ const queryResolver = {
 
     var updatedResults = tractCount.map(function (item) {
       return {
-        name: getNeighborhoodByTract(item._id) + " " + item._id + " (Articles: " + item.count +")",
+        name:
+          getNeighborhoodByTract(item._id) +
+          " " +
+          item._id +
+          " (Articles: " +
+          item.count +
+          ")",
         value: (item.count / totalCount) * 100,
-        
       };
 
       // return {
@@ -672,58 +700,63 @@ const queryResolver = {
     return JSON.stringify(updatedResults);
   },
 
-  queryKeyWords: async () => {
+  queryKeyWords: async ({ switchBool }) => {
     await client.connect();
     infoLogger("[queryKeyWords]");
 
     const db = client.db(dbName);
-    const topicsCollection = db.collection("articles_data");
-    const topicsCollectionCursor = await topicsCollection.aggregate([
-      {
-        $match: {
-          openai_labels: { $exists: true }
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          openai_labels: 1
-        }
-      },
-      {
-        $unwind: "$openai_labels"
-      },
-      {
-        $group: {
-          _id: null,
-          labels_array: { $addToSet: "$openai_labels" }
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          labels_array: 1
-        }
-      }
-    ]);
+    const OpenAiCollection = db.collection("articles_data");
+    const topicsCollection = db.collection("topics_data");
 
+    const topicsCollectionCursor = await (switchBool
+      ? topicsCollection.distinct("value")
+      : OpenAiCollection.aggregate([
+          {
+            $match: {
+              openai_labels: { $exists: true },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              openai_labels: 1,
+            },
+          },
+          {
+            $unwind: "$openai_labels",
+          },
+          {
+            $group: {
+              _id: null,
+              labels_array: { $addToSet: "$openai_labels" },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              labels_array: 1,
+            },
+          },
+        ]));
 
-    let queryResult = await Promise.resolve(
-      topicsCollectionCursor.toArray()
-    ).then((_res) => {
-      return _res;
-    });
+    if (!switchBool) {
+      let queryResult = await Promise.resolve(
+        topicsCollectionCursor.toArray()
+      ).then((_res) => {
+        return _res;
+      });
 
+      console.log(queryResult[0].labels_array);
 
-    console.log(queryResult[0].labels_array);
+      // queryResult = queryResult[0].labels_array.map(word => word.trimStart());
+      queryResult = queryResult[0].labels_array;
 
-    // queryResult = queryResult[0].labels_array.map(word => word.trimStart());
-    queryResult = queryResult[0].labels_array;
+      // console.log(queryResult);
 
-    // console.log(queryResult);
-
-    return JSON.stringify(queryResult);
-
+      return JSON.stringify(queryResult);
+    } else {
+      return JSON.stringify(topicsCollectionCursor);
+    }
   },
 };
 
