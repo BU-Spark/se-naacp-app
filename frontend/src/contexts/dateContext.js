@@ -42,7 +42,7 @@ const DateMethods = {
     dateValidation : dateValidation,
 };
 const minDate = dayjs("2020-11-01"); // November 2020
-const maxDate = dayjs("2021-02-28"); // February 2021
+const maxDate = dayjs("2023-01-09"); // February 2021
 const DateContext = React.createContext({
 
   

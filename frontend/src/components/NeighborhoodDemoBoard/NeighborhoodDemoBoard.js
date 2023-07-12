@@ -38,7 +38,7 @@ const colors = [
 function toFixed(num, fixed) {
     // console.log(num,fixed);
     var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
-    return num.toString().match(re)[0];
+    return num?.toString().match(re)[0];
 }
 
 const loadingState = (fetching) => {

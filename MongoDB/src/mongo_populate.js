@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const MASTER_DATA = require('./JSON_data/GBH_DEMO_DATA_OPENAI.json');
+const MASTER_DATA = require('./JSON_data/GBH_DEMO_DATA_OPENAI_20_23.json');
 
 // For Debug purposes
 // const keys_list = Object.keys(MASTER_DATA);
