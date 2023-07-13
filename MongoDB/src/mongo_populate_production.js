@@ -1,7 +1,8 @@
 const { MongoClient } = require('mongodb');
-const MASTER_DATA = require('./JSON_data/GBH_DEMO_DATA.json');
+const MASTER_DATA = require('./JSON_data/GBH_DEMO_DATA_OPENAI_20_23.json');
 
 const url = process.env.MONGODB_NAACP
+
 const dbName = 'se_naacp_gbh'; 
 const client = new MongoClient(url);
 
