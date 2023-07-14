@@ -132,16 +132,26 @@ const queryResolver = {
           });
 
         let queryRes = [];
+
+        // Define MongoDB Query Persistence Structures here:
         let tractObjs = [];
         let topicsCount = new Array(documentTopicsCount).fill(0);
+        let ArrayofOpenAILabels = [];
 
         // LIST OF ALL MONGODB QUERY OBJECTS:
         // Given a article i in Array of Intersection of Articles.
         //
         // tract_data: All Census tract data related to a given i
         // topics_data: Gets the count of how many i's fall into a respective category
+        // OpenAI_labels: Gets the count of how many different Open_AI labels
         for (let i = 0; i < ArrayIntersectArticles.length; i++) {
           let article_id = ArrayIntersectArticles[i];
+
+          ArrayofOpenAILabels = await OpenAI_data(
+            articleCollection,
+            article_id,
+            ArrayofOpenAILabels
+          );
 
           tractObjs = await tract_data(
             tractCollection,
@@ -149,12 +159,18 @@ const queryResolver = {
             article_id,
             tractObjs
           );
+
           topicsCount = await topics_data(
             topicsCollection,
             article_id,
             topicsCount
           );
         }
+
+        let OpenAIData = {
+          pipeline: "openAI_data",
+          data: ArrayofOpenAILabels
+        };
 
         let tractData = {
           pipeline: "articleTracts",
@@ -166,7 +182,7 @@ const queryResolver = {
           data: topicsCount,
         };
 
-        queryRes.push(tractData, topicsData);
+        queryRes.push(tractData, topicsData, OpenAIData);
 
         const dataResult = Promise.allSettled(queryRes).then((res) => {
           let censusStringSet = new Set();
@@ -255,11 +271,28 @@ const queryResolver = {
                       average(template[key])
                     );
                   }
-                  // console.log("Data after mean: ", data);
                   break;
+
                 case "topics_data":
                   data["topicsData"] = pipelineData;
                   break;
+
+                case "openAI_data":
+                  let frequency_counter = {};
+
+                  for (let i = 0; i < pipelineData.length; i++) {
+                    let label = JSON.stringify(pipelineData[i]);
+
+                    if (frequency_counter.hasOwnProperty(label)) {
+                      frequency_counter[label] = frequency_counter[label] + 1;
+                    } else {
+                      frequency_counter[label] = 1;
+                    }
+                  }
+
+                  data["openAIData"] = frequency_counter;
+                  break;
+
                 default:
                   console.log("PIPELINE NOT FOUND", pipeline); // Print an error
               }
@@ -428,16 +461,26 @@ const queryResolver = {
           });
 
         let queryRes = [];
+
+        // Define MongoDB Query Persistence Structures here:
         let tractObjs = [];
         let topicsCount = new Array(documentTopicsCount).fill(0);
+        let ArrayofOpenAILabels = [];
 
         // LIST OF ALL MONGODB QUERY OBJECTS:
         // Given a article i in Array of Intersection of Articles.
         //
         // tract_data: All Census tract data related to a given i
         // topics_data: Gets the count of how many i's fall into a respective category
+        // OpenAI_labels: Gets the count of how many different Open_AI labels
         for (let i = 0; i < ArrayIntersectArticles.length; i++) {
           let article_id = ArrayIntersectArticles[i];
+
+          ArrayofOpenAILabels = await OpenAI_data(
+            articleCollection,
+            article_id,
+            ArrayofOpenAILabels
+          );
 
           tractObjs = await tract_data(
             tractCollection,
@@ -445,12 +488,18 @@ const queryResolver = {
             article_id,
             tractObjs
           );
+
           topicsCount = await topics_data(
             topicsCollection,
             article_id,
             topicsCount
           );
         }
+
+        let OpenAIData = {
+          pipeline: "openAI_data",
+          data: ArrayofOpenAILabels
+        };
 
         let tractData = {
           pipeline: "articleTracts",
@@ -462,7 +511,7 @@ const queryResolver = {
           data: topicsCount,
         };
 
-        queryRes.push(tractData, topicsData);
+        queryRes.push(tractData, topicsData, OpenAIData);
 
         const dataResult = Promise.allSettled(queryRes).then((res) => {
           let censusStringSet = new Set();
@@ -551,11 +600,28 @@ const queryResolver = {
                       average(template[key])
                     );
                   }
-                  // console.log("Data after mean: ", data);
                   break;
+
                 case "topics_data":
                   data["topicsData"] = pipelineData;
                   break;
+  
+                case "openAI_data":
+                  let frequency_counter = {};
+
+                  for (let i = 0; i < pipelineData.length; i++) {
+                    let label = JSON.stringify(pipelineData[i]);
+
+                    if (frequency_counter.hasOwnProperty(label)) {
+                      frequency_counter[label] = frequency_counter[label] + 1;
+                    } else {
+                      frequency_counter[label] = 1;
+                    }
+                  }
+
+                  data["openAIData"] = frequency_counter;
+                  break;
+
                 default:
                   console.log("PIPELINE NOT FOUND", pipeline); // Print an error
               }
@@ -762,6 +828,26 @@ const queryResolver = {
 
 // ================= Private Methods =================
 
+var OpenAI_data = async (
+  articleCollection,
+  article_id,
+  ArrayofOpenAILabels
+) => {
+  let openAILabels = articleCollection.find({
+    content_id: `${article_id}`,
+  });
+
+  await Promise.resolve(openAILabels.toArray()).then((_res) => {
+    let labels = _res[0].openai_labels;
+
+    for (let i = 0; i < labels.length; i++) {
+      ArrayofOpenAILabels.push(labels[i].trim());
+    }
+  });
+
+  return ArrayofOpenAILabels;
+};
+
 // Private Method
 var topics_data = async (topicsCollection, article_id, topicsCount) => {
   let topics_count = topicsCollection.find({
@@ -799,8 +885,8 @@ var tract_data = async (
     content_id: `${article_id}`,
   });
 
-  await Promise.resolve(article_data.toArray()).then(async (res) => {
-    let tracts = res[0].tracts;
+  await Promise.resolve(article_data.toArray()).then(async (_res) => {
+    let tracts = _res[0].tracts;
 
     for (let j = 0; j < tracts.length; j++) {
       tractKey = tracts[j];
@@ -808,8 +894,8 @@ var tract_data = async (
         tract: `${tractKey}`,
       });
 
-      await Promise.resolve(tractDoc.toArray()).then((res) => {
-        tractObjs.push(res[0]);
+      await Promise.resolve(tractDoc.toArray()).then((_res) => {
+        tractObjs.push(_res[0]);
       });
     }
   });

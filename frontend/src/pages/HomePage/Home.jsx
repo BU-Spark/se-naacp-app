@@ -9,7 +9,7 @@ import NeighborhoodCard from '../../components/Neighborhood/NeighborhoodCard';
 import { TopNavBar } from '../../components/TopNavBar/TopNavBar';
 import  NeighborhoodDemoBoard from '../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
 import { TrendBoard } from '../../components/TrendBoard/TrendBoard';
-import BubbleChart from "../../components/BubbleChart/BubbleChart";
+import { FrequencyBarChart } from '../../components/FrequencyBarChart/FrequencyBarChart'
 
 
 import Logo from "../../logo.svg"; // GBH Logo
@@ -37,7 +37,6 @@ export default function Home() {
     const state_neigh = useSelector((state) => state.masterState.neighborhoods_master) // Redux master state
 
     const fetchNeighborhoodAndDateData = async(currentState) => {
-        // console.log("heyyyyy",currentState);
         const datatesing = await DataMethods.getBubbleChartData("Education");
         console.log(datatesing);
         let newState = currentState;
@@ -48,7 +47,6 @@ export default function Home() {
             return newState;
         }
         const data = await DataMethods.getgetNeighborhoodAndDateData(dates[0], dates[1], currentState.currentNeigh);
-        // console.log("The Data recieved at Home.jsx", data[0]);
         // If the data is not the same
         if (!stateMethods.equalStateLabel(currentState, "CensusTract", data[0])) {
             newState = stateMethods.modify(currentState, "CensusTract", data[0]);
@@ -59,8 +57,6 @@ export default function Home() {
     
     // To Test Dates, use data from: 12/20/2018 up to: 01/20/2019 in roxbury
     React.useEffect( () => {
-        // console.log("whats up",dates,neighborhood)
-        // console.log("This is the current universal state BEFORE:", currentState);
         // Invoke Date data fetching when date has been changed
         if (!DateMethods.fromEmpty(dates) && !DateMethods.toEmpty(dates) && DateMethods.dateValidation(dates[0], dates[1])) {
             let newState = fetchNeighborhoodAndDateData(currentState);
@@ -103,13 +99,6 @@ export default function Home() {
                 {/* Card UI View */}
                 <div className='master_content_container'>
 
-                    {/* 2nd Data Cards */}
-                    {/* <div className="data-cards">
-                        <div className="graph_card">
-                            <NeighborhoodCensus></NeighborhoodCensus>
-                        </div>
-                    </div> */}
-
                     {/* Map Card */}
                     <div className="neighborhood-container">
                         <NeighborhoodCard></NeighborhoodCard>
@@ -122,6 +111,13 @@ export default function Home() {
                         </div>
                         <div className="graph_card">
                             <TrendBoard></TrendBoard>
+                        </div>
+                    </div>
+
+                    {/* 2nd Data Cards */}
+                    <div className="data-cards">
+                        <div className="graph_card">
+                            <FrequencyBarChart></FrequencyBarChart>
                         </div>
                     </div>
                     
