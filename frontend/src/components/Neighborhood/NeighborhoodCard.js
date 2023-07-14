@@ -53,7 +53,7 @@ const NeighborhoodCard = () => {
   const [innerItem, setInnerItem] = React.useState("");
 
   const minDate = dayjs("2020-11-01"); // November 2020
-  const maxDate = dayjs("2021-02-28"); // February 2021
+  const maxDate = dayjs("2023-01-09"); // February 2021
   const state = useSelector((state) => state.masterState); // Redux master state
   const state_neigh = useSelector(
     (state) => state.masterState.neighborhoods_master.payload
