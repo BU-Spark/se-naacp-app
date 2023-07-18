@@ -9,7 +9,7 @@ const deployment_uri = "https://naacpbackend-production.up.railway.app";
 const local_uri = "http://localhost:4000";
 
 // Apollo Client Object
-const queryURI = `${local_uri}/queryValues`; // Will be automated
+const queryURI = `${deployment_uri}/queryValues`; // Will be automated
 
 const clientQuery = new ApolloClient({
   uri: queryURI,
