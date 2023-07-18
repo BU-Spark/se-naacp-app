@@ -116,7 +116,7 @@ export default function Home() {
 
                     {/* 2nd Data Cards */}
                     <div className="data-cards">
-                        <div className="graph_card">
+                        <div className="graph_card_long">
                             <FrequencyBarChart></FrequencyBarChart>
                         </div>
                     </div>

@@ -24,11 +24,11 @@ const colors = ["hsl(281, 70%, 50%)", "hsl(55, 70%, 50%)", "hsl(147, 70%, 50%)",
 const ArticleCountsNeighborhoods = (articleData, articleKeys) => {
   return(
     <>
-        <h3 className="card_title">Top 10 Topics</h3>
+        <h3 className="card_title">Top 25 Topics</h3>
         {articleData.length === 0 || articleKeys.length === 0 ? 
             <React.Fragment>
             <div className="empty-container">
-                <Lottie loop animationData={emptyAstro} play style={{ width: "100%", height: "auto" }}/> 
+                <Lottie loop animationData={emptyAstro} play style={{ width: "50%", height: "auto" }}/> 
                 <p className="empty-text">{"No Data out there :("}</p>
             </div>
             </React.Fragment>
@@ -37,10 +37,10 @@ const ArticleCountsNeighborhoods = (articleData, articleKeys) => {
                 id="OpenAITagsChart"
                 data={articleData}
                 keys={articleKeys}
-                enableGridX={true}
-                enableGridY={false}
+                enableGridX={false}
+                enableGridY={true}
                 indexBy="topic_label"
-                margin={{ top: 0, right: 30, bottom: 60, left: 80 }}
+                margin={{ top: 10, right: 30, bottom: 60, left: 80 }}
                 padding={0.3}
                 valueScale={{ type: 'linear' }}
                 indexScale={{ type: 'band', round: true }}
@@ -74,7 +74,7 @@ const ArticleCountsNeighborhoods = (articleData, articleKeys) => {
                         ]
                     ]
                 }}
-                layout="horizontal"
+                layout="vertical"
                 role="application"
                 ariaLabel="Topics based on topics data"
                 barAriaLabel={function(e){return e.id+": "+e.formattedValue+" in country: "+e.indexValue}}
@@ -104,11 +104,11 @@ export const FrequencyBarChart = () => {
           let keys = Object.keys(openAIObj);
           keys.sort((a, b) => openAIObj[b] - openAIObj[a]);
 
-          if (keys.length > 10) {
-            keys = keys.slice(0, 10); // Top 10 Open AI labels
+          if (keys.length > 25) {
+            keys = keys.slice(0, 25); // Top 10 Open AI labels
           }
 
-          for (let i = (keys.length - 1); i >= 0; i--) {
+          for (let i = 0; i < keys.length; i++) {
             let id = uniqid();
             
             let count = openAIObj[keys[i]];
