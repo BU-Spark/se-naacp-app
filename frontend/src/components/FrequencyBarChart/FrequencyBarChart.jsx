@@ -24,7 +24,7 @@ const colors = ["hsl(281, 70%, 50%)", "hsl(55, 70%, 50%)", "hsl(147, 70%, 50%)",
 const ArticleCountsNeighborhoods = (articleData, articleKeys) => {
   return(
     <>
-        <h3 className="card_title">Top 25 Topics</h3>
+        <h3 className="card_title">Top 5 Topics</h3>
         {articleData.length === 0 || articleKeys.length === 0 ? 
             <React.Fragment>
             <div className="empty-container">
@@ -41,7 +41,7 @@ const ArticleCountsNeighborhoods = (articleData, articleKeys) => {
                 enableGridY={true}
                 indexBy="topic_label"
                 margin={{ top: 10, right: 30, bottom: 60, left: 80 }}
-                padding={0.3}
+                padding={0.7}
                 valueScale={{ type: 'linear' }}
                 indexScale={{ type: 'band', round: true }}
                 colors={{ scheme: 'nivo' }}
@@ -104,8 +104,8 @@ export const FrequencyBarChart = () => {
           let keys = Object.keys(openAIObj);
           keys.sort((a, b) => openAIObj[b] - openAIObj[a]);
 
-          if (keys.length > 25) {
-            keys = keys.slice(0, 25); // Top 10 Open AI labels
+          if (keys.length > 5) {
+            keys = keys.slice(0, 5); // Top 10 Open AI labels
           }
 
           for (let i = 0; i < keys.length; i++) {
@@ -116,7 +116,7 @@ export const FrequencyBarChart = () => {
 
             let histogram = {
               "id": `${id}`,
-              "topic_label": `${initials}_${index_count}`,
+              "topic_label": `${keys[i].replaceAll('"', "")}`,
             }
             histogram[`${keys[i]}`] = count;
             index_count += 1;
