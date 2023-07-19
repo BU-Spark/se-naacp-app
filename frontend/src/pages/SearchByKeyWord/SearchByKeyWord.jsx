@@ -89,12 +89,12 @@ export default function SearchByKeyWord() {
           </div>
         </React.Fragment>
       ) : (
-        <div className="bubble-chart">
+        <div>
           <BubbleChart data={result}></BubbleChart>
-          <p className="bubble-message">
+          {/* <p className="bubble-message">
             ***If the bubble is empty click on it to show text. We hide the text
             if it is too large for the bubble***
-          </p>
+          </p> */}
         </div>
       )}
     </div>

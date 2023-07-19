@@ -708,6 +708,8 @@ const queryResolver = {
             $group: {
               _id: "$tracts",
               count: { $sum: 1 },
+              content_ids: { $push: "$content_id" }  
+
             },
           },
         ])
@@ -727,6 +729,8 @@ const queryResolver = {
             $group: {
               _id: "$tracts",
               count: { $sum: 1 },
+              content_ids: { $push: "$content_id" }   // Add this line to your query
+
             },
           },
         ]);
@@ -751,6 +755,10 @@ const queryResolver = {
           item.count +
           ")",
         value: (item.count / totalCount) * 100,
+        count: item.count,
+        tract: item._id,
+        neighborhood:getNeighborhoodByTract(item._id),
+        articles: item.content_ids
       };
 
       // return {
