@@ -1,3 +1,5 @@
+
+
 import React from "react";
 import {useState} from 'react'
 import {
@@ -12,6 +14,8 @@ import Home from '../pages/HomePage/Home'
 import DevMode from "../pages/DevelopmentMode/DevMode";
 import IntroPage from "../pages/LandingPage/IntroPage";
 import SearchByKeyWord from "../pages/SearchByKeyWord/SearchByKeyWord"
+import FileUpload from "../pages/UploadArticles/UploadArticles"
+
 
 // Data Fetching
 import MasterPipeline from '../Pipelines/masterDataPipeline'
@@ -62,6 +66,7 @@ export default function MainNavigator() {
                     <Route path="/dev-mode" element={<DevMode />} />
                     <Route path="/" element={<IntroPage />} />
                     <Route path="/SearchByKeyWord" element={<SearchByKeyWord />} />
+                    <Route path="/UploadArticles" element={<FileUpload />} />
                 </Routes>
         </BrowserRouter>
     </>

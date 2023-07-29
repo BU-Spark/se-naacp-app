@@ -1,3 +1,4 @@
+
 // App.js
 
 import React from "react";
@@ -27,6 +28,10 @@ const IntroPage = () => {
   const navigateSearchByKeyWord = () => {
     navigate("/SearchByKeyWord");
   };
+
+  const navigateUploadPage = () => {
+    navigate("/UploadArticles");
+  };
   return (
     <div className="App">
       <header className="App-header">
@@ -53,6 +58,13 @@ const IntroPage = () => {
           onClick={navigateSearchByKeyWord}
         >
           Search By Keywords!
+        </Button>
+        <Button
+          style={{ marginLeft: "10px" }}
+          id="dev-button"
+          onClick={navigateUploadPage}
+        >
+          Upload Articles!
         </Button>
         <p style={{ display: showError ? "block" : "none" }}>
           Please select a neighborhood
