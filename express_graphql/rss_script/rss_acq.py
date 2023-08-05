@@ -115,7 +115,7 @@ class rss_acquisition:
             if(self.data!=None):
                 # create new file path 
                 print("> Saving feed...")
-                new_path = "temp/" + str(time.time()).split(".")[0] + ".csv"
+                new_path = "../rss_script/temp/" + str(time.time()).split(".")[0] + ".csv"
                 df = pd.DataFrame.from_records(self.data)
                 df.to_csv(new_path, encoding='utf-8')
                 print(new_path)

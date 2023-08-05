@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const cron = require("node-cron");
+const { exec } = require("child_process");
 const { graphqlHTTP } = require("express-graphql");
 const multer = require("multer");
 const csv = require("csv-parser"); // for parsing CSV
@@ -8,8 +10,7 @@ const url = "mongodb://localhost:27017";
 const dbName = "se_naacp_gbh";
 const { MongoClient } = require("mongodb");
 
-
-const Parser = require('rss-parser'); // import rss-parser
+const Parser = require("rss-parser"); // import rss-parser
 let parser = new Parser();
 
 const client = new MongoClient(url);
@@ -66,33 +67,55 @@ app.post("/uploadRSS", async (req, res) => {
       feed = await parser.parseURL(rssLink);
     } catch (err) {
       console.log("Link is not an RSS feed link");
-      return res.status(200).json({ message: 'Invalid RSS Link' });
+      return res.status(200).json({ message: "Invalid RSS Link" });
     }
 
     if (feed) {
       // The URL is a valid RSS feed, insert it into the MongoDB collection
       // insert or ignore if the link already exists
       const updateResponse = await collection.findOneAndUpdate(
-        { link: rssLink }, 
-        { $setOnInsert: { link: rssLink } }, 
-        { upsert: true, returnDocument: 'after' } 
+        { link: rssLink },
+        { $setOnInsert: { link: rssLink } },
+        { upsert: true, returnDocument: "after" }
       );
       console.log(updateResponse.lastErrorObject.updatedExisting);
       if (updateResponse.lastErrorObject.updatedExisting) {
-        res.status(200).json({ message: 'RSS Link already exists' });
+        res.status(200).json({ message: "RSS Link already exists" });
       } else {
-        res.status(200).json({ message: 'RSS Link saved successfully' });
+        res.status(200).json({ message: "RSS Link saved successfully" });
       }
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Unexpected server error' });
+    res.status(500).json({ error: "Unexpected server error" });
   } finally {
     // close the database connection
     await client.close();
   }
 });
 
+cron.schedule(
+  "* * * * *",
+  () => {
+    console.log("Running Python RSS script");
+
+    const scriptPath = "../rss_script/testing.py";
+
+    const pythonInterpreter = "../rss_script/myenv/bin/python";
+
+    // Execute the Python script using the virtual environment's interpreter
+    exec(`${pythonInterpreter} ${scriptPath}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`An error occurred: ${error}`);
+        return;
+      }
+      console.log(`Python script output: ${stdout}`);
+    });
+  },
+  {
+    timezone: "America/Los_Angeles",
+  }
+);
 
 app.use(
   "/universalValues",

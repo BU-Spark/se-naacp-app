@@ -1,24 +1,26 @@
 import React, { useState } from "react";
-import { Button, Typography, Input, TextField } from "@material-ui/core";
+import { Button, Typography, Input, TextField, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import { DataGrid } from "@mui/x-data-grid";
 import "./UploadArticles.css";
 
 const FileUpload = () => {
+  const [option, setOption] = useState("");
   const [file, setFile] = useState(null);
   const [rssLink, setRssLink] = useState("");
   const [fileData, setFileData] = useState([]);
   const [columns, setColumns] = useState([]);
 
+  const handleOptionChange = (event) => {
+    setOption(event.target.value);
+    setFile(null);
+    setRssLink("");
+  };
+
   const submitFile = async (event) => {
     event.preventDefault();
 
-    if (!file && !rssLink) {
-      alert("Please upload a CSV file or provide an RSS link.");
-      return;
-    } else if (!file && rssLink) {
-      console.log(rssLink);
-
+    if (option === "rss" && rssLink) {
       try {
         const response = await fetch("http://localhost:4000/uploadRSS", {
           method: "POST",
@@ -31,11 +33,10 @@ const FileUpload = () => {
           .then((data) => {
            alert(data.message);
           });
-        // console.log(response);
       } catch (err) {
         console.error(err);
       }
-    } else if (file && !rssLink) {
+    } else if (option === "csv" && file) {
       const formData = new FormData();
       formData.append("file", file);
       try {
@@ -71,15 +72,12 @@ const FileUpload = () => {
           );
         }
 
-        console.log(response);
-
         setFileData(response.map((row, index) => ({ id: index, ...row })));
       } catch (error) {
         console.error("Error:", error);
       }
     } else {
-      alert("Please upload a CSV file or provide an RSS link but not both");
-      return;
+      alert("Please choose either CSV file upload or RSS link upload and provide the corresponding information.");
     }
   };
 
@@ -105,14 +103,22 @@ const FileUpload = () => {
         CSV File or RSS Feed Upload
       </Typography>
       <form onSubmit={submitFile} className="form">
-        <Input type="file" onChange={handleFileChange} className="file-input" />
-        <TextField
-          label="Enter RSS link"
-          variant="outlined"
-          value={rssLink}
-          onChange={handleLinkChange}
-          className="rss-input"
-        />
+        <RadioGroup row onChange={handleOptionChange} value={option}>
+          <FormControlLabel value="csv" control={<Radio />} label="Upload CSV File" />
+          <FormControlLabel value="rss" control={<Radio />} label="Provide RSS Link" />
+        </RadioGroup>
+        {option === "csv" && (
+          <Input type="file" onChange={handleFileChange} className="file-input" />
+        )}
+        {option === "rss" && (
+          <TextField
+            label="Enter RSS link"
+            variant="outlined"
+            value={rssLink}
+            onChange={handleLinkChange}
+            className="rss-input"
+          />
+        )}
         <Button
           style={{ marginTop: "20px" }}
           variant="contained"

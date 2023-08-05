@@ -16,6 +16,7 @@
     "graphql": "^15.8.0",
     "mongodb": "^5.4.0",
     "multer": "^1.4.5-lts.1",
+    "node-cron": "^3.0.2",
     "rss-parser": "^3.13.0"
   }
 }
