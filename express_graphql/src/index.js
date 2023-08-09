@@ -65,9 +65,26 @@ app.post("/uploadRSS", async (req, res) => {
     let feed;
     try {
       feed = await parser.parseURL(rssLink);
+
+      // Validate each item in the RSS feed for required elements
+      for (const item of feed.items) {
+        if (
+          !item.title ||
+          !item.link ||
+          !item.contentSnippet ||
+          !item["content:encoded"] ||
+          !item.categories ||
+          !item.pubDate
+        ) {
+          console.log("Missing required elements in the RSS feed item");
+          return res
+            .status(200)
+            .json({ message: "Invalid RSS Feed: Missing one of the required elements: title, link, description, content, category, and pubDate" });
+        }
+      }
     } catch (err) {
       console.log("Link is not an RSS feed link");
-      return res.status(200).json({ message: "Invalid RSS Link" });
+      return res.status(400).json({ message: "Invalid RSS Link" });
     }
 
     if (feed) {

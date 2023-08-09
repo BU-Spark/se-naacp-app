@@ -21,7 +21,6 @@ links = [doc['link'] for doc in documents]
 
 # Print the links
 for link in links:
-    
     print(link)
     pipli = rss_acq.rss_acquisition(link)
     pipli.rss_request(pipli.rss_url)
