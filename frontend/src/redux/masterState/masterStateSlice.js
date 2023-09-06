@@ -21,10 +21,10 @@ export const masterStateSlice = createSlice({
       },
       setLoadingState: (state, bool) => {
         state.universal_loading_state = bool
-      }
+      },
     },
   })
 
-export const { setNeighborhoodMaster, setTopicsMaster, setTractsMaster, setLoadingState } = masterStateSlice.actions
+export const { setNeighborhoodMaster, setTopicsMaster, setTractsMaster, setLoadingState, setGraphLoadingState } = masterStateSlice.actions
 
 export default masterStateSlice.reducer

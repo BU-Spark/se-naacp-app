@@ -4,10 +4,20 @@ const { buildSchema } = require("graphql");
 const { mongoError } = require("../utilities/error_builder.js");
 const { infoLogger, warningLogger } = require("../utilities/loggers.js");
 
+const { genericLocalCache } = require("./cache_service.js");
+
 const url = "mongodb://localhost:27017"; // Local development
 // const url = process.env.NAACP_MONGODB;
 const dbName = "se_naacp_gbh";
 const client = new MongoClient(url);
+
+// Initialize local caches
+const articleCache = new genericLocalCache (new Map(), 10000);
+const tractCache = new genericLocalCache(new Map(), 10000);
+const caches = [
+  articleCache,
+  tractCache
+];
 
 const querySchema = buildSchema(`
   type Query {
@@ -144,6 +154,9 @@ const queryResolver = {
         // tract_data: All Census tract data related to a given i
         // topics_data: Gets the count of how many i's fall into a respective category
         // OpenAI_labels: Gets the count of how many different Open_AI labels
+        // NOTE: THE MOST INFORMATIVE SHOULD BE RUN FIRST FOR EFFECTIVE CACHE USE
+        const start = Date.now();
+        let cnt = 0;
         for (let i = 0; i < ArrayIntersectArticles.length; i++) {
           let article_id = ArrayIntersectArticles[i];
 
@@ -160,12 +173,18 @@ const queryResolver = {
             tractObjs
           );
 
+          const start_fun = Date.now();
           topicsCount = await topics_data(
             topicsCollection,
             article_id,
             topicsCount
           );
-        }
+          const end_fun = Date.now();
+          cnt += end_fun - start_fun;
+        } 
+        const end = Date.now();
+        console.log(`Average Function runtime: ${cnt / ArrayIntersectArticles.length} ms`);
+        console.log(`Total Execution Time: ${end - start} ms`);
 
         let OpenAIData = {
           pipeline: "openAI_data",
@@ -313,14 +332,16 @@ const queryResolver = {
         return resolvedData;
       });
 
+      // Cache Protocol
+      checkAndFlushCache(caches);
+
+      // Send it out
       return Promise.resolve(queryResult).then((r) => {
         return JSON.stringify(r);
       });
     } catch (error) {
       console.log(error);
     }
-
-    return queryResult;
   },
 
   // queryArticleKeys (Selects by Articles)
@@ -333,10 +354,10 @@ const queryResolver = {
   // --> (Specific Demographic information & topics of the series of articles)
   queryArticleKeys: async ({ articleData }) => {
     await client.connect();
-    infoLogger(
-      "[queryArticleKeys]",
-      `Querying Pipeline with parameters: articleData: ${articleData}`
-    );
+    // infoLogger(
+    //   "[queryArticleKeys]",
+    //   `Querying Pipeline with parameters: articleData: ${articleData}`
+    // );
 
     try {
       const db = client.db(dbName);
@@ -481,16 +502,14 @@ const queryResolver = {
             article_id,
             ArrayofOpenAILabels
           );
-
           tractObjs = await tract_data(
             tractCollection,
             articleCollection,
             article_id,
             tractObjs
           );
-
           topicsCount = await topics_data(
-            topicsCollection,
+            articleCollection,
             article_id,
             topicsCount
           );
@@ -836,35 +855,47 @@ const queryResolver = {
 
 // ================= Private Methods =================
 
+var checkAndFlushCache = (caches) => {
+  caches.forEach( (cache) => {
+    console.log("Cache Count:", cache.cache.size);
+  });
+}
+
+// **** Note ****
+// Since this gets the entire article object, we can leverage a cache for subsequent
+// methods below that may use that data
 var OpenAI_data = async (
   articleCollection,
   article_id,
   ArrayofOpenAILabels
 ) => {
-  let openAILabels = articleCollection.find({
-    content_id: `${article_id}`,
-  });
-
-  await Promise.resolve(openAILabels.toArray()).then((_res) => {
-    let labels = _res[0].openai_labels;
-
+  if (articleCache.cache.has(article_id)) {
+    let labels = articleCache.cache.get(article_id);
     for (let i = 0; i < labels.length; i++) {
       ArrayofOpenAILabels.push(labels[i].trim());
     }
-  });
+  } else {
+    let openAILabels = articleCollection.find({
+      content_id: `${article_id}`,
+    });
+
+    await Promise.resolve(openAILabels.toArray()).then((_res) => {
+      let labels = _res[0].openai_labels; 
+      articleCache.cache.set(article_id, _res[0]);
+      for (let i = 0; i < labels.length; i++) {
+        ArrayofOpenAILabels.push(labels[i].trim());
+      }
+    });
+  }
 
   return ArrayofOpenAILabels;
 };
 
 // Private Method
-var topics_data = async (topicsCollection, article_id, topicsCount) => {
-  let topics_count = topicsCollection.find({
-    articles: `${article_id}`,
-  });
-
-  await Promise.resolve(topics_count.toArray()).then((_res) => {
-    let data_topics_id = _res[0].value;
-
+var topics_data = async (articleCollection, article_id, topicsCount) => {
+  if (articleCache.cache.has(article_id)) {
+    let data_topics_id = articleCache.cache.get(article_id).position_section;
+    
     if (data_topics_id === "Arts") {
       topicsCount[0] = topicsCount[0] + 1;
     } else if (data_topics_id === "Education") {
@@ -878,8 +909,29 @@ var topics_data = async (topicsCollection, article_id, topicsCount) => {
     } else if (data_topics_id === "Specials") {
       topicsCount[5] = topicsCount[5] + 1;
     }
-  });
-
+  } else {
+    let topics_count = articleCollection.find({
+      articles: `${article_id}`,
+    });
+  
+    await Promise.resolve(topics_count.toArray()).then((_res) => {
+      let data_topics_id = _res[0].value;
+  
+      if (data_topics_id === "Arts") {
+        topicsCount[0] = topicsCount[0] + 1;
+      } else if (data_topics_id === "Education") {
+        topicsCount[1] = topicsCount[1] + 1;
+      } else if (data_topics_id === "Lifestyle") {
+        topicsCount[2] = topicsCount[2] + 1;
+      } else if (data_topics_id === "News") {
+        topicsCount[3] = topicsCount[3] + 1;
+      } else if (data_topics_id === "Politics") {
+        topicsCount[4] = topicsCount[4] + 1;
+      } else if (data_topics_id === "Specials") {
+        topicsCount[5] = topicsCount[5] + 1;
+      }
+    });
+  }
   return topicsCount;
 };
 
@@ -887,26 +939,53 @@ var tract_data = async (
   tractCollection,
   articleCollection,
   article_id,
-  tractObjs
+  tractObjs,
 ) => {
   let article_data = articleCollection.find({
     content_id: `${article_id}`,
   });
 
-  await Promise.resolve(article_data.toArray()).then(async (_res) => {
-    let tracts = _res[0].tracts;
+  if (articleCache.cache.has(article_id)) {
+    let articleData = articleCache.cache.get(article_id);
+    let tracts = articleData.tracts
 
     for (let j = 0; j < tracts.length; j++) {
       tractKey = tracts[j];
-      let tractDoc = tractCollection.find({
-        tract: `${tractKey}`,
-      });
 
-      await Promise.resolve(tractDoc.toArray()).then((_res) => {
-        tractObjs.push(_res[0]);
-      });
+      if (tractCache.cache.has(tractKey)) {
+        tractObjs.push(tractCache.cache.get(tractKey));
+      } else {
+        let tractDoc = tractCollection.find({
+          tract: `${tractKey}`,
+        });
+
+        await Promise.resolve(tractDoc.toArray()).then((_res) => {
+          tractCache.cache.set(tractKey, _res[0])  // Cache the tract
+          tractObjs.push(_res[0]);
+        });
+      }
     }
-  });
+  } else {
+    await Promise.resolve(article_data.toArray()).then(async (_res) => {
+      let tracts = _res[0].tracts;
+      for (let j = 0; j < tracts.length; j++) {
+        tractKey = tracts[j];
+
+        if (tractCache.cache.has(tractKey)) {
+          tractObjs.push(tractCache.cache.get(tractKey));
+        } else {
+          let tractDoc = tractCollection.find({
+            tract: `${tractKey}`,
+          });
+
+          await Promise.resolve(tractDoc.toArray()).then((_res) => {
+            tractCache.cache.set(tractKey, _res[0])  // Cache the tract
+            tractObjs.push(_res[0]);
+          });
+        }
+      }
+    });
+  }
 
   return tractObjs;
 };
