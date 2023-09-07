@@ -4,7 +4,7 @@ const { buildSchema } = require("graphql");
 const { mongoError } = require("../utilities/error_builder.js");
 const { infoLogger, warningLogger } = require("../utilities/loggers.js");
 
-const { genericLocalCache } = require("./cache_service.js");
+const { LRUCache } = require("./cache_service.js");
 
 const url = "mongodb://localhost:27017"; // Local development
 // const url = process.env.NAACP_MONGODB;
@@ -12,8 +12,8 @@ const dbName = "se_naacp_gbh";
 const client = new MongoClient(url);
 
 // Initialize local caches
-const articleCache = new genericLocalCache (new Map(), 10000);
-const tractCache = new genericLocalCache(new Map(), 10000);
+const articleCache = new LRUCache (new Map(), 10000);
+const tractCache = new LRUCache(new Map(), 10000);
 const caches = [
   articleCache,
   tractCache
@@ -185,6 +185,8 @@ const queryResolver = {
         const end = Date.now();
         console.log(`Average Function runtime: ${cnt / ArrayIntersectArticles.length} ms`);
         console.log(`Total Execution Time: ${end - start} ms`);
+
+        articleCache.traverseDLLTimeList();
 
         let OpenAIData = {
           pipeline: "openAI_data",
@@ -881,7 +883,8 @@ var OpenAI_data = async (
 
     await Promise.resolve(openAILabels.toArray()).then((_res) => {
       let labels = _res[0].openai_labels; 
-      articleCache.cache.set(article_id, _res[0]);
+      // articleCache.cache.set(article_id, _res[0]);
+      articleCache.insertIntoCache(article_id, _res[0]);
       for (let i = 0; i < labels.length; i++) {
         ArrayofOpenAILabels.push(labels[i].trim());
       }
@@ -960,7 +963,8 @@ var tract_data = async (
         });
 
         await Promise.resolve(tractDoc.toArray()).then((_res) => {
-          tractCache.cache.set(tractKey, _res[0])  // Cache the tract
+          //tractCache.cache.set(tractKey, _res[0])  
+          tractCache.insertIntoCache(tractKey, _res[0]);
           tractObjs.push(_res[0]);
         });
       }
@@ -979,7 +983,8 @@ var tract_data = async (
           });
 
           await Promise.resolve(tractDoc.toArray()).then((_res) => {
-            tractCache.cache.set(tractKey, _res[0])  // Cache the tract
+            // tractCache.cache.set(tractKey, _res[0])  // Cache the tract
+            tractCache.insertIntoCache(tractKey, _res[0]);
             tractObjs.push(_res[0]);
           });
         }
