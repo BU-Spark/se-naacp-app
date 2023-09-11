@@ -25,7 +25,7 @@ BU Spark! NAACP Journalism
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
-  <a href="#Developer Setup">Developer Setup</a> •
+  <a href="#Documentation">Documentation</a> •
   <a href="#Contributers">Contributers</a> •
   <a href="#license">License</a>
 </p>
