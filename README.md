@@ -41,28 +41,11 @@ BU Spark! NAACP Journalism
 * XXXXXXXXXXXXXXXXXXXXX  
 * XXXXXXXXXXXXXXXXXXXXX
 
-## Developer Setup
-
-To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
-
-```bash
-# Clone this repository
-$ git clone https://github.com/BU-Spark/se-naacp-app.git
-
-# Go into the repository
-$ cd se-naacp-app
-
-# Install dependencies
-$ npm install
-
-# Run the app
-$ npm start
+## Documentation
+We provide an awesome gitbook to walk-through the use of the product and useful information for developers jumpstarting this project!
 ```
-> **Note**
-> It is advised to get [NVM](https://github.com/nvm-sh/nvm) when installing Node.js as it gives a flexible environment to work around node packages.
-
-
-To setup the MongoDB server we use docker to contanarize a local image working on your environment. Naturally, you'll need [Docker](https://www.docker.com/products/docker-desktop/). Make sure to login to docker to manage and save your images.
+https://bu-naacp-media-bias.gitbook.io/sparkmediabias/
+```
 
 ## Contributers
 <table>
