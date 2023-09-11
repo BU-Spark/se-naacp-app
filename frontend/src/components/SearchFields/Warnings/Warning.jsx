@@ -1,11 +1,9 @@
-import React from "react";
-
 import Lottie from "react-lottie-player";
 import { Tooltip } from 'react-tooltip'
 
 import './Warning.css';
 
-import warning from '../../assets/lottieFiles/warning.json';
+import warning from '../../../assets/lottieFiles/warning.json';
 
 const toolTipMessage = `
     Date inputs are incorrect try again!

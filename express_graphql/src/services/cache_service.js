@@ -41,9 +41,10 @@ class LRUCache {
     }
 
     // Just incase we need it...
+    // This will be implemented further...
     DLL_Iterator = class {
         constructor() {
-
+            
         }
     }
 
@@ -56,19 +57,18 @@ class LRUCache {
     }
 
     // FOR DEBUG PURPOSES ONLY, BAD TO OVERFLOW CONSOLE IF _evictionCount is BIG
+    // I need to change to accept a function like found in functional programming...
     traverseDLLTimeList() {
         let counter = 1;
 
         if (this._timeDLL !== undefined) {
             let curr = this._timeDLL;
             while(curr._next !== undefined) {
-                // console.log("Time Stamp:", LRUCache.formatAMPM(curr._timeStamp));
-                // console.log("Key:", curr._key);
                 curr = curr._next;
                 counter++;
             }
         } else {
-            console.log("Nothing to traverse")
+            console.log("Nothing to traverse") // Need to replace this all with printlog statements
         }
 
         console.log("Traversed Items:", counter);

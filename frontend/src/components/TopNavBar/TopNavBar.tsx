@@ -1,16 +1,13 @@
-import React from 'react';
-
 import { Layout, Button } from 'antd'; // Ant Design
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavigateFunction } from 'react-router-dom';
 
 // CSS
 import './TopNavBar.css';
 
 const { Header } = Layout;
 
-export const TopNavBar = () => {
-
-  const navigate = useNavigate();
+const TopNavBar = () => {
+  const navigate: NavigateFunction = useNavigate();
 
   const navigateDeveloperMode = () => {
     navigate('/dev-mode');
@@ -29,8 +26,11 @@ export const TopNavBar = () => {
           justifyContent: 'flex-end',
         }}
       >
+        {/* This is to enable Developer mode */}
         {/* <Button type="primary" id="dev-button" onClick={navigateDeveloperMode} danger>Developer Mode</Button> */}
       </Header>
     </Layout>
     );
 };
+
+export default TopNavBar;

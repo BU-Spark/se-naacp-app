@@ -1,23 +1,23 @@
 import React from "react";
-import Button from "@mui/material/Button";
 
 // Class Component
 import SearchBarDropdown from "./SearchBarDropdown/SearchBarDropdown";
-import Warning from "./Warning";
+import Warning from "./Warnings/Warning";
 import DateBar from "./DateBar/DateBar";
-import CensusDropdown from "./CensusDropdown/CensusDropdown";
 
 // React Contexts/Context Methods
-import { StateContext, stateMethods } from "../../contexts/stateContext.js";
 import { DateContext, DateMethods } from "../../contexts/dateContext";
 
-function SearchFields(Props) {
-  const { currentState, setState } = React.useContext(StateContext); // Global Context of States
+interface SearchFieldProps {
+  showDropDown?: string;
+}
+
+const SearchFields: React.FC<SearchFieldProps> = (Props: SearchFieldProps) => {
   const { dates } = React.useContext(DateContext); // Global Context of Dates
 
-  const [warn, setWarn] = React.useState(false);
+  const [warn, setWarn] = React.useState<boolean>(false);
 
-  const WarningBtn = (warningBool) => {
+  const WarningBtn = (warningBool: boolean) => {
     if (warningBool) {
       return <Warning></Warning>;
     }
@@ -43,7 +43,6 @@ function SearchFields(Props) {
         >
           <SearchBarDropdown word="Neighborhoods"></SearchBarDropdown>
         </div>
-        {/* <CensusDropdown word="Census Tract"></CensusDropdown> */}
 
         {WarningBtn(warn)}
         <DateBar word="From" from_bool={true}></DateBar>
@@ -57,24 +56,6 @@ function SearchFields(Props) {
             width: "50px",
           }}
         >
-          {/* <Button
-          onClick={() => {
-            console.log("Downloading Data...");
-          }}
-          variant="contained"
-          sx={{ textTransform: "none" }}
-          style={{
-            height: "35px",
-            width: "135px",
-            marginTop: 21,
-            marginLeft: 5,
-            fontWeight: 500,
-            fontSize: 14,
-            backgroundColor: "rgb(93, 63, 211)",
-          }}
-        >
-          Download Data
-        </Button> */}
         </div>
       </div>
     </div>

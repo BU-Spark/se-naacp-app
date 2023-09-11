@@ -1,20 +1,17 @@
-
-// App.js
-
 import React from "react";
-import "./IntroPage.css";
 import SearchFields from "../../components/SearchFields/SearchFields";
+import "./IntroPage.css";
 
-import { Layout, Button } from "antd"; // Ant Design
-import { useNavigate } from "react-router-dom";
-// import Logo from "../logo.svg"; // GBH Logo
-import Logo from "../../wgbh-logo.svg"; // GBH Logo
+import { Button } from "antd"; // Ant Design
+import { useNavigate, NavigateFunction } from "react-router-dom";
+
+import Logo from "../../assets/logos/wgbh-logo.svg";
 import { NeighborhoodContext } from "../../contexts/neighborhoodContext.js";
 
 const IntroPage = () => {
   const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext);
-  const [showError, setshowerror] = React.useState(false);
-  const navigate = useNavigate();
+  const [showError, setshowerror] = React.useState<boolean>(false); // Enforce typing here
+  const navigate: NavigateFunction = useNavigate(); // Enforce typing here
 
   const navigateDeveloperMode = () => {
     if (neighborhood === "boston_city") {
@@ -24,7 +21,7 @@ const IntroPage = () => {
       navigate("/IntroPage");
     }
   };
-
+  
   const navigateSearchByKeyWord = () => {
     navigate("/SearchByKeyWord");
   };

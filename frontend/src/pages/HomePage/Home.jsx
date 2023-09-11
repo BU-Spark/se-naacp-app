@@ -1,23 +1,18 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Lottie from 'react-lottie-player'
+
+import './Home.css' // CSS
+
+import Logo from "../../assets/logos/logo.svg"; // GBH Logo
+import TopNavBar from '../../components/TopNavBar/TopNavBar';
 
 import SearchFields from '../../components/SearchFields/SearchFields'
 import ArticlesCard from '../../components/ArticleCard/ArticleCard';
 import NeighborhoodCard from '../../components/Neighborhood/NeighborhoodCard';
-
-
-import { TopNavBar } from '../../components/TopNavBar/TopNavBar';
 import  NeighborhoodDemoBoard from '../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
 import { TrendBoard } from '../../components/TrendBoard/TrendBoard';
 import { FrequencyBarChart } from '../../components/FrequencyBarChart/FrequencyBarChart'
-
-// Other
-import Lottie from 'react-lottie-player'
-
-import Logo from "../../logo.svg"; // GBH Logo
-
-// CSS
-import './Home.css'
 
 // React Contexts/Context Methods
 import { DateContext, DateMethods } from "../../contexts/dateContext";
