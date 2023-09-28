@@ -1,15 +1,6 @@
 const { MongoClient } = require('mongodb');
 const MASTER_DATA = require('./JSON_data/non_stochastic_model_output.json');
 
-// For Debug purposes
-// const keys_list = Object.keys(MASTER_DATA);
-// console.log("The Keys for MASTER_DATA:", keys_list);
-// console.log("Articles count:", Object.values(MASTER_DATA[keys_list[0]]).length)
-// console.log("Topics count:", Object.values(MASTER_DATA[keys_list[1]]).length)
-// console.log("Dates count:", Object.values(MASTER_DATA[keys_list[2]]).length)
-// console.log("Neighborhood count:", Object.values(MASTER_DATA[keys_list[3]]).length)
-// console.log("Tracts count:", Object.values(MASTER_DATA[keys_list[4]]).length)
-
 const url = 'mongodb://localhost:27017'; // Will be automated...
 const dbName = 'se_naacp_gbh'; // Will be automated...
 const client = new MongoClient(url);
