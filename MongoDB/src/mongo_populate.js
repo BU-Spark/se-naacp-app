@@ -12,8 +12,6 @@ async function main() {
     const db = client.db(dbName);
 
     await populate_first_order_data(db, MASTER_DATA, "articles_data", Object.keys(MASTER_DATA)[0], false)
-    await populate_first_order_data(db, MASTER_DATA, "topics_data", Object.keys(MASTER_DATA)[1], false)
-    await populate_first_order_data(db, MASTER_DATA, "dates_data", Object.keys(MASTER_DATA)[2], false)
     await populate_first_order_data(db, MASTER_DATA, "neighborhood_data", Object.keys(MASTER_DATA)[3], false)
     await populate_first_order_data(db, MASTER_DATA, "tracts_data", Object.keys(MASTER_DATA)[4], false)
   
@@ -45,11 +43,11 @@ async function populate_first_order_data (database, MASTER_DATA, collection_chos
     documentsList = Object.values(MASTER_DATA[firstOrderKey]);
     
     // Special case for dates
-    if (firstOrderKey === 'dates_filter') {
+    if (firstOrderKey === 'articles') {
         let date_documents = [];
         for (let i = 0; i < documentsList.length; i++) {
             elem = documentsList[i];
-            let raw_date = elem.value;
+            let raw_date = elem.pub_date;
             let dateCopy = raw_date.replaceAll('-', '').replaceAll(' ', '').replaceAll(':', '').substring(0, 8);
             elem = Object.assign(elem, { dateSum: parseInt(dateCopy) });
             date_documents.push(elem);
