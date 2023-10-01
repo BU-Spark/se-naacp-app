@@ -50,6 +50,7 @@ export const typeDefs = gql`
   type Query {
     # articleByDate(DateFrom: Int, DateTo: Int, neighborhood: String): [Article]
     articleByDate: String
+    tractsByNeighborhood(neighborhood: String!): [Neighborhoods]
   }
 `;
 

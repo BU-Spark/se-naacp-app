@@ -14,5 +14,13 @@ const articleSchema = new mongoose.Schema({
     openai_labels: [String],
     dateSum: Number
 });
+
+const neighborhoodSchema = new mongoose.Schema({
+    articles: [String],
+    value: String,
+    tracts: [String]
+})
+
 const Article = mongoose.model('Article', articleSchema);
-module.exports = Article;
+const Neighborhood = mongoose.model('Neighborhood', neighborhoodSchema);
+module.exports = {Article, Neighborhood};
