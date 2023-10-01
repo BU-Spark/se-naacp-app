@@ -48,8 +48,7 @@ export const typeDefs = gql`
   }
 
   type Query {
-    # articleByDate(DateFrom: Int, DateTo: Int, neighborhood: String): [Article]
-    articleByDate: String
+    articleByDate(dateFrom: Int!, dateTo: Int!, area: String!): [Article]
     tractsByNeighborhood(neighborhood: String!): [Neighborhoods]
     demographicsByTracts(tract: String!): [Tracts]
   }

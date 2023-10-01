@@ -48,9 +48,13 @@ export const typeDefs = gql `
 
   type Query {
     # articleByDate(DateFrom: Int, DateTo: Int, neighborhood: String): [Article]
+<<<<<<< HEAD
     articleByDate: String
     tractsByNeighborhood(neighborhood: String!): [Neighborhoods]
     demographicsByTracts(tract: String!): [Tracts]
+=======
+    articleByDate(dateFrom: Int!, dateTo: Int!, area: String!): [Article]
+>>>>>>> origin/nawaf-graphql
   }
 `;
 // export default typeDefs;
