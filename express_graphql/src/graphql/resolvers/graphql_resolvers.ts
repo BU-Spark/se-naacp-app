@@ -20,6 +20,17 @@ export const resolvers = {
       }).toArray();
 
       return queryResult;
+    },
+    demographicsByTracts: async (_, args) => {
+      await client.connect();
+      let db = client.db(dbName);
+      const tracts_data = db.collection("tracts_data");
+
+      const queryResult = tracts_data
+      .find({
+        tract: args.tract
+      }).toArray();
+      return queryResult;
     }
   }
 };
