@@ -1,5 +1,5 @@
 import { MongoClient, Db, Collection } from "mongodb";
-import { INeighborhoods, TractsByNeighborhoodArgs } from "../types/types";
+import { INeighborhoods, TractsByNeighborhoodArgs, ITracts, IDemographics, DemographicsByTractsArgs } from "../types/types";
 
 const url = "mongodb://localhost:27017"; // Local development
 const dbName = "se_naacp_gbh";
@@ -56,15 +56,16 @@ export const resolvers = {
 
       return queryResult;
     },
-    demographicsByTracts: async (_, args) => {
+    demographicsByTracts: async (_, args: DemographicsByTractsArgs): Promise<ITracts[]> => {
       await client.connect();
-      let db = client.db(dbName);
-      const tracts_data = db.collection("tracts_data");
+      let db: Db = client.db(dbName);
+      const tracts_data: Collection<ITracts> = db.collection("tracts_data");
 
-      const queryResult = tracts_data
+      const queryResult: ITracts[] = await tracts_data
         .find({
           tract: args.tract
         }).toArray();
+
       return queryResult;
     }
   }

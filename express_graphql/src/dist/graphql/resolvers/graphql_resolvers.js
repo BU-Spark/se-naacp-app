@@ -51,7 +51,7 @@ export const resolvers = {
             await client.connect();
             let db = client.db(dbName);
             const tracts_data = db.collection("tracts_data");
-            const queryResult = tracts_data
+            const queryResult = await tracts_data
                 .find({
                 tract: args.tract
             }).toArray();
