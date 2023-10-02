@@ -1,7 +1,10 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, Db, Collection } from "mongodb";
+import { INeighborhoods, TractsByNeighborhoodArgs } from "../types/types";
+
 const url = "mongodb://localhost:27017"; // Local development
 const dbName = "se_naacp_gbh";
 const client = new MongoClient(url);
+
 
 //helper function to check if a string is a numebr
 function isNumber(str: any) {
@@ -41,12 +44,12 @@ export const resolvers = {
         return queryResult;
       }
     },
-    tractsByNeighborhood: async (_, args) => {
+    tractsByNeighborhood: async (_, args: TractsByNeighborhoodArgs): Promise<INeighborhoods[]> => {
       await client.connect();
-      let db = client.db(dbName);
-      const neighborhood_data = db.collection("neighborhood_data");
+      let db: Db = client.db(dbName);
+      const neighborhood_data: Collection<INeighborhoods> = db.collection("neighborhood_data");
 
-      const queryResult = neighborhood_data
+      const queryResult: INeighborhoods[] = await neighborhood_data
         .find({
           value: args.neighborhood
         }).toArray();
