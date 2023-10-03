@@ -1,8 +1,8 @@
 import {ApolloServer}  from '@apollo/server';
 import {startStandaloneServer}  from '@apollo/server/standalone';
 
-import {typeDefs}  from "./graphql/schemas/type_definitions.js";
-import {resolvers} from "./graphql/resolvers/graphql_resolvers.js";
+import { typeDefs }  from "./graphql/schemas/type_definitions.js";
+import { resolvers } from "./graphql/resolvers/graphql_resolvers.js";
 
 
 const server = new ApolloServer({
@@ -11,9 +11,9 @@ const server = new ApolloServer({
 });
 
 const { url } = await startStandaloneServer(server, {
-  listen: { port: 3001 },
+  listen: { port: 4000 },
 });
 
-console.log(`🚀  Server ready at: ${url}`);
+console.log(`🚀  Server ready at PORT: ${url}`);
 
 
