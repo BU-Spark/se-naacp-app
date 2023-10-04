@@ -1,9 +1,5 @@
-import { MongoClient, Db, Collection } from "mongodb";
 import { INeighborhoods, TractsByNeighborhoodArgs, ITracts, IDemographics, DemographicsByTractsArgs } from "../types/types";
-
-const url = "mongodb://localhost:27017"; // Local development
-const dbName = "se_naacp_gbh";
-const client = new MongoClient(url);
+import { Collection } from "mongodb";
 
 
 //helper function to check if a string is a numebr
@@ -13,9 +9,8 @@ function isNumber(str: any) {
 
 export const resolvers = {
   Query: {
-    articleByDate: async (parent, args, contex) => {
-      await client.connect();
-      let db = client.db(dbName);
+    articleByDate: async (parent, args, context) => {
+      const { db } = context;
       const articles_data = db.collection("articles_data");
 
       if (isNumber(args.area)) {
@@ -44,9 +39,8 @@ export const resolvers = {
         return queryResult;
       }
     },
-    tractsByNeighborhood: async (_, args: TractsByNeighborhoodArgs): Promise<INeighborhoods[]> => {
-      await client.connect();
-      let db: Db = client.db(dbName);
+    tractsByNeighborhood: async (_, args: TractsByNeighborhoodArgs, context): Promise<INeighborhoods[]> => {
+      const { db } = context;
       const neighborhood_data: Collection<INeighborhoods> = db.collection("neighborhood_data");
 
       const queryResult: INeighborhoods[] = await neighborhood_data
@@ -56,9 +50,8 @@ export const resolvers = {
 
       return queryResult;
     },
-    demographicsByTracts: async (_, args: DemographicsByTractsArgs): Promise<ITracts[]> => {
-      await client.connect();
-      let db: Db = client.db(dbName);
+    demographicsByTracts: async (_, args: DemographicsByTractsArgs, context): Promise<ITracts[]> => {
+      const { db } = context;
       const tracts_data: Collection<ITracts> = db.collection("tracts_data");
 
       const queryResult: ITracts[] = await tracts_data
