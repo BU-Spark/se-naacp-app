@@ -9,7 +9,7 @@ function isNumber(str: any) {
 
 export const resolvers = {
   Query: {
-    articleByDate: async (parent, args, context) => {
+    articleByDate: async (_, args, context) => {
       const { db } = context;
       const articles_data = db.collection("articles_data");
 

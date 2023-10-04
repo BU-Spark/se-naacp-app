@@ -2,6 +2,7 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
   type Article {
+    _id: ID!
     neighborhoods: [String!]!
     position_section: String!
     tracts: [String!]!
@@ -37,6 +38,7 @@ export const typeDefs = gql`
   }
 
   type Tracts {
+    _id: ID!
     county_name: String!
     tract: String!
     geoid_tract: String!
@@ -46,9 +48,9 @@ export const typeDefs = gql`
   }
 
   type Query {
-    articleByDate(dateFrom: Int!, dateTo: Int!, area: String!): [Article]
-    tractsByNeighborhood(neighborhood: String!): [Neighborhoods]
-    demographicsByTracts(tract: String!): [Tracts]
+    # articleByDate(DateFrom: Int, DateTo: Int, neighborhood: String): [Article]
+    articleByDate(dateFrom: Int!, dateTo: Int!, neighborhood: String!): [Article]
   }
 `;
 
+// export default typeDefs;
