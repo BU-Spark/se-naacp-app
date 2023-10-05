@@ -1,7 +1,6 @@
 import { gql } from "apollo-server-express";
 export const typeDefs = gql `
   type Article {
-    _id: ID!
     neighborhoods: [String!]!
     position_section: String!
     tracts: [String!]!
@@ -37,7 +36,6 @@ export const typeDefs = gql `
   }
 
   type Tracts {
-    _id: ID!
     county_name: String!
     tract: String!
     geoid_tract: String!
@@ -52,4 +50,3 @@ export const typeDefs = gql `
     demographicsByTracts(tract: String!): [Tracts]
   }
 `;
-// export default typeDefs;

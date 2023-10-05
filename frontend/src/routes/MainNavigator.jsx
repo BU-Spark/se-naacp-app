@@ -14,6 +14,7 @@ import DevMode from "../pages/DevelopmentMode/DevMode";
 import IntroPage from "../pages/LandingPage/IntroPage";
 import SearchByKeyWord from "../pages/SearchByKeyWord/SearchByKeyWord"
 import FileUpload from "../pages/UploadArticles/UploadArticles"
+import client from "../Pipelines/apolloClient"
 
 // Data Fetching
 import MasterPipeline from '../Pipelines/masterDataPipeline'
@@ -25,23 +26,32 @@ import { StateContext, stateMethods } from "../contexts/stateContext";
 import { useSelector, useDispatch } from 'react-redux'
 import initThunkMethods from "../Pipelines/initPipeline";
 
+// Context
+import { TractContext } from "../contexts/tract_context"
+import { gql } from '@apollo/client';
+
 export default function MainNavigator() {
     const { setState } = React.useContext(StateContext);  // Global Context of States
 
-    const state = useSelector((state) => state.masterState) // Redux master state
+    const { tractData, fetchData } = React.useContext(TractContext);
+
+    //const state = useSelector((state) => state.masterState) // Redux master state
     const dispatch = useDispatch();
     const [data, setData] = useState([]);
 
     React.useEffect(() => {
+        fetchData({"neighborhood": "Downtown"})
+        console.log("FETCHED DATA:", tractData);
+
         // Redux way below
-        dispatch(initThunkMethods.bootstrapClientDataStruct());
+        // dispatch(initThunkMethods.bootstrapClientDataStruct());
         
         MasterPipeline.rootPathInitData().then( async (v) => {
             let newState = stateMethods.updateModified({Subneighborhoods: v[0], Topics: v[1]});
             setState(newState);
             setData([v[2],v[3]]);
         });
-    }, [dispatch]);
+    }, [dispatch, tractData]);
 
     return(
     <>
