@@ -27,31 +27,46 @@ import { useSelector, useDispatch } from 'react-redux'
 import initThunkMethods from "../Pipelines/initPipeline";
 
 // Context
-import { TractContext } from "../contexts/tract_context"
 import { gql } from '@apollo/client';
+import { TractContext } from "../contexts/tract_context"
+import { NeighborhoodContext } from "../contexts/neighborhood_context";
+import { ArticleContext } from "../contexts/article_context";
 
 export default function MainNavigator() {
     const { setState } = React.useContext(StateContext);  // Global Context of States
 
-    const { tractData, fetchData } = React.useContext(TractContext);
+    // const { tractData, fetchData } = React.useContext(TractContext);
+    // const { articleData, fetchArticleData } = React.useContext(ArticleContext);
+    const { neighborhoodData, fetchNeighborhoodData } = React.useContext(NeighborhoodContext);
 
     //const state = useSelector((state) => state.masterState) // Redux master state
     const dispatch = useDispatch();
     const [data, setData] = useState([]);
 
     React.useEffect(() => {
-        fetchData({"neighborhood": "Downtown"})
-        console.log("FETCHED DATA:", tractData);
+        fetchNeighborhoodData({"neighborhood": "Downtown"})
+        console.log("FETCHED DATA:", neighborhoodData);
+
+    // React.useEffect(() => {
+    //     fetchData({"neighborhood": "Downtown"})
+    //     console.log("FETCHED DATA:", tractData);
 
         // Redux way below
         // dispatch(initThunkMethods.bootstrapClientDataStruct());
         
+    //     MasterPipeline.rootPathInitData().then( async (v) => {
+    //         let newState = stateMethods.updateModified({Subneighborhoods: v[0], Topics: v[1]});
+    //         setState(newState);
+    //         setData([v[2],v[3]]);
+    //     });
+    // }, [dispatch, tractData]);
+
         MasterPipeline.rootPathInitData().then( async (v) => {
             let newState = stateMethods.updateModified({Subneighborhoods: v[0], Topics: v[1]});
             setState(newState);
             setData([v[2],v[3]]);
         });
-    }, [dispatch, tractData]);
+    }, [dispatch, neighborhoodData]);
 
     return(
     <>

@@ -8,7 +8,7 @@ import geoData from "../../assets/mapsJSON/Census2020_Tracts.json";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
-import { NeighborhoodContext } from "../../contexts/neighborhoodContext";
+import { NeighborhoodContext2 } from "../../contexts/neighborhoodContext";
 
 // MUI Loading
 import Stack from "@mui/material/Stack";
@@ -48,7 +48,7 @@ function getItem(label, key, icon, children, type) {
 const NeighborhoodCard = () => {
   const { setDates, dates } = React.useContext(DateContext); // Global Context of dates
   const { currentState, setState } = React.useContext(StateContext); // Global Context of States
-  const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext); // Global Neighborhood
+  const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext2); // Global Neighborhood
   
   const [innerItem, setInnerItem] = React.useState("");
 

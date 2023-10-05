@@ -6,10 +6,10 @@ import { Button } from "antd"; // Ant Design
 import { useNavigate, NavigateFunction } from "react-router-dom";
 
 import Logo from "../../assets/logos/wgbh-logo.svg";
-import { NeighborhoodContext } from "../../contexts/neighborhoodContext.js";
+import { NeighborhoodContext2 } from "../../contexts/neighborhoodContext.js";
 
 const IntroPage = () => {
-  const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext);
+  const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext2);
   const [showError, setshowerror] = React.useState<boolean>(false); // Enforce typing here
   const navigate: NavigateFunction = useNavigate(); // Enforce typing here
 

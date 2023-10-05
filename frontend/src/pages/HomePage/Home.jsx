@@ -17,7 +17,7 @@ import { FrequencyBarChart } from '../../components/FrequencyBarChart/FrequencyB
 // React Contexts/Context Methods
 import { DateContext, DateMethods } from "../../contexts/dateContext";
 import { StateContext, stateMethods } from '../../contexts/stateContext.js';
-import { NeighborhoodContext } from '../../contexts/neighborhoodContext.js';
+import { NeighborhoodContext2 } from '../../contexts/neighborhoodContext.js';
 
 // Data Methods 
 import DataMethods from '../../Pipelines/data';
@@ -31,7 +31,7 @@ import { useSelector } from 'react-redux'
 export default function Home() {
     const { dates } = React.useContext(DateContext);  // Global Context of Dates
     const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
-    const { neighborhood } = React.useContext(NeighborhoodContext); // Global Neighborhood
+    const { neighborhood } = React.useContext(NeighborhoodContext2); // Global Neighborhood
     
     const state = useSelector((state) => state.masterState) // Redux master state
     const state_neigh = useSelector((state) => state.masterState.neighborhoods_master) // Redux master state

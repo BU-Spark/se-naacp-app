@@ -10,6 +10,8 @@ import { Provider } from 'react-redux'
 
 // Our Contexts
 import TractProvider from "./contexts/tract_context"
+import ArticleProvider from "./contexts/article_context"
+import NeighborhoodProvider from "./contexts/neighborhood_context"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -17,9 +19,13 @@ root.render(
     <Provider store={store}>
       <React.StrictMode>
         <ApolloProvider client={client}>
-          <TractProvider>
-            <App />
-          </TractProvider>
+          <ArticleProvider>
+            <TractProvider>
+              <NeighborhoodProvider>
+                <App />
+              </NeighborhoodProvider>
+            </TractProvider>
+          </ArticleProvider>
         </ApolloProvider>
       </React.StrictMode>
     </Provider>

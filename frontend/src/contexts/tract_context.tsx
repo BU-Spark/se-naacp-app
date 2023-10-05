@@ -4,10 +4,10 @@ import { Tracts } from "../__generated__/graphql"
 
 type TractContextType = {
     tractData: Tracts | null,
-    fetchData: (query: any, options?: any) => void,
+    fetchTractData: (query: any, options?: any) => void,
 }
 
-const QUERY = gql`
+const TRACT_QUERY = gql`
 query ArticleByDate($neighborhood: String!) {
     tractsByNeighborhood(neighborhood: $neighborhood) {
         articles
@@ -18,7 +18,7 @@ query ArticleByDate($neighborhood: String!) {
 export const TractContext = React.createContext<TractContextType | null>(null);
 
 const TractProvider: React.FC = ({children}: any) => {
-    const [queryData, { data, loading, error }] = useLazyQuery(QUERY);
+    const [queryData, { data, loading, error }] = useLazyQuery(TRACT_QUERY);
     const [tracts, setTractData] = React.useState<Tracts | null>(null);
 
     React.useEffect(() => {
@@ -27,14 +27,14 @@ const TractProvider: React.FC = ({children}: any) => {
         }
     }, [loading, data, error]);
 
-    const fetchData = (options?: any) => {
+    const fetchTractData = (options?: any) => {
         queryData({
             variables: options // This is where you pass in parameters
         })
     };
 
     return (
-        <TractContext.Provider value={{ tractData: tracts, fetchData }}>
+        <TractContext.Provider value={{ tractData: tracts, fetchTractData }}>
             {children}
         </TractContext.Provider>
     );

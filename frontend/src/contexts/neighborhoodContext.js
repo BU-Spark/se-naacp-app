@@ -5,9 +5,9 @@ const NeighborhoodMethods = {
 
 };
 
-const NeighborhoodContext = React.createContext({
+const NeighborhoodContext2 = React.createContext({
     neighborhood: "fenway",
     setNeigh: (v) => {}
 });
 
-export { NeighborhoodContext, NeighborhoodMethods }
+export { NeighborhoodContext2, NeighborhoodMethods }

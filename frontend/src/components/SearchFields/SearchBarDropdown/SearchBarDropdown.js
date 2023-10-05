@@ -13,14 +13,14 @@ import uniqid from "uniqid";
 
 // React Contexts/Context Methods
 import { StateContext, stateMethods } from "../../../contexts/stateContext.js";
-import { NeighborhoodContext } from "../../../contexts/neighborhoodContext.js";
+import { NeighborhoodContext2 } from "../../../contexts/neighborhoodContext.js";
 
 // A Constant...
 const neighListPlaceholder = ["None"];
 
 export default function SearchBarDropdown({ word }) {
   const { currentState, setState } = React.useContext(StateContext); // Global Context of States
-  const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext); // Global Neighborhood
+  const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext2); // Global Neighborhood
 
   const [subneighbor, setSubNeighborhood] = React.useState("");
   const [neighborhoodList, setSubNeighborhoodList] =
