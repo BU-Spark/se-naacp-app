@@ -1,4 +1,4 @@
-import { INeighborhoods, TractsByNeighborhoodArgs, ITracts, IDemographics, DemographicsByTractsArgs } from "../types/types";
+import { INeighborhoods, TractsByNeighborhoodArgs, ITracts, IArticles, DemographicsByTractsArgs } from "../types/types";
 import { Collection } from "mongodb";
 
 
@@ -60,6 +60,28 @@ export const resolvers = {
         }).toArray();
 
       return queryResult;
+    },
+    getAllNeighborhoods: async (_, __, context): Promise<string[]> => {
+      const { db } = context;
+      const neighborhood_data: Collection<INeighborhoods> = db.collection("neighborhood_data");
+      // Fetch all documents and project only the 'value' field
+      const neighborhoods: INeighborhoods[] = await neighborhood_data.find({}, { projection: { value: 1, _id: 0 } }).toArray();
+      // Map the documents to get only the 'value' (neighborhood name)
+      const names: string[] = neighborhoods.map(doc => doc.value);
+      return names;
+    },
+    getAllArticles: async (_, __, context): Promise<IArticles[]> => {
+      const { db } = context;
+      const article_data: Collection<IArticles> = db.collection("articles_data");
+      const articles: IArticles[] = await article_data.find({}).toArray();
+      return articles;
+    },
+    getAllTopics: async (_, __, context): Promise<string[]> => {
+      const { db } = context;
+      const article_data: Collection<IArticles> = db.collection("articles_data");
+      const articles: IArticles[] = await article_data.find({}).toArray();
+      const topics: string[] = [...new Set(articles.map(article => article.position_section))];
+      return topics;
     }
   }
 };

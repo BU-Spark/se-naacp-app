@@ -21,24 +21,41 @@ export interface DemographicsByTractsArgs {
 
 // Define output type for DemographicsByTracts
 export interface ITracts {
-    _id: String;
-    county_name: String;
-    tract: String;
-    geoid_tract: String;
-    neighborhood: String;
+    _id: string;
+    county_name: string;
+    tract: string;
+    geoid_tract: string;
+    neighborhood: string;
     demographics: IDemographics;
-    articles: String[];
+    articles: string[];
+}
+
+// Define output type for getAllArticles
+export interface IArticles {
+    neighborhoods: string[];
+    position_section: string;
+    tracts: string[];
+    author: string;
+    body: string;
+    content_id: string;
+    hl1: string;
+    hl2: string;
+    pub_date: string;
+    pub_name: string;
+    link: string;
+    openai_labels: string[];
+    dateSum: number
 }
 
 export interface IDemographics {
-    p2_001n: String
-    p2_002n: String
-    p2_003n: String
-    p2_004n: String
-    p2_005n: String
-    p2_006n: String
-    p2_007n: String
-    p2_008n: String
-    p2_009n: String
-    p2_010n: String
+    p2_001n: string
+    p2_002n: string
+    p2_003n: string
+    p2_004n: string
+    p2_005n: string
+    p2_006n: string
+    p2_007n: string
+    p2_008n: string
+    p2_009n: string
+    p2_010n: string
 }

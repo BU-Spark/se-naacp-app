@@ -48,5 +48,8 @@ export const typeDefs = gql `
     articleByDate(dateFrom: Int!, dateTo: Int!, area: String!): [Article]
     tractsByNeighborhood(neighborhood: String!): [Neighborhoods]
     demographicsByTracts(tract: String!): [Tracts]
+    getAllNeighborhoods: [String!]!
+    getAllArticles: [Article!]!
+    getAllTopics: [String!]!
   }
 `;

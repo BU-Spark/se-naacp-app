@@ -36,17 +36,18 @@ export default function MainNavigator() {
     const { setState } = React.useContext(StateContext);  // Global Context of States
 
     // const { tractData, fetchData } = React.useContext(TractContext);
-    // const { articleData, fetchArticleData } = React.useContext(ArticleContext);
-    const { neighborhoodData, fetchNeighborhoodData } = React.useContext(NeighborhoodContext);
+    const { articleData, fetchArticleData } = React.useContext(ArticleContext);
+    // const { neighborhoodData, fetchNeighborhoodData } = React.useContext(NeighborhoodContext);
 
     //const state = useSelector((state) => state.masterState) // Redux master state
     const dispatch = useDispatch();
     const [data, setData] = useState([]);
 
     React.useEffect(() => {
-        fetchNeighborhoodData({"neighborhood": "Downtown"})
-        console.log("FETCHED DATA:", neighborhoodData);
-
+        fetchArticleData({"neighborhood": "Downtown"})
+        console.log("FETCHED DATA:", articleData);
+    }, [dispatch, articleData]);
+    
     // React.useEffect(() => {
     //     fetchData({"neighborhood": "Downtown"})
     //     console.log("FETCHED DATA:", tractData);
@@ -61,12 +62,12 @@ export default function MainNavigator() {
     //     });
     // }, [dispatch, tractData]);
 
-        MasterPipeline.rootPathInitData().then( async (v) => {
-            let newState = stateMethods.updateModified({Subneighborhoods: v[0], Topics: v[1]});
-            setState(newState);
-            setData([v[2],v[3]]);
-        });
-    }, [dispatch, neighborhoodData]);
+        // MasterPipeline.rootPathInitData().then( async (v) => {
+        //     let newState = stateMethods.updateModified({Subneighborhoods: v[0], Topics: v[1]});
+        //     setState(newState);
+        //     setData([v[2],v[3]]);
+        // });
+    // }, [dispatch, articleData]);
 
     return(
     <>
