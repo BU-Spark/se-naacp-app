@@ -15,6 +15,9 @@ import uniqid from "uniqid";
 import { StateContext, stateMethods } from "../../../contexts/stateContext.js";
 import { NeighborhoodContext2 } from "../../../contexts/neighborhoodContext.js";
 
+// Context
+import { ArticleContext } from "../../../contexts/article_context";
+
 // A Constant...
 const neighListPlaceholder = ["None"];
 
@@ -22,18 +25,18 @@ export default function SearchBarDropdown({ word }) {
   const { currentState, setState } = React.useContext(StateContext); // Global Context of States
   const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext2); // Global Neighborhood
 
+  const { neighborhoodMasterList} = React.useContext(ArticleContext); 
+
   const [subneighbor, setSubNeighborhood] = React.useState("");
   const [neighborhoodList, setSubNeighborhoodList] =
     React.useState(neighListPlaceholder);
 
   React.useEffect(() => {
-    if (currentState.hasOwnProperty("Subneighborhoods")) {
+    if (neighborhoodMasterList) {
       // Quick and Dirty
-      let cleanedNeighborhoods = stateMethods.updateModified(
-        currentState.Subneighborhoods
-      );
+      let cleanedNeighborhoods = neighborhoodMasterList;
       for (let i = 0; i < cleanedNeighborhoods.length; i++) {
-        let nameList = cleanedNeighborhoods[i].neighborhood
+        let nameList = cleanedNeighborhoods[i]
           .replaceAll("_", " ")
           .split(" ");
         let name = "";
@@ -57,7 +60,7 @@ export default function SearchBarDropdown({ word }) {
       );
       setState(newState);
     }
-  }, [currentState]);
+  }, [currentState, neighborhoodMasterList]);
   const minDate = dayjs("2020-11-01"); // November 2020
   const maxDate = dayjs("2023-01-09"); // February 2021
   const { setDates, dates } = React.useContext(DateContext);

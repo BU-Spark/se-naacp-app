@@ -1,7 +1,6 @@
 
 
 import React from "react";
-import {useState} from 'react'
 import {
   BrowserRouter,
   Routes,
@@ -14,60 +13,16 @@ import DevMode from "../pages/DevelopmentMode/DevMode";
 import IntroPage from "../pages/LandingPage/IntroPage";
 import SearchByKeyWord from "../pages/SearchByKeyWord/SearchByKeyWord"
 import FileUpload from "../pages/UploadArticles/UploadArticles"
-import client from "../Pipelines/apolloClient"
-
-// Data Fetching
-import MasterPipeline from '../Pipelines/masterDataPipeline'
-
-// Universal Context
-import { StateContext, stateMethods } from "../contexts/stateContext";
-
-// Redux
-import { useSelector, useDispatch } from 'react-redux'
-import initThunkMethods from "../Pipelines/initPipeline";
 
 // Context
-import { gql } from '@apollo/client';
-import { TractContext } from "../contexts/tract_context"
-import { NeighborhoodContext } from "../contexts/neighborhood_context";
 import { ArticleContext } from "../contexts/article_context";
 
 export default function MainNavigator() {
-    const { setState } = React.useContext(StateContext);  // Global Context of States
-
-    // const { tractData, fetchData } = React.useContext(TractContext);
-    const { articleData, fetchArticleData } = React.useContext(ArticleContext);
-    // const { neighborhoodData, fetchNeighborhoodData } = React.useContext(NeighborhoodContext);
-
-    //const state = useSelector((state) => state.masterState) // Redux master state
-    const dispatch = useDispatch();
-    const [data, setData] = useState([]);
+    const { neighborhoodMasterList, queryArticleDataType } = React.useContext(ArticleContext);
 
     React.useEffect(() => {
-        fetchArticleData({"neighborhood": "Downtown"})
-        console.log("FETCHED DATA:", articleData);
-    }, [dispatch, articleData]);
-    
-    // React.useEffect(() => {
-    //     fetchData({"neighborhood": "Downtown"})
-    //     console.log("FETCHED DATA:", tractData);
-
-        // Redux way below
-        // dispatch(initThunkMethods.bootstrapClientDataStruct());
-        
-    //     MasterPipeline.rootPathInitData().then( async (v) => {
-    //         let newState = stateMethods.updateModified({Subneighborhoods: v[0], Topics: v[1]});
-    //         setState(newState);
-    //         setData([v[2],v[3]]);
-    //     });
-    // }, [dispatch, tractData]);
-
-        // MasterPipeline.rootPathInitData().then( async (v) => {
-        //     let newState = stateMethods.updateModified({Subneighborhoods: v[0], Topics: v[1]});
-        //     setState(newState);
-        //     setData([v[2],v[3]]);
-        // });
-    // }, [dispatch, articleData]);
+        queryArticleDataType("NEIGHBORHOOD_DATA"); // Bootstrap Initial Lists and States like neighborhood list
+    }, [neighborhoodMasterList]);
 
     return(
     <>

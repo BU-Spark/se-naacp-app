@@ -22,7 +22,7 @@ const NeighborhoodProvider: React.FC = ({children}: any) => {
     const [neighborhood, setNeighborhoodData] = React.useState<Neighborhoods | null>(null);
 
     React.useEffect(() => {
-      console.log(error)
+        console.log(error)
         if (!loading && data && !error) {
             setNeighborhoodData(data);
         }
