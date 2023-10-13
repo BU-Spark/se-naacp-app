@@ -1,0 +1,26 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install frontend dependencies
+      run: cd se-naacp-app/frontend && npm install
+
+    - name: Build frontend
+      run: cd se-naacp-app/frontend && npm run build
