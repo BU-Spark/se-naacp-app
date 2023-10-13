@@ -2,7 +2,7 @@ name: Build and Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ CSV-Merge ]
   pull_request:
     branches: [ main ]
 
