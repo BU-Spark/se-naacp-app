@@ -53,11 +53,8 @@ export const resolvers = {
         getAllNeighborhoods: async (_, __, context) => {
             const { db } = context;
             const neighborhood_data = db.collection("neighborhood_data");
-            // Fetch all documents and project only the 'value' field
-            const neighborhoods = await neighborhood_data.find({}, { projection: { value: 1, _id: 0 } }).toArray();
-            // Map the documents to get only the 'value' (neighborhood name)
-            const names = neighborhoods.map(doc => doc.value);
-            return names;
+            const neighborhoods = await neighborhood_data.find({}).toArray();
+            return neighborhoods;
         },
         getAllArticles: async (_, __, context) => {
             const { db } = context;
