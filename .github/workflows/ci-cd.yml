@@ -24,3 +24,9 @@ jobs:
 
     - name: Build frontend
       run: cd frontend && npm run build
+    
+    - name: Install backend dependencies
+      run: cd backend && npm install
+
+    - name: Run backend
+      run: cd backend && npm run start
