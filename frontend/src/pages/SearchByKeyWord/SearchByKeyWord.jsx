@@ -63,7 +63,6 @@ export default function SearchByKeyWord() {
           onSearch={handleInputChange}
         >
           <Search style={{width: "20vw"}}
-            className="search-bar"
             placeholder="input a term"
             enterButton
             onSearch={handleSearch}
