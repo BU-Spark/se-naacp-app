@@ -30,6 +30,6 @@ jobs:
 
     - name: Test start backend server
       run: |
-        cd se-naacp-app/backend
+        cd backend
         npm install
         timeout 1m npm run start
