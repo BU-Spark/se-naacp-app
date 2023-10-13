@@ -28,5 +28,8 @@ jobs:
     - name: Install backend dependencies
       run: cd backend && npm install
 
-    - name: Run backend
-      run: cd backend && npm run start
+    - name: Test start backend server
+      run: |
+        cd se-naacp-app/backend
+        npm install
+        timeout 1m npm run start
