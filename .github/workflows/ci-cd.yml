@@ -20,7 +20,7 @@ jobs:
         node-version: '14'
 
     - name: Install frontend dependencies
-      run: cd se-naacp-app/frontend && npm install
+      run: cd frontend && npm install
 
     - name: Build frontend
-      run: cd se-naacp-app/frontend && npm run build
+      run: cd frontend && npm run build
