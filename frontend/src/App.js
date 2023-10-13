@@ -10,7 +10,7 @@ import MainNavigator from './routes/MainNavigator'
 // Universal Contexts
 import { DateContext } from './contexts/dateContext'
 import { StateContext } from './contexts/stateContext'
-import { NeighborhoodContext } from './contexts/neighborhoodContext'
+import { NeighborhoodContext2 } from './contexts/neighborhoodContext'
 
 function App() {
   const minDate = dayjs("2020-11-01"); // November 2020
@@ -23,9 +23,9 @@ function App() {
     <>
       <StateContext.Provider value={{currentState, setState}}>
         <DateContext.Provider value={{dates, setDates}}>
-          <NeighborhoodContext.Provider value={{neighborhood, setNeigh}}>
+          <NeighborhoodContext2.Provider value={{neighborhood, setNeigh}}>
             <MainNavigator />
-          </NeighborhoodContext.Provider>
+          </NeighborhoodContext2.Provider>
         </DateContext.Provider>
       </StateContext.Provider>
     </>

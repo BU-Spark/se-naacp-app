@@ -5,7 +5,7 @@ const deployment_uri = "https://naacpbackend-production.up.railway.app"
 const local_uri = 'http://localhost:4000';
 
 // Apollo Client Objects
-const masterURI = `${deployment_uri}/universalValues`;
+const masterURI = `${local_uri}/universalValues`;
 
 const clientMaster = new ApolloClient({
   uri: masterURI,
@@ -29,6 +29,7 @@ const rootPathInitData = async () => {
   let message_topics_list;
   let message_neigh_list_dev_page;
   let message_topics_list_dev_page;
+  
   try {
     message_neigh_list = await clientMaster
       .query({
@@ -51,10 +52,9 @@ const rootPathInitData = async () => {
     message_topics_list = message_topics_list.data.getTopicList;
   } catch (error) {
     message_neigh_list_dev_page = error;
-    // message_topics_list_dev_page = error;
   }
 
-  return [message_neigh_list, message_topics_list,message_neigh_list_dev_page,message_topics_list_dev_page];
+  return [message_neigh_list, message_topics_list, message_neigh_list_dev_page, message_topics_list_dev_page];
 };
 
 const listenerMethods = {

@@ -8,7 +8,7 @@ import geoData from "../../assets/mapsJSON/Census2020_Tracts.json";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
-import { NeighborhoodContext } from "../../contexts/neighborhoodContext";
+import { NeighborhoodContext2 } from "../../contexts/neighborhoodContext";
 
 // MUI Loading
 import Stack from "@mui/material/Stack";
@@ -48,12 +48,10 @@ function getItem(label, key, icon, children, type) {
 const NeighborhoodCard = () => {
   const { setDates, dates } = React.useContext(DateContext); // Global Context of dates
   const { currentState, setState } = React.useContext(StateContext); // Global Context of States
-  const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext); // Global Neighborhood
+  const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext2); // Global Neighborhood
   
   const [innerItem, setInnerItem] = React.useState("");
 
-  const minDate = dayjs("2020-11-01"); // November 2020
-  const maxDate = dayjs("2023-01-09"); // February 2021
   const state = useSelector((state) => state.masterState); // Redux master state
   const state_neigh = useSelector(
     (state) => state.masterState.neighborhoods_master.payload
@@ -113,26 +111,19 @@ const NeighborhoodCard = () => {
 
   // Show Neighborhood and collection of Tracts
   const onSelectionNeigh = (v) => {
+    console.log("V:", v)
     if (v.length !== 0) {
       let result = locations.filter((obj) => {
         return obj.name === v[v.length - 1];
       });
+      console.log("SELECTED TRACK:", result)
       SetCurrLocation(result[0]);
       setTractShapes(result[0].tracts);
     }
   };
 
-  // React.useEffect(() => {
-  //   const v = [currentState.currentNeigh];
-  //   // onSelectionNeigh(v);
-    
-  // }, [locations]);
-
-
   // Handle Map API click
   const onTractMapAPIClick = (v) => {
-    // console.log("Tract:", v.payload.properties.TRACTCE20);
-    // console.log("Tract Name:", v.payload.properties.NAME20);
     setInnerItem(v.payload.properties.TRACTCE20);
     setTractDataToAllGraphs(v.payload.properties.TRACTCE20);
     SetTractCurrLocation(v.payload.properties.TRACTCE20);
@@ -143,8 +134,8 @@ const NeighborhoodCard = () => {
       !DateMethods.fromEmpty(dates) &&
       !DateMethods.toEmpty(dates) &&
       DateMethods.dateValidation(dates[0], dates[1])
-    ) {
-      dispatch(setLoadingState(true)); // Set Loading state
+    ) {      
+      dispatch(setLoadingState(true));
       const data = await DataMethods.getCensusDateData(
         dates[0],
         dates[1],
@@ -172,18 +163,13 @@ const NeighborhoodCard = () => {
           };
           newState = stateMethods.updateModified(newState);
           setState(newState);
-          // setNeigh("boston_city");
         }
-        // setTimeout(() => {
-        //     dispatch(setLoadingState(false)); // Set Loading state
-        // }, "1000");
-        dispatch(setLoadingState(false)); // Set Loading state
       });
+      dispatch(setLoadingState(false));
     }
   };
 
   const selectTrack = (e) => {
-    // console.log("Selected track:", e);
     setInnerItem(e.key);
     if (e.key.includes("all")) {
       let deconstruct_str = e.key.slice(4);
@@ -202,17 +188,7 @@ const NeighborhoodCard = () => {
       setDates([dates[0], dates[1]]);
     } else {
       SetTractCurrLocation(e.key);
-      // setTractShapes(tract_list);
-      // setTractShapes([e.key]);
-
       setTractDataToAllGraphs(e.key);
-      // setNeigh("boston_city");
-
-      // setState(
-      //   stateMethods.updateModified(
-      //     stateMethods.modify(currentState, "currentNeigh", "boston_city")
-      //   )
-      // );
     }
   };
 
@@ -381,45 +357,11 @@ const NeighborhoodCard = () => {
       SetLocations(neighborhoodTractMapData);
       if(locations.length !== 0 && currentState.currentNeigh !== "boston_city" && innerItem === ""){
         const desiredItem = items.find(obj => obj.key === currentState.currentNeigh).children.find(child => child.key.includes("all"));
-        // console.log(desiredItem.key);
         setInnerItem(desiredItem.key);
         onSelectionNeigh([currentState.currentNeigh]);
       }
     }
-
-
-
-
-   
-   
-
-    // if (currentState.currentNeigh !== undefined){
-    //     if (currentState.currentNeigh !== "boston_city") {
-    //         let neigh = items.filter(obj => {
-    //             return returnRawNeighborhoodNames(obj.key) === currentState.currentNeigh
-    //         });
-    //         let tract_arr = [];
-    //         neigh[0].children.map((v) => {
-    //             if (!v.key.includes("all")) {
-    //                 tract_arr.push(v.key);
-    //             }
-    //         });
-
-    //         setTractShapes(tract_arr);
-    //     }
-    // }
   }, [dates, currentState, state_neigh]);
-
-
-  // const handleHomePageSelection = (neighborhood) => {
-  //   const desiredItem = items.find(obj => obj.key === neighborhood).children.find(child => child.key.includes("all"));
-  //   console.log(desiredItem.key);
-  //   setInnerItem(desiredItem.key);
-  //   console.log("hey",innerItem);
-
-  //   // return desiredItem?.key;
-  // };
-
 
   return (
     <>
@@ -435,13 +377,12 @@ const NeighborhoodCard = () => {
                 marginRight: 20,
               }}
             >
-              <h3 className="card">Filter By Neighborhoods And Tracts</h3>
+              <h3 className="card">Filter By Tracts</h3>
 
               {loadingState(fetchingData)}
 
               <div style={{ width: "100%", overflow: "auto" }}>
                 <Menu
-
                   onClick={selectTrack}
                   onOpenChange={(v) => {
                     onSelectionNeigh(v);

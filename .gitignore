@@ -59,6 +59,11 @@ out/
 # node Modules
 node_modules/
 
+# python virtual env
+express_graphql/rss_script/myenv/
+
+express_graphql/rss_script/temp/
+
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 

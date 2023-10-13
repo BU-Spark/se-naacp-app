@@ -1,58 +1,28 @@
+
+
 import React from "react";
-import {useState} from 'react'
 import {
   BrowserRouter,
   Routes,
   Route
 } from "react-router-dom";
-import {Nav, NavList} from '@patternfly/react-core';
 
 // Pages
 import Home from '../pages/HomePage/Home'
 import DevMode from "../pages/DevelopmentMode/DevMode";
 import IntroPage from "../pages/LandingPage/IntroPage";
 import SearchByKeyWord from "../pages/SearchByKeyWord/SearchByKeyWord"
+import FileUpload from "../pages/UploadArticles/UploadArticles"
 
-// Data Fetching
-import MasterPipeline from '../Pipelines/masterDataPipeline'
-
-// Universal Context
-import { StateContext, stateMethods } from "../contexts/stateContext";
-
-// Date Context
-import { DateContext, DateMethods } from "../contexts/dateContext";
-
-// Redux
-import { useSelector, useDispatch } from 'react-redux'
-import { setNeighborhoodMaster } from '../redux/masterState/masterStateSlice'
+// Context
+import { ArticleContext } from "../contexts/article_context";
 
 export default function MainNavigator() {
-    const { currentState, setState } = React.useContext(StateContext);  // Global Context of States
-
-    const { dates } = React.useContext(DateContext);  // Global Context of Dates
-
-    const state = useSelector((state) => state.masterState) // Redux master state
-    const dispatch = useDispatch();
-    const [data, setData] = useState([]);
+    const { neighborhoodMasterList, queryArticleDataType } = React.useContext(ArticleContext);
 
     React.useEffect(() => {
-        MasterPipeline.rootPathInitData().then( async (v) => {
-            // console.log("After data fetching, pushing to universal state:", v);
-            let newState = stateMethods.updateModified({Subneighborhoods: v[0], Topics: v[1]});
-            setState(newState);
-            setData([v[2],v[3]]);
-            // Using Redux
-            try {
-                dispatch(setNeighborhoodMaster(v[0]));
-            } catch (error) {
-                console.log("[Axios Error] Error in retrieving master neighborhood list.");
-            }
-  
-            // console.log("The Universal State after Init Pipeline:", currentState);
-        });
-    }, []);
-
-
+        queryArticleDataType("NEIGHBORHOOD_DATA"); // Bootstrap Initial Lists and States like neighborhood list
+    }, [neighborhoodMasterList]);
 
     return(
     <>
@@ -62,6 +32,7 @@ export default function MainNavigator() {
                     <Route path="/dev-mode" element={<DevMode />} />
                     <Route path="/" element={<IntroPage />} />
                     <Route path="/SearchByKeyWord" element={<SearchByKeyWord />} />
+                    <Route path="/UploadArticles" element={<FileUpload />} />
                 </Routes>
         </BrowserRouter>
     </>

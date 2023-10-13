@@ -15,16 +15,6 @@ const toEmpty = (d) => {
     return ((isEmpty(d) === true) ? (true) : ((d[1] === null) ? true : false));
 };
 
-// const dateValidation = (from, to) => {
-//     if (fromEmpty(from) || toEmpty(to)) {
-//         return false;
-//     } else if ( (dayjs(from).add(5, 'year').add(1, 'day')).isAfter(to) ) {
-//         return true
-//     } else {
-//         return false;
-//     }
-// }
-
 const dateValidation = (from, to) => {
         if (fromEmpty(from) || toEmpty(to)) {
             return false;
