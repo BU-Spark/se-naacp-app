@@ -12,7 +12,7 @@ import ArticlesCard from '../../components/ArticleCard/ArticleCard';
 import NeighborhoodCard from '../../components/Neighborhood/NeighborhoodCard';
 import  NeighborhoodDemoBoard from '../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard';
 import { TrendBoard } from '../../components/TrendBoard/TrendBoard';
-import { FrequencyBarChart } from '../../components/FrequencyBarChart/FrequencyBarChart'
+import  FrequencyBarChart  from '../../components/FrequencyBarChart/FrequencyBarChart'
 
 // React Contexts/Context Methods
 import { DateContext, DateMethods } from "../../contexts/dateContext";

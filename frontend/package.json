@@ -79,6 +79,7 @@
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "^7.22.11",
     "@graphql-codegen/cli": "^5.0.0",
-    "@graphql-codegen/client-preset": "^4.1.0"
+    "@graphql-codegen/client-preset": "^4.1.0",
+    "@types/uniqid": "^5.3.2"
   }
 }
