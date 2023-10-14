@@ -44,7 +44,7 @@ const IntroPage = () => {
         </p>
         <div className="search_container">
           <div style={{ flex: 1 }}></div>
-          <SearchFields showDropDown="true"></SearchFields>
+          {/* <SearchFields showDropDown="true"></SearchFields> */}
         </div>
         <Button id="dev-button" onClick={navigateDeveloperMode}>
           Search Neighborhoods!

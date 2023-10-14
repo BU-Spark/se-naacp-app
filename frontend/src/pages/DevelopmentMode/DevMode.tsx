@@ -1,9 +1,13 @@
 import React from "react";
+import dayjs, { Dayjs } from "dayjs";
+
 import NeighborhoodDemographicsBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
 import { Demographics, Article } from "../../__generated__/graphql";
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
 import FrequencyBarChart from "../../components/FrequencyBarChart/FrequencyBarChart";
+import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
 
+import SearchFields from "../../components/SearchFields/SearchFields";
 
 export default function DevMode() {
   const myDemographics: Demographics = {
@@ -19,8 +23,6 @@ export default function DevMode() {
     p2_010n: "117",
   };
 
-  
-
   const article: Article = {
     neighborhoods: ["Fenway"],
     position_section: "Education",
@@ -35,18 +37,31 @@ export default function DevMode() {
     link: "https://wgbh.org/news/education/2020/11/11/for-high-school-athletes-the-pandemic-has-led-to-uncertainty-anxiety",
     openai_labels: [],
     dateSum: 20201111,
-};
+  };
 
-const articles: Article[] = [];
+  const articles: Article[] = [];
 
-const authors = ["Author1", "Author2", "Author3"]; 
-const labels = ["COVID", "Education", "Sports", "Health", "Anxiety", "Hello", "Its me", "Never mind"]; // Predefined set of labels
+  const authors = ["Author1", "Author2", "Author3"];
+  const labels = [
+    "COVID",
+    "Education",
+    "Sports",
+    "Health",
+    "Anxiety",
+    "Hello",
+    "Its me",
+    "Never mind",
+  ]; // Predefined set of labels
 
-for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 100; i++) {
     const newArticle = { ...article };
     newArticle.author = authors[i % authors.length];
-    newArticle.content_id = `00000175-7583-d779-a575-779f0f6b00${i.toString().padStart(2, '0')}`;
-    newArticle.pub_date = `2020-11-${(11 + i).toString().padStart(2, '0')} 00:00:00`;
+    newArticle.content_id = `00000175-7583-d779-a575-779f0f6b00${i
+      .toString()
+      .padStart(2, "0")}`;
+    newArticle.pub_date = `2020-11-${(11 + i)
+      .toString()
+      .padStart(2, "0")} 00:00:00`;
     newArticle.dateSum = 20201111 + i;
 
     // Randomly assigning a label to the openai_labels array
@@ -54,17 +69,31 @@ for (let i = 0; i < 100; i++) {
     newArticle.openai_labels = [randomLabel];
 
     articles.push(newArticle);
-}
+  }
 
-console.log(articles);
+  console.log(articles);
 
-console.log("im here:",articles);
+  console.log("im here:", articles);
 
   return (
     <>
       <NeighborhoodDemographicsBoard demographics={myDemographics} />{" "}
       <ArticleCard articles={articles}></ArticleCard>
-      <FrequencyBarChart articles={articles} num={7} openAI={true}></FrequencyBarChart>
+      <FrequencyBarChart
+        articles={articles}
+        num={7}
+        openAI={true}
+      ></FrequencyBarChart>
+      <SearchBarDropDown
+        listOfWords={["Fenway", "Backbay", "Allston"]}
+        title="Neighborhoods"
+      ></SearchBarDropDown>
+      <SearchFields
+        minDate={dayjs("01/01/2020")}
+        maxDate={dayjs("01/01/2024")}
+        listOfWords={["Fenway", "Backbay", "Allston"]}
+        showDropDown={true}
+      ></SearchFields>
     </>
   );
 }

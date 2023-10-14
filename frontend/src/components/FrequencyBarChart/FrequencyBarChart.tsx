@@ -4,11 +4,9 @@ import { ResponsiveBar } from "@nivo/bar";
 import { Article } from "../../__generated__/graphql";
 
 interface FrequencyBarChartProps {
-  articles: Article[]
-  num: number
-  openAI: boolean
-
-
+  articles: Article[];
+  num: number;
+  openAI: boolean;
 }
 
 // This function counts the occurrences of each string in an array and returns an object with the strings as keys and counts as values.
@@ -19,26 +17,32 @@ const countStrings = (arr: string[]) => {
   }, {} as Record<string, number>);
 };
 
-const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({ articles, num, openAI}) => {
+const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({
+  articles,
+  num,
+  openAI,
+}) => {
   // Mapping over the articles to create an array of labels, filtering out articles with empty labels.
   const listOfLabels = articles
-    .map(article => openAI ? article.openai_labels[0]: article.position_section)
-    .filter(label => label); // This filter step ensures that empty labels are disregarded.
-  
+    .map((article) =>
+      openAI ? article.openai_labels[0] : article.position_section
+    )
+    .filter((label) => label); // This filter step ensures that empty labels are disregarded.
+
   // Counting the occurrences of each label using the countStrings function.
   const counts = countStrings(listOfLabels);
-  
+
   // Creating an array of entries from the counts object and sorting them in descending order based on the count.
   const sortedEntries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-  
+
   // Slicing the sorted entries to get the top 5.
   const top5Data = sortedEntries.slice(0, num);
-  
+
   // Mapping over the top 5 data to create an array of objects suitable for the bar chart.
   const data = top5Data.map(([topic_label, frequency]) => ({
     id: topic_label,
     topic_label,
-    [topic_label]: frequency
+    [topic_label]: frequency,
   }));
 
   // Extracting the keys (labels) from the top 5 data for use in the bar chart.
