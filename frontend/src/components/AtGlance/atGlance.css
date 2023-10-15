@@ -1,0 +1,50 @@
+.body .card-header {
+  background-color: black;
+  height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+}
+
+.body .card-header .header-word {
+  color: #ffffff;
+  font-family: "Karla-Bold", Helvetica;
+  font-size: 20px;
+  font-weight: 700;
+  margin-left: 20px;
+}
+.content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  /* padding: 20px; */
+}
+
+.number-box {
+  width: 150px;  /* Adjusted to an equal value */
+  height: 150px; /* Adjusted to an equal value */
+  background-color: white;
+  display: flex;
+  flex-direction: column; /* Added to align children vertically */
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.big-number {
+    color: #1bb0a1;
+    font-family: "Karla-Bold", Helvetica;
+    font-size: 50.8px;
+    font-weight: 700;
+}
+
+.label {
+    color: #1c1c1c;
+    font-family: "Karla-Regular", Helvetica;
+    font-size: calc(1px + 0.4vw);
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+

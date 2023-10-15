@@ -1,0 +1,72 @@
+.body .card-header {
+  background-color: black;
+  height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+}
+
+.body .card-header .header-word {
+  color: #ffffff;
+  font-family: "Karla-Bold", Helvetica;
+  font-size: 20px;
+  font-weight: 700;
+  margin-left: 20px;
+}
+.content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  /* padding: 20px; */
+}
+
+.number-box-1 {
+  flex-shrink: 0;
+  margin-right: 100px; 
+
+  width: 150px;  /* Adjusted to an equal value */
+  height: 150px; /* Adjusted to an equal value */
+  background-color: white;
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 50%; /* Changed from 100% to 50% */
+}
+
+.big-number {
+  color: #1bb0a1;
+  font-family: "Karla-Bold", Helvetica;
+  font-size: 50.8px;
+  font-weight: 700;
+}
+
+.label-article {
+  font-size: calc(1px + 0.3vw);
+  color: #010101;
+  font-family: "Karla-Regular", Helvetica;
+  font-weight: 400;
+}
+
+.label-neighborhoods {
+  color: #010101;
+  font-family: "Karla-Bold", Helvetica;
+  font-weight: 700;
+  font-size: calc(1px + 0.4vw);
+}
+
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  flex-grow: 1; /* This property will allow your container to take up as much space as available */
+}
+
+ .vector {
+  height: 45%;
+  margin-bottom: 15px;
+  /* width: 55px; */
+  }
+  

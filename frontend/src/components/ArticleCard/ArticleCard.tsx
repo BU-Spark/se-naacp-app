@@ -69,8 +69,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ articles }) => {
     <>
       <Card className="body" sx={{ width: "100%", height: "62vh" }}>
         <CardContent>
-          <h3 className="card">Articles From Neighborhood/Tract</h3>
-          <div style={{ height: 350, width: "100%" }}>
+          <div style={{ height: "52vh", width: "100%" }}>
             <DataGrid
               rows={articleRow}
               columns={columns}

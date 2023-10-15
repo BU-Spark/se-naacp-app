@@ -1,36 +1,44 @@
-import { Layout, Button } from 'antd'; // Ant Design
-import { useNavigate, NavigateFunction } from 'react-router-dom';
-
+import { Layout, Button, Anchor } from "antd"; // Ant Design
+import { useNavigate, NavigateFunction, Link, NavLink } from "react-router-dom";
+import Logo from "../../assets/logos/logo.svg";
 // CSS
-import './TopNavBar.css';
+import "./TopNavBar.css";
+import { useState } from "react";
 
 const { Header } = Layout;
 
 const TopNavBar = () => {
-  const navigate: NavigateFunction = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const navigateDeveloperMode = () => {
-    navigate('/dev-mode');
-  };
-
-  return(
-    <Layout>
-      <Header
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 1,
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-        }}
-      >
-        {/* This is to enable Developer mode */}
-        {/* <Button type="primary" id="dev-button" onClick={navigateDeveloperMode} danger>Developer Mode</Button> */}
-      </Header>
-    </Layout>
-    );
+  return (
+    <nav>
+      <Link to="/" className="title">
+       <img src={Logo} alt="gbh-logo" />
+      </Link>
+      <div className="menu" onClick={() => setMenuOpen(!menuOpen)}>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <ul className={menuOpen ? "open" : ""}>
+        <li>
+          <NavLink to="Explore Topics">Explore Topics</NavLink>
+        </li>
+        <li>
+          <NavLink to="/Neighborhoods">Neighborhoods</NavLink>
+        </li>
+        <li>
+          <NavLink to="/Comparison">Comparison</NavLink>
+        </li>
+        <li>
+          <NavLink to="/Upload">Upload</NavLink>
+        </li>
+        <li>
+          <NavLink to="/Dashboard">Dashboard</NavLink>
+        </li>
+      </ul>
+    </nav>
+  );
 };
 
 export default TopNavBar;
