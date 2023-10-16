@@ -17,8 +17,10 @@ type NeighborhoodContextType = {
 // }
 // `;
 
+// this query does not take arguments
+// future refactoring needed, currently we don't use this context to fill in neighborhood list
 const NEIGHBORHOOD_DATA_QUERY = gql`
-    query neighborhoodQuery() {
+    query neighborhoodQuery($neighborhood: String!) {
         getAllNeighborhoods {
             value
         }
