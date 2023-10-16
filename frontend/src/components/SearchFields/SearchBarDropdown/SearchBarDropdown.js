@@ -25,29 +25,27 @@ export default function SearchBarDropdown({ word }) {
   const { currentState, setState } = React.useContext(StateContext); // Global Context of States
   const { neighborhood, setNeigh } = React.useContext(NeighborhoodContext2); // Global Neighborhood
 
-  const { neighborhoodMasterList} = React.useContext(ArticleContext); 
-
   const [subneighbor, setSubNeighborhood] = React.useState("");
   const [neighborhoodList, setSubNeighborhoodList] =
     React.useState(neighListPlaceholder);
 
   React.useEffect(() => {
-    if (neighborhoodMasterList) {
-      // Quick and Dirty
-      let cleanedNeighborhoods = neighborhoodMasterList;
-      for (let i = 0; i < cleanedNeighborhoods.length; i++) {
-        let nameList = cleanedNeighborhoods[i]
-          .replaceAll("_", " ")
-          .split(" ");
-        let name = "";
-        nameList.forEach((e) => {
-          name = name + " " + e.charAt(0).toUpperCase() + e.slice(1);
-          name = name.trim();
-        });
-        cleanedNeighborhoods[i] = name;
-      }
-      setSubNeighborhoodList(cleanedNeighborhoods);
-    }
+    // if (neighborhoodMasterList) {
+    //   // Quick and Dirty
+    //   let cleanedNeighborhoods = neighborhoodMasterList;
+    //   for (let i = 0; i < cleanedNeighborhoods.length; i++) {
+    //     let nameList = cleanedNeighborhoods[i]
+    //       .replaceAll("_", " ")
+    //       .split(" ");
+    //     let name = "";
+    //     nameList.forEach((e) => {
+    //       name = name + " " + e.charAt(0).toUpperCase() + e.slice(1);
+    //       name = name.trim();
+    //     });
+    //     cleanedNeighborhoods[i] = name;
+    //   }
+    //   setSubNeighborhoodList(cleanedNeighborhoods);
+    // }
 
     if (!currentState.hasOwnProperty("currentNeigh")) {
       let newState = stateMethods.updateModified(
@@ -60,7 +58,7 @@ export default function SearchBarDropdown({ word }) {
       );
       setState(newState);
     }
-  }, [currentState, neighborhoodMasterList]);
+  }, [currentState]);
   const minDate = dayjs("2020-11-01"); // November 2020
   const maxDate = dayjs("2023-01-09"); // February 2021
   const { setDates, dates } = React.useContext(DateContext);
