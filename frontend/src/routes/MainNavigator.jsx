@@ -21,7 +21,7 @@ export default function MainNavigator() {
     const { neighborhoodMasterList, queryArticleDataType } = React.useContext(ArticleContext);
 
     React.useEffect(() => {
-        queryArticleDataType("NEIGHBORHOOD_DATA"); // Bootstrap Initial Lists and States like neighborhood list
+        // Neighborhood list should be bootstrapped here...
     }, [neighborhoodMasterList]);
 
     return(
