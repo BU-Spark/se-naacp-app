@@ -3,15 +3,16 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import dayjs, { Dayjs } from "dayjs";
 
-import NeighborhoodDemographicsBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
-import { Demographics, Article } from "../../__generated__/graphql";
-import ArticleCard from "../../components/ArticleCard/ArticleCard";
-import FrequencyBarChart from "../../components/FrequencyBarChart/FrequencyBarChart";
-import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
-import TopNavBar from "../../components/TopNavBar/TopNavBar";
-import SearchFields from "../../components/SearchFields/SearchFields";
-import AtGlance from "../../components/AtGlance/atGlance";
-import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods";
+import NeighborhoodDemographicsBoard from "../../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
+import { Demographics, Article } from "../../../__generated__/graphql";
+import ArticleCard from "../../../components/ArticleCard/ArticleCard";
+import FrequencyBarChart from "../../../components/FrequencyBarChart/FrequencyBarChart";
+import SearchBarDropDown from "../../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
+import TopNavBar from "../../../components/TopNavBar/TopNavBar";
+import SearchFields from "../../../components/SearchFields/SearchFields";
+import AtGlance from "../../../components/AtGlance/atGlance";
+import TopNeighborhoods from "../../../components/TopNeighborhoods/TopNeighborhoods";
+import { Outlet } from "react-router-dom";
 export default function Dashboard() {
   const article: Article = {
     neighborhoods: ["Fenway"],
@@ -92,10 +93,10 @@ export default function Dashboard() {
 
         <div className="row justify-content-evenly">
           <div className="col-md-4 col-sm-12">
-            <AtGlance articles={articles}></AtGlance>
+            <AtGlance articles={articles} height="20vh"></AtGlance>
           </div>
           <div className="col-md-8 col-sm-12">
-            <TopNeighborhoods articles={articles}></TopNeighborhoods>
+            <TopNeighborhoods articles={articles} height="20vh"></TopNeighborhoods>
           </div>
         </div>
 
@@ -112,6 +113,7 @@ export default function Dashboard() {
             <h1 className="titles">Articles</h1>
 
             <ArticleCard articles={articles}></ArticleCard>
+            <Outlet></Outlet>
           </div>
         </div>
       </div>

@@ -18,12 +18,13 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
+  max-height: max-content;
   /* padding: 20px; */
 }
 
 .number-box {
-  width: 150px;  /* Adjusted to an equal value */
-  height: 150px; /* Adjusted to an equal value */
+  width: 25%;  /* Adjusted to an equal value */
+  height: 80%; /* Adjusted to an equal value */
   background-color: white;
   display: flex;
   flex-direction: column; /* Added to align children vertically */
@@ -36,14 +37,14 @@
 .big-number {
     color: #1bb0a1;
     font-family: "Karla-Bold", Helvetica;
-    font-size: 50.8px;
+    font-size: calc(35px + 0.4vw);
     font-weight: 700;
 }
 
 .label {
     color: #1c1c1c;
     font-family: "Karla-Regular", Helvetica;
-    font-size: calc(1px + 0.4vw);
+    font-size: calc(3px + 0.4vw);
     font-weight: 900;
     margin-bottom: 10px;
 }

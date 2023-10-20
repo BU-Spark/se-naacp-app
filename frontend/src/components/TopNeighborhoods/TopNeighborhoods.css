@@ -25,8 +25,8 @@
   flex-shrink: 0;
   margin-right: 100px; 
 
-  width: 150px;  /* Adjusted to an equal value */
-  height: 150px; /* Adjusted to an equal value */
+  width: 15%;  /* Adjusted to an equal value */
+  height: auto; /* Adjusted to an equal value */
   background-color: white;
   display: flex;
   flex-direction: column; 
@@ -36,15 +36,10 @@
   border-radius: 50%; /* Changed from 100% to 50% */
 }
 
-.big-number {
-  color: #1bb0a1;
-  font-family: "Karla-Bold", Helvetica;
-  font-size: 50.8px;
-  font-weight: 700;
-}
+
 
 .label-article {
-  font-size: calc(1px + 0.3vw);
+  font-size: calc(4px + 0.3vw);
   color: #010101;
   font-family: "Karla-Regular", Helvetica;
   font-weight: 400;
@@ -54,7 +49,7 @@
   color: #010101;
   font-family: "Karla-Bold", Helvetica;
   font-weight: 700;
-  font-size: calc(1px + 0.4vw);
+  font-size: calc(5px + 0.4vw);
 }
 
 .scroll-container {

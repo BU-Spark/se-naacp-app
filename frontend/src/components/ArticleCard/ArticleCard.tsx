@@ -53,7 +53,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ articles }) => {
   var articleRow: any = [];
 
   articles.forEach((article, index) => {
-    console.log(index, article);
+    // console.log(index, article);
     articleRow.push({
       id: uniqid(),
       title: { link: article.link, title: article.hl1 },

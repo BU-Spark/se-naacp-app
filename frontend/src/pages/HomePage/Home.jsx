@@ -9,7 +9,7 @@ import TopNavBar from "../../components/TopNavBar/TopNavBar";
 
 import SearchFields from "../../components/SearchFields/SearchFields";
 import ArticlesCard from "../../components/ArticleCard/ArticleCard";
-import NeighborhoodCard from "../../components/Neighborhood/NeighborhoodCard";
+import NeighborhoodCard from "../../components/TractsDropDown/TractsDropDown";
 import NeighborhoodDemoBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
 import { TrendBoard } from "../../components/TrendBoard/TrendBoard";
 import FrequencyBarChart from "../../components/FrequencyBarChart/FrequencyBarChart";

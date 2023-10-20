@@ -15,6 +15,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 //types
 import { Demographics } from "../../__generated__/graphql";
+import { Card, CardContent } from "@mui/material";
 
 const colors = [
   "hsl(281, 70%, 50%)",
@@ -87,9 +88,8 @@ const NeighborhoodDemographicsBoard: React.FC<DemographicsProps> = ({
     },
   ];
   return (
-    <>
-      <div className="graph_card">
-        <h3 className="card_title">Demographic Data</h3>
+    <Card className="body" sx={{ width: "100%", height: "62vh" }}>
+      <CardContent sx={{ width: "100%", height: "62vh" }}>
         <ResponsivePie
           data={data}
           margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
@@ -137,8 +137,8 @@ const NeighborhoodDemographicsBoard: React.FC<DemographicsProps> = ({
             },
           ]}
         />
-      </div>
-    </>
+      </CardContent>
+    </Card>
   );
 };
 
