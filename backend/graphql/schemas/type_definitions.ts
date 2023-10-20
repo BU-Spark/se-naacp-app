@@ -49,7 +49,7 @@ export const typeDefs = gql`
     articleByDate(dateFrom: Int!, dateTo: Int!, area: String!): [Article]
     tractsByNeighborhood(neighborhood: String!): [Neighborhoods]
     demographicsByTracts(tract: String!): [Tracts]
-    getAllNeighborhoods: [String!]!
+    getAllNeighborhoods: [Neighborhoods!]!
     getAllArticles: [Article!]!
     getAllTopics: [String!]!
   }

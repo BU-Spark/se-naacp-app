@@ -61,14 +61,11 @@ export const resolvers = {
 
       return queryResult;
     },
-    getAllNeighborhoods: async (_, __, context): Promise<string[]> => {
+    getAllNeighborhoods: async (_, __, context): Promise<INeighborhoods[]> => {
       const { db } = context;
       const neighborhood_data: Collection<INeighborhoods> = db.collection("neighborhood_data");
-      // Fetch all documents and project only the 'value' field
-      const neighborhoods: INeighborhoods[] = await neighborhood_data.find({}, { projection: { value: 1, _id: 0 } }).toArray();
-      // Map the documents to get only the 'value' (neighborhood name)
-      const names: string[] = neighborhoods.map(doc => doc.value);
-      return names;
+      const neighborhoods: INeighborhoods[] = await neighborhood_data.find({}).toArray();      
+      return neighborhoods;
     },
     getAllArticles: async (_, __, context): Promise<IArticles[]> => {
       const { db } = context;
