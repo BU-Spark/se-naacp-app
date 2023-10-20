@@ -17,7 +17,14 @@ export interface DemographicsByTractsArgs {
     tract: string;
 }
 
+// *** Data Types derived from the collections ***
 
+// Define output type for Resolver getAllTopics
+export interface ITopics {
+    _id: string;
+    articles: string[];
+    value: string;
+}
 
 // Define output type for DemographicsByTracts
 export interface ITracts {

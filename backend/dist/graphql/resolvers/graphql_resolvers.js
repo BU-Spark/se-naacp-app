@@ -4,6 +4,40 @@ function isNumber(str) {
 }
 export const resolvers = {
     Query: {
+        // Topic Resolvers
+        getAllTopics: async (_, __, context) => {
+            const { db } = context;
+            const topic_data = db.collection("topics_data");
+            const topics = await topic_data.find({}).toArray();
+            return topics;
+        },
+        // Tract Resolvers
+        demographicsByTracts: async (_, args, context) => {
+            const { db } = context;
+            const tracts_data = db.collection("tracts_data");
+            const queryResult = await tracts_data
+                .find({
+                tract: args.tract
+            }).toArray();
+            return queryResult;
+        },
+        // Neighborhood Resolvers
+        tractsByNeighborhood: async (_, args, context) => {
+            const { db } = context;
+            const neighborhood_data = db.collection("neighborhood_data");
+            const queryResult = await neighborhood_data
+                .find({
+                value: args.neighborhood
+            }).toArray();
+            return queryResult;
+        },
+        getAllNeighborhoods: async (_, __, context) => {
+            const { db } = context;
+            const neighborhood_data = db.collection("neighborhood_data");
+            const neighborhoods = await neighborhood_data.find({}).toArray();
+            return neighborhoods;
+        },
+        // Article Resolvers
         articleByDate: async (_, args, context) => {
             const { db } = context;
             const articles_data = db.collection("articles_data");
@@ -32,42 +66,11 @@ export const resolvers = {
                 return queryResult;
             }
         },
-        tractsByNeighborhood: async (_, args, context) => {
-            const { db } = context;
-            const neighborhood_data = db.collection("neighborhood_data");
-            const queryResult = await neighborhood_data
-                .find({
-                value: args.neighborhood
-            }).toArray();
-            return queryResult;
-        },
-        demographicsByTracts: async (_, args, context) => {
-            const { db } = context;
-            const tracts_data = db.collection("tracts_data");
-            const queryResult = await tracts_data
-                .find({
-                tract: args.tract
-            }).toArray();
-            return queryResult;
-        },
-        getAllNeighborhoods: async (_, __, context) => {
-            const { db } = context;
-            const neighborhood_data = db.collection("neighborhood_data");
-            const neighborhoods = await neighborhood_data.find({}).toArray();
-            return neighborhoods;
-        },
         getAllArticles: async (_, __, context) => {
             const { db } = context;
             const article_data = db.collection("articles_data");
             const articles = await article_data.find({}).toArray();
             return articles;
         },
-        getAllTopics: async (_, __, context) => {
-            const { db } = context;
-            const article_data = db.collection("articles_data");
-            const articles = await article_data.find({}).toArray();
-            const topics = [...new Set(articles.map(article => article.position_section))];
-            return topics;
-        }
     }
 };

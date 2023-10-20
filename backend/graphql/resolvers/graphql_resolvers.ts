@@ -1,4 +1,4 @@
-import { INeighborhoods, TractsByNeighborhoodArgs, ITracts, IArticles, DemographicsByTractsArgs } from "../types/types";
+import { INeighborhoods, TractsByNeighborhoodArgs, ITracts, IArticles, ITopics, DemographicsByTractsArgs } from "../types/types";
 import { Collection } from "mongodb";
 
 
@@ -9,7 +9,45 @@ function isNumber(str: any) {
 
 export const resolvers = {
   Query: {
-    articleByDate: async (_, args, context) => {
+    // Topic Resolvers
+    getAllTopics: async (_, __, context): Promise<ITopics[]> => {
+      const { db } = context;
+      const topic_data: Collection<ITopics> = db.collection("topics_data");
+      const topics: ITopics[] = await topic_data.find({}).toArray();
+      return topics;
+    },
+    // Tract Resolvers
+    demographicsByTracts: async (_, args: DemographicsByTractsArgs, context): Promise<ITracts[]> => {
+      const { db } = context;
+      const tracts_data: Collection<ITracts> = db.collection("tracts_data");
+
+      const queryResult: ITracts[] = await tracts_data
+        .find({
+          tract: args.tract
+        }).toArray();
+
+      return queryResult;
+    },
+    // Neighborhood Resolvers
+    tractsByNeighborhood: async (_, args: TractsByNeighborhoodArgs, context): Promise<INeighborhoods[]> => {
+      const { db } = context;
+      const neighborhood_data: Collection<INeighborhoods> = db.collection("neighborhood_data");
+
+      const queryResult: INeighborhoods[] = await neighborhood_data
+        .find({
+          value: args.neighborhood
+        }).toArray();
+
+      return queryResult;
+    },
+    getAllNeighborhoods: async (_, __, context): Promise<INeighborhoods[]> => {
+      const { db } = context;
+      const neighborhood_data: Collection<INeighborhoods> = db.collection("neighborhood_data");
+      const neighborhoods: INeighborhoods[] = await neighborhood_data.find({}).toArray();      
+      return neighborhoods;
+    },
+    // Article Resolvers
+    articleByDate: async (_, args, context): Promise<IArticles[]> => {
       const { db } = context;
       const articles_data = db.collection("articles_data");
 
@@ -39,46 +77,11 @@ export const resolvers = {
         return queryResult;
       }
     },
-    tractsByNeighborhood: async (_, args: TractsByNeighborhoodArgs, context): Promise<INeighborhoods[]> => {
-      const { db } = context;
-      const neighborhood_data: Collection<INeighborhoods> = db.collection("neighborhood_data");
-
-      const queryResult: INeighborhoods[] = await neighborhood_data
-        .find({
-          value: args.neighborhood
-        }).toArray();
-
-      return queryResult;
-    },
-    demographicsByTracts: async (_, args: DemographicsByTractsArgs, context): Promise<ITracts[]> => {
-      const { db } = context;
-      const tracts_data: Collection<ITracts> = db.collection("tracts_data");
-
-      const queryResult: ITracts[] = await tracts_data
-        .find({
-          tract: args.tract
-        }).toArray();
-
-      return queryResult;
-    },
-    getAllNeighborhoods: async (_, __, context): Promise<INeighborhoods[]> => {
-      const { db } = context;
-      const neighborhood_data: Collection<INeighborhoods> = db.collection("neighborhood_data");
-      const neighborhoods: INeighborhoods[] = await neighborhood_data.find({}).toArray();      
-      return neighborhoods;
-    },
     getAllArticles: async (_, __, context): Promise<IArticles[]> => {
       const { db } = context;
       const article_data: Collection<IArticles> = db.collection("articles_data");
       const articles: IArticles[] = await article_data.find({}).toArray();
       return articles;
     },
-    getAllTopics: async (_, __, context): Promise<string[]> => {
-      const { db } = context;
-      const article_data: Collection<IArticles> = db.collection("articles_data");
-      const articles: IArticles[] = await article_data.find({}).toArray();
-      const topics: string[] = [...new Set(articles.map(article => article.position_section))];
-      return topics;
-    }
   }
 };
