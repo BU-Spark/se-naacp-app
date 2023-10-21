@@ -43,6 +43,7 @@
   color: #010101;
   font-family: "Karla-Regular", Helvetica;
   font-weight: 400;
+  margin-bottom: 10px;
 }
 
 .label-neighborhoods {
@@ -60,8 +61,8 @@
 }
 
  .vector {
-  height: 45%;
-  margin-bottom: 15px;
+  height: 50%;
+  margin: 15px;
   /* width: 55px; */
   }
   

@@ -13,7 +13,7 @@ const TopNavBar = () => {
   return (
     <nav>
       <Link to="/" className="title">
-       <img src={Logo} alt="gbh-logo" />
+        <img style={{ width: "6vw" }} src={Logo} alt="gbh-logo" />
       </Link>
       <div className="menu" onClick={() => setMenuOpen(!menuOpen)}>
         <span></span>

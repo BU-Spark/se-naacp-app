@@ -117,14 +117,14 @@ const NeighborhoodDemographicsBoard: React.FC<DemographicsProps> = ({
               direction: "column",
               justify: false,
               translateX: -50,
-              translateY: 0,
-              itemsSpacing: 10,
+              translateY: 180,
+              itemsSpacing: 7,
               itemWidth: 100,
-              itemHeight: 18,
+              itemHeight: 10,
               itemTextColor: "#999",
               itemDirection: "left-to-right",
               itemOpacity: 1,
-              symbolSize: 18,
+              symbolSize: 15,
               symbolShape: "circle",
               effects: [
                 {

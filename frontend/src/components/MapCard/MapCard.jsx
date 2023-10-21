@@ -36,7 +36,6 @@ import { Menu } from "antd";
 import DataMethods from "../../Pipelines/data";
 
 const MapCard = () => {
-
   const defaultLoc = {
     name: "Boston City",
     latitude: 42.360953,
@@ -58,14 +57,13 @@ const MapCard = () => {
     features: [],
   });
 
-
   const onSelectionNeigh = (v) => {
-    console.log("V:", v)
+    console.log("V:", v);
     if (v.length !== 0) {
       let result = locations.filter((obj) => {
         return obj.name === v[v.length - 1];
       });
-      console.log("SELECTED TRACK:", result)
+      console.log("SELECTED TRACK:", result);
       SetCurrLocation(result[0]);
       setTractShapes(result[0].tracts);
     }
@@ -91,7 +89,6 @@ const MapCard = () => {
     return;
   };
   // Default Location
-
 
   // Default center is Boston City
   const BostonMapAPI = () => {
