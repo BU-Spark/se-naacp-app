@@ -34,103 +34,26 @@ import { Menu } from "antd";
 
 // Data Methods
 import DataMethods from "../../Pipelines/data";
+import { useParams } from "react-router-dom";
 
-const MapCard = () => {
-  const defaultLoc = {
-    name: "Boston City",
-    latitude: 42.360953,
-    longitude: -71.058304,
-  };
+interface MapCardProps {}
 
-  const [currLocation, SetCurrLocation] = React.useState(defaultLoc);
+const MapCard: React.FC<MapCardProps> = ({}) => {
+  const tracts = [
+    "010103",
+    "010104",
+    "010204",
+    "010408",
+    "010404",
+    "010403",
+    "981501",
+    "010405",
+    "010206",
+    "010205",
+  ];
 
-  const [currTractLocation, SetTractCurrLocation] = React.useState("");
-  const [locations, SetLocations] = React.useState([]);
-
-  const [tractGEOJSON, setTractGEOJSON] = React.useState({
-    type: "FeatureCollection",
-    name: "Census2020_Tracts",
-    crs: {
-      type: "name",
-      properties: { name: "urn:ogc:def:crs:OGC:1.3:CRS84" },
-    },
-    features: [],
-  });
-
-  const onSelectionNeigh = (v) => {
-    console.log("V:", v);
-    if (v.length !== 0) {
-      let result = locations.filter((obj) => {
-        return obj.name === v[v.length - 1];
-      });
-      console.log("SELECTED TRACK:", result);
-      SetCurrLocation(result[0]);
-      setTractShapes(result[0].tracts);
-    }
-  };
-  const setTractShapes = (tracts) => {
-    let GEOJSON_All = geoData.features;
-    let features_list = [];
-
-    tracts.forEach((tract) => {
-      let obj = GEOJSON_All.find((v) => v.properties.TRACTCE20 === "" + tract);
-      features_list.push(obj);
-    });
-
-    setTractGEOJSON({
-      type: "FeatureCollection",
-      name: "Census2020_Tracts",
-      crs: {
-        type: "name",
-        properties: { name: "urn:ogc:def:crs:OGC:1.3:CRS84" },
-      },
-      features: features_list,
-    });
-    return;
-  };
-  // Default Location
-
-  // Default center is Boston City
-  const BostonMapAPI = () => {
-    return (
-      <Map
-        defaultCenter={[defaultLoc.latitude, defaultLoc.longitude]}
-        defaultZoom={13}
-        center={[defaultLoc.latitude, defaultLoc.longitude]}
-      >
-        <ZoomControl />
-        <GeoJson
-          onClick={(v) => {
-            console.log(v);
-          }}
-          data={tractGEOJSON}
-          styleCallback={(feature, hover) => {
-            if (feature.properties.TRACTCE20 === currTractLocation) {
-              return hover
-                ? { fill: "#93c0d099", strokeWidth: "2" }
-                : { fill: "#ff0000", strokeWidth: "1", opacity: "0.5" };
-            } else {
-              return hover
-                ? { fill: "#93c0d099", strokeWidth: "2" }
-                : { fill: "#0026ff", strokeWidth: "1", opacity: "0.5" };
-            }
-          }}
-        />
-        {locations.map((v) => {
-          return (
-            <Marker
-              key={uniqid()}
-              width={30}
-              anchor={[v.latitude, v.longitude]}
-            />
-          );
-        })}
-      </Map>
-    );
-  };
-
-  const fixedLatLong = (neigh) => {
-    switch (neigh) {
+  const fixedLatLong = (neighborhood: any) => {
+    switch (neighborhood) {
       case "Allston":
         return { latitude: 42.35345, longitude: -71.13218 };
       case "Back Bay":
@@ -182,11 +105,74 @@ const MapCard = () => {
     }
   };
 
+  const [tract, setTract] = React.useState("010205");
+
+  const [neighborhood, setNeighborhood] = React.useState("Fenway");
+
+  const latLong = fixedLatLong(neighborhood);
+
+  const defaultLocation = {
+    name: neighborhood,
+    latitude: latLong.latitude,
+    longitude: latLong.longitude,
+  };
+
+  const [location, setLocation] = React.useState(defaultLocation);
+
+  const setTractShapes = (tracts: string[]) => {
+    let GEOJSON_All = geoData.features;
+    let features_list: any = [];
+
+    tracts.forEach((tract) => {
+      let obj = GEOJSON_All.find((v) => v.properties.TRACTCE20 === "" + tract);
+      features_list.push(obj);
+    });
+
+    return {
+      type: "FeatureCollection",
+      name: "Census2020_Tracts",
+      crs: {
+        type: "name",
+        properties: { name: "urn:ogc:def:crs:OGC:1.3:CRS84" },
+      },
+      features: features_list,
+    };
+  };
+
   return (
     <>
       <Card className="body" sx={{ width: "100%", height: "62vh" }}>
         <CardContent sx={{ width: "100%", height: "62vh" }}>
-          {BostonMapAPI()}
+          <Map
+            defaultCenter={[location.latitude, location.longitude]}
+            defaultZoom={13}
+            center={[location.latitude, location.longitude]}
+          >
+            <ZoomControl />
+            <GeoJson
+              onClick={(v) => {
+                console.log(v);
+              }}
+              data={setTractShapes(tracts)}
+              styleCallback={(feature: any, hover: boolean) => {
+                if (feature.properties.TRACTCE20 === tract) {
+                  return hover
+                    ? { fill: "#93c0d099", strokeWidth: "2" }
+                    : { fill: "#ff0000", strokeWidth: "1", opacity: "0.5" };
+                } else {
+                  return hover
+                    ? { fill: "#93c0d099", strokeWidth: "2" }
+                    : { fill: "#0026ff", strokeWidth: "1", opacity: "0.5" };
+                }
+              }}
+            />
+
+            <Marker
+              key={uniqid()}
+              width={30}
+              anchor={[location.latitude, location.longitude]}
+            />
+          </Map>
         </CardContent>
       </Card>
     </>

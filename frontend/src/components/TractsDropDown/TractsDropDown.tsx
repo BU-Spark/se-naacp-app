@@ -43,11 +43,8 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
   return (
     <Card sx={{ width: "100%", height: "62vh" }}>
       <CardContent sx={{ width: "100%", height: "62vh" }}>
-        {/* <h2 className="menu-title">Tracts</h2>{" "} */}
-        {/* Here is the added title */}
         <Menu
           mode="inline"
-          defaultSelectedKeys={selectedItem}
           onClick={onSelectItem}
           style={{ width: "100%", height: "100%", overflow: "auto" }} // Added overflow: 'auto'
           items={items}
