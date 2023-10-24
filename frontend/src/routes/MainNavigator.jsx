@@ -12,11 +12,6 @@ import Dashboard from "../pages/DashBoard/MainDashboard/dashboard";
 import NeighborhoodDetail from "../pages/DashBoard/NeighborhoodDetail/NeighborhoodDetail"; // Replace with actual path
 
 export default function MainNavigator() {
-    const { neighborhoodMasterList, queryArticleDataType } = React.useContext(ArticleContext);
-
-    React.useEffect(() => {
-        // Neighborhood list should be bootstrapped here...
-    }, [neighborhoodMasterList]);
 
     return(
     <>

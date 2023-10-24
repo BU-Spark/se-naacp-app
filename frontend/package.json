@@ -33,6 +33,7 @@
     "cross-env": "^7.0.3",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.7",
+    "font-awesome": "^4.7.0",
     "google-map-react": "^2.2.0",
     "graphql": "^16.6.0",
     "konva": "^9.2.0",
