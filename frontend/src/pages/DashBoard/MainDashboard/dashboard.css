@@ -1,0 +1,56 @@
+.your-org {
+  color: #919191;
+  font-family: "Karla-Regular", Helvetica;
+  font-size: calc(10px + 0.5vw);
+  font-weight: 400;
+  /* margin-bottom: 15px; */
+}
+
+.org-name {
+  color: #000000;
+  font-family: "Lexend Deca-Medium", Helvetica;
+  font-size: calc(20px + 0.5vw);
+  font-weight: 700;
+  margin-bottom: 20px;
+
+}
+
+.week-range {
+  color: #1c1c1c;
+  font-family: "Karla-Regular", Helvetica;
+  font-size: calc(10px + 0.5vw);
+  font-weight: 400;
+}
+
+.big-container {
+  margin: 1% 2.5% 0 2.5%;
+}
+
+.row {
+  margin-bottom: 2%; /* adjust the value as needed */
+}
+
+.titles {
+  color: #000000;
+  font-family: "Karla-Bold", Helvetica;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.week {
+  color: #1c1c1c;
+  font-family: "Karla-Regular", Helvetica;
+  font-size: 20px;
+  font-weight: 400;
+}
+.text-wrapper {
+  color: #1c1c1c;
+  font-family: "Karla-Regular", Helvetica;
+  font-size: 20px;
+  font-weight: 400;
+}
+.span {
+  font-family: "Karla-Bold", Helvetica;
+  font-weight: 700;
+}
+

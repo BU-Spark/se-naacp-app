@@ -8,6 +8,8 @@ import {ApolloProvider} from '@apollo/client'
 import client from "./Pipelines/apolloClient"
 import { Provider } from 'react-redux'
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 // Our Contexts
 import TractProvider from "./contexts/tract_context"
 import ArticleProvider from "./contexts/article_context"

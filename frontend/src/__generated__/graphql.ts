@@ -17,7 +17,6 @@ export type Scalars = {
 
 export type Article = {
   __typename?: 'Article';
-  _id: Scalars['ID']['output'];
   author: Scalars['String']['output'];
   body: Scalars['String']['output'];
   content_id: Scalars['String']['output'];
@@ -35,16 +34,16 @@ export type Article = {
 
 export type Demographics = {
   __typename?: 'Demographics';
-  p2_001n?: Maybe<Scalars['String']['output']>;
-  p2_002n?: Maybe<Scalars['String']['output']>;
-  p2_003n?: Maybe<Scalars['String']['output']>;
-  p2_004n?: Maybe<Scalars['String']['output']>;
-  p2_005n?: Maybe<Scalars['String']['output']>;
-  p2_006n?: Maybe<Scalars['String']['output']>;
-  p2_007n?: Maybe<Scalars['String']['output']>;
-  p2_008n?: Maybe<Scalars['String']['output']>;
-  p2_009n?: Maybe<Scalars['String']['output']>;
-  p2_010n?: Maybe<Scalars['String']['output']>;
+  p2_001n: Scalars['String']['output'];
+  p2_002n: Scalars['String']['output'];
+  p2_003n: Scalars['String']['output'];
+  p2_004n: Scalars['String']['output'];
+  p2_005n: Scalars['String']['output'];
+  p2_006n: Scalars['String']['output'];
+  p2_007n: Scalars['String']['output'];
+  p2_008n: Scalars['String']['output'];
+  p2_009n: Scalars['String']['output'];
+  p2_010n: Scalars['String']['output'];
 };
 
 export type Neighborhoods = {

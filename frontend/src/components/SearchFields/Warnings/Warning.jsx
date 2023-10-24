@@ -1,29 +1,31 @@
 import Lottie from "react-lottie-player";
-import { Tooltip } from 'react-tooltip'
+import { Tooltip } from "react-tooltip";
 
-import './Warning.css';
+import "./Warning.css";
 
-import warning from '../../../assets/lottieFiles/warning.json';
+import warning from "../../../assets/lottieFiles/warning.json";
 
 const toolTipMessage = `
     Date inputs are incorrect try again!
-`
+`;
 
 export default function Warning() {
-    return(
-        <>
-            <div className="warning-container">
-                <Lottie 
-                    id="LottieWarning"
-                    data-tooltip-id="my-tooltip" 
-                    data-tooltip-content={toolTipMessage} 
-                    data-tooltip-place="bottom" 
-                    data-tooltip-offset= "-10"
-                    loop={false}
-                    animationData={warning} 
-                    play style={{ width: "60px", height: "auto", marginLeft: "20px" }}/>
-            </div>
-            <Tooltip id="my-tooltip" anchorSelect="#LottieWarning" />
-        </>
-    );
+  return (
+    <>
+      <div className="warning-container">
+        <Lottie
+          id="LottieWarning"
+          data-tooltip-id="my-tooltip"
+          data-tooltip-content={toolTipMessage}
+          data-tooltip-place="bottom"
+          data-tooltip-offset="-10"
+          loop={false}
+          animationData={warning}
+          play
+          style={{ width: "60px", height: "auto", marginLeft: "20px" }}
+        />
+      </div>
+      <Tooltip id="my-tooltip" anchorSelect="#LottieWarning" />
+    </>
+  );
 }

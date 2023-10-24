@@ -1,6 +1,9 @@
 {
   "dependencies": {
     "@apollo/server": "^4.9.3",
-    "graphql": "^16.8.1"
+    "bootstrap": "^5.3.2",
+    "font-awesome": "^4.7.0",
+    "graphql": "^16.8.1",
+    "react-bootstrap": "^2.9.0"
   }
 }

@@ -1,11 +1,19 @@
-.empty-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
+.graph_card{
+    width: 45vw;
+    height: 50.5vh;
+    padding-bottom: 8vh;
+    padding-top: 3vh;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    border-radius: 4px;
+    margin-left: 25%;
 }
-.empty-text {
-    margin-top: 20px;
+
+
+.card_title {
     font-weight: bold;
+    font-size: larger;
+    padding-left: 1rem;
+    margin-top: 1rem;
+    margin-bottom: none;
+    padding-bottom: none;
 }

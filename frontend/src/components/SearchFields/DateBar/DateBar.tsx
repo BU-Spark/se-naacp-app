@@ -1,23 +1,34 @@
 import React from "react";
 import "./DateBar.css";
 import TextField from "@mui/material/TextField";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { DateContext } from "../../../contexts/dateContext.js";
 
-function DateBar({ word, from_bool }) {
+interface DateFieldProps {
+  title: string;
+  minDate: Dayjs;
+  maxDate: Dayjs;
+  isFrom: boolean;
+}
+
+const DateField: React.FC<DateFieldProps> = ({
+  title,
+  minDate,
+  maxDate,
+  isFrom,
+}) => {
   const { setDates, dates } = React.useContext(DateContext);
-  const [date, setDate] = React.useState(from_bool ? dates[0] : dates[1]);
-  const minDate = dayjs("2020-11-01"); // November 2020
-  const maxDate = dayjs("2023-01-09"); // February 2021
+  const [date, setDate] = React.useState(isFrom ? dates[0] : dates[1]);
+
   // setDates([minDate,maxDate]);
-  const handleChange = (d) => {
+  const handleChange = (d: any) => {
     if (dates === undefined) {
       setDates([null, null]);
     } else {
-      from_bool
+      isFrom
         ? setDates([d, dates[1] === null ? maxDate : dates[1]])
         : setDates([dates[0] === null ? minDate : dates[0], d]);
       setDate(d);
@@ -26,7 +37,7 @@ function DateBar({ word, from_bool }) {
 
   return (
     <div className="search">
-      <p className="word">{word}</p>
+      <p className="word">{title}</p>
       <div style={{ marginLeft: 9, marginTop: 5 }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DesktopDatePicker
@@ -64,6 +75,6 @@ function DateBar({ word, from_bool }) {
       </div>
     </div>
   );
-}
+};
 
-export default DateBar;
+export default DateField;
