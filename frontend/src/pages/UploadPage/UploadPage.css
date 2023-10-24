@@ -1,0 +1,77 @@
+.upload-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 40px;
+    background: linear-gradient(135deg, #f3f5f7, #eef1f5);
+    height: calc(100vh - 80px);
+    align-items: center;
+}
+
+.upload-section {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.05);
+    margin: 0 20px;
+}
+
+.upload-section h1,
+.upload-section h2 {
+    font-size: 26px;
+    margin-bottom: 30px;
+    color: #333;
+    font-weight: 500;
+}
+
+input[type="text"], input[type="file"] {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus, input[type="file"]:focus {
+    border-color: #a0aec0;
+    box-shadow: 0 0 0 3px rgba(100, 150, 200, 0.1);
+}
+
+button {
+    padding: 12px 25px;
+    background-color: #3182ce;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+button:hover {
+    background-color: #2b6cb0;
+    transform: scale(1.02);
+}
+
+button:active {
+    background-color: #2c5282;
+    transform: scale(0.98);
+}
+
+button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* space between icon and text */
+    /* ... other styles remain unchanged */
+}
+
+/* Additional style for icons */
+.material-icons,
+.fa-icon {
+    font-size: 20px;
+    vertical-align: middle;
+}

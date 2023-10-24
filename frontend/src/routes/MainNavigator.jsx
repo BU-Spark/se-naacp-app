@@ -10,6 +10,7 @@ import FileUpload from "../pages/UploadArticles/UploadArticles";
 import TopNavBar from "../components/TopNavBar/TopNavBar";
 import Dashboard from "../pages/DashBoard/MainDashboard/dashboard";
 import NeighborhoodDetail from "../pages/DashBoard/NeighborhoodDetail/NeighborhoodDetail"; // Replace with actual path
+import UploadPage from "../pages/UploadPage/UploadPage";
 
 export default function MainNavigator() {
 
@@ -25,6 +26,7 @@ export default function MainNavigator() {
           <Route path="/UploadArticles" element={<FileUpload />} />
           <Route path="/Dashboard" element={<Dashboard />}></Route>
           <Route path="/Dashboard/:neighborhood" element={<NeighborhoodDetail />} />
+          <Route path="/Upload" element={<UploadPage />}></Route>
         </Routes>
       </BrowserRouter>
     </>
