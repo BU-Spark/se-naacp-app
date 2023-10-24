@@ -15,14 +15,17 @@ import SearchByKeyWord from "../pages/SearchByKeyWord/SearchByKeyWord"
 import FileUpload from "../pages/UploadArticles/UploadArticles"
 
 // Context
-import { ArticleContext } from "../contexts/article_context";
+import { TopicsContext } from "../contexts/topics_context";
+import { NeighborhoodContext } from "../contexts/neighborhood_context";
 
 export default function MainNavigator() {
-    const { neighborhoodMasterList, queryArticleDataType } = React.useContext(ArticleContext);
+    const { topicsMasterList, queryTopicsDataType } = React.useContext(TopicsContext);
+    const { neighborhoodMasterList, queryNeighborhoodDataType } = React.useContext(NeighborhoodContext);
 
     React.useEffect(() => {
-        // Neighborhood list should be bootstrapped here...
-    }, [neighborhoodMasterList]);
+        queryTopicsDataType("TOPICS_DATA");
+        queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
+    }, [neighborhoodMasterList, topicsMasterList]);
 
     return(
     <>

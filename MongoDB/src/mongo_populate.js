@@ -12,6 +12,7 @@ async function main() {
     const db = client.db(dbName);
 
     await populate_first_order_data(db, MASTER_DATA, "articles_data", Object.keys(MASTER_DATA)[0], false)
+    await populate_first_order_data(db, MASTER_DATA, "topics_data", Object.keys(MASTER_DATA)[1], false)
     await populate_first_order_data(db, MASTER_DATA, "neighborhood_data", Object.keys(MASTER_DATA)[3], false)
     await populate_first_order_data(db, MASTER_DATA, "tracts_data", Object.keys(MASTER_DATA)[4], false)
   
