@@ -11,13 +11,19 @@ type ArticleContextType = {
 const ARTICLE_DATA_QUERY = gql`
     query articleQuery($dateFrom: Int!, $dateTo: Int!, $area: String!) {
         articleByDate(dateFrom: $dateFrom, dateTo: $dateTo, area: $area) {
-            content_id
-            hl1
-            link
-            pub_date
-            position_section
-            author      
-            openai_labels
+            author
+    body
+    content_id
+    dateSum
+    hl1
+    hl2
+    link
+    neighborhoods
+    openai_labels
+    position_section
+    pub_date
+    pub_name
+    tracts
         }
     }
 `;

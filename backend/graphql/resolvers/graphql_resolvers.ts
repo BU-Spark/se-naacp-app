@@ -63,7 +63,19 @@ export const resolvers = {
           .toArray();
 
         return queryResult;
-      } else {
+      } 
+      else if (args.area === "all"){
+        const queryResult = articles_data
+        .find({
+          dateSum: {
+            $gte: args.dateFrom,
+            $lte: args.dateTo,
+          }
+        }).toArray();
+
+      return queryResult;
+      }
+      else {
         const queryResult = articles_data
           .find({
             dateSum: {

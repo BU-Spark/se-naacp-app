@@ -8,10 +8,13 @@ import IntroPage from "../pages/LandingPage/IntroPage";
 import SearchByKeyWord from "../pages/SearchByKeyWord/SearchByKeyWord";
 import FileUpload from "../pages/UploadArticles/UploadArticles";
 import TopNavBar from "../components/TopNavBar/TopNavBar";
-import Dashboard from "../pages/DashBoard/MainDashboard/dashboard";
-import NeighborhoodDetail from "../pages/DashBoard/NeighborhoodDetail/NeighborhoodDetail"; // Replace with actual path
+import Dashboard from "../pages/DashboardPage/Dashboard";
+import NeighborhoodPage from "../pages/NeighborhoodsPage/NeighborhoodPage"; // Replace with actual path
+
+import { ArticleContext } from "../contexts/article_context";
 
 export default function MainNavigator() {
+ 
   return (
     <>
       <BrowserRouter>
@@ -23,7 +26,7 @@ export default function MainNavigator() {
           <Route path="/SearchByKeyWord" element={<SearchByKeyWord />} />
           <Route path="/UploadArticles" element={<FileUpload />} />
           <Route path="/Dashboard" element={<Dashboard />}></Route>
-          <Route path="/Dashboard/:neighborhood" element={<NeighborhoodDetail />} />
+          <Route path="/Neighborhoods" element={<NeighborhoodPage />} />
         </Routes>
       </BrowserRouter>
     </>

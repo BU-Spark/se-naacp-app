@@ -27,9 +27,9 @@ const TopNavBar = () => {
         <li>
           <NavLink to="/Neighborhoods">Neighborhoods</NavLink>
         </li>
-        <li>
+        {/* <li>
           <NavLink to="/Comparison">Comparison</NavLink>
-        </li>
+        </li> */}
         <li>
           <NavLink to="/Upload">Upload</NavLink>
         </li>

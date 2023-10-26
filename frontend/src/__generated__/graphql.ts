@@ -34,7 +34,6 @@ export type Article = {
 };
 
 export type Demographics = {
-  __typename?: 'Demographics';
   p2_001n: Scalars['String']['output'];
   p2_002n: Scalars['String']['output'];
   p2_003n: Scalars['String']['output'];
@@ -82,13 +81,11 @@ export type QueryTractsByNeighborhoodArgs = {
 };
 
 export type Topics = {
-  __typename?: 'Topics';
   articles: Array<Scalars['String']['output']>;
   value: Scalars['String']['output'];
 };
 
 export type Tracts = {
-  __typename?: 'Tracts';
   articles: Array<Scalars['String']['output']>;
   county_name: Scalars['String']['output'];
   demographics: Demographics;

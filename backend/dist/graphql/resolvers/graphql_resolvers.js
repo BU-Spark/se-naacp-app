@@ -41,6 +41,7 @@ export const resolvers = {
         articleByDate: async (_, args, context) => {
             const { db } = context;
             const articles_data = db.collection("articles_data");
+            console.log("here:", args.area);
             if (isNumber(args.area)) {
                 const queryResult = articles_data
                     .find({
@@ -51,6 +52,16 @@ export const resolvers = {
                     tracts: args.area,
                 })
                     .toArray();
+                return queryResult;
+            }
+            else if (args.area === "all") {
+                const queryResult = articles_data
+                    .find({
+                    dateSum: {
+                        $gte: args.dateFrom,
+                        $lte: args.dateTo,
+                    }
+                }).toArray();
                 return queryResult;
             }
             else {
