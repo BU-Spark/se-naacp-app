@@ -14,6 +14,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import TractProvider from "./contexts/tract_context"
 import ArticleProvider from "./contexts/article_context"
 import NeighborhoodProvider from "./contexts/neighborhood_context"
+import TopicsProvider from "./contexts/topics_context"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -24,7 +25,9 @@ root.render(
           <ArticleProvider>
             <TractProvider>
               <NeighborhoodProvider>
-                <App />
+                <TopicsProvider>
+                  <App />
+                </TopicsProvider>
               </NeighborhoodProvider>
             </TractProvider>
           </ArticleProvider>

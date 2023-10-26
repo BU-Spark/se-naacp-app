@@ -3,39 +3,52 @@ import { useLazyQuery, gql } from "@apollo/client";
 import { Neighborhoods } from "../__generated__/graphql"
 
 type NeighborhoodContextType = {
-    neighborhoodData: Neighborhoods | null,
-    fetchNeighborhoodData: (query: any, options?: any) => void,
+    neighborhoodMasterList: string[] | null,
+    queryNeighborhoodDataType: (queryType: any, options?: any) => void,
 }
 
-const NEIGHBORHOOD_QUERY = gql`
-query ArticleByDate($neighborhood: String!) {
-    tractsByNeighborhood(neighborhood: $neighborhood) {
-        value
+// this query does not take arguments
+// future refactoring needed, currently we don't use this context to fill in neighborhood list
+const NEIGHBORHOOD_DATA_QUERY = gql`
+    query neighborhoodQuery {
+        getAllNeighborhoods {
+            value
+        }
     }
-}
 `;
 
 export const NeighborhoodContext = React.createContext<NeighborhoodContextType | null>(null);
 
 const NeighborhoodProvider: React.FC = ({children}: any) => {
-    const [queryData, { data, loading, error }] = useLazyQuery(NEIGHBORHOOD_QUERY);
-    const [neighborhood, setNeighborhoodData] = React.useState<Neighborhoods | null>(null);
+    const [queryNeighborhoodData, { data: neighborhoodData, loading: neighborhoodDataLoading, error: neighborhoodDataError }] = useLazyQuery(NEIGHBORHOOD_DATA_QUERY);
+
+    const [neighborhoods, setNeighborhoodData] = React.useState<string[] | null>(null);
 
     React.useEffect(() => {
-        console.log(error)
-        if (!loading && data && !error) {
-            setNeighborhoodData(data);
+        if (neighborhoodData && !neighborhoodDataLoading && !neighborhoodDataError) {
+            let neighborhoodMasterList: string[] = [];
+            let data: any = neighborhoodData.getAllNeighborhoods;
+            
+            data.forEach((neighborhood: any) => {
+                neighborhoodMasterList.push(neighborhood.value);
+            });
+            setNeighborhoodData(neighborhoodMasterList);
         }
-    }, [loading, data, error]);
+    }, [neighborhoodData, neighborhoodDataLoading, neighborhoodDataError])
 
-    const fetchNeighborhoodData = (options?: any) => {
-        queryData({
-            variables: options // This is where you pass in parameters
-        })
+    const queryNeighborhoodDataType = (queryType: "NEIGHBORHOOD_DATA", options?: any) => {
+        switch(queryType) {
+            case "NEIGHBORHOOD_DATA":
+                queryNeighborhoodData({});
+                break;
+            default: 
+                console.log("ERROR: Fetch Neighborhood Data does not have this queryType!");
+                break;
+        }
     };
 
     return (
-        <NeighborhoodContext.Provider value={{ neighborhoodData: neighborhood, fetchNeighborhoodData }}>
+        <NeighborhoodContext.Provider value={{ neighborhoodMasterList: neighborhoods, queryNeighborhoodDataType }}>
             {children}
         </NeighborhoodContext.Provider>
     );

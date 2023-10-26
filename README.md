@@ -51,9 +51,14 @@ https://bu-naacp-media-bias.gitbook.io/sparkmediabias/
 <table>
   <tbody>
     <tr>
+    <td align="center" valign="top" width="14.28%">
+      <a href="https://github.com/zoexili">
+      <img src="https://avatars.githubusercontent.com/u/25307411?v=4" width="100px;" alt="LiXi"/>
+      <br /><sub><b>Li Xi</b></sub></a>
+    </td>
      <td align="center" valign="top" width="14.28%">
         <a href="https://github.com/nawafds">
-        <img src="https://avatars.githubusercontent.com/u/60396177?v=4" width="100px;" alt="Zachary1575"/>
+        <img src="https://avatars.githubusercontent.com/u/60396177?v=4" width="100px;" alt="Nawafds"/>
         <br /><sub><b>Nawafds</b></sub></a>
       </td>
       <td align="center" valign="top" width="14.28%">
