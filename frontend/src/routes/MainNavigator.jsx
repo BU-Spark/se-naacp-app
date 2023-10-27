@@ -9,10 +9,14 @@ import IntroPage from "../pages/LandingPage/IntroPage";
 import SearchByKeyWord from "../pages/SearchByKeyWord/SearchByKeyWord";
 import FileUpload from "../pages/UploadArticles/UploadArticles";
 import Profile from "../pages/Profile/Profile";
-import Login from "../pages/LoginPage/Login";
 // Context
 import { ArticleContext } from "../contexts/article_context";
 import { Auth0ProviderNavigate } from "../config/Auth0Provider";
+import { ProtectedRoute } from "../components/ProtectedRoute/ProtectedRoute";
+
+const AdminPage = () => {
+	return <div>admin page very spooky 👻</div>;
+};
 
 export default function MainNavigator() {
 	const { neighborhoodMasterList, queryArticleDataType } =
@@ -39,7 +43,10 @@ export default function MainNavigator() {
 							element={<FileUpload />}
 						/>
 						<Route path='/Profile' element={<Profile />} />
-						<Route path='Login' element={<Login />} />
+						<Route
+							path='/Admin'
+							element={<ProtectedRoute child={AdminPage} />}
+						/>
 					</Routes>
 				</Auth0ProviderNavigate>
 			</BrowserRouter>
