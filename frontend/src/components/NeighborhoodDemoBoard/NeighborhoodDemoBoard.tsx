@@ -31,7 +31,7 @@ const colors = [
 ];
 
 interface DemographicsProps {
-  demographics: Demographics;
+  demographics: Demographics | null;
 }
 
 function getPercentage(total_population: string, population: string) {
@@ -41,6 +41,28 @@ function getPercentage(total_population: string, population: string) {
 const NeighborhoodDemographicsBoard: React.FC<DemographicsProps> = ({
   demographics,
 }) => {
+
+
+
+  if(!demographics){
+
+   demographics = {
+    p2_001n: "5722",
+    p2_002n: "1843",
+    p2_003n: "3879",
+    p2_004n: "3559",
+    p2_005n: "151",
+    p2_006n: "3209",
+    p2_007n: "18",
+    p2_008n: "64",
+    p2_009n: "0",
+    p2_010n: "117",
+  };
+  }
+
+
+
+
   const total_population = demographics.p2_001n;
 
   const data = [

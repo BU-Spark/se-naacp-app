@@ -17,6 +17,7 @@ import { NeighborhoodContext2 } from "../../../contexts/neighborhoodContext.js";
 
 // Context
 import { ArticleContext } from "../../../contexts/article_context";
+import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 
 interface SearchBarDropDownPros {
   listOfWords: string[];
@@ -27,10 +28,14 @@ const SearchBarDropDown: React.FC<SearchBarDropDownPros> = ({
   listOfWords,
   title,
 }) => {
-  const [selectedWord, setSelectedWord] = useState<string>(listOfWords[0]);
+  var {neighborhoodMasterList,neighborhood, setNeighborhood } = React.useContext(NeighborhoodContext)!;
+
+  const [selectedWord, setSelectedWord] = React.useState<string>(neighborhood!);
+ 
 
   const handleChange = (event: any) => {
-    setSelectedWord(event.target.value);
+    setNeighborhood(event.target.value);
+    
   };
 
   return (

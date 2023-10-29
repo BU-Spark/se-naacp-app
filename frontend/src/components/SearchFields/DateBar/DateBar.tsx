@@ -14,30 +14,16 @@ interface DateFieldProps {
   isFrom: boolean;
 }
 
-const DateField: React.FC<DateFieldProps> = ({
-  title,
-  minDate,
-  maxDate,
-  isFrom,
-}) => {
-  const { setDates, dates } = React.useContext(DateContext);
-  const [date, setDate] = React.useState(isFrom ? dates[0] : dates[1]);
+const DateField: React.FC<DateFieldProps> = ({ minDate, maxDate, isFrom }) => {
+  const [date, setDate] = React.useState(isFrom ? minDate : maxDate);
 
-  // setDates([minDate,maxDate]);
   const handleChange = (d: any) => {
-    if (dates === undefined) {
-      setDates([null, null]);
-    } else {
-      isFrom
-        ? setDates([d, dates[1] === null ? maxDate : dates[1]])
-        : setDates([dates[0] === null ? minDate : dates[0], d]);
-      setDate(d);
-    }
+    setDate(d);
   };
 
   return (
     <div className="search">
-      <p className="word">{title}</p>
+      <p className="word">{isFrom ? "From" : "To"}</p>
       <div style={{ marginLeft: 9, marginTop: 5 }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DesktopDatePicker

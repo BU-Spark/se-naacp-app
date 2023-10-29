@@ -6,7 +6,7 @@ import { Article } from "../../__generated__/graphql";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 interface FrequencyBarChartProps {
-  articles: Article[];
+  articles: Article[] | null;
   num: number;
   openAI: boolean;
 }
@@ -25,6 +25,10 @@ const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({
   openAI,
 }) => {
   // Mapping over the articles to create an array of labels, filtering out articles with empty labels.
+
+  if(!articles){
+    articles = [];
+  }
   const listOfLabels = articles
     .map((article) =>
       openAI ? article.openai_labels[0] : article.position_section

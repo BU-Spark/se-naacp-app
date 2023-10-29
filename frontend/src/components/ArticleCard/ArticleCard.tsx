@@ -46,11 +46,15 @@ const columns = [
 ];
 
 interface ArticleCardProps {
-  articles: Article[];
+  articles: Article[] | null;
 }
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ articles }) => {
   var articleRow: any = [];
+
+  if (!articles) {
+    articles = [];
+  }
 
   articles.forEach((article, index) => {
     // console.log(index, article);

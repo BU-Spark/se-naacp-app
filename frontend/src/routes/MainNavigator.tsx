@@ -12,8 +12,18 @@ import Dashboard from "../pages/DashboardPage/Dashboard";
 import NeighborhoodPage from "../pages/NeighborhoodsPage/NeighborhoodPage"; // Replace with actual path
 
 import { ArticleContext } from "../contexts/article_context";
+import { NeighborhoodContext } from "../contexts/neighborhood_context";
 
 export default function MainNavigator() {
+
+
+  const {
+    neighborhoodMasterList,
+    queryNeighborhoodDataType,
+    neighborhood,
+    setNeighborhood,
+  } = React.useContext(NeighborhoodContext)!;
+  
  
   return (
     <>

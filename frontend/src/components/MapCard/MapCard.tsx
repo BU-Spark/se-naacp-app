@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./MapCard.css";
 
 // GeoJSON
@@ -35,6 +35,7 @@ import { Menu } from "antd";
 // Data Methods
 import DataMethods from "../../Pipelines/data";
 import { useParams } from "react-router-dom";
+import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 
 interface MapCardProps {}
 
@@ -107,17 +108,27 @@ const MapCard: React.FC<MapCardProps> = ({}) => {
 
   const [tract, setTract] = React.useState("010205");
 
-  const [neighborhood, setNeighborhood] = React.useState("Fenway");
+  var { neighborhood, setNeighborhood } =
+    React.useContext(NeighborhoodContext)!;
 
   const latLong = fixedLatLong(neighborhood);
 
-  const defaultLocation = {
+  const [location, setLocation] = React.useState({
     name: neighborhood,
     latitude: latLong.latitude,
     longitude: latLong.longitude,
-  };
+  });
 
-  const [location, setLocation] = React.useState(defaultLocation);
+  React.useEffect(() => {
+    const latLong = fixedLatLong(neighborhood);
+    const defaultLocation = {
+      name: neighborhood,
+      latitude: latLong.latitude,
+      longitude: latLong.longitude,
+    };
+
+    setLocation(defaultLocation);
+  }, [neighborhood]);
 
   const setTractShapes = (tracts: string[]) => {
     let GEOJSON_All = geoData.features;

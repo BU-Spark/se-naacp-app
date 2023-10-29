@@ -1,32 +1,30 @@
+//Libaries
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import dayjs from "dayjs";
+import { useState, CSSProperties } from "react";
+
+//Components
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
 import FrequencyBarChart from "../../components/FrequencyBarChart/FrequencyBarChart";
 import NeighborhoodDemographicsBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
-
-import { Article, Demographics } from "../../__generated__/graphql";
-import "./NeighborhoodPage.css";
-import "font-awesome/css/font-awesome.min.css";
 import TractsDropDown from "../../components/TractsDropDown/TractsDropDown";
 import MapCard from "../../components/MapCard/MapCard";
+import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
+import DateField from "../../components/SearchFields/DateBar/DateBar";
+//Types
+import { Article, Demographics } from "../../__generated__/graphql";
+
+//CSS
+import "./NeighborhoodPage.css";
+import "font-awesome/css/font-awesome.min.css";
+
+//Contex
 import { TractContext } from "../../contexts/tract_context";
 import { ArticleContext } from "../../contexts/article_context";
+import { NeighborhoodContext } from "../../contexts/neighborhood_context";
+
 const NeighborhoodPage: React.FC = () => {
-  const navigate = useNavigate(); // Initialize useNavigate hook
-
-  // const demographics: Demographics = {
-  //   p2_001n: "5722",
-  //   p2_002n: "1843",
-  //   p2_003n: "3879",
-  //   p2_004n: "3559",
-  //   p2_005n: "151",
-  //   p2_006n: "3209",
-  //   p2_007n: "18",
-  //   p2_008n: "64",
-  //   p2_009n: "0",
-  //   p2_010n: "117",
-  // };
-
   const tracts = [
     "010103",
     "010104",
@@ -41,36 +39,75 @@ const NeighborhoodPage: React.FC = () => {
   ];
 
   const neig = "Fenway";
-  const dateFrom = 20220101;
-  const dateTo = 20220201;
+
+  const minDate = dayjs("2020-01-01"); // November 2020
+  const maxDate = dayjs("2021-01-01"); // February 2021
+
+  const dateTo = 20200101;
+  const dateFrom = 20210101;
+
   const tract = "110502";
 
   var { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
   var { tractData, queryTractDataType } = React.useContext(TractContext)!;
+  var {
+    neighborhoodMasterList,
+    queryNeighborhoodDataType,
+    neighborhood,
+    setNeighborhood,
+  } = React.useContext(NeighborhoodContext)!;
 
-  var demographics: any = [];
-  
+  // setNeighborhood("Hey");
+  console.log(neighborhood);
+
+  const [articles, setArticles] = React.useState<Article[] | null>(null);
+  const [demographics, setDemographics] = React.useState<Demographics | null>(
+    null
+  );
+  const [neighborhoods, setNeighborhoods] = React.useState<string[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  // React.useEffect(() => {
+  //   console.log(neighborhood);
+  // }, [neighborhood]);
+  // queryNeighborhoodDataType("NEIGHBORHOOD_DATA", {});
+  console.log()
+
   React.useEffect(() => {
     queryArticleDataType("ARTICLE_DATA", {
       dateFrom: dateFrom,
       dateTo: dateTo,
       area: neig,
     });
+    setArticles(articleData);
   }, [articleData]);
-
-  if (!articleData) {
-    articleData = [];
-  }
-
 
   React.useEffect(() => {
     queryTractDataType("TRACT_DATA", {
       tract: tract,
     });
+    if (tractData) {
+      setDemographics(tractData.demographics);
+    }
   }, [tractData]);
 
-  if (tractData) {
-    demographics = tractData[0].demographics;
+  React.useEffect(() => {
+    queryNeighborhoodDataType("NEIGHBORHOOD_DATA", {});
+    if (neighborhoodMasterList) {
+      setNeighborhoods(neighborhoodMasterList);
+      console.log(neighborhoodMasterList);
+    }
+  }, [neighborhoodMasterList]);
+
+  React.useEffect(() => {
+    // Check if all data is available
+    if (articleData && tractData && neighborhoodMasterList) {
+      setIsLoading(false);
+    }
+  }, [articleData, tractData, neighborhoodMasterList]);
+
+  if (isLoading) {
+    return <p>Hey</p>;
   }
 
   return (
@@ -78,8 +115,6 @@ const NeighborhoodPage: React.FC = () => {
       <div className="big-container">
         <div className="row">
           <div className="col">
-            {/* <div onClick={handleBoxClick}></div> */}
-
             <div className="align-self-start your-org">
               SELECTED NEIGHBORHOOD
             </div>
@@ -89,7 +124,29 @@ const NeighborhoodPage: React.FC = () => {
         </div>
 
         <div className="row justify-content-evenly">
-          <div className="col-md-12 col-sm-12"></div>
+          <div className="col-md-3 col-sm-12">
+            <SearchBarDropDown
+              title="Neighborhoods"
+              listOfWords={neighborhoods}
+            ></SearchBarDropDown>
+          </div>
+          <div className="col-md-5 col-sm-12">
+            <DateField
+              title="From"
+              minDate={minDate}
+              maxDate={maxDate}
+              isFrom={true}
+            ></DateField>
+          </div>
+
+          <div className="col-md-4 col-sm-12">
+            <DateField
+              title="To"
+              minDate={minDate}
+              maxDate={maxDate}
+              isFrom={false}
+            ></DateField>
+          </div>
         </div>
 
         <div className="row justify-content-evenly">
@@ -114,7 +171,7 @@ const NeighborhoodPage: React.FC = () => {
           <div className="col-md-4 col-sm-12">
             <h1 className="titles">Top 5 Topics</h1>
             <FrequencyBarChart
-              articles={articleData}
+              articles={articles}
               num={5}
               openAI={false}
             ></FrequencyBarChart>
@@ -122,7 +179,7 @@ const NeighborhoodPage: React.FC = () => {
           <div className="col-md-8 col-sm-12">
             <h1 className="titles">Articles</h1>
 
-            <ArticleCard articles={articleData}></ArticleCard>
+            <ArticleCard articles={articles}></ArticleCard>
           </div>
         </div>
       </div>

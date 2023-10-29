@@ -41,7 +41,6 @@ export const resolvers = {
         articleByDate: async (_, args, context) => {
             const { db } = context;
             const articles_data = db.collection("articles_data");
-            console.log("here:", args.area);
             if (isNumber(args.area)) {
                 const queryResult = articles_data
                     .find({
