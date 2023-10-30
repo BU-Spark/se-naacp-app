@@ -6,6 +6,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import "./ArticleCard.css";
 import queryMethods from "../../Pipelines/data";
+import emptyAstro from "../../assets/lottieFiles/astro_empty.json";
 
 //types
 import { Article } from "../../__generated__/graphql";
@@ -16,6 +17,7 @@ import uniqid from "uniqid";
 // Contexts
 import { StateContext, stateMethods } from "../../contexts/stateContext";
 import { Link } from "@mui/material";
+import Lottie from "react-lottie-player";
 
 // function getHTML(str) {
 //   const htmlString = str;
@@ -64,7 +66,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ articles }) => {
       author: `${article.author}`,
       publishingDate: `${dayjs(article.pub_date).format("MMM D, YYYY")}`,
       neighborhood: `${article.neighborhoods[0]}`,
-      censusTract: `${article.tracts[0]}`,
+      censusTract: `${article.tracts}`,
       category: `${article.position_section}`,
     });
   });
@@ -73,15 +75,27 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ articles }) => {
     <>
       <Card className="body" sx={{ width: "100%", height: "62vh" }}>
         <CardContent>
-          <div style={{ height: "52vh", width: "100%" }}>
-            <DataGrid
-              rows={articleRow}
-              columns={columns}
-              pageSize={100} // DataGrid is capped at 100 entries needs premium to go over, I will set the length to 100 to to avoid frontend crashing
-              rowsPerPageOptions={[5]}
-              hideFooter={true}
-            />
-          </div>
+          {articles.length === 0 ? (
+            <React.Fragment>
+              <Lottie
+                loop
+                animationData={emptyAstro}
+                play
+                style={{ width: "100%", height: "auto" }}
+              />
+              <p className="empty-text">{"No Data out there :("}</p>
+            </React.Fragment>
+          ) : (
+            <div style={{ height: "52vh", width: "100%" }}>
+              <DataGrid
+                rows={articleRow}
+                columns={columns}
+                pageSize={100} // DataGrid is capped at 100 entries needs premium to go over, I will set the length to 100 to to avoid frontend crashing
+                rowsPerPageOptions={[5]}
+                hideFooter={true}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
     </>

@@ -6,6 +6,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { DateContext } from "../../../contexts/dateContext.js";
+import { ArticleContext } from "../../../contexts/article_context";
+import { TractContext } from "../../../contexts/tract_context";
+import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 
 interface DateFieldProps {
   title: string;
@@ -15,21 +18,95 @@ interface DateFieldProps {
 }
 
 const DateField: React.FC<DateFieldProps> = ({ minDate, maxDate, isFrom }) => {
-  const [date, setDate] = React.useState(isFrom ? minDate : maxDate);
+  const [dateFrom, setdateFrom] = React.useState(minDate);
+  const [dateTo, setDateTo] = React.useState(maxDate);
 
-  const handleChange = (d: any) => {
-    setDate(d);
+  const { articleData, queryArticleDataType } =  React.useContext(ArticleContext)!;
+  const { tractData, queryTractDataType } = React.useContext(TractContext)!;
+
+  const {neighborhood } = React.useContext(NeighborhoodContext)!;
+
+
+  // const [articles, setArticles] = React.useState<Article[] | null>(null);
+  // const [demographics, setDemographics] = React.useState<Demographics | null>(null);
+  // const [isLoading, setIsLoading] = React.useState(true);
+
+  // React.useEffect(() => {
+
+  //   setArticles(articleData);
+  //   // console.log(articleData);
+  // }, [tractData, articleData]);
+
+  const handleChangeFrom = (d: any) => {
+    queryArticleDataType("ARTICLE_DATA", {
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      area: tractData?.tract,
+    });
+    setdateFrom(d);
+  };
+  const handleChangeTo = (d: any) => {
+   
+    setDateTo(d);
   };
 
+  React.useEffect(() => {
+    queryArticleDataType("ARTICLE_DATA", {
+      dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+      dateTo: parseInt(dateTo.format("YYYYMMDD")),
+      area: tractData?.tract,
+    });
+  }, [dateFrom, dateTo, tractData, neighborhood]);
+
+
+
+
+  
   return (
     <div className="search">
-      <p className="word">{isFrom ? "From" : "To"}</p>
+      <p className="word">{"From"}</p>
       <div style={{ marginLeft: 9, marginTop: 5 }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DesktopDatePicker
             inputFormat="MM/DD/YYYY"
-            value={date}
-            onChange={handleChange}
+            value={dateFrom}
+            onChange={handleChangeFrom}
+            minDate={minDate}
+            maxDate={maxDate}
+            renderInput={(params) => (
+              <TextField
+                sx={{
+                  width: "97%",
+                  "& .MuiInputBase-root": {
+                    borderRadius: 0.5,
+                    height: 34,
+                  },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderWidth: 2,
+                      borderColor: "#ccc",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#ccc",
+                    },
+                  },
+                  "& .MuiInput-underline:after": {
+                    borderBottomColor: "#ccc",
+                  },
+                }}
+                {...params}
+              />
+            )}
+          />
+        </LocalizationProvider>
+      </div>
+      <p className="word">{"To"}</p>
+      <div style={{ marginLeft: 9, marginTop: 5 }}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DesktopDatePicker
+            inputFormat="MM/DD/YYYY"
+            value={dateTo}
+            onChange={handleChangeTo}
             minDate={minDate}
             maxDate={maxDate}
             renderInput={(params) => (

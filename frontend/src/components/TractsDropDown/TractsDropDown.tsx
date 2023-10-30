@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import { Card, CardContent } from "@mui/material";
 
 import "./TractsDropDown.css";
+import { TractContext } from "../../contexts/tract_context";
+import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -28,17 +30,29 @@ interface TractsDropDownProps {
 }
 
 const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
-  // console.log(tracts);
+  const { tractData, queryTractDataType } = React.useContext(TractContext)!;
+  const { neighborhood } = React.useContext(NeighborhoodContext)!;
+  const [selectedItems, setSelectedItems] = React.useState([""]);
+
+
+  // React.useEffect(() => {
+  //   setIsLoading([tracts[0]]);
+  // }, [neighborhood]);
+
   const items: MenuItem[] = [];
-  const [selectedItem, setSelectedItem] = useState([tracts[0]]);
 
   for (let index = 0; index < tracts.length; index++) {
     items.push(getItem(tracts[index], tracts[index]));
   }
 
   const onSelectItem: MenuProps["onClick"] = (keys) => {
-    console.log(keys);
+    queryTractDataType("TRACT_DATA", {
+      tract: keys.key,
+    });
+    console.log(keys.key);
   };
+
+  console.log(items[0]?.key);
 
   return (
     <Card sx={{ width: "100%", height: "62vh" }}>
@@ -48,6 +62,7 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
           onClick={onSelectItem}
           style={{ width: "100%", height: "100%", overflow: "auto" }} // Added overflow: 'auto'
           items={items}
+          selectedKeys={[tractData!.tract]}
         />
       </CardContent>
     </Card>

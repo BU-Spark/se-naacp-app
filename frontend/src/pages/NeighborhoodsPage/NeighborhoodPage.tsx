@@ -23,81 +23,33 @@ import "font-awesome/css/font-awesome.min.css";
 import { TractContext } from "../../contexts/tract_context";
 import { ArticleContext } from "../../contexts/article_context";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
+import { LinearProgress, Stack } from "@mui/material";
 
 const NeighborhoodPage: React.FC = () => {
-  const tracts = [
-    "010103",
-    "010104",
-    "010204",
-    "010408",
-    "010404",
-    "010403",
-    "981501",
-    "010405",
-    "010206",
-    "010205",
-  ];
+  const minDate = dayjs("2020-11-01");
+  const maxDate = dayjs("2023-01-09");
 
-  const neig = "Fenway";
-
-  const minDate = dayjs("2020-01-01"); // November 2020
-  const maxDate = dayjs("2021-01-01"); // February 2021
-
-  const dateTo = 20200101;
-  const dateFrom = 20210101;
-
-  const tract = "110502";
-
-  var { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
-  var { tractData, queryTractDataType } = React.useContext(TractContext)!;
-  var {
+  const { articleData, queryArticleDataType } =
+    React.useContext(ArticleContext)!;
+  const { tractData, queryTractDataType } = React.useContext(TractContext)!;
+  const {
     neighborhoodMasterList,
     queryNeighborhoodDataType,
     neighborhood,
     setNeighborhood,
   } = React.useContext(NeighborhoodContext)!;
 
-  // setNeighborhood("Hey");
-  console.log(neighborhood);
-
   const [articles, setArticles] = React.useState<Article[] | null>(null);
   const [demographics, setDemographics] = React.useState<Demographics | null>(
     null
   );
-  const [neighborhoods, setNeighborhoods] = React.useState<string[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
-  // React.useEffect(() => {
-  //   console.log(neighborhood);
-  // }, [neighborhood]);
-  // queryNeighborhoodDataType("NEIGHBORHOOD_DATA", {});
-  console.log()
-
   React.useEffect(() => {
-    queryArticleDataType("ARTICLE_DATA", {
-      dateFrom: dateFrom,
-      dateTo: dateTo,
-      area: neig,
-    });
-    setArticles(articleData);
-  }, [articleData]);
-
-  React.useEffect(() => {
-    queryTractDataType("TRACT_DATA", {
-      tract: tract,
-    });
     if (tractData) {
       setDemographics(tractData.demographics);
     }
   }, [tractData]);
-
-  React.useEffect(() => {
-    queryNeighborhoodDataType("NEIGHBORHOOD_DATA", {});
-    if (neighborhoodMasterList) {
-      setNeighborhoods(neighborhoodMasterList);
-      console.log(neighborhoodMasterList);
-    }
-  }, [neighborhoodMasterList]);
 
   React.useEffect(() => {
     // Check if all data is available
@@ -107,7 +59,16 @@ const NeighborhoodPage: React.FC = () => {
   }, [articleData, tractData, neighborhoodMasterList]);
 
   if (isLoading) {
-    return <p>Hey</p>;
+    return <Stack
+      sx={{
+        width: "100%",
+        color: "grey.500",
+        marginTop: "10px",
+      }}
+      spacing={2}
+    >
+      <LinearProgress color="secondary" />
+    </Stack>;
   }
 
   return (
@@ -118,19 +79,19 @@ const NeighborhoodPage: React.FC = () => {
             <div className="align-self-start your-org">
               SELECTED NEIGHBORHOOD
             </div>
-            <div className="align-self-start org-name">{"Fenway"}</div>
+            <div className="align-self-start org-name">{neighborhood}</div>
             <h1></h1>
           </div>
         </div>
 
         <div className="row justify-content-evenly">
-          <div className="col-md-3 col-sm-12">
+          <div className="col-md-6 col-sm-12">
             <SearchBarDropDown
               title="Neighborhoods"
-              listOfWords={neighborhoods}
+              listOfWords={Object.keys(neighborhoodMasterList!)}
             ></SearchBarDropDown>
           </div>
-          <div className="col-md-5 col-sm-12">
+          <div className="col-md-6 col-sm-12">
             <DateField
               title="From"
               minDate={minDate}
@@ -138,21 +99,14 @@ const NeighborhoodPage: React.FC = () => {
               isFrom={true}
             ></DateField>
           </div>
-
-          <div className="col-md-4 col-sm-12">
-            <DateField
-              title="To"
-              minDate={minDate}
-              maxDate={maxDate}
-              isFrom={false}
-            ></DateField>
-          </div>
         </div>
 
         <div className="row justify-content-evenly">
           <div className="col-md-3 col-sm-12">
             <h1 className="titles">Tracts</h1>
-            <TractsDropDown tracts={tracts}></TractsDropDown>
+            <TractsDropDown
+              tracts={neighborhoodMasterList![neighborhood!]}
+            ></TractsDropDown>
           </div>
           <div className="col-md-5 col-sm-12">
             <h1 className="titles">Map</h1>
@@ -171,7 +125,7 @@ const NeighborhoodPage: React.FC = () => {
           <div className="col-md-4 col-sm-12">
             <h1 className="titles">Top 5 Topics</h1>
             <FrequencyBarChart
-              articles={articles}
+              articles={articleData}
               num={5}
               openAI={false}
             ></FrequencyBarChart>
@@ -179,7 +133,7 @@ const NeighborhoodPage: React.FC = () => {
           <div className="col-md-8 col-sm-12">
             <h1 className="titles">Articles</h1>
 
-            <ArticleCard articles={articles}></ArticleCard>
+            <ArticleCard articles={articleData}></ArticleCard>
           </div>
         </div>
       </div>

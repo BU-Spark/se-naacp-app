@@ -5,9 +5,9 @@ import { Tracts } from "../__generated__/graphql"
 type TractContextType = {
     tractData: Tracts | null,
     queryTractDataType: (queryType: any, options?: any) => void,
-    setTract: React.Dispatch<React.SetStateAction<Tracts | null>>  // Added this setter type
 }
 
+// return the demographics of each tract
 const TRACT_DATA_QUERY = gql`
     query tractQuery($tract: String!) {
         demographicsByTracts(tract: $tract) {
@@ -23,6 +23,7 @@ const TRACT_DATA_QUERY = gql`
                 p2_009n
                 p2_010n
             }
+            tract
         }
     }
 `;
@@ -35,7 +36,8 @@ const TractProvider: React.FC = ({children}: any) => {
 
     React.useEffect(() => {
         if (tractData && !tractDataLoading && !tractDataError) {
-            setTractData(tractData.demographicsByTracts);
+        
+            setTractData(tractData.demographicsByTracts[0]);
         }
     }, [tractData, tractDataLoading, tractDataError]);
 
@@ -44,7 +46,7 @@ const TractProvider: React.FC = ({children}: any) => {
             case "TRACT_DATA":
                 queryTractData({
                     variables: options
-                });
+                })
                 break;
             default:
                 console.log("ERROR: Fetch Tract Data does not have this queryType!");
@@ -53,10 +55,13 @@ const TractProvider: React.FC = ({children}: any) => {
     }
 
     return (
-        <TractContext.Provider value={{ tractData: tracts, queryTractDataType, setTract: setTractData }}>
+        <TractContext.Provider value={{ tractData: tracts, queryTractDataType }}>
             {children}
         </TractContext.Provider>
     );
 };
 
 export default TractProvider;
+
+
+

@@ -18,6 +18,7 @@ import { NeighborhoodContext2 } from "../../../contexts/neighborhoodContext.js";
 // Context
 import { ArticleContext } from "../../../contexts/article_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
+import { TractContext } from "../../../contexts/tract_context";
 
 interface SearchBarDropDownPros {
   listOfWords: string[];
@@ -29,13 +30,15 @@ const SearchBarDropDown: React.FC<SearchBarDropDownPros> = ({
   title,
 }) => {
   var {neighborhoodMasterList,neighborhood, setNeighborhood } = React.useContext(NeighborhoodContext)!;
+  var {tractData, queryTractDataType } = React.useContext(TractContext)!;
 
   const [selectedWord, setSelectedWord] = React.useState<string>(neighborhood!);
  
 
   const handleChange = (event: any) => {
     setNeighborhood(event.target.value);
-    
+    setSelectedWord(event.target.value);
+    queryTractDataType("TRACT_DATA", {tract: neighborhoodMasterList![event.target.value][0]});
   };
 
   return (

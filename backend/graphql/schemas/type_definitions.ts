@@ -46,8 +46,8 @@ export const typeDefs = gql`
     tract: String!
     geoid_tract: String!
     neighborhood: String!
-    demographics: Demographics!
-    articles: [String!]!
+    demographics: Demographics
+    articles: [String!]
   }
 
   type Query {

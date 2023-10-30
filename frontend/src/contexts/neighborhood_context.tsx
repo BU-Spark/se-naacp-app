@@ -1,9 +1,10 @@
 import React from "react";
 import { useLazyQuery, gql } from "@apollo/client";
+import { Neighborhoods } from "../__generated__/graphql";
 
 type NeighborhoodContextType = {
-  neighborhoodMasterList: string[] | null;
-  neighborhood: string | null; 
+  neighborhoodMasterList: { [key: string]: string[] } | null;
+  neighborhood: string | null;
 
   queryNeighborhoodDataType: (queryType: any, options?: any) => void;
   setNeighborhood: (neighborhood: string) => void; // Added this setter function
@@ -13,6 +14,7 @@ const NEIGHBORHOOD_DATA_QUERY = gql`
   query neighborhoodQuery {
     getAllNeighborhoods {
       value
+      tracts
     }
   }
 `;
@@ -29,9 +31,9 @@ const NeighborhoodProvider: React.FC = ({ children }: any) => {
       error: neighborhoodDataError,
     },
   ] = useLazyQuery(NEIGHBORHOOD_DATA_QUERY);
-  const [neighborhoods, setNeighborhoodData] = React.useState<string[] | null>(
-    null
-  );
+  const [neighborhoods, setNeighborhoodData] = React.useState<{
+    [key: string]: string[];
+  } | null>(null);
 
   const [neighborhood, setNeighborhood] = React.useState<string | null>(null); // Added this state
 
@@ -41,13 +43,15 @@ const NeighborhoodProvider: React.FC = ({ children }: any) => {
       !neighborhoodDataLoading &&
       !neighborhoodDataError
     ) {
-      let neighborhoodMasterList: string[] = [];
-      let data: any = neighborhoodData.getAllNeighborhoods;
+      const deconstructedNeighborhoods: { [key: string]: string[] } = {};
 
-      data.forEach((neighborhood: any) => {
-        neighborhoodMasterList.push(neighborhood.value);
-      });
-      setNeighborhoodData(neighborhoodMasterList);
+      neighborhoodData.getAllNeighborhoods.forEach(
+        (neighborhood: { value: string; tracts: string[] }) => {
+          deconstructedNeighborhoods[neighborhood.value] = neighborhood.tracts;
+        }
+      );
+
+      setNeighborhoodData(deconstructedNeighborhoods);
     }
   }, [neighborhoodData, neighborhoodDataLoading, neighborhoodDataError]);
 

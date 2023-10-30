@@ -2,9 +2,11 @@ import React from "react";
 import "./FrequencyBarChart.css";
 import { ResponsiveBar } from "@nivo/bar";
 import { Article } from "../../__generated__/graphql";
+import emptyAstro from "../../assets/lottieFiles/astro_empty.json";
 
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import Lottie from "react-lottie-player";
 interface FrequencyBarChartProps {
   articles: Article[] | null;
   num: number;
@@ -56,7 +58,16 @@ const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({
 
   return (
     <Card className="body" sx={{ width: "100%", height: "62vh" }}>
-      <CardContent>
+      <CardContent sx={{ width: "100%", height: "62vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        {articles.length === 0 ?<React.Fragment>
+              <Lottie
+                loop
+                animationData={emptyAstro}
+                play
+                style={{ width: "100%", height: "auto" }}
+              />
+              <p className="empty-text">{"No Data out there :("}</p>
+            </React.Fragment> :
         <div style={{ height: "50vh", width: "100%" }}>
           <div className="graph-wrapper">
             <ResponsiveBar
@@ -105,6 +116,7 @@ const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({
             />
           </div>
         </div>
+}
       </CardContent>
     </Card>
   );

@@ -41,27 +41,34 @@ function getPercentage(total_population: string, population: string) {
 const NeighborhoodDemographicsBoard: React.FC<DemographicsProps> = ({
   demographics,
 }) => {
+  if (!demographics) {
+    demographics = {
+      p2_001n: "5722",
+      p2_002n: "1843",
+      p2_003n: "3879",
+      p2_004n: "3559",
+      p2_005n: "151",
+      p2_006n: "3209",
+      p2_007n: "18",
+      p2_008n: "64",
+      p2_009n: "0",
+      p2_010n: "117",
+    };
 
-
-
-  if(!demographics){
-
-   demographics = {
-    p2_001n: "5722",
-    p2_002n: "1843",
-    p2_003n: "3879",
-    p2_004n: "3559",
-    p2_005n: "151",
-    p2_006n: "3209",
-    p2_007n: "18",
-    p2_008n: "64",
-    p2_009n: "0",
-    p2_010n: "117",
-  };
+    return (
+      <Card className="body" sx={{ width: "100%", height: "62vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <CardContent sx={{ width: "100%", height: "62vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <Lottie
+              loop
+              animationData={emptyAstro}
+              play
+              style={{ width: "100%", height: "auto" }}
+          />
+          <p className="empty-text">{"No Data out there :("}</p>
+      </CardContent>
+  </Card>
+    );
   }
-
-
-
 
   const total_population = demographics.p2_001n;
 

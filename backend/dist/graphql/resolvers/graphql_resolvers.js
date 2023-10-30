@@ -17,8 +17,20 @@ export const resolvers = {
             const tracts_data = db.collection("tracts_data");
             const queryResult = await tracts_data
                 .find({
-                tract: args.tract
-            }).toArray();
+                tract: args.tract,
+            })
+                .toArray();
+            if (queryResult.length === 0) {
+                const noDataTract = {
+                    county_name: "",
+                    tract: args.tract,
+                    geoid_tract: "",
+                    neighborhood: "",
+                    demographics: null,
+                    articles: null,
+                };
+                return [noDataTract];
+            }
             return queryResult;
         },
         // Neighborhood Resolvers
@@ -27,14 +39,17 @@ export const resolvers = {
             const neighborhood_data = db.collection("neighborhood_data");
             const queryResult = await neighborhood_data
                 .find({
-                value: args.neighborhood
-            }).toArray();
+                value: args.neighborhood,
+            })
+                .toArray();
             return queryResult;
         },
         getAllNeighborhoods: async (_, __, context) => {
             const { db } = context;
             const neighborhood_data = db.collection("neighborhood_data");
-            const neighborhoods = await neighborhood_data.find({}).toArray();
+            const neighborhoods = await neighborhood_data
+                .find({})
+                .toArray();
             return neighborhoods;
         },
         // Article Resolvers
@@ -59,8 +74,9 @@ export const resolvers = {
                     dateSum: {
                         $gte: args.dateFrom,
                         $lte: args.dateTo,
-                    }
-                }).toArray();
+                    },
+                })
+                    .toArray();
                 return queryResult;
             }
             else {
@@ -82,5 +98,5 @@ export const resolvers = {
             const articles = await article_data.find({}).toArray();
             return articles;
         },
-    }
+    },
 };
