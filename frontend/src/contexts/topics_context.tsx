@@ -5,9 +5,10 @@ import { Topics } from "../__generated__/graphql"
 type TopicsContextType = {
     topicsMasterList: string[] | null,
     queryTopicsDataType: (queryType: any, options?: any) => void,
+    topic: string | null,
+    setTopic: (topic: string) => void
 }
 
-// Gets the masterlist of topics
 const TOPICS_DATA_QUERY = gql`
     query topicsQuery {
         getAllTopics {
@@ -22,6 +23,7 @@ const TopicsProvider: React.FC = ({children}: any) => {
     const [queryTopicsData, { data: topicsData, loading: topicsDataLoading, error: topicsDataError }] = useLazyQuery(TOPICS_DATA_QUERY);
 
     const [topics, setTopicsData] = React.useState<string[] | null>(null);
+    const [topic, setTopic] = React.useState<string | null>(null);
 
     React.useEffect(() => {
         if (topicsData && !topicsDataLoading && !topicsDataError) {
@@ -47,7 +49,7 @@ const TopicsProvider: React.FC = ({children}: any) => {
     };
 
     return (
-        <TopicsContext.Provider value={{ topicsMasterList: topics, queryTopicsDataType }}>
+        <TopicsContext.Provider value={{ topicsMasterList: topics, queryTopicsDataType, topic, setTopic }}>
             {children}
         </TopicsContext.Provider>
     );

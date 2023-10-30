@@ -16,6 +16,7 @@ import { TopicsContext } from "../contexts/topics_context";
 import { NeighborhoodContext } from "../contexts/neighborhood_context";
 import { TractContext } from "../contexts/tract_context";
 import dayjs from "dayjs";
+import TopicsPage from "../pages/TopicsPage/TopicsPage";
 
 export default function MainNavigator() {
   const {
@@ -30,11 +31,16 @@ export default function MainNavigator() {
   const { articleData, queryArticleDataType } =
     React.useContext(ArticleContext)!;
 
+  const { topicsMasterList, queryTopicsDataType, setTopic,topic } =
+    React.useContext(TopicsContext)!;
+
   const minDate = dayjs("2020-11-01");
   const maxDate = dayjs("2023-01-09");
 
   React.useEffect(() => {
     queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
+    queryTopicsDataType("TOPICS_DATA");
+    // setTopic("No Topics Selected");
     setNeighborhood("Fenway");
     queryTractDataType("TRACT_DATA", { tract: "010103" });
     queryArticleDataType("ARTICLE_DATA", {
@@ -44,17 +50,16 @@ export default function MainNavigator() {
     });
   }, []);
 
-  // console.log(tractData!.tract);
+  console.log(topicsMasterList);
+  // console.log(topic);
 
   return (
     <>
       <BrowserRouter>
         <TopNavBar></TopNavBar>
         <Routes>
-          <Route path="/IntroPage" element={<Home />} />
-          <Route path="/dev-mode" element={<DevMode />} />
           <Route path="/" element={<IntroPage />} />
-          <Route path="/SearchByKeyWord" element={<SearchByKeyWord />} />
+          <Route path="/Topics" element={<TopicsPage />} />
           <Route path="/UploadArticles" element={<FileUpload />} />
           <Route path="/Dashboard" element={<Dashboard />}></Route>
           <Route path="/Neighborhoods" element={<NeighborhoodPage />} />
