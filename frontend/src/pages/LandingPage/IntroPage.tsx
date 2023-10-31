@@ -38,34 +38,8 @@ const IntroPage = () => {
           alt={"Logo"}
         ></img>
 
-        <h1 className="App-title">Welcome To GBH Statistics</h1>
-        <p className="App-intro">
-          Choose a neighborhood and a date range to display statistics
-        </p>
-        <div className="search_container">
-          <div style={{ flex: 1 }}></div>
-          {/* <SearchFields showDropDown="true"></SearchFields> */}
-        </div>
-        <Button id="dev-button" onClick={navigateDeveloperMode}>
-          Search Neighborhoods!
-        </Button>
-        <Button
-          style={{ marginLeft: "10px" }}
-          id="dev-button"
-          onClick={navigateSearchByKeyWord}
-        >
-          Search By Keywords!
-        </Button>
-        <Button
-          style={{ marginLeft: "10px" }}
-          id="dev-button"
-          onClick={navigateUploadPage}
-        >
-          Upload Articles!
-        </Button>
-        <p style={{ display: showError ? "block" : "none" }}>
-          Please select a neighborhood
-        </p>
+        <h1 className="App-title" style={{marginTop: "20px"}}>Welcome To GBH Statistics</h1>
+        
       </header>
     </div>
   );

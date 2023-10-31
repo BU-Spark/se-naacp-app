@@ -106,7 +106,7 @@ const TopicsPage: React.FC = () => {
       dateTo: parseInt(maxDate.format("YYYYMMDD")),
       area: "all",
     });
-    // queryTractDataType("TRACT_DATA", { tract: "010103" });
+    queryTractDataType("TRACT_DATA", { tract: "010103" });
 
     queryTopicsDataType("TOPICS_DATA");
     queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
@@ -128,7 +128,7 @@ const TopicsPage: React.FC = () => {
     const temp: string[] = [];
     const articlesTemp: Article[] = [];
     const countTemp = countArticlesByTract(masterArticles, topic!);
-    
+
     countTemp.forEach((element) => {
       temp.push(
         getNeighborhood(element[0], neighborhoodMasterList!) +
@@ -146,8 +146,6 @@ const TopicsPage: React.FC = () => {
       );
     }
   }, [topic]);
-
-
 
   React.useEffect(() => {
     if (articleData && topic && topicsMasterList) {
