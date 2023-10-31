@@ -1,17 +1,17 @@
-import {ApolloServer}  from '@apollo/server';
-import {startStandaloneServer}  from '@apollo/server/standalone';
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
 
-import { typeDefs }  from "./graphql/schemas/type_definitions.js";
+import { typeDefs } from "./graphql/schemas/type_definitions.js";
 import { resolvers } from "./graphql/resolvers/graphql_resolvers.js";
 
 import { MongoClient, Db } from "mongodb";
-import { GraphQLError } from 'graphql';
+import { GraphQLError } from "graphql";
 
 interface Context {
   db: Db;
 }
 
-type ContextWrapperFunction = () => Promise<Context>
+type ContextWrapperFunction = () => Promise<Context>;
 
 // Apollo Server
 const server = new ApolloServer({
@@ -19,7 +19,10 @@ const server = new ApolloServer({
   resolvers,
 });
 
-const connectWithMongoDB = async (mongo_url: string, db_name: string): Promise<Db> => { 
+const connectWithMongoDB = async (
+  mongo_url: string,
+  db_name: string
+): Promise<Db> => {
   const client = new MongoClient(mongo_url);
   try {
     await client.connect();
@@ -27,12 +30,12 @@ const connectWithMongoDB = async (mongo_url: string, db_name: string): Promise<D
   } catch (error) {
     throw new GraphQLError("Failed to connect to MongoDB", {
       extensions: {
-        code: 'ECONNREFUSED',
-        raw_err_msg: error.message
-      }
+        code: "ECONNREFUSED",
+        raw_err_msg: error.message,
+      },
     });
   }
-}
+};
 
 // Context Wrapper
 // Build things you need inside to pass to context
@@ -41,19 +44,17 @@ const contextWrapper: ContextWrapperFunction = async () => {
   // const mongo_url = "mongodb://localhost:27017"; // Local development
   // const mongo_url = NAACP_DEPLOYMENT_URI; // Local development
 
-  const mongo_url = process.env.NAACP_MONGODB
+  const mongo_url = process.env.NAACP_MONGODB;
   // NAACP_DEPLOYMENT_URI
   const dbName = "se_naacp_gbh";
 
   return { db: await connectWithMongoDB(mongo_url, dbName) };
-}
+};
 
 const { url } = await startStandaloneServer(server, {
   context: contextWrapper,
-  listen: { port: 4000 },
+  listen: { port: 4000, host:  process.env.BACKEND_URL
+  },
 });
 
-
 console.log(`🚀  Server ready at PORT: ${url}`);
-
-
