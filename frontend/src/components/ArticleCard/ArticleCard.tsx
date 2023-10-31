@@ -42,8 +42,8 @@ const columns = [
   },
   { field: "author", headerName: "Author", width: 130 },
   { field: "publishingDate", headerName: "Publishing Date", width: 120 },
-  { field: "neighborhood", headerName: "Neighborhood", width: 110 },
-  { field: "censusTract", headerName: "Census Tract", width: 110 },
+  // { field: "neighborhood", headerName: "Neighborhood", width: 110 },
+  // { field: "censusTract", headerName: "Census Tract", width: 110 },
   { field: "category", headerName: "Category", width: 90 },
 ];
 
@@ -65,8 +65,8 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ articles }) => {
       title: { link: article.link, title: article.hl1 },
       author: `${article.author}`,
       publishingDate: `${dayjs(article.pub_date).format("MMM D, YYYY")}`,
-      neighborhood: `${article.neighborhoods[0]}`,
-      censusTract: `${article.tracts}`,
+      // neighborhood: `${article.neighborhoods[0]}`,
+      // censusTract: `${article.tracts}`,
       category: `${article.position_section}`,
     });
   });

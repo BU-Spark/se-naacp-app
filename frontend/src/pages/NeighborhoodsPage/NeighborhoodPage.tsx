@@ -24,51 +24,67 @@ import { TractContext } from "../../contexts/tract_context";
 import { ArticleContext } from "../../contexts/article_context";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
+import { TopicsContext } from "../../contexts/topics_context";
 
 const NeighborhoodPage: React.FC = () => {
   const minDate = dayjs("2020-11-01");
   const maxDate = dayjs("2023-01-09");
 
-  const { articleData, queryArticleDataType } =
-    React.useContext(ArticleContext)!;
-  const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-  const {
-    neighborhoodMasterList,
-    queryNeighborhoodDataType,
-    neighborhood,
-    setNeighborhood,
-  } = React.useContext(NeighborhoodContext)!;
 
-  const [articles, setArticles] = React.useState<Article[] | null>(null);
-  const [demographics, setDemographics] = React.useState<Demographics | null>(
-    null
-  );
+  //Context
+  const { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
+  const { tractData, queryTractDataType } = React.useContext(TractContext)!;
+  const { neighborhoodMasterList, queryNeighborhoodDataType,neighborhood,setNeighborhood} = React.useContext(NeighborhoodContext)!;
+  const { topicsMasterList, queryTopicsDataType, setTopic, topic } = React.useContext(TopicsContext)!;
+
+
+  //States
+  const [demographics, setDemographics] = React.useState<Demographics | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
+ 
+
+
+
+  // Setting Deafult Values
+  React.useEffect(() => {
+    queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
+    setNeighborhood("Fenway");
+    queryTractDataType("TRACT_DATA", { tract: "010103" });
+    queryArticleDataType("ARTICLE_DATA", {
+      dateFrom: parseInt(minDate.format("YYYYMMDD")),
+      dateTo: parseInt(maxDate.format("YYYYMMDD")),
+      area: "010103",
+    });
+  }, []);
+
+  //To change demographics when a tract is changed
   React.useEffect(() => {
     if (tractData) {
       setDemographics(tractData.demographics);
     }
   }, [tractData]);
 
+  // Check if everything is loaded up if yes show the page if not loading screen
   React.useEffect(() => {
-    // Check if all data is available
     if (articleData && tractData && neighborhoodMasterList) {
       setIsLoading(false);
     }
   }, [articleData, tractData, neighborhoodMasterList]);
 
   if (isLoading) {
-    return <Stack
-      sx={{
-        width: "100%",
-        color: "grey.500",
-        marginTop: "10px",
-      }}
-      spacing={2}
-    >
-      <LinearProgress color="secondary" />
-    </Stack>;
+    return (
+      <Stack
+        sx={{
+          width: "100%",
+          color: "grey.500",
+          marginTop: "10px",
+        }}
+        spacing={2}
+      >
+        <LinearProgress color="secondary" />
+      </Stack>
+    );
   }
 
   return (
@@ -122,7 +138,7 @@ const NeighborhoodPage: React.FC = () => {
         </div>
 
         <div className="row justify-content-evenly">
-          <div className="col-md-4 col-sm-12">
+          <div className="col-md-5 col-sm-12">
             <h1 className="titles">Top 5 Topics</h1>
             <FrequencyBarChart
               articles={articleData}
@@ -130,7 +146,7 @@ const NeighborhoodPage: React.FC = () => {
               openAI={false}
             ></FrequencyBarChart>
           </div>
-          <div className="col-md-8 col-sm-12">
+          <div className="col-md-7 col-sm-12">
             <h1 className="titles">Articles</h1>
 
             <ArticleCard articles={articleData}></ArticleCard>

@@ -27,39 +27,153 @@ import { LinearProgress, Stack } from "@mui/material";
 import TopicsSearchBar from "../../components/SearchFields/TopicsSearchBar/TopicsSearchBar";
 import { TopicsContext } from "../../contexts/topics_context";
 
+function getNeighborhood(
+  code: string,
+  neighborhoods: { [key: string]: string[] }
+): string | null {
+  for (let [neighborhoodName, codes] of Object.entries(neighborhoods)) {
+    if (codes.includes(code)) {
+      return neighborhoodName;
+    }
+  }
+  return null;
+}
+
+function countArticlesByTract(articles: Article[], positionSection: string) {
+  let counts: any = {};
+
+  articles.forEach((article) => {
+    if (article.position_section === positionSection && article.tracts) {
+      article.tracts.forEach((tract) => {
+        counts[tract] = (counts[tract] || 0) + 1;
+      });
+    }
+  });
+
+  let sortedCounts = Object.entries(counts).sort(
+    (a: any, b: any) => b[1] - a[1]
+  );
+  return sortedCounts;
+}
+
+function getArticlesByKeyWord(
+  keyword: string,
+  articles: Article[],
+  tract: string
+): Article[] {
+  const temp: Article[] = [];
+
+  articles.forEach((element) => {
+    if (
+      element.position_section === keyword &&
+      element.tracts.includes(tract)
+    ) {
+      temp.push(element);
+    }
+  });
+  return temp;
+}
+
 const TopicsPage: React.FC = () => {
   const minDate = dayjs("2020-11-01");
   const maxDate = dayjs("2023-01-09");
 
+  //Contex
   const { articleData, queryArticleDataType } =
     React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
   const {
     neighborhoodMasterList,
-    queryNeighborhoodDataType,
     neighborhood,
+    queryNeighborhoodDataType,
     setNeighborhood,
   } = React.useContext(NeighborhoodContext)!;
-  const { topicsMasterList, queryTopicsDataType, topic } =
+  const { topicsMasterList, topic, queryTopicsDataType, setTopic } =
     React.useContext(TopicsContext)!;
 
+  //State
   const [demographics, setDemographics] = React.useState<Demographics | null>(
     null
   );
+  const [articles, setArticles] = React.useState<Article[]>([]);
+  const [masterArticles, setMasterArticles] = React.useState<Article[]>([]);
+  const [tracts, setTracts] = React.useState<string[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  // Setting Deafult Values
+  React.useEffect(() => {
+    queryArticleDataType("ARTICLE_DATA", {
+      dateFrom: parseInt(minDate.format("YYYYMMDD")),
+      dateTo: parseInt(maxDate.format("YYYYMMDD")),
+      area: "all",
+    });
+    // queryTractDataType("TRACT_DATA", { tract: "010103" });
+
+    queryTopicsDataType("TOPICS_DATA");
+    queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
+    setTopic("Education");
+    setNeighborhood("Fenway");
+  }, []);
 
   React.useEffect(() => {
+    console.log("tractData");
     if (tractData) {
       setDemographics(tractData.demographics);
+      setArticles(
+        getArticlesByKeyWord(topic!, masterArticles, tractData!.tract)
+      );
     }
   }, [tractData]);
 
   React.useEffect(() => {
-    // Check if all data is available
-    if (articleData && tractData && neighborhoodMasterList) {
+    const temp: string[] = [];
+    const articlesTemp: Article[] = [];
+    const countTemp = countArticlesByTract(masterArticles, topic!);
+    
+    countTemp.forEach((element) => {
+      temp.push(
+        getNeighborhood(element[0], neighborhoodMasterList!) +
+          " - " +
+          element[0] +
+          " - " +
+          element[1]
+      );
+    });
+
+    setTracts(temp);
+    if (tractData) {
+      setArticles(
+        getArticlesByKeyWord(topic!, masterArticles, tractData!.tract)
+      );
+    }
+  }, [topic]);
+
+
+
+  React.useEffect(() => {
+    if (articleData && topic && topicsMasterList) {
+      setMasterArticles(articleData!);
+      setArticles(articleData!);
+      const countTemp = countArticlesByTract(articleData!, topic!);
+      const temp: string[] = [];
+
+      // queryTractDataType("TRACT_DATA", {
+      //   tract: countTemp[0][0],
+      // });
+
+      countTemp.forEach((element) => {
+        temp.push(
+          getNeighborhood(element[0], neighborhoodMasterList!) +
+            " - " +
+            element[0] +
+            " - " +
+            element[1]
+        );
+      });
+
+      setTracts(temp);
       setIsLoading(false);
     }
-  }, [articleData, tractData, neighborhoodMasterList]);
+  }, [articleData, topic, topicsMasterList]);
 
   if (isLoading) {
     return (
@@ -75,8 +189,6 @@ const TopicsPage: React.FC = () => {
       </Stack>
     );
   }
-
-  const listOfStrings: string[] = ["Apple", "Banana", "Cherry", "Date", "Fig"];
 
   return (
     <>
@@ -103,9 +215,7 @@ const TopicsPage: React.FC = () => {
         <div className="row justify-content-evenly">
           <div className="col-md-5 col-sm-12">
             <h1 className="titles">Tracts</h1>
-            <TractsDropDown
-              tracts={neighborhoodMasterList![neighborhood!]}
-            ></TractsDropDown>
+            <TractsDropDown tracts={tracts}></TractsDropDown>
           </div>
           <div className="col-md-7 col-sm-12">
             <h1 className="titles">Map</h1>
@@ -114,16 +224,16 @@ const TopicsPage: React.FC = () => {
         </div>
 
         <div className="row justify-content-evenly">
-          <div className="col-md-4 col-sm-12">
+          <div className="col-md-5 col-sm-12">
             <h1 className="titles">Demographics</h1>
             <NeighborhoodDemographicsBoard
               demographics={demographics}
             ></NeighborhoodDemographicsBoard>
           </div>
-          <div className="col-md-8 col-sm-12">
+          <div className="col-md-7 col-sm-12">
             <h1 className="titles">Articles</h1>
 
-            <ArticleCard articles={articleData}></ArticleCard>
+            <ArticleCard articles={articles}></ArticleCard>
           </div>
         </div>
       </div>

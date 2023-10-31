@@ -6,6 +6,7 @@ import { Card, CardContent } from "@mui/material";
 import "./TractsDropDown.css";
 import { TractContext } from "../../contexts/tract_context";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
+import { lchown } from "fs";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -31,9 +32,9 @@ interface TractsDropDownProps {
 
 const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-  const { neighborhood } = React.useContext(NeighborhoodContext)!;
-  const [selectedItems, setSelectedItems] = React.useState([""]);
-
+  const { neighborhood, setNeighborhood } =
+    React.useContext(NeighborhoodContext)!;
+  // const [selectedItems, setSelectedItems] = React.useState(tracts[0]);
 
   // React.useEffect(() => {
   //   setIsLoading([tracts[0]]);
@@ -42,17 +43,43 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
   const items: MenuItem[] = [];
 
   for (let index = 0; index < tracts.length; index++) {
+    const numberMatch = tracts[index].match(/\d+/);
+    const extractedNumber = numberMatch ? numberMatch[0] : null;
     items.push(getItem(tracts[index], tracts[index]));
   }
 
   const onSelectItem: MenuProps["onClick"] = (keys) => {
-    queryTractDataType("TRACT_DATA", {
-      tract: keys.key,
-    });
-    console.log(keys.key);
-  };
+    //   const numberMatch = keys.key.match(/\d+/);
+    //   const extractedNumber = numberMatch ? numberMatch[0] : null;
 
-  console.log(items[0]?.key);
+    //   const match = keys.key.match(/\b(\w+\s?\w?)\b\s?\d+/i);
+
+    // let location = '';
+    // let number = '';
+
+    // if (match) {
+    //   location = match[1];
+    //   number = match[2];
+    // }
+
+    const match = /([\w\s]+ - )?(\d+)/.exec(keys.key);
+    let location = "";
+    let number = "";
+
+    if (match) {
+      location = match[1] ? match[1].slice(0, -3) : ""; // Remove trailing ' - ' from the location
+      number = match[2];
+    }
+
+    console.log(location);
+    queryTractDataType("TRACT_DATA", {
+      tract: number,
+    });
+
+    if (location) {
+      setNeighborhood(location);
+    }
+  };
 
   return (
     <Card sx={{ width: "100%", height: "62vh" }}>
@@ -62,7 +89,7 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
           onClick={onSelectItem}
           style={{ width: "100%", height: "100%", overflow: "auto" }} // Added overflow: 'auto'
           items={items}
-          selectedKeys={[tractData!.tract]}
+          // selectedKeys={[tractData!.tract]}
         />
       </CardContent>
     </Card>

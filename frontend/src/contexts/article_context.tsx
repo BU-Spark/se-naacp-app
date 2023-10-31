@@ -1,76 +1,79 @@
 import React from "react";
 import { useLazyQuery, gql } from "@apollo/client";
-import { Article } from "../__generated__/graphql"
+import { Article } from "../__generated__/graphql";
 
 type ArticleContextType = {
-    articleData: Article[] | null, // This is for components to consume
-    queryArticleDataType: (queryType: any, options?: any) => void,
-}
+  articleData: Article[] | null; // This is for components to consume
+  queryArticleDataType: (queryType: any, options?: any) => void;
+};
 /* Article Queries */
 // We will pass what we need in here
 const ARTICLE_DATA_QUERY = gql`
-    query articleQuery($dateFrom: Int!, $dateTo: Int!, $area: String!) {
-        articleByDate(dateFrom: $dateFrom, dateTo: $dateTo, area: $area) {
-            author
-    body
-    content_id
-    dateSum
-    hl1
-    hl2
-    link
-    neighborhoods
-    openai_labels
-    position_section
-    pub_date
-    pub_name
-    tracts
-        }
+  query articleQuery($dateFrom: Int!, $dateTo: Int!, $area: String!) {
+    articleByDate(dateFrom: $dateFrom, dateTo: $dateTo, area: $area) {
+      author
+      dateSum
+      hl1
+      link
+      neighborhoods
+      openai_labels
+      position_section
+      pub_date
+      tracts
     }
+  }
 `;
 
-export const ArticleContext = React.createContext<ArticleContextType | null>(null);
+export const ArticleContext = React.createContext<ArticleContextType | null>(
+  null
+);
 
-const ArticleProvider: React.FC = ({children}: any) => { 
-    const [queryArticleData, { data: articleData, loading: articleDataLoading, error: articleDataError }] = useLazyQuery(ARTICLE_DATA_QUERY);
+const ArticleProvider: React.FC = ({ children }: any) => {
+  const [
+    queryArticleData,
+    { data: articleData, loading: articleDataLoading, error: articleDataError },
+  ] = useLazyQuery(ARTICLE_DATA_QUERY);
 
-    const [articles, setArticleData] = React.useState<Article[] | null>(null);
+  const [articles, setArticleData] = React.useState<Article[] | null>(null);
 
-    React.useEffect(() => {
-        if (articleData && !articleDataLoading && !articleDataError) {
-            setArticleData(articleData.articleByDate);
-        }
-    }, [articleData, articleDataLoading, articleDataError]);
-
-    // Processor functions. (Thinking to apply them in sequence...)
-    function removeDuplicates(input: string[]): string[] {
-        return Array.from(new Set(input));
+  React.useEffect(() => {
+    if (articleData && !articleDataLoading && !articleDataError) {
+      setArticleData(articleData.articleByDate);
     }
+  }, [articleData, articleDataLoading, articleDataError]);
 
-    // Main fetch sequence
-    // *Note* Maybe change queryType to take Enum?
+  // Processor functions. (Thinking to apply them in sequence...)
+  function removeDuplicates(input: string[]): string[] {
+    return Array.from(new Set(input));
+  }
 
-    // query Type -> Indicates which useLazyQuery hook to execute
-    // options? -> (Optional) Give the parameters needed for that useLazyQeury hook
-    // func_ops? -> (Optional) What functions to execute left to right to the data
-    const queryArticleDataType = (queryType: "ARTICLE_DATA", options?: any) => {
-        switch(queryType) {
-            case "ARTICLE_DATA":
-                queryArticleData({
-                    variables: options // This is where you pass in parameters
-                })
-                break;
-            default:
-                // Something went wrong here, Needs to throw error to user...
-                console.log("ERROR: Fetch Article Data does not have this queryType!");
-                break;
-        }
-    };
+  // Main fetch sequence
+  // *Note* Maybe change queryType to take Enum?
 
-    return (
-        <ArticleContext.Provider value={{ articleData: articles, queryArticleDataType}}>
-            {children}
-        </ArticleContext.Provider>
-    );
+  // query Type -> Indicates which useLazyQuery hook to execute
+  // options? -> (Optional) Give the parameters needed for that useLazyQeury hook
+  // func_ops? -> (Optional) What functions to execute left to right to the data
+  const queryArticleDataType = (queryType: "ARTICLE_DATA", options?: any) => {
+    switch (queryType) {
+      case "ARTICLE_DATA":
+        queryArticleData({
+          variables: options, // This is where you pass in parameters
+        });
+        break;
+      default:
+        // Something went wrong here, Needs to throw error to user...
+        console.log("ERROR: Fetch Article Data does not have this queryType!");
+        break;
+    }
+  };
+
+  return (
+    <ArticleContext.Provider
+      value={{ articleData: articles, queryArticleDataType }}
+    >
+      {children}
+    </ArticleContext.Provider>
+  );
 };
 
 export default ArticleProvider;

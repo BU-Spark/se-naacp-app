@@ -19,38 +19,8 @@ import dayjs from "dayjs";
 import TopicsPage from "../pages/TopicsPage/TopicsPage";
 
 export default function MainNavigator() {
-  const {
-    setNeighborhood,
-    neighborhood,
-    neighborhoodMasterList,
-    queryNeighborhoodDataType,
-  } = React.useContext(NeighborhoodContext)!;
+  
 
-  const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-
-  const { articleData, queryArticleDataType } =
-    React.useContext(ArticleContext)!;
-
-  const { topicsMasterList, queryTopicsDataType, setTopic,topic } =
-    React.useContext(TopicsContext)!;
-
-  const minDate = dayjs("2020-11-01");
-  const maxDate = dayjs("2023-01-09");
-
-  React.useEffect(() => {
-    queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
-    queryTopicsDataType("TOPICS_DATA");
-    // setTopic("No Topics Selected");
-    setNeighborhood("Fenway");
-    queryTractDataType("TRACT_DATA", { tract: "010103" });
-    queryArticleDataType("ARTICLE_DATA", {
-      dateFrom: parseInt(minDate.format("YYYYMMDD")),
-      dateTo: parseInt(maxDate.format("YYYYMMDD")),
-      area: "010103",
-    });
-  }, []);
-
-  console.log(topicsMasterList);
   // console.log(topic);
 
   return (
