@@ -17,7 +17,7 @@ import { Article, Demographics } from "../../__generated__/graphql";
 
 //CSS
 import "./TopicsPage.css";
-import "font-awesome/css/font-awesome.min.css";
+// import "font-awesome/css/font-awesome.min.css";
 
 //Contex
 import { TractContext } from "../../contexts/tract_context";
