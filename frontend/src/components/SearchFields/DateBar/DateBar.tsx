@@ -1,5 +1,6 @@
 import React from "react";
 import "./DateBar.css";
+
 import TextField from "@mui/material/TextField";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -21,21 +22,10 @@ const DateField: React.FC<DateFieldProps> = ({ minDate, maxDate, isFrom }) => {
   const [dateFrom, setdateFrom] = React.useState(minDate);
   const [dateTo, setDateTo] = React.useState(maxDate);
 
-  const { articleData, queryArticleDataType } =  React.useContext(ArticleContext)!;
+  const { articleData, queryArticleDataType } =
+    React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-
-  const {neighborhood } = React.useContext(NeighborhoodContext)!;
-
-
-  // const [articles, setArticles] = React.useState<Article[] | null>(null);
-  // const [demographics, setDemographics] = React.useState<Demographics | null>(null);
-  // const [isLoading, setIsLoading] = React.useState(true);
-
-  // React.useEffect(() => {
-
-  //   setArticles(articleData);
-  //   // console.log(articleData);
-  // }, [tractData, articleData]);
+  const { neighborhood } = React.useContext(NeighborhoodContext)!;
 
   const handleChangeFrom = (d: any) => {
     queryArticleDataType("ARTICLE_DATA", {
@@ -45,8 +35,8 @@ const DateField: React.FC<DateFieldProps> = ({ minDate, maxDate, isFrom }) => {
     });
     setdateFrom(d);
   };
+
   const handleChangeTo = (d: any) => {
-   
     setDateTo(d);
   };
 
@@ -58,85 +48,85 @@ const DateField: React.FC<DateFieldProps> = ({ minDate, maxDate, isFrom }) => {
     });
   }, [dateFrom, dateTo, tractData, neighborhood]);
 
-
-
-
-  
   return (
-    <div className="search">
-      <p className="word">{"From"}</p>
-      <div style={{ marginLeft: 9, marginTop: 5 }}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DesktopDatePicker
-            inputFormat="MM/DD/YYYY"
-            value={dateFrom}
-            onChange={handleChangeFrom}
-            minDate={minDate}
-            maxDate={maxDate}
-            renderInput={(params) => (
-              <TextField
-                sx={{
-                  width: "97%",
-                  "& .MuiInputBase-root": {
-                    borderRadius: 0.5,
-                    height: 34,
-                  },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderWidth: 2,
-                      borderColor: "#ccc",
+    <>
+      <div style={{ display: "flex" }}>
+        <div>
+          <p className="word1">Start Date</p>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DesktopDatePicker
+              inputFormat="MM/DD/YYYY"
+              value={dateFrom}
+              onChange={handleChangeFrom}
+              minDate={minDate}
+              maxDate={maxDate}
+              renderInput={(params) => (
+                <TextField
+                  sx={{
+                    width: "97%",
+                    "& .MuiInputBase-root": {
+                      borderRadius: 0.5,
+                      height: 34,
                     },
-                    "&:hover fieldset": {
-                      borderColor: "#ccc",
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderWidth: 2,
+                        borderColor: "#ccc",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#ccc",
+                      },
                     },
-                  },
-                  "& .MuiInput-underline:after": {
-                    borderBottomColor: "#ccc",
-                  },
-                }}
-                {...params}
-              />
-            )}
-          />
-        </LocalizationProvider>
+                    "& .MuiInput-underline:after": {
+                      borderBottomColor: "#ccc",
+                    },
+                  }}
+                  {...params}
+                />
+              )}
+            />
+          </LocalizationProvider>
+        </div>
+
+        <div>
+          <p className="word1">End Date</p>
+
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DesktopDatePicker
+              inputFormat="MM/DD/YYYY"
+              value={dateTo}
+              onChange={handleChangeTo}
+              minDate={minDate}
+              maxDate={maxDate}
+              renderInput={(params) => (
+                <TextField
+                  sx={{
+                    width: "97%",
+                    "& .MuiInputBase-root": {
+                      borderRadius: 0.5,
+                      height: 34,
+                    },
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderWidth: 2,
+                        borderColor: "#ccc",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#ccc",
+                      },
+                    },
+                    "& .MuiInput-underline:after": {
+                      borderBottomColor: "#ccc",
+                    },
+                  }}
+                  {...params}
+                />
+              )}
+            />
+          </LocalizationProvider>
+        </div>
       </div>
-      <p className="word">{"To"}</p>
-      <div style={{ marginLeft: 9, marginTop: 5 }}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DesktopDatePicker
-            inputFormat="MM/DD/YYYY"
-            value={dateTo}
-            onChange={handleChangeTo}
-            minDate={minDate}
-            maxDate={maxDate}
-            renderInput={(params) => (
-              <TextField
-                sx={{
-                  width: "97%",
-                  "& .MuiInputBase-root": {
-                    borderRadius: 0.5,
-                    height: 34,
-                  },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderWidth: 2,
-                      borderColor: "#ccc",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#ccc",
-                    },
-                  },
-                  "& .MuiInput-underline:after": {
-                    borderBottomColor: "#ccc",
-                  },
-                }}
-                {...params}
-              />
-            )}
-          />
-        </LocalizationProvider>
-      </div>
-    </div>
+    </>
   );
 };
 

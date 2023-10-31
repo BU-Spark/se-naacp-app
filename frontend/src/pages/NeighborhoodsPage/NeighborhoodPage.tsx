@@ -30,21 +30,24 @@ const NeighborhoodPage: React.FC = () => {
   const minDate = dayjs("2020-11-01");
   const maxDate = dayjs("2023-01-09");
 
-
   //Context
-  const { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
+  const { articleData, queryArticleDataType } =
+    React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-  const { neighborhoodMasterList, queryNeighborhoodDataType,neighborhood,setNeighborhood} = React.useContext(NeighborhoodContext)!;
-  const { topicsMasterList, queryTopicsDataType, setTopic, topic } = React.useContext(TopicsContext)!;
-
+  const {
+    neighborhoodMasterList,
+    queryNeighborhoodDataType,
+    neighborhood,
+    setNeighborhood,
+  } = React.useContext(NeighborhoodContext)!;
+  const { topicsMasterList, queryTopicsDataType, setTopic, topic } =
+    React.useContext(TopicsContext)!;
 
   //States
-  const [demographics, setDemographics] = React.useState<Demographics | null>(null);
+  const [demographics, setDemographics] = React.useState<Demographics | null>(
+    null
+  );
   const [isLoading, setIsLoading] = React.useState(true);
-
- 
-
-
 
   // Setting Deafult Values
   React.useEffect(() => {
@@ -101,19 +104,24 @@ const NeighborhoodPage: React.FC = () => {
         </div>
 
         <div className="row justify-content-evenly">
-          <div className="col-md-6 col-sm-12">
+          <div className="col-md-3 col-sm-12">
             <SearchBarDropDown
               title="Neighborhoods"
               listOfWords={Object.keys(neighborhoodMasterList!)}
             ></SearchBarDropDown>
           </div>
-          <div className="col-md-6 col-sm-12">
+          <div className="col-md-5 col-sm-12">
+           
+          </div>
+          <div className="col-md-4 col-sm-12">
+            <div>
             <DateField
               title="From"
               minDate={minDate}
               maxDate={maxDate}
               isFrom={true}
             ></DateField>
+            </div>
           </div>
         </div>
 
