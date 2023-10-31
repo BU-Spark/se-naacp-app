@@ -15,9 +15,7 @@ import TractProvider from "./contexts/tract_context";
 import ArticleProvider from "./contexts/article_context";
 import NeighborhoodProvider from "./contexts/neighborhood_context";
 import TopicsProvider from "./contexts/topics_context";
-import Auth0ProviderNavigate, {
-	Auth0ProviderComponent,
-} from "./config/Auth0Provider";
+import { Auth0ProviderComponent } from "./config/Auth0Provider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

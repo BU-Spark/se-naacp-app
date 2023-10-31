@@ -14,6 +14,7 @@ export const Auth0ProviderNavigate = ({ children }) => {
 			"Please set REACT_APP_AUTH0_DOMAIN and REACT_APP_AUTH0_CLIENT_ID env. variables",
 		);
 
+	// TODO: play with the behavior of this function
 	const onRedirectCallback = (appState) => {
 		navigate(appState?.returnTo || window.location.pathname);
 	};
