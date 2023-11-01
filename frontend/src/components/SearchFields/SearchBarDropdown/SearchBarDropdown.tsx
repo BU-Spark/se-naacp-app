@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import "./SearchBarDropdown.css";
-import dayjs from "dayjs";
-import { DateContext } from "../../../contexts/dateContext.js";
 
 // MUI UI
 import FormControl from "@mui/material/FormControl";
@@ -11,12 +9,7 @@ import Select from "@mui/material/Select";
 // Uniqid for unique keys
 import uniqid from "uniqid";
 
-// React Contexts/Context Methods
-import { StateContext, stateMethods } from "../../../contexts/stateContext.js";
-import { NeighborhoodContext2 } from "../../../contexts/neighborhoodContext.js";
-
 // Context
-import { ArticleContext } from "../../../contexts/article_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 import { TractContext } from "../../../contexts/tract_context";
 

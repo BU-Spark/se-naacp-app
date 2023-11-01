@@ -1,8 +1,6 @@
 //Libaries
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
-import { useState, CSSProperties } from "react";
 
 //Components
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
@@ -24,7 +22,6 @@ import { TractContext } from "../../contexts/tract_context";
 import { ArticleContext } from "../../contexts/article_context";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
-import { TopicsContext } from "../../contexts/topics_context";
 
 const NeighborhoodPage: React.FC = () => {
   const minDate = dayjs("2020-11-01");
@@ -34,24 +31,14 @@ const NeighborhoodPage: React.FC = () => {
   const { articleData, queryArticleDataType } =
     React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-  const {
-    neighborhoodMasterList,
-    queryNeighborhoodDataType,
-    neighborhood,
-    setNeighborhood,
-  } = React.useContext(NeighborhoodContext)!;
-  const { topicsMasterList, queryTopicsDataType, setTopic, topic } =
-    React.useContext(TopicsContext)!;
+  const { neighborhoodMasterList, neighborhood, setNeighborhood } = React.useContext(NeighborhoodContext);
 
   //States
-  const [demographics, setDemographics] = React.useState<Demographics | null>(
-    null
-  );
+  const [demographics, setDemographics] = React.useState<Demographics | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
   // Setting Deafult Values
   React.useEffect(() => {
-    queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
     setNeighborhood("Fenway");
     queryTractDataType("TRACT_DATA", { tract: "010103" });
     queryArticleDataType("ARTICLE_DATA", {

@@ -8,22 +8,8 @@ import geoData from "../../assets/mapsJSON/Census2020_Tracts.json";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
-import { NeighborhoodContext2 } from "../../contexts/neighborhoodContext";
-
-// MUI Loading
-import Stack from "@mui/material/Stack";
-import CircularProgress from "@mui/material/CircularProgress";
-
 // Map API (Pigeon Maps)
 import { GeoJson, Map, Marker, ZoomControl } from "pigeon-maps";
-
-// React Contexts/Context Methods
-import { DateContext, DateMethods } from "../../contexts/dateContext.js";
-import { StateContext, stateMethods } from "../../contexts/stateContext.js";
-
-// Redux
-import { useSelector, useDispatch } from "react-redux";
-import { setLoadingState } from "../../redux/masterState/masterStateSlice";
 
 // Uniqid for unique keys
 import uniqid from "uniqid";

@@ -15,7 +15,6 @@ import { Article } from "../../__generated__/graphql";
 import uniqid from "uniqid";
 
 // Contexts
-import { StateContext, stateMethods } from "../../contexts/stateContext";
 import { Link } from "@mui/material";
 import Lottie from "react-lottie-player";
 

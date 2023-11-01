@@ -1,15 +1,9 @@
 import "./Dashboard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useContext } from "react";
-import dayjs, { Dayjs } from "dayjs";
 
-import NeighborhoodDemographicsBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
-import { Article } from "../../__generated__/graphql";
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
 import FrequencyBarChart from "../../components/FrequencyBarChart/FrequencyBarChart";
-import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
-import TopNavBar from "../../components/TopNavBar/TopNavBar";
-import SearchFields from "../../components/SearchFields/SearchFields";
 import AtGlance from "../../components/AtGlance/atGlance";
 import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods";
 import { Outlet } from "react-router-dom";
@@ -17,8 +11,7 @@ import { Outlet } from "react-router-dom";
 import { ArticleContext } from "../../contexts/article_context";
 export default function Dashboard() {
   
-  var { articleData, queryArticleDataType } =
-    React.useContext(ArticleContext)!;
+  var { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
 
   React.useEffect(() => {
     queryArticleDataType("ARTICLE_DATA", {
