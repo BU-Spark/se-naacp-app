@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Pages
 import IntroPage from "../pages/LandingPage/IntroPage";
@@ -12,6 +12,9 @@ import { TopicsContext } from "../contexts/topics_context";
 import { NeighborhoodContext } from "../contexts/neighborhood_context";
 import TopicsPage from "../pages/TopicsPage/TopicsPage";
 import { Auth0ProviderNavigate } from "../config/Auth0Provider";
+import Callback from "../pages/Callback/Callback";
+import Profile from "../pages/Profile/Profile";
+import { ProtectedRoute } from "../components/ProtectedRoute/ProtectedRoute";
 
 export default function MainNavigator() {
 	return (
@@ -33,6 +36,15 @@ export default function MainNavigator() {
 						<Route
 							path='/Neighborhoods'
 							element={<NeighborhoodPage />}
+						/>
+						{/* 
+							/Callback basically a loading screen to show while auth context is 
+							delivered, before being redirected back to home page
+						 */}
+						<Route path='/Callback' element={<Callback />} />
+						<Route
+							path='/Profile'
+							element={<ProtectedRoute child={Profile} />}
 						/>
 					</Routes>
 				</Auth0ProviderNavigate>

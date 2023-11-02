@@ -5,40 +5,56 @@ import Logo from "../../assets/logos/logo.svg";
 import "./TopNavBar.css";
 import { useState } from "react";
 
+import { useAuth0 } from "@auth0/auth0-react";
+import { LogoutButton } from "../LoginButtons/LogoutButton";
+import { LoginButton } from "../LoginButtons/LoginButton";
+
 const { Header } = Layout;
 
 const TopNavBar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+	const [menuOpen, setMenuOpen] = useState(false);
 
-  return (
-    <nav>
-      <Link to="/" className="title">
-        <img style={{ width: "6vw" }} src={Logo} alt="gbh-logo" />
-      </Link>
-      <div className="menu" onClick={() => setMenuOpen(!menuOpen)}>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      <ul className={menuOpen ? "open" : ""}>
-        <li>
-          <NavLink to="Topics">Explore Topics</NavLink>
-        </li>
-        <li>
-          <NavLink to="/Neighborhoods">Neighborhoods</NavLink>
-        </li>
-        {/* <li>
+	const { user, isAuthenticated } = useAuth0();
+
+	return (
+		<nav>
+			<Link to='/' className='title'>
+				<img style={{ width: "6vw" }} src={Logo} alt='gbh-logo' />
+			</Link>
+			<div className='menu' onClick={() => setMenuOpen(!menuOpen)}>
+				<span></span>
+				<span></span>
+				<span></span>
+			</div>
+			<ul className={menuOpen ? "open" : ""}>
+				<li>
+					<NavLink to='Topics'>Explore Topics</NavLink>
+				</li>
+				<li>
+					<NavLink to='/Neighborhoods'>Neighborhoods</NavLink>
+				</li>
+				{/* <li>
           <NavLink to="/Comparison">Comparison</NavLink>
         </li> */}
-        <li>
-          <NavLink to="/Upload">Upload</NavLink>
-        </li>
-        <li>
-          <NavLink to="/Dashboard">Dashboard</NavLink>
-        </li>
-      </ul>
-    </nav>
-  );
+				<li>
+					<NavLink to='/Upload'>Upload</NavLink>
+				</li>
+				<li>
+					<NavLink to='/Dashboard'>Dashboard</NavLink>
+				</li>
+				{isAuthenticated ? (
+					<>
+						<span style={{ color: "black" }}>
+							Hi, <a href='/profile'>{user?.given_name}</a>
+						</span>
+						<LogoutButton />
+					</>
+				) : (
+					<LoginButton />
+				)}
+			</ul>
+		</nav>
+	);
 };
 
 export default TopNavBar;
