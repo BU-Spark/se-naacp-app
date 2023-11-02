@@ -8,7 +8,7 @@ export const LoginButton = () => {
 	const handleLogin = async () => {
 		await loginWithRedirect({
 			appState: {
-				returnTo: window.location.origin,
+				returnTo: "/",
 			},
 		});
 	};
