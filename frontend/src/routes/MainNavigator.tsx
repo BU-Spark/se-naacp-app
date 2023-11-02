@@ -11,31 +11,13 @@ import NeighborhoodPage from "../pages/NeighborhoodsPage/NeighborhoodPage"; // R
 import { TopicsContext } from "../contexts/topics_context";
 import { NeighborhoodContext } from "../contexts/neighborhood_context";
 import TopicsPage from "../pages/TopicsPage/TopicsPage";
-import Auth0ProviderComponent from "../config/Auth0Provider";
+import { Auth0ProviderNavigate } from "../config/Auth0Provider";
 
 export default function MainNavigator() {
-	const Auth0ProviderRedirectCallback = ({
-		children,
-	}: {
-		children: React.ReactNode;
-	}) => {
-		const navigate = useNavigate();
-		const onRedirectCallback = (appState: any) => {
-			navigate(
-				(appState && appState.returnTo) || window.location.pathname,
-			);
-		};
-		return (
-			<Auth0ProviderComponent onRedirectCallback={onRedirectCallback}>
-				{children}
-			</Auth0ProviderComponent>
-		);
-	};
-
 	return (
 		<>
 			<BrowserRouter>
-				<Auth0ProviderRedirectCallback>
+				<Auth0ProviderNavigate>
 					<TopNavBar></TopNavBar>
 					<Routes>
 						<Route path='/' element={<IntroPage />} />
@@ -53,7 +35,7 @@ export default function MainNavigator() {
 							element={<NeighborhoodPage />}
 						/>
 					</Routes>
-				</Auth0ProviderRedirectCallback>
+				</Auth0ProviderNavigate>
 			</BrowserRouter>
 		</>
 	);

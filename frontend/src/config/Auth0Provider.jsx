@@ -1,8 +1,12 @@
 import { Auth0Provider } from "@auth0/auth0-react";
-const Auth0ProviderComponent = ({ children, ...props }) => {
-	const domain = process.env.REACT_APP_AUTH0_DOMAIN;
-	const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
-	const audience = process.env.REACT_APP_AUTH0_AUDIENCE;
+import React from "react";
+import { useNavigate } from "react-router-dom";
+const domain = process.env.REACT_APP_AUTH0_DOMAIN;
+const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+const redirect_uri = process.env.REACT_APP_AUTH0_REDIRECT_URI;
+
+export const Auth0ProviderNavigate = ({ children }) => {
+	const navigate = useNavigate();
 
 	// Fail fast if the environment variables aren't set
 	if (!domain || !clientId)
@@ -10,29 +14,39 @@ const Auth0ProviderComponent = ({ children, ...props }) => {
 			"Please set REACT_APP_AUTH0_DOMAIN and REACT_APP_AUTH0_CLIENT_ID env. variables",
 		);
 
-	/**
-	 * Callback triggered when a successful login occurs.
-	 *
-	 * Here you could redirect your users to a protected route.
-	 *
-	 * This is not needed if you're not using a custom router, like `react-router`
-	 */
+	const onRedirectCallback = (appState) => {
+		navigate(appState?.returnTo || window.location.pathname);
+	};
 
 	return (
 		<Auth0Provider
 			domain={domain}
 			clientId={clientId}
-			redirectUri={window.location.origin}
-			audience={audience}
-			useRefreshTokens
-			// Token storage option, `localstorage` gives the feature
-			// to not log out your users when they close your application
-			cacheLocation='localstorage'
-			{...props}
+			authorizationParams={{
+				redirect_uri: redirect_uri,
+			}}
 		>
 			{children}
 		</Auth0Provider>
 	);
 };
 
-export default Auth0ProviderComponent;
+export const Auth0ProviderComponent = ({ children }) => {
+	// Fail fast if the environment variables aren't set
+	if (!domain || !clientId)
+		throw new Error(
+			"Please set REACT_APP_AUTH0_DOMAIN and REACT_APP_AUTH0_CLIENT_ID env. variables",
+		);
+
+	return (
+		<Auth0Provider
+			domain={domain}
+			clientId={clientId}
+			authorizationParams={{
+				redirect_uri: redirect_uri,
+			}}
+		>
+			{children}
+		</Auth0Provider>
+	);
+};
