@@ -43,15 +43,6 @@ const TopNavBar = () => {
 				<li>
 					<NavLink to='/Dashboard'>Dashboard</NavLink>
 				</li>
-
-				{isAuthenticated && (
-					<li>
-						<NavLink to='/Profile'>
-							<PersonIcon style={{ color: "black" }} />
-							{user?.name}
-						</NavLink>
-					</li>
-				)}
 				<li>{isAuthenticated ? <LogoutButton /> : <LoginButton />}</li>
 			</ul>
 		</nav>

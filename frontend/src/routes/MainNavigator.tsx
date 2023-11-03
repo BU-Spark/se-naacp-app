@@ -13,8 +13,8 @@ import { NeighborhoodContext } from "../contexts/neighborhood_context";
 import TopicsPage from "../pages/TopicsPage/TopicsPage";
 import { Auth0ProviderNavigate } from "../config/Auth0Provider";
 import Callback from "../pages/Callback/Callback";
-import Profile from "../pages/Profile/Profile";
 import { ProtectedRoute } from "../components/ProtectedRoute/ProtectedRoute";
+import { Topics } from "../__generated__/graphql";
 
 export default function MainNavigator() {
 	const { topicsMasterList, queryTopicsDataType } =
@@ -33,29 +33,33 @@ export default function MainNavigator() {
 				<Auth0ProviderNavigate>
 					<TopNavBar></TopNavBar>
 					<Routes>
-						<Route path='/' element={<IntroPage />} />
-						<Route path='/Topics' element={<TopicsPage />} />
+						<Route
+							path='/'
+							element={<ProtectedRoute child={IntroPage} />}
+						/>
+						<Route
+							path='/Topics'
+							element={<ProtectedRoute child={TopicsPage} />}
+						/>
 						<Route
 							path='/UploadArticles'
-							element={<FileUpload />}
+							element={<ProtectedRoute child={FileUpload} />}
 						/>
 						<Route
 							path='/Dashboard'
-							element={<Dashboard />}
+							element={<ProtectedRoute child={Dashboard} />}
 						></Route>
 						<Route
 							path='/Neighborhoods'
-							element={<NeighborhoodPage />}
+							element={
+								<ProtectedRoute child={NeighborhoodPage} />
+							}
 						/>
 						{/* 
 							/Callback basically a loading screen to show while auth context is 
 							delivered, before being redirected back to home page
 						 */}
 						<Route path='/Callback' element={<Callback />} />
-						<Route
-							path='/Profile'
-							element={<ProtectedRoute child={Profile} />}
-						/>
 					</Routes>
 				</Auth0ProviderNavigate>
 			</BrowserRouter>
