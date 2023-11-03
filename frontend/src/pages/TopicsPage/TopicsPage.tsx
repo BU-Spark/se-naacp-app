@@ -1,17 +1,13 @@
 //Libaries
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
-import { useState, CSSProperties } from "react";
 
 //Components
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
-import FrequencyBarChart from "../../components/FrequencyBarChart/FrequencyBarChart";
 import NeighborhoodDemographicsBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
 import TractsDropDown from "../../components/TractsDropDown/TractsDropDown";
 import MapCard from "../../components/MapCard/MapCard";
-import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
-import DateField from "../../components/SearchFields/DateBar/DateBar";
+
 //Types
 import { Article, Demographics } from "../../__generated__/graphql";
 
@@ -79,37 +75,28 @@ const TopicsPage: React.FC = () => {
   const maxDate = dayjs("2023-01-09");
 
   //Contex
-  const { articleData, queryArticleDataType } =
-    React.useContext(ArticleContext)!;
+  const { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-  const {
-    neighborhoodMasterList,
-    neighborhood,
-    queryNeighborhoodDataType,
-    setNeighborhood,
-  } = React.useContext(NeighborhoodContext)!;
-  const { topicsMasterList, topic, queryTopicsDataType, setTopic } =
-    React.useContext(TopicsContext)!;
+  const { neighborhoodMasterList, setNeighborhood} = React.useContext(NeighborhoodContext)!;
+  const { topicsMasterList, topic, setTopic } = React.useContext(TopicsContext)!;
 
   //State
-  const [demographics, setDemographics] = React.useState<Demographics | null>(
-    null
-  );
+  const [demographics, setDemographics] = React.useState<Demographics | null>(null);
   const [articles, setArticles] = React.useState<Article[]>([]);
   const [masterArticles, setMasterArticles] = React.useState<Article[]>([]);
   const [tracts, setTracts] = React.useState<string[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  // Setting Deafult Values
+
+  // Setting Default Values
   React.useEffect(() => {
-    queryArticleDataType("ARTICLE_DATA", {
+    queryArticleDataType(
+      "ARTICLE_DATA", {
       dateFrom: parseInt(minDate.format("YYYYMMDD")),
       dateTo: parseInt(maxDate.format("YYYYMMDD")),
       area: "all",
     });
     queryTractDataType("TRACT_DATA", { tract: "010103" });
 
-    queryTopicsDataType("TOPICS_DATA");
-    queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
     setTopic("Education");
     setNeighborhood("Fenway");
   }, []);
@@ -153,10 +140,6 @@ const TopicsPage: React.FC = () => {
       setArticles(articleData!);
       const countTemp = countArticlesByTract(articleData!, topic!);
       const temp: string[] = [];
-
-      // queryTractDataType("TRACT_DATA", {
-      //   tract: countTemp[0][0],
-      // });
 
       countTemp.forEach((element) => {
         temp.push(

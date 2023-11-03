@@ -3,11 +3,7 @@ import dayjs, { Dayjs } from "dayjs";
 
 // Class Component
 import SearchBarDropdown from "./SearchBarDropdown/SearchBarDropdown";
-import Warning from "./Warnings/Warning";
 import DateBar from "./DateBar/DateBar";
-
-// React Contexts/Context Methods
-import { DateContext, DateMethods } from "../../contexts/dateContext";
 
 interface SearchFieldProps {
   minDate: Dayjs;
@@ -22,23 +18,6 @@ const SearchFields: React.FC<SearchFieldProps> = ({
   listOfWords,
   showDropDown,
 }) => {
-  const { dates } = React.useContext(DateContext); // Global Context of Dates
-
-  // const [warn, setWarn] = React.useState<boolean>(false);
-
-  // const WarningBtn = (warningBool: boolean) => {
-  //   if (warningBool) {
-  //     return <Warning></Warning>;
-  //   }
-  // };
-
-  // React.useEffect(() => {
-  //   if (!DateMethods.dateValidation(dates[0], dates[1])) {
-  //     setWarn(true);
-  //   } else {
-  //     setWarn(false);
-  //   }
-  // }, [dates]);
 
   return (
     <div

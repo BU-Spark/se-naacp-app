@@ -9,6 +9,13 @@ type TopicsContextType = {
     setTopic: (topic: string) => void
 }
 
+const defaultTopicsContext: TopicsContextType = {
+    topicsMasterList: null,
+    queryTopicsDataType: () => {},
+    topic: null,  
+    setTopic: () => {}
+};
+
 const TOPICS_DATA_QUERY = gql`
     query topicsQuery {
         getAllTopics {
@@ -17,7 +24,7 @@ const TOPICS_DATA_QUERY = gql`
     }
 `;
 
-export const TopicsContext = React.createContext<TopicsContextType | null>(null);
+export const TopicsContext = React.createContext<TopicsContextType>(defaultTopicsContext);
 
 const TopicsProvider: React.FC = ({children}: any) => {
     const [queryTopicsData, { data: topicsData, loading: topicsDataLoading, error: topicsDataError }] = useLazyQuery(TOPICS_DATA_QUERY);
