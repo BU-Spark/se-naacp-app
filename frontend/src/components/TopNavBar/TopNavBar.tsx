@@ -9,7 +9,6 @@ import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LogoutButton } from "../LoginButtons/LogoutButton";
 import { LoginButton } from "../LoginButtons/LoginButton";
-import Person from "@mui/icons-material/Person";
 
 const { Header } = Layout;
 

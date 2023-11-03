@@ -17,6 +17,16 @@ import Profile from "../pages/Profile/Profile";
 import { ProtectedRoute } from "../components/ProtectedRoute/ProtectedRoute";
 
 export default function MainNavigator() {
+	const { topicsMasterList, queryTopicsDataType } =
+		React.useContext(TopicsContext);
+	const { neighborhoodMasterList, queryNeighborhoodDataType } =
+		React.useContext(NeighborhoodContext);
+
+	React.useEffect(() => {
+		// Bootstrap Master list data
+		queryTopicsDataType("TOPICS_DATA");
+		queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
+	}, [topicsMasterList, neighborhoodMasterList]);
 	return (
 		<>
 			<BrowserRouter>

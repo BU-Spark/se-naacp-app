@@ -14,7 +14,12 @@ export const LogoutButton = () => {
 			variant='contained'
 			className='button__logout Button'
 			onClick={handleLogout}
-			style={{ backgroundColor: "#6a0dad", color: "white" }}
+			style={{
+				backgroundColor: "#6a0dad",
+				color: "white",
+				padding: ".5rem",
+				margin: " 0 1rem",
+			}}
 		>
 			Log Out
 		</Button>

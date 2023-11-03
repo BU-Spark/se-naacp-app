@@ -18,7 +18,12 @@ export const LoginButton = () => {
 			className='button__login Button
 		'
 			onClick={handleLogin}
-			style={{ backgroundColor: "#6a0dad", color: "white" }}
+			style={{
+				backgroundColor: "#6a0dad",
+				color: "white",
+				padding: ".5rem",
+				margin: " 0 1rem",
+			}}
 		>
 			Log In
 		</Button>
