@@ -4,6 +4,10 @@
     "bootstrap": "^5.3.2",
     "font-awesome": "^4.7.0",
     "graphql": "^16.8.1",
-    "react-bootstrap": "^2.9.0"
+    "react-bootstrap": "^2.9.0",
+    "xmldom": "^0.6.0"
+  },
+  "devDependencies": {
+    "@types/xmldom": "^0.1.33"
   }
 }
