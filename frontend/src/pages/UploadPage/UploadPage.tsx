@@ -14,33 +14,19 @@ const CSVUploadBox = () => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
-
-  const validateCsvHeaders = (file: File) => {
+  
+  // only check missing headers, not extra headers or duplicate headers
+  const validateCsvHeaders = (file: File, callback: (missingHeaders?: string[]) => void) => {
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
       const text = e.target?.result as string;
-      const headers = text.slice(0, text.indexOf("\n")).split(",");
-
-      const expectedHeaders = ["h1", "h2"];
+      // handle \r return carriage character
+      const headers = text.slice(0, text.search(/\r?\n/)).split(",").map(header => header.trim());
+      // expected header list
+      const expectedHeaders = ["h1", "h2", "h3"];
       const missingHeaders = expectedHeaders.filter(header => !headers.includes(header));
-
-      setUploadedFiles(prevFiles => prevFiles.map(f => {
-        if (f.name === file.name) {
-          if (missingHeaders.length > 0) {
-            const errorMessage = `Missing headers: ${missingHeaders.join(", ")}`;
-            return {
-              ...f,
-              progress: f.progress,
-              status: errorMessage,
-            };
-          }
-          return {
-            ...f,
-            status: 'Complete',
-          };
-        }
-        return f;
-      }));
+      
+      callback(missingHeaders);
     };
     reader.readAsText(file);
   }
@@ -93,24 +79,35 @@ const CSVUploadBox = () => {
       progress: 0,
       status: 'Uploading...',
     };
-
     // Add the new file to the uploaded files state
     setUploadedFiles(prevFiles => [...prevFiles, newFile]);
 
-    // Simulate file upload progress
-    const interval = setInterval(() => {
-      setUploadedFiles(prevFiles => prevFiles.map(f => {
-        if (f.name === newFile.name) {
-          let newProgress = f.progress + 20;
-          if (newProgress > 100) {
-            clearInterval(interval);
-            return { ...f, progress: 100, status: 'Complete' };
+    validateCsvHeaders(file, (missingHeaders) => {  
+      // if not validated
+      if (missingHeaders && missingHeaders.length > 0) {
+        setUploadedFiles(prevFiles => prevFiles.map(f => {
+          if (f.name === newFile.name) {
+            return { ...f, status: `Missing headers: ${missingHeaders.join(", ")}`};
           }
-          return { ...f, progress: newProgress };
-        }
-        return f;
-      }));
-    }, 1000);
+          return f;
+        }));
+      } else {
+        // if validated, simulate file upload progress
+        const interval = setInterval(() => {
+          setUploadedFiles(prevFiles => prevFiles.map(f => {
+            if (f.name === newFile.name) {
+              let newProgress = f.progress + 20;
+              if (newProgress > 100) {
+                clearInterval(interval);
+                return { ...f, progress: 100, status: 'Complete' };
+              }
+              return { ...f, progress: newProgress };
+            }
+            return f;
+          }));
+        }, 1000);
+      }
+    });
   };
 
   // Handle file selection
@@ -134,10 +131,10 @@ const CSVUploadBox = () => {
       )}
       <h4 className="csv-title">Upload a CSV File</h4>
       <div className="upload-box"
-         onDrop={handleDrop}
-         onDragOver={handleDragOver}
-         onDragEnter={handleDragEnter}
-         onDragLeave={handleDragLeave}>
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}>
         <input
           type="file"
           id="file-upload"
