@@ -1,0 +1,31 @@
+.RSS-title {
+    margin-left: 8px;
+}
+
+.CSV-link {
+    padding: 0px 10px;
+    font-size: 15px;
+    text-align: right;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s;
+    margin-top: 8px;
+    margin-right: 16px;
+}
+
+.Input-box {
+    display: flex;        /* This enables flexbox layout */
+    align-items: center;  /* This aligns items vertically in the center */
+    justify-content: space-between; /* This will put maximum space between children */
+    gap: 20px;           /* This defines space between the input and the button */
+    margin-left: 8px;
+    margin-right: 24px;
+}
+
+.Input-box input {
+    flex-grow: 1;
+}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // import CsvUploadComponent from '../../components/Upload/CSVUpload';
-import "./UploadPage.css";
+import "./CSVUploadPage.css";
 
 // Define a type for the file with progress information
 type UploadedFile = {
@@ -14,6 +15,12 @@ const CSVUploadBox = () => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+
+  // click RSS button -> RSS page
+  let navigate = useNavigate();
+  const gotoRSS = () => {
+    navigate('/Upload/:RSS');
+  }
   
   // only check missing headers, not extra headers or duplicate headers
   const validateCsvHeaders = (file: File, callback: (missingHeaders?: string[]) => void) => {
@@ -124,6 +131,11 @@ const CSVUploadBox = () => {
 
   return (
     <div>
+      <div className="RSS-link">
+        <button onClick={gotoRSS}>
+          Upload an RSS Link
+        </button>
+      </div>
       {alertMessage && (
         <div className="alert-message">
           {alertMessage}
