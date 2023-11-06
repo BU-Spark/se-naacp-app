@@ -1,3 +1,11 @@
+.csv-title {
+    margin-left: 8px;
+}
+
+.file-list-title {
+    margin-left: 8px;
+}
+
 .upload-box {
     border: 2px dashed #B3D4FC;
     border-radius: 12px;
@@ -8,7 +16,6 @@
 }
 
 .upload-icon {
-    /* Adjust the size as needed or based on your actual SVG icon */
     width: auto;
     height: 50px;
     margin-bottom: 8px;
@@ -47,7 +54,7 @@
     transform: scale(1.02);
 }
 
-/* If you want to handle the file dragging state */
+/* handle file dragging state */
 .upload-box.dragover {
     background-color: #DDEFFF;
 }
@@ -63,9 +70,7 @@
 
 .uploaded-files-box {
     max-height: 300px;
-    /* Or any height you prefer */
-    overflow-y: auto;
-    /* To make it scrollable when the list is long */
+    overflow-y: auto; /* scrollable */
 }
 
 .files-list-header {
@@ -80,7 +85,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px; /* Adjust as needed */
+    margin-bottom: 10px;
 }
 
 .file-name,
@@ -122,10 +127,39 @@
 
 .file-actions {
     flex-basis: 0%;
+    display: flex; /* Use flexbox to layout children */
+    justify-content: space-between; /* Align children with space between */
+    align-items: center; /* Align children vertically in the center */
+    width: 100%; /* Ensure the div takes full width of its parent */
+}
+
+.file-actions .file-status {
+    margin-right: 8px;
 }
 
 .file-actions button {
-    /* Style your button accordingly */
+    padding: 2px 7px;
+    font-size: 10px;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: #FF4136;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.button:hover { background-color: #FF4136 }
+
+.button:active {
+  background-color: #C1302C;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+.button:focus {
+  outline: none;
 }
 
 .alert-message {
@@ -133,7 +167,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    background-color: #f44336; /* Red */
+    background-color: #f44336;
     color: white;
     text-align: center;
     padding: 1rem;

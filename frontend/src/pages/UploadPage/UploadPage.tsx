@@ -15,6 +15,36 @@ const CSVUploadBox = () => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
+  const validateCsvHeaders = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const text = e.target?.result as string;
+      const headers = text.slice(0, text.indexOf("\n")).split(",");
+
+      const expectedHeaders = ["h1", "h2"];
+      const missingHeaders = expectedHeaders.filter(header => !headers.includes(header));
+
+      setUploadedFiles(prevFiles => prevFiles.map(f => {
+        if (f.name === file.name) {
+          if (missingHeaders.length > 0) {
+            const errorMessage = `Missing headers: ${missingHeaders.join(", ")}`;
+            return {
+              ...f,
+              progress: f.progress,
+              status: errorMessage,
+            };
+          }
+          return {
+            ...f,
+            status: 'Complete',
+          };
+        }
+        return f;
+      }));
+    };
+    reader.readAsText(file);
+  }
+
   // Drag and drop event handlers
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -42,21 +72,19 @@ const CSVUploadBox = () => {
       if (files[i].type === "text/csv" || files[i].name.endsWith('.csv')) {
         uploadFile(files[i]);
       } else {
-        // alert the user that only CSV files are accepted
-        // console.log('Only CSV files are accepted.');
         isCSV = false;
-        break; // Break the loop as we found a non-CSV file
+        break; // Break the loop if non-CSV file
       }
     }
 
     if (!isCSV) {
       setAlertMessage('Only CSV files are accepted.');
-      // Remove the alert message after a few seconds
       setTimeout(() => setAlertMessage(''), 3000);
     }
   };
 
   // Function that simulates file upload and updates progress
+  // Need to change this to real func converting csv into json as input to backend
   const uploadFile = (file: File) => {
     // Initialize a new uploaded file object
     const newFile: UploadedFile = {
@@ -73,7 +101,7 @@ const CSVUploadBox = () => {
     const interval = setInterval(() => {
       setUploadedFiles(prevFiles => prevFiles.map(f => {
         if (f.name === newFile.name) {
-          let newProgress = f.progress + 10;
+          let newProgress = f.progress + 20;
           if (newProgress > 100) {
             clearInterval(interval);
             return { ...f, progress: 100, status: 'Complete' };
@@ -90,6 +118,11 @@ const CSVUploadBox = () => {
     if (event.target.files) {
       Array.from(event.target.files).forEach(uploadFile);
     }
+  };
+
+  // Handle file removal
+  const handleFileRemoval = (fileName: string) => {
+    setUploadedFiles(prevFiles => prevFiles.filter(file => file.name != fileName))
   };
 
   return (
@@ -124,7 +157,7 @@ const CSVUploadBox = () => {
           <div className="text-wrapper">Only support CSV files</div>
         </label>
       </div>
-      <h4 className="progress-title">Uploaded Files</h4>
+      <h4 className="file-list-title">Uploaded Files</h4>
       <div className="uploaded-files-wrapper">
         <div className="uploaded-files-list">
           <div className="uploaded-files-box">
@@ -132,7 +165,7 @@ const CSVUploadBox = () => {
               <span>FILE NAME</span>
               <span>SIZE</span>
               <span>UPLOAD STATUS</span>
-              <span>ACTIONS</span> {/* This is if you plan to have actions like 'Cancel' or 'Remove' */}
+              <span>ACTIONS</span>
             </div>
             {uploadedFiles.map((file, index) => (
               <div key={index} className="file-upload-status">
@@ -156,10 +189,10 @@ const CSVUploadBox = () => {
 
                 {/* Action Column */}
                 <div className="file-actions">
-                  <span>{file.status}</span>
+                  <span className="file-status">{file.status}</span>
                   {file.status === 'Complete' && (
-                    <button onClick={() => {/* Add your code here for handling file removal or other actions */}}>
-                      Remove
+                    <button onClick={() => handleFileRemoval(file.name)}>
+                      X
                     </button>
                   )}
                 </div>
