@@ -42,7 +42,7 @@ export default function MainNavigator() {
 							element={<ProtectedRoute child={TopicsPage} />}
 						/>
 						<Route
-							path='/UploadArticles'
+							path='/Upload'
 							element={<ProtectedRoute child={FileUpload} />}
 						/>
 						<Route
@@ -60,6 +60,7 @@ export default function MainNavigator() {
 							delivered, before being redirected back to home page
 						 */}
 						<Route path='/Callback' element={<Callback />} />
+						<Route path='*' element={<div>404</div>} />
 					</Routes>
 				</Auth0ProviderNavigate>
 			</BrowserRouter>
