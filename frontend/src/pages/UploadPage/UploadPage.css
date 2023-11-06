@@ -1,77 +1,142 @@
-.upload-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 40px;
-    background: linear-gradient(135deg, #f3f5f7, #eef1f5);
-    height: calc(100vh - 80px);
-    align-items: center;
+.upload-box {
+    border: 2px dashed #B3D4FC;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin: 20px;
+    background-color: #F4F8FF;
 }
 
-.upload-section {
-    flex: 1;
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.05);
-    margin: 0 20px;
+.upload-icon {
+    /* Adjust the size as needed or based on your actual SVG icon */
+    width: auto;
+    height: 50px;
+    margin-bottom: 8px;
 }
 
-.upload-section h1,
-.upload-section h2 {
-    font-size: 26px;
-    margin-bottom: 30px;
-    color: #333;
-    font-weight: 500;
-}
-
-input[type="text"], input[type="file"] {
+.upload-icon img {
     width: 100%;
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    height: 100%;
 }
 
-input[type="text"]:focus, input[type="file"]:focus {
-    border-color: #a0aec0;
-    box-shadow: 0 0 0 3px rgba(100, 150, 200, 0.1);
-}
-
-button {
-    padding: 12px 25px;
-    background-color: #3182ce;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 500;
+.upload-area {
+    display: inline-block;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
 }
 
-button:hover {
-    background-color: #2b6cb0;
+.upload-area p {
+    margin: 10px 0;
+    color: #6C8EBF;
+}
+
+.browse {
+    color: #307BFF;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.support-text {
+    font-size: 12px;
+}
+
+/* Additional styling to handle hover, focus, and active states */
+.upload-area:hover,
+.upload-area:focus {
+    background-color: #E6F0FF;
+    /* Optional: scale the icon a bit */
     transform: scale(1.02);
 }
 
-button:active {
-    background-color: #2c5282;
-    transform: scale(0.98);
+/* If you want to handle the file dragging state */
+.upload-box.dragover {
+    background-color: #DDEFFF;
 }
 
-button {
+.uploaded-files-wrapper {
+    border: 2px solid #D6E4FF;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin: 20px;
+    background-color: #F4F8FF;
+}
+
+.uploaded-files-box {
+    max-height: 300px;
+    /* Or any height you prefer */
+    overflow-y: auto;
+    /* To make it scrollable when the list is long */
+}
+
+.files-list-header {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px; /* space between icon and text */
-    /* ... other styles remain unchanged */
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 2px solid #D6E4FF;
+    font-weight: bold;
 }
 
-/* Additional style for icons */
-.material-icons,
-.fa-icon {
-    font-size: 20px;
-    vertical-align: middle;
+.file-upload-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px; /* Adjust as needed */
 }
+
+.file-name,
+.file-size,
+.file-upload-progress,
+.file-actions {
+    text-align: left;
+}
+
+.file-name {
+    flex-basis: 20%;
+}
+
+.file-size {
+    flex-basis: 10%;
+}
+
+.file-upload-progress {
+    display: flex;
+    flex-basis: 30%;
+    align-items: center;
+}
+
+.progress-bar {
+    flex-grow: 1; /* Take up available space */
+    width: 100%;
+    background-color: #eee;
+    margin-right: 10px; /* Space between the progress bar and the percentage */
+}
+
+.progress {
+    height: 20px;
+    background-color: #4caf50;
+}
+
+.progress-percentage {
+    white-space: nowrap; /* Prevents wrapping */
+}
+
+.file-actions {
+    flex-basis: 0%;
+}
+
+.file-actions button {
+    /* Style your button accordingly */
+}
+
+.alert-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f44336; /* Red */
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    z-index: 1000; /* Make sure it's above other elements */
+}
+
