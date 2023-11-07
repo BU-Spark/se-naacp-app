@@ -9,8 +9,24 @@ type ArticleContextType = {
 /* Article Queries */
 // We will pass what we need in here
 const ARTICLE_DATA_QUERY = gql`
-  query articleQuery($dateFrom: Int!, $dateTo: Int!, $area: String!) {
+  query articleByDateQuery($dateFrom: Int!, $dateTo: Int!, $area: String!) {
     articleByDate(dateFrom: $dateFrom, dateTo: $dateTo, area: $area) {
+      author
+      dateSum
+      hl1
+      link
+      neighborhoods
+      openai_labels
+      position_section
+      pub_date
+      tracts
+    }
+  }
+`;
+
+const ARTICLE_BY_LABEL_OR_TOPIC = gql`
+  query articleByTopicLabelQuery($area: String!, $labelOrTopic: String!) {
+    articleByTopicsOrLabels(area: $area, labelOrTopic: $labelOrTopic) {
       author
       dateSum
       hl1
@@ -33,6 +49,14 @@ const ArticleProvider: React.FC = ({ children }: any) => {
     queryArticleData,
     { data: articleData, loading: articleDataLoading, error: articleDataError },
   ] = useLazyQuery(ARTICLE_DATA_QUERY);
+  const [
+    queryArticleTopicsOrLabels,
+    {
+      data: articleTopicsOrLabelsData,
+      loading: articleTopicsOrLabelsDataLoading,
+      error: articleTopicsOrLabelsDataError,
+    },
+  ] = useLazyQuery(ARTICLE_BY_LABEL_OR_TOPIC);
 
   const [articles, setArticleData] = React.useState<Article[] | null>(null);
 
@@ -41,6 +65,28 @@ const ArticleProvider: React.FC = ({ children }: any) => {
       setArticleData(articleData.articleByDate);
     }
   }, [articleData, articleDataLoading, articleDataError]);
+
+  React.useEffect(() => {
+    if (
+      articleTopicsOrLabelsData &&
+      !articleTopicsOrLabelsDataLoading &&
+      !articleTopicsOrLabelsDataError
+    ) {
+      if (articleTopicsOrLabelsData.articleByTopicsOrLabels.length === 0) {
+        setArticleData(null);
+      } else {
+        setArticleData(articleTopicsOrLabelsData.articleByTopicsOrLabels);
+      }
+      console.log(
+        "inside contex",
+        articleTopicsOrLabelsData.articleByTopicsOrLabels
+      );
+    }
+  }, [
+    articleTopicsOrLabelsData,
+    articleTopicsOrLabelsDataLoading,
+    articleTopicsOrLabelsDataError,
+  ]);
 
   // Processor functions. (Thinking to apply them in sequence...)
   function removeDuplicates(input: string[]): string[] {
@@ -53,10 +99,15 @@ const ArticleProvider: React.FC = ({ children }: any) => {
   // query Type -> Indicates which useLazyQuery hook to execute
   // options? -> (Optional) Give the parameters needed for that useLazyQeury hook
   // func_ops? -> (Optional) What functions to execute left to right to the data
-  const queryArticleDataType = (queryType: "ARTICLE_DATA", options?: any) => {
+  const queryArticleDataType = (queryType: string, options?: any) => {
     switch (queryType) {
       case "ARTICLE_DATA":
         queryArticleData({
+          variables: options, // This is where you pass in parameters
+        });
+        break;
+      case "ARTICLE_BY_LABEL_OR_TOPIC":
+        queryArticleTopicsOrLabels({
           variables: options, // This is where you pass in parameters
         });
         break;

@@ -35,39 +35,83 @@ function getNeighborhood(
   return null;
 }
 
-function countArticlesByTract(articles: Article[], positionSection: string) {
+function countArticlesByKeyWord(
+  articles: Article[],
+  positionSection: string,
+  listOfTopics: string[],
+  neighborhoods: { [key: string]: string[] }
+) {
+  console.log(articles, positionSection, listOfTopics, neighborhoods);
   let counts: any = {};
-
   articles.forEach((article) => {
-    if (article.position_section === positionSection && article.tracts) {
-      article.tracts.forEach((tract) => {
-        counts[tract] = (counts[tract] || 0) + 1;
-      });
+    if (listOfTopics.indexOf(positionSection) == -1) {
+      if (article.openai_labels[0] === positionSection && article.tracts) {
+        article.tracts.forEach((tract) => {
+          counts[tract] = (counts[tract] || 0) + 1;
+        });
+      }
+    } else {
+      if (article.position_section === positionSection && article.tracts) {
+        article.tracts.forEach((tract) => {
+          counts[tract] = (counts[tract] || 0) + 1;
+        });
+      }
     }
   });
+
+  console.log(counts);
 
   let sortedCounts = Object.entries(counts).sort(
     (a: any, b: any) => b[1] - a[1]
   );
-  return sortedCounts;
+  return getDisplayTractList(sortedCounts, neighborhoods);
+}
+
+function getDisplayTractList(
+  countOfTract: [string, unknown][],
+  neighborhoods: { [key: string]: string[] }
+) {
+  const result: string[] = [];
+
+  countOfTract.forEach((element) => {
+    result.push(
+      `${getNeighborhood(element[0], neighborhoods)} - ${element[0]} - ${
+        element[1]
+      }`
+    );
+  });
+
+  return result;
 }
 
 function getArticlesByKeyWord(
   keyword: string,
   articles: Article[],
-  tract: string
+  tract: string,
+  listOfTopics: string[]
 ): Article[] {
   const temp: Article[] = [];
-
-  articles.forEach((element) => {
-    if (
-      element.position_section === keyword &&
-      element.tracts.includes(tract)
-    ) {
-      temp.push(element);
-    }
-  });
-  return temp;
+  if (listOfTopics.indexOf(keyword) == -1) {
+    articles.forEach((element) => {
+      if (
+        element.openai_labels[0] === keyword &&
+        element.tracts.includes(tract)
+      ) {
+        temp.push(element);
+      }
+    });
+    return temp;
+  } else {
+    articles.forEach((element) => {
+      if (
+        element.position_section === keyword &&
+        element.tracts.includes(tract)
+      ) {
+        temp.push(element);
+      }
+    });
+    return temp;
+  }
 }
 
 const TopicsPage: React.FC = () => {
@@ -75,13 +119,18 @@ const TopicsPage: React.FC = () => {
   const maxDate = dayjs("2023-01-09");
 
   //Contex
-  const { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
+  const { articleData, queryArticleDataType } =
+    React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-  const { neighborhoodMasterList, setNeighborhood} = React.useContext(NeighborhoodContext)!;
-  const { topicsMasterList, topic, setTopic } = React.useContext(TopicsContext)!;
+  const { neighborhoodMasterList, setNeighborhood } =
+    React.useContext(NeighborhoodContext)!;
+  const { topicsMasterList, topic, setTopic } =
+    React.useContext(TopicsContext)!;
 
   //State
-  const [demographics, setDemographics] = React.useState<Demographics | null>(null);
+  const [demographics, setDemographics] = React.useState<Demographics | null>(
+    null
+  );
   const [articles, setArticles] = React.useState<Article[]>([]);
   const [masterArticles, setMasterArticles] = React.useState<Article[]>([]);
   const [tracts, setTracts] = React.useState<string[]>([]);
@@ -89,15 +138,14 @@ const TopicsPage: React.FC = () => {
 
   // Setting Default Values
   React.useEffect(() => {
-    queryArticleDataType(
-      "ARTICLE_DATA", {
+    queryArticleDataType("ARTICLE_DATA", {
       dateFrom: parseInt(minDate.format("YYYYMMDD")),
       dateTo: parseInt(maxDate.format("YYYYMMDD")),
       area: "all",
     });
     queryTractDataType("TRACT_DATA", { tract: "010103" });
 
-    setTopic("Education");
+    // setTopic("Education");
     setNeighborhood("Fenway");
   }, []);
 
@@ -106,7 +154,12 @@ const TopicsPage: React.FC = () => {
     if (tractData) {
       setDemographics(tractData.demographics);
       setArticles(
-        getArticlesByKeyWord(topic!, masterArticles, tractData!.tract)
+        getArticlesByKeyWord(
+          topic!,
+          masterArticles,
+          tractData!.tract,
+          topicsMasterList!
+        )
       );
     }
   }, [tractData]);
@@ -114,22 +167,25 @@ const TopicsPage: React.FC = () => {
   React.useEffect(() => {
     const temp: string[] = [];
     const articlesTemp: Article[] = [];
-    const countTemp = countArticlesByTract(masterArticles, topic!);
+    const countTemp = countArticlesByKeyWord(
+      masterArticles,
+      topic!,
+      topicsMasterList!,
+      neighborhoodMasterList!
+    );
 
-    countTemp.forEach((element) => {
-      temp.push(
-        getNeighborhood(element[0], neighborhoodMasterList!) +
-          " - " +
-          element[0] +
-          " - " +
-          element[1]
-      );
-    });
+    console.log(countTemp);
 
-    setTracts(temp);
+    setTracts(countTemp);
+
     if (tractData) {
       setArticles(
-        getArticlesByKeyWord(topic!, masterArticles, tractData!.tract)
+        getArticlesByKeyWord(
+          topic!,
+          masterArticles,
+          tractData!.tract,
+          topicsMasterList!
+        )
       );
     }
   }, [topic]);
@@ -138,20 +194,15 @@ const TopicsPage: React.FC = () => {
     if (articleData && topic && topicsMasterList) {
       setMasterArticles(articleData!);
       setArticles(articleData!);
-      const countTemp = countArticlesByTract(articleData!, topic!);
-      const temp: string[] = [];
 
-      countTemp.forEach((element) => {
-        temp.push(
-          getNeighborhood(element[0], neighborhoodMasterList!) +
-            " - " +
-            element[0] +
-            " - " +
-            element[1]
-        );
-      });
+      const countTemp = countArticlesByKeyWord(
+        articleData!,
+        topic!,
+        topicsMasterList!,
+        neighborhoodMasterList!
+      );
 
-      setTracts(temp);
+      setTracts(countTemp);
       setIsLoading(false);
     }
   }, [articleData, topic, topicsMasterList]);
@@ -183,7 +234,7 @@ const TopicsPage: React.FC = () => {
             <h1></h1>
           </div>
           <div className="col-md-7 col-sm-12 search-bar">
-            <TopicsSearchBar listOfWords={topicsMasterList!}></TopicsSearchBar>
+            {/* <TopicsSearchBar listOfWords={topicsMasterList!}></TopicsSearchBar> */}
           </div>
         </div>
 

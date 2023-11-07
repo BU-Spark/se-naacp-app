@@ -26,42 +26,38 @@ function getItem(
   } as MenuItem;
 }
 
+function extractNeighborhoodTract(text: string) {
+  const match = /([\w\s]+ - )?(\d+)/.exec(text);
+  let location = "";
+  let number = "";
+
+  if (match) {
+    location = match[1] ? match[1].slice(0, -3) : ""; // Remove trailing ' - ' from the location
+    number = match[2];
+  }
+
+  return [location, number];
+}
 interface TractsDropDownProps {
   tracts: string[];
 }
 
 const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-  const { neighborhood, setNeighborhood } =
-    React.useContext(NeighborhoodContext)!;
-  // const [selectedItems, setSelectedItems] = React.useState(tracts[0]);
+  const { neighborhood, setNeighborhood } = React.useContext(NeighborhoodContext)!;
 
-  // React.useEffect(() => {
-  //   setIsLoading([tracts[0]]);
-  // }, [neighborhood]);
+  const [currentTract, setCurrentTract ] = React.useState<string>(tracts[0])!;
 
   const items: MenuItem[] = [];
 
   for (let index = 0; index < tracts.length; index++) {
-    const numberMatch = tracts[index].match(/\d+/);
-    const extractedNumber = numberMatch ? numberMatch[0] : null;
+    const extractedItems = extractNeighborhoodTract(tracts[index]);
     items.push(getItem(tracts[index], tracts[index]));
   }
 
   const onSelectItem: MenuProps["onClick"] = (keys) => {
-    //   const numberMatch = keys.key.match(/\d+/);
-    //   const extractedNumber = numberMatch ? numberMatch[0] : null;
 
-    //   const match = keys.key.match(/\b(\w+\s?\w?)\b\s?\d+/i);
-
-    // let location = '';
-    // let number = '';
-
-    // if (match) {
-    //   location = match[1];
-    //   number = match[2];
-    // }
-
+    setCurrentTract(keys.key);
     const match = /([\w\s]+ - )?(\d+)/.exec(keys.key);
     let location = "";
     let number = "";
@@ -89,7 +85,7 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
           onClick={onSelectItem}
           style={{ width: "100%", height: "100%", overflow: "auto" }} // Added overflow: 'auto'
           items={items}
-          // selectedKeys={[tractData!.tract]}
+          selectedKeys={[currentTract]}
         />
       </CardContent>
     </Card>

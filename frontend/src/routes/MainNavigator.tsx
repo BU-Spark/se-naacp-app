@@ -11,6 +11,7 @@ import NeighborhoodPage from "../pages/NeighborhoodsPage/NeighborhoodPage"; // R
 import { TopicsContext } from "../contexts/topics_context";
 import { NeighborhoodContext } from "../contexts/neighborhood_context";
 import TopicsPage from "../pages/TopicsPage/TopicsPage";
+import TopicsSearchPage from "../pages/TopicsPage/TopicsSearchPage/TopicsSearchPage";
 
 export default function MainNavigator() {
   const {topicsMasterList, queryTopicsDataType} = React.useContext(TopicsContext);
@@ -32,6 +33,8 @@ export default function MainNavigator() {
           <Route path="/UploadArticles" element={<FileUpload />} />
           <Route path="/Dashboard" element={<Dashboard />}></Route>
           <Route path="/Neighborhoods" element={<NeighborhoodPage />} />
+          <Route path="/TopicsSearchPage" element={<TopicsSearchPage />} />
+
         </Routes>
       </BrowserRouter>
     </>

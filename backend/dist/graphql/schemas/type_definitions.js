@@ -51,10 +51,12 @@ export const typeDefs = gql `
 
   type Query {
     articleByDate(dateFrom: Int!, dateTo: Int!, area: String!): [Article]
+    articleByTopicsOrLabels(area: String!, labelOrTopic: String!): [Article]
     tractsByNeighborhood(neighborhood: String!): [Neighborhoods]
     demographicsByTracts(tract: String!): [Tracts]
     getAllNeighborhoods: [Neighborhoods!]!
     getAllArticles: [Article!]!
     getAllTopics: [Topics!]!
+    getAllLabels: [String!]!
   }
 `;
