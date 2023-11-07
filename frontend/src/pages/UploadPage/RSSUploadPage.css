@@ -31,18 +31,13 @@
 }
 
 .success-message {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #4caf50;
-    color: white;
-    text-align: center;
-    padding: 1rem;
-    z-index: 1000; /* Make sure it's above other elements */
+    margin-top: 8px;
+    margin-left: 8px;
 }
 
 .error-message {
     margin-top: 8px;
     margin-left: 8px;
 }
+
+
