@@ -9,6 +9,7 @@ type UploadedFile = {
   size: number;
   progress: number;
   status: string;
+  error?: string; // fail to pass test
 };
 
 const CSVUploadBox = () => {
@@ -94,7 +95,11 @@ const CSVUploadBox = () => {
       if (missingHeaders && missingHeaders.length > 0) {
         setUploadedFiles(prevFiles => prevFiles.map(f => {
           if (f.name === newFile.name) {
-            return { ...f, status: `Missing headers: ${missingHeaders.join(", ")}`};
+            return { 
+              ...f, 
+              status: `Failed`,
+              error: `Error: Missing headers ${missingHeaders.join(", ")}.`
+            };
           }
           return f;
         }));
@@ -106,7 +111,7 @@ const CSVUploadBox = () => {
               let newProgress = f.progress + 20;
               if (newProgress > 100) {
                 clearInterval(interval);
-                return { ...f, progress: 100, status: 'Complete' };
+                return { ...f, progress: 100, status: 'Passed' };
               }
               return { ...f, progress: newProgress };
             }
@@ -189,17 +194,26 @@ const CSVUploadBox = () => {
                 </div>
 
                 {/* Upload Status Column */}
-                <div className="file-upload-progress">
-                  <div className="progress-bar">
-                    <div className="progress" style={{ width: `${file.progress}%` }}></div>
+                <div className="file-upload-progress-wrapper">
+                  <div className="file-upload-progress">
+                    <div className="progress-bar">
+                      <div className="progress" style={{ width: `${file.progress}%` }}></div>
+                    </div>
+                    <span className="progress-percentage">{file.progress}%</span>
                   </div>
-                  <span className="progress-percentage">{file.progress}%</span>
+                  {/* Error Message */}
+                  {file.error && (
+                    <div className="error-message">
+                      {file.error}
+                    </div>
+                  )}
                 </div>
+
 
                 {/* Action Column */}
                 <div className="file-actions">
                   <span className="file-status">{file.status}</span>
-                  {file.status === 'Complete' && (
+                  {(file.status === 'Passed' || file.error) && (
                     <button onClick={() => handleFileRemoval(file.name)}>
                       X
                     </button>

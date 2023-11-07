@@ -118,6 +118,12 @@
     flex-basis: 10%;
 }
 
+.file-upload-progress-wrapper {
+    display: flex;
+    flex-basis: 30%;
+    flex-direction: column;
+}
+
 .file-upload-progress {
     display: flex;
     flex-basis: 30%;
@@ -141,7 +147,7 @@
 }
 
 .file-actions {
-    flex-basis: 0%;
+    flex-basis: 5%;
     display: flex; /* Use flexbox to layout children */
     justify-content: space-between; /* Align children with space between */
     align-items: center; /* Align children vertically in the center */
@@ -189,3 +195,7 @@
     z-index: 1000; /* Make sure it's above other elements */
 }
 
+.error-message {
+    color: #f44336;
+
+}

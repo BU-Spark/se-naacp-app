@@ -31,11 +31,13 @@
 }
 
 .success-message {
+    color: #4caf50;
     margin-top: 8px;
     margin-left: 8px;
 }
 
 .error-message {
+    color: #f44336;
     margin-top: 8px;
     margin-left: 8px;
 }
