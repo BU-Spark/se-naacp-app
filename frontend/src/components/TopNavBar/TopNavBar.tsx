@@ -22,7 +22,7 @@ const TopNavBar = () => {
       </div>
       <ul className={menuOpen ? "open" : ""}>
         <li>
-          <NavLink to="Topics">Explore Topics</NavLink>
+          <NavLink to="/TopicsSearchPage">Explore Topics</NavLink>
         </li>
         <li>
           <NavLink to="/Neighborhoods">Neighborhoods</NavLink>

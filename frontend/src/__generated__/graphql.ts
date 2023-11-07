@@ -16,6 +16,8 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+
+
 export type Article = {
   __typename?: 'Article';
   author: Scalars['String']['output'];

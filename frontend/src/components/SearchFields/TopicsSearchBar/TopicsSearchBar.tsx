@@ -1,86 +1,117 @@
+import React from "react";
 import "./TopicsSearchBar.css";
 
 import { Input, Switch, AutoComplete } from "antd";
-import { AnyAaaaRecord } from "dns";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { TopicsContext } from "../../../contexts/topics_context";
+import { SearchOutlined } from "@ant-design/icons";
+import { LinearProgress, Stack } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { ArticleContext } from "../../../contexts/article_context";
+
 const { Search } = Input;
 
-interface SearchBarDropDownPros {
+interface SearchBarDropDownProps {
   listOfWords: string[];
 }
 
-const TopicsSearchBar: React.FC<SearchBarDropDownPros> = ({ listOfWords }) => {
-  const { topicsMasterList, queryTopicsDataType, setTopic, topic } =
-    useContext(TopicsContext)!;
-  const [result, setResult] = useState(null);
-  const [options, setOptions] = useState(listOfWords); // Autocomplete options
-  const [givenWords, setGivenWords] = useState(listOfWords); // Words from getKeywords
-  const [isOpenAI, setIsOpenAI] = useState(false);
-  //   useEffect(() => {
-  //     getKeywords();
-  //   }, [isOpenAI]);
+const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
+  const navigate = useNavigate(); // Enforce typing here
 
-  const onChange = (checked: any) => {
-    setIsOpenAI(!checked);
-    setResult(null);
-  };
+  const {
+    topic,
+    setTopic,
+    topicsMasterList,
+    labelsMasterList,
+    queryTopicsDataType,
+  } = useContext(TopicsContext)!;
 
-  //   const getKeywords = async () => {
-  //     const keywords = await DataMethods.getKeywords(isOpenAI);
-  //     setGivenWords(keywords);
-  //     setOptions(keywords);
-  //   };
+  const { articleData, queryArticleDataType } =
+  React.useContext(ArticleContext)!;
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [options, setOptions] = useState<string[]>([]);
+  const [isOpenAI, setIsOpenAI] = useState<boolean>(false);
 
-  const onSearch = async function (value: any) {
-    // const bubbleChartData = await DataMethods.getBubbleChartData(
-    //   value.charAt(0).toUpperCase() + value.slice(1),
-    //   isOpenAI
-    // );
-    // setResult(bubbleChartData);
-    setTopic(value);
-  };
+  React.useEffect(() => {
+    if (topicsMasterList && labelsMasterList) {
+      setIsLoading(false);
+      setOptions(topicsMasterList);
+    } else {
+      queryTopicsDataType("TOPICS_DATA");
+      queryTopicsDataType("LABELS_DATA");
+    }
+  }, [topicsMasterList, labelsMasterList]);
 
-  const handleSearch = (value: any) => {
+  const handleSearch = (value: string) => {
     if (value.trim() === "") {
       return; // Ignore empty search queries
     }
-    onSearch(value);
+    // console.log("valiue: ", value);
+    setTopic(value);
+    // queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+    //   area: "all",
+    //   labelOrTopic: "nullll",
+    // });
+    navigate("/Topics");
   };
 
-  const onSelect = (value: any) => {
-    onSearch(value);
+  const handleInputChange = (value: string) => {
+    if (value) {
+      const matchedOptions = options.filter((word) =>
+        word.toLowerCase().includes(value.toLowerCase())
+      );
+      setOptions(matchedOptions);
+    } else {
+      if (isOpenAI) {
+        setOptions(labelsMasterList!);
+      } else {
+        setOptions(topicsMasterList!);
+      }
+    }
   };
 
-  const handleInputChange = (value: any) => {
-    const matchedOptions = givenWords.filter((word) =>
-      word.toLowerCase().includes(value.toLowerCase())
-    );
-    setOptions(matchedOptions);
+  const onSwitchChange = (checked: boolean) => {
+    setIsOpenAI(checked);
+
+    if (checked) {
+      setOptions(labelsMasterList!);
+    } else {
+      setOptions(topicsMasterList!);
+    }
   };
 
-  return (
+  return isLoading ? (
+    <Stack
+      sx={{
+        width: "100%",
+        color: "grey.500",
+        marginTop: "10px",
+      }}
+      spacing={2}
+    >
+      <LinearProgress color="secondary" />
+    </Stack>
+  ) : (
     <>
-      {/* <div className="search-wrapper"> */}
       <AutoComplete
-        className="Search"
         options={options.map((option) => ({ value: option }))}
-        onSelect={onSelect}
         onSearch={handleInputChange}
       >
         <Search
-          style={{ width: "100%" }}
           placeholder="input a term"
           enterButton
           onSearch={handleSearch}
+          suffix={
+            <Switch
+              checkedChildren="Labels"
+              unCheckedChildren="Topics"
+              checked={isOpenAI}
+              onChange={onSwitchChange}
+              className="search-switch"
+            />
+          }
         />
       </AutoComplete>
-      {/* <div className="switch-container">
-          <span className="switch-label">AI Labels</span>
-          <Switch defaultChecked onChange={onChange} />
-          <span className="switch-label">OpenAI Labels On</span>
-        </div> */}
-      {/* </div> */}
     </>
   );
 };

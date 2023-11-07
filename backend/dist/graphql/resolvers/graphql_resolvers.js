@@ -11,6 +11,24 @@ export const resolvers = {
             const topics = await topic_data.find({}).toArray();
             return topics;
         },
+        getAllLabels: async (_, __, context) => {
+            const { db } = context;
+            const topic_data = db.collection("articles_data");
+            const topics = await topic_data
+                .aggregate([
+                {
+                    $unwind: "$openai_labels", // Deconstructs the `openai_labels` array
+                },
+                {
+                    $group: {
+                        _id: null,
+                        unique_labels: { $addToSet: "$openai_labels" }, // Creates a set of unique labels
+                    },
+                },
+            ])
+                .toArray();
+            return topics[0].unique_labels;
+        },
         // Tract Resolvers
         demographicsByTracts: async (_, args, context) => {
             const { db } = context;
@@ -87,6 +105,51 @@ export const resolvers = {
                         $lte: args.dateTo,
                     },
                     neighborhoods: args.area,
+                })
+                    .toArray();
+                return queryResult;
+            }
+        },
+        articleByTopicsOrLabels: async (_, args, context) => {
+            const { db } = context;
+            const articles_data = db.collection("articles_data");
+            if (isNumber(args.area)) {
+                const queryResult = articles_data
+                    .find({
+                    tracts: args.area,
+                    $or: [
+                        { openai_labels: { $in: [args.labelOrTopic] } },
+                        {
+                            position_section: { $regex: args.labelOrTopic, $options: "i" },
+                        },
+                    ],
+                })
+                    .toArray();
+                return queryResult;
+            }
+            else if (args.area === "all") {
+                const queryResult = articles_data
+                    .find({
+                    $or: [
+                        { openai_labels: { $in: [args.labelOrTopic] } },
+                        {
+                            position_section: { $regex: args.labelOrTopic, $options: "i" },
+                        },
+                    ],
+                })
+                    .toArray();
+                return queryResult;
+            }
+            else {
+                const queryResult = articles_data
+                    .find({
+                    neighborhoods: args.area,
+                    $or: [
+                        { openai_labels: { $in: [args.labelOrTopic] } },
+                        {
+                            position_section: { $regex: args.labelOrTopic, $options: "i" },
+                        },
+                    ],
                 })
                     .toArray();
                 return queryResult;

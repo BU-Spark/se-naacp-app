@@ -103,10 +103,13 @@ const setTractShapes = (tracts: string[]) => {
 };
 
 const MapCard: React.FC<MapCardProps> = ({}) => {
+
   //Context
-  const { neighborhoodMasterList, neighborhood, setNeighborhood } =
-    React.useContext(NeighborhoodContext)!;
+  const { neighborhoodMasterList, neighborhood, setNeighborhood } = React.useContext(NeighborhoodContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
+
+
+
 
   //UseState
   const [tract, setTract] = React.useState("");
@@ -158,8 +161,8 @@ const MapCard: React.FC<MapCardProps> = ({}) => {
               <ZoomControl />
               <GeoJson
                 onClick={(v) => {
-                  console.log(v.payload.properties.TRACTCE20);
-                  queryTractDataType("TRACT_DATA", { tract: v.payload.properties.TRACTCE20 });
+                  // console.log(v.payload.properties.TRACTCE20);
+                  // queryTractDataType("TRACT_DATA", { tract: v.payload.properties.TRACTCE20 });
 
                 }}
                 data={setTractShapes(neighborhoodMasterList![neighborhood!])}
