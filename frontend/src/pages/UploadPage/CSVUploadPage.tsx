@@ -31,7 +31,7 @@ const CSVUploadBox = () => {
       // handle \r return carriage character
       const headers = text.slice(0, text.search(/\r?\n/)).split(",").map(header => header.trim());
       // expected header list
-      const expectedHeaders = ["h1", "h2", "h3"];
+      const expectedHeaders = ["Type", "Label", "Headline", "Byline", "Section", "Tagging", "Paths", "Publish Date", "Body"];
       const missingHeaders = expectedHeaders.filter(header => !headers.includes(header));
       
       callback(missingHeaders);

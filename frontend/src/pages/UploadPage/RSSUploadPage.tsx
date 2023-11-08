@@ -66,21 +66,21 @@ const RSSUploadBox = () => {
             const guidTag = xmlDoc.getElementsByTagName('guid');
 
             // Testing
-            const testTag = xmlDoc.getElementsByTagName('test');
-            const test1Tag = xmlDoc.getElementsByTagName('test1');
-            const test2Tag = xmlDoc.getElementsByTagName('test2');
-            if (testTag.length === 0) {
-                setErrorMessage(prevErrors => [...prevErrors,'Missing test tag. ']);
-                isValid = false;
-            }
-            if (test1Tag.length === 0) {
-                setErrorMessage(prevErrors => [...prevErrors,'Missing test1 tag. ']);
-                isValid = false;
-            }
-            if (test2Tag.length === 0) {
-                setErrorMessage(prevErrors => [...prevErrors,'Missing test2 tag. ']);
-                isValid = false;
-            }
+            // const testTag = xmlDoc.getElementsByTagName('test');
+            // const test1Tag = xmlDoc.getElementsByTagName('test1');
+            // const test2Tag = xmlDoc.getElementsByTagName('test2');
+            // if (testTag.length === 0) {
+            //     setErrorMessage(prevErrors => [...prevErrors,'Missing test tag. ']);
+            //     isValid = false;
+            // }
+            // if (test1Tag.length === 0) {
+            //     setErrorMessage(prevErrors => [...prevErrors,'Missing test1 tag. ']);
+            //     isValid = false;
+            // }
+            // if (test2Tag.length === 0) {
+            //     setErrorMessage(prevErrors => [...prevErrors,'Missing test2 tag. ']);
+            //     isValid = false;
+            // }
 
             if (titleTag.length === 0) {
                 setErrorMessage(prevErrors => [...prevErrors,'Missing title tag. ']);
