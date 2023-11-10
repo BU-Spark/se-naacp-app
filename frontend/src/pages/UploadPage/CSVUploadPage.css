@@ -98,30 +98,37 @@
 
 .file-upload-status {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 10px;
 }
 
-.file-name,
-.file-size,
-.file-upload-progress,
-.file-actions {
-    text-align: left;
-}
-
 .file-name {
-    flex-basis: 20%;
+    display: flex;
+    width: 25%;
+    height: 110%;
+    overflow: auto;
+    text-overflow: ellipsis;
+    justify-content: left;
 }
 
 .file-size {
-    flex-basis: 10%;
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    padding-right: 100px;
 }
 
 .file-upload-progress-wrapper {
+    width: 25%;
+}
+
+.file-actions {
     display: flex;
-    flex-basis: 30%;
-    flex-direction: column;
+    width: 25%;
+    justify-content: right;
+}
+
+.file-status {
+    margin-right: 2px;
 }
 
 .file-upload-progress {
@@ -146,18 +153,6 @@
     white-space: nowrap; /* Prevents wrapping */
 }
 
-.file-actions {
-    flex-basis: 5%;
-    display: flex; /* Use flexbox to layout children */
-    justify-content: space-between; /* Align children with space between */
-    align-items: center; /* Align children vertically in the center */
-    width: 100%; /* Ensure the div takes full width of its parent */
-}
-
-.file-actions .file-status {
-    margin-right: 8px;
-}
-
 .file-actions button {
     padding: 2px 7px;
     font-size: 10px;
@@ -169,6 +164,7 @@
     border: none;
     border-radius: 5px;
     transition: all 0.3s;
+    max-height: 30px;
 }
 
 .button:hover { background-color: #FF4136 }
@@ -197,5 +193,19 @@
 
 .error-message {
     color: #f44336;
+}
 
+.submit-button {
+    padding: 0px 10px;
+    font-size: 15px;
+    text-align: right;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s;
+    margin-top: 8px;
+    margin-right: 16px;
 }

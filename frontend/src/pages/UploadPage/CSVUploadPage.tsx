@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 // import CsvUploadComponent from '../../components/Upload/CSVUpload';
 import "./CSVUploadPage.css";
 
@@ -10,19 +11,33 @@ type UploadedFile = {
   progress: number;
   status: string;
   error?: string; // fail to pass test
+  file: File; // store a reference to the File object
 };
 
 const CSVUploadBox = () => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [validatedFiles, setUpValidatedFiles] = useState<UploadedFile[]>([]);
+  // This file list is mapped from validated Files' reference to file object.
+  const [submittedFiles, setUpsubmittedFiles] = useState<File[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+
+  useEffect(() => {
+    const files = validatedFiles.map(f => f.file);
+    setUpsubmittedFiles(files);
+  }, [validatedFiles]);
+  
+  // set up cors proxy for POST csv to api
+  const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+  const url = 'https://dummy-server-toswle5frq-uc.a.run.app/upload_csv';
+  const proxy_Url = corsProxy + url;
 
   // click RSS button -> RSS page
   let navigate = useNavigate();
   const gotoRSS = () => {
     navigate('/Upload/:RSS');
   }
-  
+
   // only check missing headers, not extra headers or duplicate headers
   const validateCsvHeaders = (file: File, callback: (missingHeaders?: string[]) => void) => {
     const reader = new FileReader();
@@ -31,9 +46,9 @@ const CSVUploadBox = () => {
       // handle \r return carriage character
       const headers = text.slice(0, text.search(/\r?\n/)).split(",").map(header => header.trim());
       // expected header list
-      const expectedHeaders = ["Type", "Label", "Headline", "Byline", "Section", "Tagging", "Paths", "Publish Date", "Body"];
+      const expectedHeaders = ["Headline", "Byline", "Section", "Tagging", "Paths", "Publish Date", "Body"];
       const missingHeaders = expectedHeaders.filter(header => !headers.includes(header));
-      
+
       callback(missingHeaders);
     };
     reader.readAsText(file);
@@ -77,6 +92,38 @@ const CSVUploadBox = () => {
     }
   };
 
+  // After upload successful, user can submit file to server.
+  const submitFile = () => {
+    for (let i = 0; i < submittedFiles.length; i++) {
+      const formData = new FormData();
+      formData.append('file', submittedFiles[i]); 
+      axios.post(proxy_Url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then((response) => {
+        console.log(response);
+        // update the uploaded file status
+        setUploadedFiles(currentFiles => currentFiles.map(f => {
+          if (f.name === submittedFiles[i].name) {
+            return { ...f, status: 'Submit Successful' };
+          }
+          return f;
+        }));
+      })
+      .catch(error => {
+        console.error(error);
+        setUploadedFiles(currentFiles => currentFiles.map(f => {
+          if (f.name === submittedFiles[i].name) {
+            return { ...f, status: 'Submit Failed', error: error.toString() };
+          }
+          return f;
+        }));
+      });
+    };
+  };
+
   // Function that simulates file upload and updates progress
   // Need to change this to real func converting csv into json as input to backend
   const uploadFile = (file: File) => {
@@ -86,17 +133,18 @@ const CSVUploadBox = () => {
       size: file.size,
       progress: 0,
       status: 'Uploading...',
+      file: file,
     };
     // Add the new file to the uploaded files state
     setUploadedFiles(prevFiles => [...prevFiles, newFile]);
 
-    validateCsvHeaders(file, (missingHeaders) => {  
+    validateCsvHeaders(file, (missingHeaders) => {
       // if not validated
       if (missingHeaders && missingHeaders.length > 0) {
         setUploadedFiles(prevFiles => prevFiles.map(f => {
           if (f.name === newFile.name) {
-            return { 
-              ...f, 
+            return {
+              ...f,
               status: `Failed`,
               error: `Error: Missing headers ${missingHeaders.join(", ")}.`
             };
@@ -104,7 +152,17 @@ const CSVUploadBox = () => {
           return f;
         }));
       } else {
-        // if validated, simulate file upload progress
+        // if validated, add files to validatedFiles
+        // return test passed status
+        const newValidatedFile: UploadedFile = {
+          name: file.name,
+          size: file.size,
+          progress: 100,
+          status: 'Passed',
+          file: file,
+        };
+        setUpValidatedFiles(prevFiles => [...prevFiles, newValidatedFile]);
+
         const interval = setInterval(() => {
           setUploadedFiles(prevFiles => prevFiles.map(f => {
             if (f.name === newFile.name) {
@@ -118,7 +176,7 @@ const CSVUploadBox = () => {
             return f;
           }));
         }, 1000);
-      }
+      };
     });
   };
 
@@ -209,7 +267,6 @@ const CSVUploadBox = () => {
                   )}
                 </div>
 
-
                 {/* Action Column */}
                 <div className="file-actions">
                   <span className="file-status">{file.status}</span>
@@ -223,6 +280,11 @@ const CSVUploadBox = () => {
             ))}
           </div>
         </div>
+      </div>
+      <div className="submit-button">
+        <button onClick={() => submitFile()}>
+          Submit
+        </button>
       </div>
     </div>
   );
