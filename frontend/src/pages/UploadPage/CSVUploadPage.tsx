@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Button from '@mui/material/Button';
 // import CsvUploadComponent from '../../components/Upload/CSVUpload';
 import "./CSVUploadPage.css";
 
@@ -21,6 +22,7 @@ const CSVUploadBox = () => {
   const [submittedFiles, setUpsubmittedFiles] = useState<File[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const files = validatedFiles.map(f => f.file);
@@ -28,7 +30,7 @@ const CSVUploadBox = () => {
   }, [validatedFiles]);
   
   // set up cors proxy for POST csv to api
-  const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+  const corsProxy = 'https://corsproxy.io/?';
   const url = 'https://dummy-server-toswle5frq-uc.a.run.app/upload_csv';
   const proxy_Url = corsProxy + url;
 
@@ -195,20 +197,29 @@ const CSVUploadBox = () => {
   // Handle file submit
   const handleFileSubmit = (files: File[]) => {
     submitFile();
+    setSuccessMessage('Successfully submitted!');
+    setTimeout(() => setSuccessMessage(''), 3000);
     // clear out uploaded Files, validated files (submitted files listen onto validated files)
     for (let i = 0; i < files.length; i++) {
       setUploadedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
       setUpValidatedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
     };
+    // need some logic to handle file history
   }
 
   return (
     <div>
       <div className="RSS-link">
-        <button onClick={gotoRSS}>
+        <Button 
+          variant="outlined" onClick={gotoRSS}>
           Upload an RSS Link
-        </button>
+        </Button>
       </div>
+      {successMessage && (
+        <div className="success-msg">
+          {successMessage}
+        </div>
+      )}
       {alertMessage && (
         <div className="alert-message">
           {alertMessage}
@@ -292,9 +303,12 @@ const CSVUploadBox = () => {
         </div>
       </div>
       <div className="submit-button">
-        <button onClick={() => handleFileSubmit(submittedFiles)}>
+        <Button 
+          variant="contained"
+          color="primary"
+          onClick={() => handleFileSubmit(submittedFiles)}>
           Submit
-        </button>
+        </Button>
       </div>
     </div>
   );
