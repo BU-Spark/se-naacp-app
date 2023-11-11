@@ -28,10 +28,11 @@ const NeighborhoodPage: React.FC = () => {
   const maxDate = dayjs("2023-01-09");
 
   //Context
-  const { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
+  const { articleData, queryArticleDataType } =
+    React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-  const { neighborhoodMasterList, neighborhood, setNeighborhood } = React.useContext(NeighborhoodContext);
-
+  const { neighborhoodMasterList, neighborhood, setNeighborhood } =
+    React.useContext(NeighborhoodContext);
 
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -42,7 +43,7 @@ const NeighborhoodPage: React.FC = () => {
       dateFrom: parseInt(minDate.format("YYYYMMDD")),
       dateTo: parseInt(maxDate.format("YYYYMMDD")),
       area: "010103",
-      userId: "1",
+      userId: "2",
     });
   }, []);
 

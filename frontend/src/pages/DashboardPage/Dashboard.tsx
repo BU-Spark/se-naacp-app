@@ -10,80 +10,72 @@ import { Outlet } from "react-router-dom";
 
 import { ArticleContext } from "../../contexts/article_context";
 import { useAuth0 } from "@auth0/auth0-react";
+import dayjs from "dayjs";
 export default function Dashboard() {
-	const { user, isAuthenticated } = useAuth0();
+  const minDate = dayjs("2020-11-01");
+  const maxDate = dayjs("2023-01-09");
 
-	var { articleData, queryArticleDataType } =
-		React.useContext(ArticleContext)!;
+  const { user, isAuthenticated } = useAuth0();
 
-	React.useEffect(() => {
-		queryArticleDataType("ARTICLE_DATA", {
-			dateFrom: 20220101,
-			dateTo: 20220201,
-			area: "all",
-			userId: "1"
+  var { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
 
-		});
-	}, [articleData]);
+  React.useEffect(() => {
+    queryArticleDataType("ARTICLE_DATA", {
+      dateFrom: 20220101,
+      dateTo: 20220201,
+      area: "all",
+      userId: "2",
+    });
+  }, [articleData]);
 
-	if (!articleData) {
-		articleData = [];
-	}
+  if (!articleData) {
+    articleData = [];
+  }
 
-	return (
-		<>
-			<div className='big-container'>
-				<div className='row'>
-					<div className='col'>
-						{isAuthenticated && (
-							<div className='align-self-start'>
-								Hello, {user?.given_name}
-							</div>
-						)}
-						<div className='align-self-start your-org'>
-							YOUR ORGANIZATION
-						</div>
-						<div className='align-self-start org-name'>
-							WGBH Educational Foundation
-						</div>
-						<p className='week'>
-							<span className='text-wrapper'>Week </span>
-							<span className='span'>01/01/22 - 02/01/22</span>
-						</p>
-					</div>
-				</div>
+  return (
+    <>
+      <div className="big-container">
+        <div className="row">
+          <div className="col">
+            {isAuthenticated && (
+              <div className="align-self-start">Hello, {user?.given_name}</div>
+            )}
+            <div className="align-self-start your-org">YOUR ORGANIZATION</div>
+            <div className="align-self-start org-name">
+              WGBH Educational Foundation
+            </div>
+            <p className="week">
+              <span className="text-wrapper">Week </span>
+              <span className="span">01/01/22 - 02/01/22</span>
+            </p>
+          </div>
+        </div>
 
-				<div className='row justify-content-evenly'>
-					<div className='col-md-4 col-sm-12'>
-						<AtGlance
-							articles={articleData!}
-							height='20vh'
-						></AtGlance>
-					</div>
-					<div className='col-md-8 col-sm-12'>
-						<TopNeighborhoods
-							articles={articleData!}
-							height='20vh'
-						></TopNeighborhoods>
-					</div>
-				</div>
+        <div className="row justify-content-evenly">
+          <div className="col-md-4 col-sm-12">
+            <AtGlance articles={articleData!} height="20vh"></AtGlance>
+          </div>
+          <div className="col-md-8 col-sm-12">
+            <TopNeighborhoods
+              articles={articleData!}
+              height="20vh"
+            ></TopNeighborhoods>
+          </div>
+        </div>
 
-				<div className='row justify-content-evenly'>
-					<div className='col-md-4 col-sm-12'>
-						<h1 className='titles'>Top 5 Topics</h1>
-						<FrequencyBarChart
-							num={5}
-							openAI={false}
-						></FrequencyBarChart>
-					</div>
-					<div className='col-md-8 col-sm-12'>
-						<h1 className='titles'>Articles</h1>
+        <div className="row justify-content-evenly">
+          <div className="col-md-4 col-sm-12">
+            <h1 className="titles">Top 5 Topics</h1>
+            <FrequencyBarChart num={5} openAI={false}></FrequencyBarChart>
+          </div>
+          <div className="col-md-8 col-sm-12">
+            <h1 className="titles">Articles</h1>
 
-						<ArticleCard></ArticleCard>
-						<Outlet></Outlet>
-					</div>
-				</div>
-			</div>
-		</>
-	);
+            <ArticleCard></ArticleCard>
+            <Outlet></Outlet>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }

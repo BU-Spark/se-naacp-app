@@ -108,6 +108,7 @@ const TopicsPage: React.FC = () => {
       queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
         area: "all",
         labelOrTopic: topic,
+        userId: "2",
       });
     }
   }, [topic]);
@@ -143,6 +144,7 @@ const TopicsPage: React.FC = () => {
       queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
         area: tractData.tract,
         labelOrTopic: topic,
+        userId: "2",
       });
       setCounter(-1);
     }

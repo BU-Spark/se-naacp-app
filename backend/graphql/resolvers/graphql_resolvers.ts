@@ -16,19 +16,22 @@ function isNumber(str: any) {
 export const resolvers = {
   Query: {
     // Topic Resolvers
-    getAllTopics: async (_, __, context): Promise<ITopics[]> => {
+    getAllTopics: async (_, args, context): Promise<String[]> => {
       const { db } = context;
-      const topic_data: Collection<ITopics> = db.collection("topics_data");
-      const topics: ITopics[] = await topic_data.find({}).toArray();
+      const articles_data = db.collection("articles_data");
+      const topics: string[] = await articles_data.distinct('position_section', {'userID': args.userID });
       return topics;
     },
 
-    getAllLabels: async (_, __, context): Promise<String[]> => {
+    getAllLabels: async (_, args, context): Promise<String[]> => {
       const { db } = context;
       const topic_data = db.collection("articles_data");
 
       const topics = await topic_data
         .aggregate([
+          {
+            $match: { userID: args.userID }, // Filters documents based on userID
+          },
           {
             $unwind: "$openai_labels", // Deconstructs the `openai_labels` array
           },
@@ -111,7 +114,7 @@ export const resolvers = {
               $lte: args.dateTo,
             },
             tracts: args.area,
-            userID: args.userID
+            userID: args.userID,
           })
           .toArray();
 
@@ -123,8 +126,7 @@ export const resolvers = {
               $gte: args.dateFrom,
               $lte: args.dateTo,
             },
-            userID: args.userID
-
+            userID: args.userID,
           })
           .toArray();
 
@@ -137,8 +139,7 @@ export const resolvers = {
               $lte: args.dateTo,
             },
             neighborhoods: args.area,
-            userID: args.userID
-
+            userID: args.userID,
           })
           .toArray();
 
@@ -153,6 +154,7 @@ export const resolvers = {
       if (isNumber(args.area)) {
         const queryResult = articles_data
           .find({
+            userID: args.userID,
             tracts: args.area,
             $or: [
               { openai_labels: { $in: [args.labelOrTopic] } },
@@ -167,6 +169,7 @@ export const resolvers = {
       } else if (args.area === "all") {
         const queryResult = articles_data
           .find({
+            userID: args.userID,
             $or: [
               { openai_labels: { $in: [args.labelOrTopic] } },
               {
@@ -180,6 +183,7 @@ export const resolvers = {
       } else {
         const queryResult = articles_data
           .find({
+            userID: args.userID,
             neighborhoods: args.area,
             $or: [
               { openai_labels: { $in: [args.labelOrTopic] } },

@@ -1,9 +1,9 @@
 import { Auth0Provider } from "@auth0/auth0-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-const domain = process.env.REACT_APP_AUTH0_DOMAIN;
-const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
-const redirect_uri = process.env.REACT_APP_AUTH0_REDIRECT_URI;
+const domain = process.env.REACT_APP_AUTH0_DOMAIN || "dev-mywowb6wyumz08rb.us.auth0.com";
+const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID || "OnpUzfd2pVQtB7K9iFZM1aHhO0taAx6f";
+const redirect_uri = process.env.REACT_APP_AUTH0_REDIRECT_URI || "http://localhost:3000/callback";
 
 export const Auth0ProviderNavigate = ({ children }) => {
 	const navigate = useNavigate();

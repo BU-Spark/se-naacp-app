@@ -31,7 +31,7 @@ const DateField: React.FC<DateFieldProps> = ({ minDate, maxDate, isFrom }) => {
       dateFrom: dateFrom,
       dateTo: dateTo,
       area: tractData?.tract,
-      userId: "1"
+      userId: "2"
     });
     setdateFrom(d);
   };
@@ -45,7 +45,7 @@ const DateField: React.FC<DateFieldProps> = ({ minDate, maxDate, isFrom }) => {
       dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
       dateTo: parseInt(dateTo.format("YYYYMMDD")),
       area: tractData?.tract,
-      userId: "1"
+      userId: "2"
 
     });
   }, [dateFrom, dateTo, tractData, neighborhood]);

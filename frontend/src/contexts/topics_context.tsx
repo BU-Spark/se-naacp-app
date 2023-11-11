@@ -20,16 +20,14 @@ const defaultTopicsContext: TopicsContextType = {
 };
 
 const TOPICS_DATA_QUERY = gql`
-  query topicsQuery {
-    getAllTopics {
-      value
-    }
+  query topicsQuery($userId: String!) {
+    getAllTopics(userID: $userId)
   }
 `;
 
 const LABELS_DATA_QUERY = gql`
-  query GetAllArticles {
-    getAllLabels
+  query GetAllLabels($userId: String!) {
+    getAllLabels(userID: $userId)
   }
 `;
 
@@ -53,13 +51,8 @@ const TopicsProvider: React.FC = ({ children }: any) => {
 
   React.useEffect(() => {
     if (topicsData && !topicsDataLoading && !topicsDataError) {
-      let topicsMasterList: string[] = [];
-      let data: any = topicsData.getAllTopics;
-
-      data.forEach((topic: any) => {
-        topicsMasterList.push(topic.value);
-      });
-      setTopicsData(topicsMasterList);
+      console.log(topicsData);
+      setTopicsData(topicsData.getAllTopics);
     }
   }, [topicsData, topicsDataLoading, topicsDataError]);
 
@@ -72,10 +65,10 @@ const TopicsProvider: React.FC = ({ children }: any) => {
   const queryTopicsDataType = (queryType: string, options?: any) => {
     switch (queryType) {
       case "TOPICS_DATA":
-        queryTopicsData({});
+        queryTopicsData({ variables: options });
         break;
       case "LABELS_DATA":
-        queryLabelsData({});
+        queryLabelsData({ variables: options });
         break;
       default:
         console.log(
@@ -87,7 +80,13 @@ const TopicsProvider: React.FC = ({ children }: any) => {
 
   return (
     <TopicsContext.Provider
-      value={{ topicsMasterList: topics, queryTopicsDataType, topic, setTopic, labelsMasterList: labels }}
+      value={{
+        topicsMasterList: topics,
+        queryTopicsDataType,
+        topic,
+        setTopic,
+        labelsMasterList: labels,
+      }}
     >
       {children}
     </TopicsContext.Provider>

@@ -27,7 +27,7 @@ const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
   } = useContext(TopicsContext)!;
 
   const { articleData, queryArticleDataType } =
-  React.useContext(ArticleContext)!;
+    React.useContext(ArticleContext)!;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [options, setOptions] = useState<string[]>([]);
   const [isOpenAI, setIsOpenAI] = useState<boolean>(false);
@@ -37,8 +37,12 @@ const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
       setIsLoading(false);
       setOptions(topicsMasterList);
     } else {
-      queryTopicsDataType("TOPICS_DATA");
-      queryTopicsDataType("LABELS_DATA");
+      queryTopicsDataType("TOPICS_DATA", {
+        userId: "2",
+      });
+      queryTopicsDataType("LABELS_DATA", {
+        userId: "2",
+      });
     }
   }, [topicsMasterList, labelsMasterList]);
 

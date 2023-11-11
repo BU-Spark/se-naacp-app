@@ -96,13 +96,12 @@ export default function MainNavigator() {
 
   React.useEffect(() => {
     // Bootstrap Master list data
-    queryTopicsDataType("TOPICS_DATA");
+    queryTopicsDataType("TOPICS_DATA", {
+      userId: "2",
+    });
     queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
   }, [topicsMasterList, neighborhoodMasterList]);
 
-
-
-  
   return (
     <>
       <BrowserRouter>
@@ -114,9 +113,7 @@ export default function MainNavigator() {
             <Route path="/UploadArticles" element={<FileUpload />} />
             <Route path="/Dashboard" element={<Dashboard />}></Route>
             <Route path="/Neighborhoods" element={<NeighborhoodPage />} />
-            <Route path="/TopicsSearchPage" element={<TopicsSearchPage />} 
-            
-            />
+            <Route path="/TopicsSearchPage" element={<TopicsSearchPage />} />
             <Route path="/Callback" element={<Callback />} />
             <Route path="*" element={<div>404</div>} />
           </Routes>
