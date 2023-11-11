@@ -17,6 +17,8 @@ import uniqid from "uniqid";
 // Contexts
 import { Link } from "@mui/material";
 import Lottie from "react-lottie-player";
+import { useState } from "react";
+import { ArticleContext } from "../../contexts/article_context";
 
 // function getHTML(str) {
 //   const htmlString = str;
@@ -41,21 +43,25 @@ const columns = [
   },
   { field: "author", headerName: "Author", width: 130 },
   { field: "publishingDate", headerName: "Publishing Date", width: 120 },
-  // { field: "neighborhood", headerName: "Neighborhood", width: 110 },
+  { field: "neighborhood", headerName: "Neighborhood", width: 580 },
   // { field: "censusTract", headerName: "Census Tract", width: 110 },
   { field: "category", headerName: "Category", width: 90 },
 ];
 
-interface ArticleCardProps {
-  articles: Article[] | null;
-}
+interface ArticleCardProps {}
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ articles }) => {
+const ArticleCard: React.FC<ArticleCardProps> = () => {
   var articleRow: any = [];
 
-  if (!articles) {
-    articles = [];
-  }
+  const [articles, setArticles] = useState<Article[]>([]);
+  const { articleData, queryArticleDataType } =
+    React.useContext(ArticleContext)!;
+
+  React.useEffect(() => {
+    if (articleData) {
+      setArticles(articleData);
+    }
+  }, [articleData]);
 
   articles.forEach((article, index) => {
     // console.log(index, article);
@@ -64,8 +70,8 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ articles }) => {
       title: { link: article.link, title: article.hl1 },
       author: `${article.author}`,
       publishingDate: `${dayjs(article.pub_date).format("MMM D, YYYY")}`,
-      // neighborhood: `${article.neighborhoods[0]}`,
-      // censusTract: `${article.tracts}`,
+      neighborhood: `${article.neighborhoods}`,
+      censusTract: `${article.tracts}`,
       category: `${article.position_section}`,
     });
   });

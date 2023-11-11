@@ -46,18 +46,14 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
   const { neighborhood, setNeighborhood } = React.useContext(NeighborhoodContext)!;
 
-  const [currentTract, setCurrentTract ] = React.useState<string>(tracts[0])!;
 
   const items: MenuItem[] = [];
 
   for (let index = 0; index < tracts.length; index++) {
-    const extractedItems = extractNeighborhoodTract(tracts[index]);
     items.push(getItem(tracts[index], tracts[index]));
   }
 
   const onSelectItem: MenuProps["onClick"] = (keys) => {
-
-    setCurrentTract(keys.key);
     const match = /([\w\s]+ - )?(\d+)/.exec(keys.key);
     let location = "";
     let number = "";
@@ -67,7 +63,6 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
       number = match[2];
     }
 
-    console.log(location);
     queryTractDataType("TRACT_DATA", {
       tract: number,
     });
@@ -85,7 +80,7 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
           onClick={onSelectItem}
           style={{ width: "100%", height: "100%", overflow: "auto" }} // Added overflow: 'auto'
           items={items}
-          selectedKeys={[currentTract]}
+          selectedKeys={[tractData!.tract]}
         />
       </CardContent>
     </Card>

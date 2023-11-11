@@ -14,6 +14,7 @@ export const typeDefs = gql `
     link: String!
     openai_labels: [String!]!
     dateSum: Int!
+    userID: String!
   }
 
   type Topics {
@@ -50,7 +51,7 @@ export const typeDefs = gql `
   }
 
   type Query {
-    articleByDate(dateFrom: Int!, dateTo: Int!, area: String!): [Article]
+    articleByDate(dateFrom: Int!, dateTo: Int!, area: String!, userID: String!): [Article]
     articleByTopicsOrLabels(area: String!, labelOrTopic: String!): [Article]
     tractsByNeighborhood(neighborhood: String!): [Neighborhoods]
     demographicsByTracts(tract: String!): [Tracts]

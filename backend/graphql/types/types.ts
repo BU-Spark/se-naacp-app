@@ -50,6 +50,7 @@ export interface IArticles {
     link: string;
     openai_labels: string[];
     dateSum: number
+    userID: string
 }
 
 export interface IDemographics {

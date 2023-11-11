@@ -46,12 +46,7 @@ const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
     if (value.trim() === "") {
       return; // Ignore empty search queries
     }
-    // console.log("valiue: ", value);
     setTopic(value);
-    // queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
-    //   area: "all",
-    //   labelOrTopic: "nullll",
-    // });
     navigate("/Topics");
   };
 

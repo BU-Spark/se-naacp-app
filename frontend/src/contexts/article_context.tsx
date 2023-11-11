@@ -9,8 +9,18 @@ type ArticleContextType = {
 /* Article Queries */
 // We will pass what we need in here
 const ARTICLE_DATA_QUERY = gql`
-  query articleByDateQuery($dateFrom: Int!, $dateTo: Int!, $area: String!) {
-    articleByDate(dateFrom: $dateFrom, dateTo: $dateTo, area: $area) {
+  query GetAllArticles(
+    $dateFrom: Int!
+    $dateTo: Int!
+    $area: String!
+    $userId: String!
+  ) {
+    articleByDate(
+      dateFrom: $dateFrom
+      dateTo: $dateTo
+      area: $area
+      userID: $userId
+    ) {
       author
       dateSum
       hl1
@@ -45,10 +55,12 @@ export const ArticleContext = React.createContext<ArticleContextType | null>(
 );
 
 const ArticleProvider: React.FC = ({ children }: any) => {
-  const [
-    queryArticleData,
-    { data: articleData, loading: articleDataLoading, error: articleDataError },
-  ] = useLazyQuery(ARTICLE_DATA_QUERY);
+  // const [
+  //   queryArticleData,
+  //   { data: articleData, loading: articleDataLoading, error: articleDataError },
+  // ] = useLazyQuery(ARTICLE_DATA_QUERY);
+  
+
   const [
     queryArticleTopicsOrLabels,
     {
@@ -58,13 +70,16 @@ const ArticleProvider: React.FC = ({ children }: any) => {
     },
   ] = useLazyQuery(ARTICLE_BY_LABEL_OR_TOPIC);
 
+
+
   const [articles, setArticleData] = React.useState<Article[] | null>(null);
 
-  React.useEffect(() => {
-    if (articleData && !articleDataLoading && !articleDataError) {
-      setArticleData(articleData.articleByDate);
-    }
-  }, [articleData, articleDataLoading, articleDataError]);
+  // React.useEffect(() => {
+  //   if (articleData && !articleDataLoading && !articleDataError) {
+  //     setArticleData(articleData.articleByDate);
+  //   }
+  // }, [articleData, articleDataLoading, articleDataError]);
+
 
   React.useEffect(() => {
     if (
@@ -72,15 +87,13 @@ const ArticleProvider: React.FC = ({ children }: any) => {
       !articleTopicsOrLabelsDataLoading &&
       !articleTopicsOrLabelsDataError
     ) {
+
       if (articleTopicsOrLabelsData.articleByTopicsOrLabels.length === 0) {
         setArticleData(null);
       } else {
         setArticleData(articleTopicsOrLabelsData.articleByTopicsOrLabels);
       }
-      console.log(
-        "inside contex",
-        articleTopicsOrLabelsData.articleByTopicsOrLabels
-      );
+      
     }
   }, [
     articleTopicsOrLabelsData,
@@ -100,12 +113,13 @@ const ArticleProvider: React.FC = ({ children }: any) => {
   // options? -> (Optional) Give the parameters needed for that useLazyQeury hook
   // func_ops? -> (Optional) What functions to execute left to right to the data
   const queryArticleDataType = (queryType: string, options?: any) => {
+   
     switch (queryType) {
-      case "ARTICLE_DATA":
-        queryArticleData({
-          variables: options, // This is where you pass in parameters
-        });
-        break;
+      // case "ARTICLE_DATA":
+      //   queryArticleData({
+      //     variables: options, // This is where you pass in parameters
+      //   });
+      //   break;
       case "ARTICLE_BY_LABEL_OR_TOPIC":
         queryArticleTopicsOrLabels({
           variables: options, // This is where you pass in parameters

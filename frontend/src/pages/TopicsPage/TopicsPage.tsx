@@ -13,14 +13,12 @@ import { Article, Demographics } from "../../__generated__/graphql";
 
 //CSS
 import "./TopicsPage.css";
-// import "font-awesome/css/font-awesome.min.css";
 
 //Contex
 import { TractContext } from "../../contexts/tract_context";
 import { ArticleContext } from "../../contexts/article_context";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
-import TopicsSearchBar from "../../components/SearchFields/TopicsSearchBar/TopicsSearchBar";
 import { TopicsContext } from "../../contexts/topics_context";
 
 function getNeighborhood(
@@ -41,7 +39,6 @@ function countArticlesByKeyWord(
   listOfTopics: string[],
   neighborhoods: { [key: string]: string[] }
 ) {
-  console.log(articles, positionSection, listOfTopics, neighborhoods);
   let counts: any = {};
   articles.forEach((article) => {
     if (listOfTopics.indexOf(positionSection) == -1) {
@@ -58,8 +55,6 @@ function countArticlesByKeyWord(
       }
     }
   });
-
-  console.log(counts);
 
   let sortedCounts = Object.entries(counts).sort(
     (a: any, b: any) => b[1] - a[1]
@@ -84,117 +79,43 @@ function getDisplayTractList(
   return result;
 }
 
-function getArticlesByKeyWord(
-  keyword: string,
-  articles: Article[],
-  tract: string,
-  listOfTopics: string[]
-): Article[] {
-  const temp: Article[] = [];
-  if (listOfTopics.indexOf(keyword) == -1) {
-    articles.forEach((element) => {
-      if (
-        element.openai_labels[0] === keyword &&
-        element.tracts.includes(tract)
-      ) {
-        temp.push(element);
-      }
-    });
-    return temp;
-  } else {
-    articles.forEach((element) => {
-      if (
-        element.position_section === keyword &&
-        element.tracts.includes(tract)
-      ) {
-        temp.push(element);
-      }
-    });
-    return temp;
+function extractNeighborhoodTract(text: string) {
+  const match = /([\w\s]+ - )?(\d+)/.exec(text);
+  let location = "";
+  let number = "";
+
+  if (match) {
+    location = match[1] ? match[1].slice(0, -3) : ""; // Remove trailing ' - ' from the location
+    number = match[2];
   }
+
+  return [location, number];
 }
-
 const TopicsPage: React.FC = () => {
-  const minDate = dayjs("2020-11-01");
-  const maxDate = dayjs("2023-01-09");
-
   //Contex
-  const { articleData, queryArticleDataType } =
-    React.useContext(ArticleContext)!;
+  const { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-  const { neighborhoodMasterList, setNeighborhood } =
-    React.useContext(NeighborhoodContext)!;
-  const { topicsMasterList, topic, setTopic } =
-    React.useContext(TopicsContext)!;
+  const { neighborhoodMasterList, setNeighborhood, neighborhood } = React.useContext(NeighborhoodContext)!;
+  const { topicsMasterList, topic, setTopic } = React.useContext(TopicsContext)!;
 
   //State
-  const [demographics, setDemographics] = React.useState<Demographics | null>(
-    null
-  );
-  const [articles, setArticles] = React.useState<Article[]>([]);
-  const [masterArticles, setMasterArticles] = React.useState<Article[]>([]);
   const [tracts, setTracts] = React.useState<string[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [counter, setCounter] = React.useState(0);
 
   // Setting Default Values
   React.useEffect(() => {
-    queryArticleDataType("ARTICLE_DATA", {
-      dateFrom: parseInt(minDate.format("YYYYMMDD")),
-      dateTo: parseInt(maxDate.format("YYYYMMDD")),
-      area: "all",
-    });
-    queryTractDataType("TRACT_DATA", { tract: "010103" });
-
-    // setTopic("Education");
-    setNeighborhood("Fenway");
-  }, []);
-
-  React.useEffect(() => {
-    console.log("tractData");
-    if (tractData) {
-      setDemographics(tractData.demographics);
-      setArticles(
-        getArticlesByKeyWord(
-          topic!,
-          masterArticles,
-          tractData!.tract,
-          topicsMasterList!
-        )
-      );
-    }
-  }, [tractData]);
-
-  React.useEffect(() => {
-    const temp: string[] = [];
-    const articlesTemp: Article[] = [];
-    const countTemp = countArticlesByKeyWord(
-      masterArticles,
-      topic!,
-      topicsMasterList!,
-      neighborhoodMasterList!
-    );
-
-    console.log(countTemp);
-
-    setTracts(countTemp);
-
-    if (tractData) {
-      setArticles(
-        getArticlesByKeyWord(
-          topic!,
-          masterArticles,
-          tractData!.tract,
-          topicsMasterList!
-        )
-      );
+    if (topic) {
+      queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+        area: "all",
+        labelOrTopic: topic,
+      });
     }
   }, [topic]);
 
-  React.useEffect(() => {
-    if (articleData && topic && topicsMasterList) {
-      setMasterArticles(articleData!);
-      setArticles(articleData!);
 
+  //Set deafult count and list
+  React.useEffect(() => {
+    if (articleData && counter === 1) {
       const countTemp = countArticlesByKeyWord(
         articleData!,
         topic!,
@@ -202,73 +123,80 @@ const TopicsPage: React.FC = () => {
         neighborhoodMasterList!
       );
 
-      setTracts(countTemp);
-      setIsLoading(false);
-    }
-  }, [articleData, topic, topicsMasterList]);
+      const extra = extractNeighborhoodTract(countTemp[0]);
 
-  if (isLoading) {
-    return (
-      <Stack
-        sx={{
-          width: "100%",
-          color: "grey.500",
-          marginTop: "10px",
-        }}
-        spacing={2}
-      >
-        <LinearProgress color="secondary" />
-      </Stack>
-    );
-  }
+      queryTractDataType("TRACT_DATA", {
+        tract: extra[1],
+      });
+      setNeighborhood(extra[0]);
+      setTracts(countTemp);
+    }
+    if (counter === 0) {
+      setCounter(1);
+    }
+  }, [articleData]);
+
+
+  //Sets new Articles when tract changes
+  React.useEffect(() => {
+    if (tractData && topic && neighborhood && counter != 0) {
+      queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+        area: tractData.tract,
+        labelOrTopic: topic,
+      });
+      setCounter(-1);
+    }
+  }, [tractData]);
 
   return (
     <>
-      <div className="big-container">
-        <div className="row justify-content-between">
-          <div className="col-md-5 col-sm-12">
-            <div className="align-self-start your-org">SELECTED TOPIC</div>
-            <div className="align-self-start org-name">
-              {topic == null ? "No Topic Selected" : topic}
+      {!(articleData && topic && neighborhood && tractData) ? (
+        <Stack
+          sx={{
+            width: "100%",
+            color: "grey.500",
+            marginTop: "10px",
+          }}
+          spacing={2}
+        >
+          <LinearProgress color="secondary" />
+        </Stack>
+      ) : (
+        <div className="big-container">
+          <div className="row justify-content-between">
+            <div className="col-md-5 col-sm-12">
+              <div className="align-self-start your-org">SELECTED TOPIC</div>
+              <div className="align-self-start org-name">
+                {topic == null ? "No Topic Selected" : topic}
+              </div>
+              <h1></h1>
             </div>
-            <h1></h1>
           </div>
-          <div className="col-md-7 col-sm-12 search-bar">
-            {/* <TopicsSearchBar listOfWords={topicsMasterList!}></TopicsSearchBar> */}
+
+          <div className="row justify-content-evenly">
+            <div className="col-md-5 col-sm-12">
+              <h1 className="titles">Tracts</h1>
+              <TractsDropDown tracts={tracts}></TractsDropDown>
+            </div>
+            <div className="col-md-7 col-sm-12">
+              <h1 className="titles">Map</h1>
+              <MapCard></MapCard>
+            </div>
+          </div>
+
+          <div className="row justify-content-evenly">
+            <div className="col-md-5 col-sm-12">
+              <h1 className="titles">Demographics</h1>
+              <NeighborhoodDemographicsBoard></NeighborhoodDemographicsBoard>
+            </div>
+            <div className="col-md-7 col-sm-12">
+              <h1 className="titles">Articles</h1>
+
+              <ArticleCard></ArticleCard>
+            </div>
           </div>
         </div>
-
-        <div className="row justify-content-evenly">
-          {/* <div className="col-md-12 col-sm-12">
-            <TopicsSearchBar listOfWords={topicsMasterList!}></TopicsSearchBar>
-          </div> */}
-        </div>
-
-        <div className="row justify-content-evenly">
-          <div className="col-md-5 col-sm-12">
-            <h1 className="titles">Tracts</h1>
-            <TractsDropDown tracts={tracts}></TractsDropDown>
-          </div>
-          <div className="col-md-7 col-sm-12">
-            <h1 className="titles">Map</h1>
-            <MapCard></MapCard>
-          </div>
-        </div>
-
-        <div className="row justify-content-evenly">
-          <div className="col-md-5 col-sm-12">
-            <h1 className="titles">Demographics</h1>
-            <NeighborhoodDemographicsBoard
-              demographics={demographics}
-            ></NeighborhoodDemographicsBoard>
-          </div>
-          <div className="col-md-7 col-sm-12">
-            <h1 className="titles">Articles</h1>
-
-            <ArticleCard articles={articles}></ArticleCard>
-          </div>
-        </div>
-      </div>
+      )}
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 //css
 import "./NeighborhoodDemoBoard.css";
@@ -16,6 +16,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 //types
 import { Demographics } from "../../__generated__/graphql";
 import { Card, CardContent } from "@mui/material";
+import { TractContext } from "../../contexts/tract_context";
 
 const colors = [
   "hsl(281, 70%, 50%)",
@@ -31,30 +32,27 @@ const colors = [
 ];
 
 interface DemographicsProps {
-  demographics: Demographics | null;
 }
 
 function getPercentage(total_population: string, population: string) {
   return ((parseInt(population) / parseInt(total_population)) * 100).toFixed(2);
 }
 
-const NeighborhoodDemographicsBoard: React.FC<DemographicsProps> = ({
-  demographics,
-}) => {
-  if (!demographics) {
-    demographics = {
-      p2_001n: "5722",
-      p2_002n: "1843",
-      p2_003n: "3879",
-      p2_004n: "3559",
-      p2_005n: "151",
-      p2_006n: "3209",
-      p2_007n: "18",
-      p2_008n: "64",
-      p2_009n: "0",
-      p2_010n: "117",
-    };
+const NeighborhoodDemographicsBoard: React.FC<DemographicsProps> = () => {
 
+  const [demographics, setDemographics] = useState<Demographics | null>(null);
+  const { tractData, queryTractDataType } = React.useContext(TractContext)!;
+
+
+  React.useEffect(() => {
+   if(tractData){
+    setDemographics(tractData.demographics)
+  }
+  }, [tractData]);
+
+
+
+  if (!demographics) {
     return (
       <Card className="body" sx={{ width: "100%", height: "62vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <CardContent sx={{ width: "100%", height: "62vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>

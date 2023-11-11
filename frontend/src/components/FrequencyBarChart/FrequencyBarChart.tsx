@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./FrequencyBarChart.css";
 import { ResponsiveBar } from "@nivo/bar";
 import { Article } from "../../__generated__/graphql";
@@ -7,8 +7,8 @@ import emptyAstro from "../../assets/lottieFiles/astro_empty.json";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Lottie from "react-lottie-player";
+import { ArticleContext } from "../../contexts/article_context";
 interface FrequencyBarChartProps {
-  articles: Article[] | null;
   num: number;
   openAI: boolean;
 }
@@ -22,15 +22,21 @@ const countStrings = (arr: string[]) => {
 };
 
 const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({
-  articles,
   num,
   openAI,
 }) => {
-  // Mapping over the articles to create an array of labels, filtering out articles with empty labels.
+  const [articles, setArticles] = useState<Article[]>([]);
+  const { articleData, queryArticleDataType } =
+    React.useContext(ArticleContext)!;
 
-  if(!articles){
-    articles = [];
-  }
+  React.useEffect(() => {
+    if (articleData) {
+      setArticles(articleData);
+      console.log(articles);
+    }
+   
+  }, [articleData]);
+
   const listOfLabels = articles
     .map((article) =>
       openAI ? article.openai_labels[0] : article.position_section
@@ -58,65 +64,80 @@ const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({
 
   return (
     <Card className="body" sx={{ width: "100%", height: "62vh" }}>
-      <CardContent sx={{ width: "100%", height: "62vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        {articles.length === 0 ?<React.Fragment>
-              <Lottie
-                loop
-                animationData={emptyAstro}
-                play
-                style={{ width: "100%", height: "auto" }}
-              />
-              <p className="empty-text">{"No Data out there :("}</p>
-            </React.Fragment> :
-        <div style={{ height: "50vh", width: "100%" }}>
-          <div className="graph-wrapper">
-            <ResponsiveBar
-              data={data}
-              keys={top5Keys}
-              enableGridX={false}
-              enableGridY={true}
-              indexBy="topic_label"
-              margin={{ top: 10, right: 30, bottom: 60, left: 80 }}
-              padding={0.7}
-              valueScale={{ type: "linear" }}
-              indexScale={{ type: "band", round: true }}
-              colors={{ scheme: "nivo" }}
-              axisTop={null}
-              axisRight={null}
-              axisBottom={{
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-                legend: "Topics",
-                legendPosition: "middle",
-                legendOffset: 50,
-              }}
-              axisLeft={{
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-                legend: "Article Count",
-                legendPosition: "middle",
-                legendOffset: -40,
-              }}
-              labelSkipWidth={12}
-              labelSkipHeight={12}
-              labelTextColor={{
-                from: "color",
-                modifiers: [["darker", 1.6]],
-              }}
-              layout="vertical"
-              role="application"
-              ariaLabel="Topics based on topics data"
-              barAriaLabel={function (e) {
-                return (
-                  e.id + ": " + e.formattedValue + " in topic: " + e.indexValue
-                );
-              }}
+      <CardContent
+        sx={{
+          width: "100%",
+          height: "62vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {articles.length === 0 ? (
+          <React.Fragment>
+            <Lottie
+              loop
+              animationData={emptyAstro}
+              play
+              style={{ width: "100%", height: "auto" }}
             />
+            <p className="empty-text">{"No Data out there :("}</p>
+          </React.Fragment>
+        ) : (
+          <div style={{ height: "50vh", width: "100%" }}>
+            <div className="graph-wrapper">
+              <ResponsiveBar
+                data={data}
+                keys={top5Keys}
+                enableGridX={false}
+                enableGridY={true}
+                indexBy="topic_label"
+                margin={{ top: 10, right: 30, bottom: 60, left: 80 }}
+                padding={0.7}
+                valueScale={{ type: "linear" }}
+                indexScale={{ type: "band", round: true }}
+                colors={{ scheme: "nivo" }}
+                axisTop={null}
+                axisRight={null}
+                axisBottom={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                  legend: "Topics",
+                  legendPosition: "middle",
+                  legendOffset: 50,
+                }}
+                axisLeft={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                  legend: "Article Count",
+                  legendPosition: "middle",
+                  legendOffset: -40,
+                }}
+                labelSkipWidth={12}
+                labelSkipHeight={12}
+                labelTextColor={{
+                  from: "color",
+                  modifiers: [["darker", 1.6]],
+                }}
+                layout="vertical"
+                role="application"
+                ariaLabel="Topics based on topics data"
+                barAriaLabel={function (e) {
+                  return (
+                    e.id +
+                    ": " +
+                    e.formattedValue +
+                    " in topic: " +
+                    e.indexValue
+                  );
+                }}
+              />
+            </div>
           </div>
-        </div>
-}
+        )}
       </CardContent>
     </Card>
   );

@@ -6,22 +6,23 @@ import { MongoClient } from "mongodb";
 import { GraphQLError } from "graphql";
 // Apollo Server
 const server = new ApolloServer({
-	typeDefs,
-	resolvers,
+    typeDefs,
+    resolvers,
 });
 const connectWithMongoDB = async (mongo_url, db_name) => {
-	const client = new MongoClient(mongo_url);
-	try {
-		await client.connect();
-		return client.db(db_name);
-	} catch (error) {
-		throw new GraphQLError("Failed to connect to MongoDB", {
-			extensions: {
-				code: "ECONNREFUSED",
-				raw_err_msg: error.message,
-			},
-		});
-	}
+    const client = new MongoClient(mongo_url);
+    try {
+        await client.connect();
+        return client.db(db_name);
+    }
+    catch (error) {
+        throw new GraphQLError("Failed to connect to MongoDB", {
+            extensions: {
+                code: "ECONNREFUSED",
+                raw_err_msg: error.message,
+            },
+        });
+    }
 };
 // Context Wrapper
 // Build things you need inside to pass to context

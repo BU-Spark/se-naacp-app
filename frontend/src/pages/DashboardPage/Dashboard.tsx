@@ -21,6 +21,8 @@ export default function Dashboard() {
 			dateFrom: 20220101,
 			dateTo: 20220201,
 			area: "all",
+			userId: "1"
+
 		});
 	}, [articleData]);
 
@@ -70,7 +72,6 @@ export default function Dashboard() {
 					<div className='col-md-4 col-sm-12'>
 						<h1 className='titles'>Top 5 Topics</h1>
 						<FrequencyBarChart
-							articles={articleData!}
 							num={5}
 							openAI={false}
 						></FrequencyBarChart>
@@ -78,7 +79,7 @@ export default function Dashboard() {
 					<div className='col-md-8 col-sm-12'>
 						<h1 className='titles'>Articles</h1>
 
-						<ArticleCard articles={articleData!}></ArticleCard>
+						<ArticleCard></ArticleCard>
 						<Outlet></Outlet>
 					</div>
 				</div>

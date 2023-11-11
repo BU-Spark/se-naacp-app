@@ -82,6 +82,7 @@ export const resolvers = {
                         $lte: args.dateTo,
                     },
                     tracts: args.area,
+                    userID: args.userID
                 })
                     .toArray();
                 return queryResult;
@@ -93,6 +94,7 @@ export const resolvers = {
                         $gte: args.dateFrom,
                         $lte: args.dateTo,
                     },
+                    userID: args.userID
                 })
                     .toArray();
                 return queryResult;
@@ -105,6 +107,7 @@ export const resolvers = {
                         $lte: args.dateTo,
                     },
                     neighborhoods: args.area,
+                    userID: args.userID
                 })
                     .toArray();
                 return queryResult;
