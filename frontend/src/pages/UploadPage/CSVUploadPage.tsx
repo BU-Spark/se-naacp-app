@@ -192,6 +192,16 @@ const CSVUploadBox = () => {
     setUploadedFiles(prevFiles => prevFiles.filter(file => file.name != fileName))
   };
 
+  // Handle file submit
+  const handleFileSubmit = (files: File[]) => {
+    submitFile();
+    // clear out uploaded Files, validated files (submitted files listen onto validated files)
+    for (let i = 0; i < files.length; i++) {
+      setUploadedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
+      setUpValidatedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
+    };
+  }
+
   return (
     <div>
       <div className="RSS-link">
@@ -282,7 +292,7 @@ const CSVUploadBox = () => {
         </div>
       </div>
       <div className="submit-button">
-        <button onClick={() => submitFile()}>
+        <button onClick={() => handleFileSubmit(submittedFiles)}>
           Submit
         </button>
       </div>
