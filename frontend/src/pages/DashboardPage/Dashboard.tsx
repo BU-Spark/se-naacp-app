@@ -11,6 +11,8 @@ import { Outlet } from "react-router-dom";
 import { ArticleContext } from "../../contexts/article_context";
 import { useAuth0 } from "@auth0/auth0-react";
 import dayjs from "dayjs";
+import BasicAccordion from "../../components/Accordion/Accordion";
+import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 export default function Dashboard() {
   const minDate = dayjs("2020-11-01");
   const maxDate = dayjs("2023-01-09");
@@ -18,6 +20,11 @@ export default function Dashboard() {
   const { user, isAuthenticated } = useAuth0();
 
   var { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
+  const { neighborhoodMasterList,queryNeighborhoodDataType } = React.useContext(NeighborhoodContext)!;
+
+  React.useEffect(() => {
+    queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
+  }, []);
 
   React.useEffect(() => {
     queryArticleDataType("ARTICLE_DATA", {
@@ -73,6 +80,18 @@ export default function Dashboard() {
 
             <ArticleCard></ArticleCard>
             <Outlet></Outlet>
+          </div>
+        </div>
+
+        <div className="row justify-content-evenly">
+          <div className="col-md-6 col-sm-12">
+            <h1 className="titles">Active Labels</h1>
+            <BasicAccordion isLabels={true}></BasicAccordion>
+          </div>
+          <div className="col-md-6 col-sm-12">
+            <h1 className="titles">Latest Tracts</h1>
+
+            <BasicAccordion isLabels={false}></BasicAccordion>
           </div>
         </div>
       </div>
