@@ -14,7 +14,6 @@ import TopicsSearchBar from "../../../components/SearchFields/TopicsSearchBar/To
 import "bootstrap/dist/css/bootstrap.css";
 import { TopicsContext } from "../../../contexts/topics_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
-// import "font-awesome/css/font-awesome.min.css";
 
 //Contex
 
