@@ -1,8 +1,6 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-
-const deployment_uri = process.env.NAACP_DEPLOYMENT_URI;
-
+const deployment_uri = process.env.REACT_APP_NAACP_DEPLOYMENT_URI;
 
 const queryURI = `${deployment_uri}/queryValues`;
 const client = new ApolloClient({
