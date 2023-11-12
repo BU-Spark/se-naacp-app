@@ -19,6 +19,8 @@ import { Auth0ProviderComponent } from "./config/Auth0Provider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+
+
 root.render(
 	<Provider store={store}>
 		<React.StrictMode>

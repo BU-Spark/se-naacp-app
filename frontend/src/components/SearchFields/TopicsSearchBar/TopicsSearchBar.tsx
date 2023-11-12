@@ -38,10 +38,10 @@ const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
       setOptions(topicsMasterList);
     } else {
       queryTopicsDataType("TOPICS_DATA", {
-        userId: "2",
+        userId: "1",
       });
       queryTopicsDataType("LABELS_DATA", {
-        userId: "2",
+        userId: "1",
       });
     }
   }, [topicsMasterList, labelsMasterList]);

@@ -24,7 +24,7 @@ export default function Dashboard() {
       dateFrom: 20220101,
       dateTo: 20220201,
       area: "all",
-      userId: "2",
+      userId: "1",
     });
   }, [articleData]);
 
@@ -45,8 +45,8 @@ export default function Dashboard() {
               WGBH Educational Foundation
             </div>
             <p className="week">
-              <span className="text-wrapper">Week </span>
-              <span className="span">01/01/22 - 02/01/22</span>
+              {/* <span className="text-wrapper">Week </span> */}
+              <span className="span">Week: 01/01/22 - 02/01/22</span>
             </p>
           </div>
         </div>

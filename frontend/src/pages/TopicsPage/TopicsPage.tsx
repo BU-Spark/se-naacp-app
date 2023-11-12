@@ -13,6 +13,7 @@ import { Article, Demographics } from "../../__generated__/graphql";
 
 //CSS
 import "./TopicsPage.css";
+import "font-awesome/css/font-awesome.min.css";
 
 //Contex
 import { TractContext } from "../../contexts/tract_context";
@@ -20,6 +21,7 @@ import { ArticleContext } from "../../contexts/article_context";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../contexts/topics_context";
+import { useNavigate } from "react-router-dom";
 
 function getNeighborhood(
   code: string,
@@ -91,12 +93,22 @@ function extractNeighborhoodTract(text: string) {
 
   return [location, number];
 }
+
 const TopicsPage: React.FC = () => {
+  const navigate = useNavigate(); // Initialize useNavigate hook
+
+  function handleBoxClick() {
+    navigate("../TopicsSearchPage"); // Navigate to the new route
+  }
+
   //Contex
-  const { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
+  const { articleData, queryArticleDataType } =
+    React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-  const { neighborhoodMasterList, setNeighborhood, neighborhood } = React.useContext(NeighborhoodContext)!;
-  const { topicsMasterList, topic, setTopic } = React.useContext(TopicsContext)!;
+  const { neighborhoodMasterList, setNeighborhood, neighborhood } =
+    React.useContext(NeighborhoodContext)!;
+  const { topicsMasterList, topic, setTopic } =
+    React.useContext(TopicsContext)!;
 
   //State
   const [tracts, setTracts] = React.useState<string[]>([]);
@@ -108,11 +120,10 @@ const TopicsPage: React.FC = () => {
       queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
         area: "all",
         labelOrTopic: topic,
-        userId: "2",
+        userId: "1",
       });
     }
   }, [topic]);
-
 
   //Set deafult count and list
   React.useEffect(() => {
@@ -137,14 +148,13 @@ const TopicsPage: React.FC = () => {
     }
   }, [articleData]);
 
-
   //Sets new Articles when tract changes
   React.useEffect(() => {
     if (tractData && topic && neighborhood && counter != 0) {
       queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
         area: tractData.tract,
         labelOrTopic: topic,
-        userId: "2",
+        userId: "1",
       });
       setCounter(-1);
     }
@@ -152,7 +162,13 @@ const TopicsPage: React.FC = () => {
 
   return (
     <>
-      {!(articleData && topic && neighborhood && tractData) ? (
+      {!(
+        articleData &&
+        topic &&
+        neighborhood &&
+        tractData &&
+        neighborhoodMasterList
+      ) ? (
         <Stack
           sx={{
             width: "100%",
@@ -167,6 +183,15 @@ const TopicsPage: React.FC = () => {
         <div className="big-container">
           <div className="row justify-content-between">
             <div className="col-md-5 col-sm-12">
+              <p className="week" onClick={() => handleBoxClick()}>
+                <i
+                  className="fa fa-arrow-left"
+                  aria-hidden="true"
+                  style={{ marginRight: "10px" }}
+                ></i>
+
+                <span className="span">Back to Search Page </span>
+              </p>
               <div className="align-self-start your-org">SELECTED TOPIC</div>
               <div className="align-self-start org-name">
                 {topic == null ? "No Topic Selected" : topic}

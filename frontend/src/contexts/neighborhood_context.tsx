@@ -3,9 +3,9 @@ import { useLazyQuery, gql } from "@apollo/client";
 import { Neighborhoods } from "../__generated__/graphql";
 
 type NeighborhoodContextType = {
-  neighborhoodMasterList: { [key: string]: string[] } | null,
-  neighborhood: string | null,
-  queryNeighborhoodDataType: (queryType: any, options?: any) => void,
+  neighborhoodMasterList: { [key: string]: string[] } | null;
+  neighborhood: string | null;
+  queryNeighborhoodDataType: (queryType: any, options?: any) => void;
   setNeighborhood: (neighborhood: string) => void; // Added this setter function
 };
 
@@ -13,7 +13,7 @@ const defaultNeighborhoodContext: NeighborhoodContextType = {
   neighborhoodMasterList: null,
   neighborhood: null,
   queryNeighborhoodDataType: () => {},
-  setNeighborhood: () => {}
+  setNeighborhood: () => {},
 };
 
 const NEIGHBORHOOD_DATA_QUERY = gql`
@@ -25,7 +25,9 @@ const NEIGHBORHOOD_DATA_QUERY = gql`
   }
 `;
 
-export const NeighborhoodContext = React.createContext<NeighborhoodContextType>(defaultNeighborhoodContext);
+export const NeighborhoodContext = React.createContext<NeighborhoodContextType>(
+  defaultNeighborhoodContext
+);
 
 const NeighborhoodProvider: React.FC = ({ children }: any) => {
   const [

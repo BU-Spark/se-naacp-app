@@ -1,5 +1,5 @@
 //Libaries
-import React from "react";
+import React, { useContext } from "react";
 import dayjs from "dayjs";
 
 //Components
@@ -22,28 +22,37 @@ import { TractContext } from "../../contexts/tract_context";
 import { ArticleContext } from "../../contexts/article_context";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
+import { TopicsContext } from "../../contexts/topics_context";
+import { Auth0Context } from "@auth0/auth0-react";
 
 const NeighborhoodPage: React.FC = () => {
   const minDate = dayjs("2020-11-01");
   const maxDate = dayjs("2023-01-09");
 
   //Context
-  const { articleData, queryArticleDataType } =
-    React.useContext(ArticleContext)!;
+  const { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-  const { neighborhoodMasterList, neighborhood, setNeighborhood } =
-    React.useContext(NeighborhoodContext);
-
+  const {
+    neighborhoodMasterList,
+    neighborhood,
+    setNeighborhood,
+    queryNeighborhoodDataType,
+  } = React.useContext(NeighborhoodContext);
   const [isLoading, setIsLoading] = React.useState(true);
+  const { queryTopicsDataType } = React.useContext(TopicsContext);
+  const { user } = useContext(Auth0Context);
 
   React.useEffect(() => {
+    queryTopicsDataType("TOPICS_DATA");
+    queryTopicsDataType("LABELS_DATA");
+    queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
     setNeighborhood("Fenway");
     queryTractDataType("TRACT_DATA", { tract: "010103" });
     queryArticleDataType("ARTICLE_DATA", {
       dateFrom: parseInt(minDate.format("YYYYMMDD")),
       dateTo: parseInt(maxDate.format("YYYYMMDD")),
       area: "010103",
-      userId: "2",
+      userId: "1",
     });
   }, []);
 
