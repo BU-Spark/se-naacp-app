@@ -1,3 +1,8 @@
+.drag-drop-text-wrapper {
+    font-size: 20px;
+    color: black;
+}
+
 .RSS-link {
     padding: 0px 10px;
     font-size: 15px;
@@ -55,10 +60,6 @@
     color: #307BFF;
     text-decoration: underline;
     cursor: pointer;
-}
-
-.support-text {
-    font-size: 12px;
 }
 
 /* Additional styling to handle hover, focus, and active states */

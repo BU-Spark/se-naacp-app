@@ -17,6 +17,7 @@ import Callback from "../pages/Callback/Callback";
 import { ProtectedRoute } from "../components/ProtectedRoute/ProtectedRoute";
 import { Topics } from "../__generated__/graphql";
 import CSVUploadBox from "../pages/UploadPage/CSVUploadPage";
+import RSSUploadBox from "../pages/UploadPage/RSSUploadPage";
 
 export default function MainNavigator() {
  
@@ -40,6 +41,10 @@ export default function MainNavigator() {
             <Route
               path="/Upload"
               element={<ProtectedRoute child={CSVUploadBox} />}
+            />
+            <Route
+              path="/Upload/:RSS"
+              element={<ProtectedRoute child={RSSUploadBox} />}
             />
             <Route
               path="/Dashboard"

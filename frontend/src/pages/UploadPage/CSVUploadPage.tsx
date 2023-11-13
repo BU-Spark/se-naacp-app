@@ -266,10 +266,10 @@ const CSVUploadBox = () => {
             <img src="/upload-icon.svg" alt="Upload" />
           </div>
           <p className="drag-and-drop-files">
-            <span className="text-wrapper">Drag and drop files, or </span>
-            <span className="span">Browse</span>
+            <span className="drag-drop-text-wrapper">Drag and drop files, or </span>
+            <span className="drag-drop-text-wrapper">Browse files</span>
           </p>
-          <div className="text-wrapper">Only support CSV files</div>
+          <div className="drag-drop-text-wrapper">Only support CSV files</div>
         </label>
       </div>
       <h4 className="file-list-title">Uploaded Files</h4>
