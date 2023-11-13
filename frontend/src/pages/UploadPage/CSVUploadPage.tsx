@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Button from '@mui/material/Button';
+import { DataGrid } from "@mui/x-data-grid";
+import dayjs from 'dayjs';
 // import CsvUploadComponent from '../../components/Upload/CSVUpload';
 import "./CSVUploadPage.css";
 import { UploadContext } from '../../contexts/upload_context';
@@ -32,7 +34,7 @@ const CSVUploadBox = () => {
 
   useEffect(() => {
     queryUploadDataType("UPLOAD_DATA", {
-      "userId": "2",
+      "userId": "1",
     });
   }, []);
 
@@ -335,33 +337,32 @@ const CSVUploadBox = () => {
         <div className="uploaded-files-list">
           <div className="uploaded-files-box">
             <div className="files-list-header">
-              <span>Upload ID</span>
-              <span>Time Stamp</span>
-              <span>Article Count</span>
-              <span>HTTP Status</span>
+              <span>UPLOAD ID</span>
+              <span>TIME STAMP</span>
+              <span>ARTICLE COUNT</span>
+              <span>HTTP STATUS</span>
             </div>
             {uploads.map((file, index) => (
               <div key={index} className="file-upload-status">
                 {/* Upload ID Column */}
-                <div className="file-name">
+                <div className="file-uploadId">
                   <span>{file.uploadID}</span>
                 </div>
 
                 {/* Time Stamp Column */}
-                <div className="file-size">
-                  <span>{(file.timestamp)}</span>
+                <div className="file-timeStamp">
+                  <span>{new Date(file.timestamp).toLocaleString()}</span>
                 </div>
 
                 {/* Article cnt Column */}
-                <div className="file-size">
-                  <span>{(file.article_cnt)}</span>
+                <div className="file-articleCnt">
+                  <span>{(file.article_cnt === -1 ? 0 : file.article_cnt)}</span>
                 </div>
 
                 {/* http status Column */}
-                <div className="file-size">
+                <div className="file-httpStatus">
                   <span>{(file.status)}</span>
                 </div>
-
               </div>
             ))}
           </div>

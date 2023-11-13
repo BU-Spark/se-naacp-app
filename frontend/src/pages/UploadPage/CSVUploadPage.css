@@ -78,7 +78,6 @@
     border: 2px solid #D6E4FF;
     border-radius: 12px;
     padding: 20px;
-    text-align: center;
     margin: 20px;
     background-color: #F4F8FF;
 }
@@ -221,3 +220,35 @@
     margin-top: 8px;
     margin-right: 16px;
 }
+
+.file-uploadId {
+    display: flex;
+    width: 25%;
+    height: 110%;
+    overflow: auto;
+    text-overflow: ellipsis;
+    justify-content: left;
+    white-space: nowrap;
+}
+
+.file-timeStamp {
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    padding-right: 100px;
+}
+
+.file-articleCnt {
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    padding-left: 40px;
+}
+
+.file-httpStatus {
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    padding-left: 180px;
+}
+
