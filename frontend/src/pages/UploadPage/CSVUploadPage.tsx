@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 // import CsvUploadComponent from '../../components/Upload/CSVUpload';
 import "./CSVUploadPage.css";
+import { UploadContext } from '../../contexts/upload_context';
+import { Uploads } from '../../__generated__/graphql';
+
 
 // Define a type for the file with progress information
 type UploadedFile = {
@@ -23,12 +26,29 @@ const CSVUploadBox = () => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const { queryUploadDataType, uploadData } = useContext(UploadContext)!;
+  const [uploads, setUpload] = useState<Uploads[]>([]);
+  // const { user } = useContext(Auth0Context)!;
+
+  useEffect(() => {
+    queryUploadDataType("UPLOAD_DATA", {
+      "userId": "2",
+    });
+  }, []);
+
+  useEffect(() => {
+    if(uploadData){
+      setUpload(uploadData);
+      console.log(uploadData);
+
+    }
+  }, [uploadData]);
 
   useEffect(() => {
     const files = validatedFiles.map(f => f.file);
     setUpsubmittedFiles(files);
   }, [validatedFiles]);
-  
+
   // set up cors proxy for POST csv to api
   const corsProxy = 'https://corsproxy.io/?';
   const url = 'https://dummy-server-toswle5frq-uc.a.run.app/upload_csv';
@@ -48,7 +68,7 @@ const CSVUploadBox = () => {
       // handle \r return carriage character
       const headers = text.slice(0, text.search(/\r?\n/)).split(",").map(header => header.trim());
       // expected header list
-      const expectedHeaders = ["Headline", "Byline", "Section", "Tagging", "Paths", "Publish Date", "Body"];
+      const expectedHeaders = ["Type", "Label", "Headline", "Byline", "Section", "Tagging", "Paths", "Publish Date", "Body"];
       const missingHeaders = expectedHeaders.filter(header => !headers.includes(header));
 
       callback(missingHeaders);
@@ -98,31 +118,31 @@ const CSVUploadBox = () => {
   const submitFile = () => {
     for (let i = 0; i < submittedFiles.length; i++) {
       const formData = new FormData();
-      formData.append('file', submittedFiles[i]); 
+      formData.append('file', submittedFiles[i]);
       axios.post(proxy_Url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       })
-      .then((response) => {
-        console.log(response);
-        // update the uploaded file status
-        setUploadedFiles(currentFiles => currentFiles.map(f => {
-          if (f.name === submittedFiles[i].name) {
-            return { ...f, status: 'Submit Successful' };
-          }
-          return f;
-        }));
-      })
-      .catch(error => {
-        console.error(error);
-        setUploadedFiles(currentFiles => currentFiles.map(f => {
-          if (f.name === submittedFiles[i].name) {
-            return { ...f, status: 'Submit Failed', error: error.toString() };
-          }
-          return f;
-        }));
-      });
+        .then((response) => {
+          console.log(response);
+          // update the uploaded file status
+          setUploadedFiles(currentFiles => currentFiles.map(f => {
+            if (f.name === submittedFiles[i].name) {
+              return { ...f, status: 'Submit Successful' };
+            }
+            return f;
+          }));
+        })
+        .catch(error => {
+          console.error(error);
+          setUploadedFiles(currentFiles => currentFiles.map(f => {
+            if (f.name === submittedFiles[i].name) {
+              return { ...f, status: 'Submit Failed', error: error.toString() };
+            }
+            return f;
+          }));
+        });
     };
   };
 
@@ -202,7 +222,7 @@ const CSVUploadBox = () => {
     // clear out uploaded Files, validated files (submitted files listen onto validated files)
     for (let i = 0; i < files.length; i++) {
       setUploadedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
-      setUpValidatedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
+      // setUpValidatedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
     };
     // need some logic to handle file history
   }
@@ -210,7 +230,7 @@ const CSVUploadBox = () => {
   return (
     <div>
       <div className="RSS-link">
-        <Button 
+        <Button
           variant="outlined" onClick={gotoRSS}>
           Upload an RSS Link
         </Button>
@@ -303,12 +323,49 @@ const CSVUploadBox = () => {
         </div>
       </div>
       <div className="submit-button">
-        <Button 
+        <Button
           variant="contained"
           color="primary"
           onClick={() => handleFileSubmit(submittedFiles)}>
           Submit
         </Button>
+      </div>
+      <h4 className="file-list-title">Latest Upload History</h4>
+      <div className="uploaded-files-wrapper">
+        <div className="uploaded-files-list">
+          <div className="uploaded-files-box">
+            <div className="files-list-header">
+              <span>Upload ID</span>
+              <span>Time Stamp</span>
+              <span>Article Count</span>
+              <span>HTTP Status</span>
+            </div>
+            {uploads.map((file, index) => (
+              <div key={index} className="file-upload-status">
+                {/* Upload ID Column */}
+                <div className="file-name">
+                  <span>{file.uploadID}</span>
+                </div>
+
+                {/* Time Stamp Column */}
+                <div className="file-size">
+                  <span>{(file.timestamp)}</span>
+                </div>
+
+                {/* Article cnt Column */}
+                <div className="file-size">
+                  <span>{(file.article_cnt)}</span>
+                </div>
+
+                {/* http status Column */}
+                <div className="file-size">
+                  <span>{(file.status)}</span>
+                </div>
+
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

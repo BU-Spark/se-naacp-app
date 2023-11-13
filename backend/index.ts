@@ -46,7 +46,7 @@ const contextWrapper: ContextWrapperFunction = async () => {
 
 const { url } = await startStandaloneServer(server, {
   context: contextWrapper,
-  listen: { port: 4001 },
+  listen: { port: 4000 },
 });
 
 console.log(`🚀  Server ready at PORT: ${url}`);

@@ -55,7 +55,8 @@
     "uniqid": "^5.4.0",
     "use-state-with-callback": "^3.0.2",
     "web-vitals": "^2.1.4",
-    "xmldom": "^0.6.0"
+    "xmldom": "^0.6.0",
+    "yarn": "^1.22.19"
   },
   "scripts": {
     "start": "react-scripts start",

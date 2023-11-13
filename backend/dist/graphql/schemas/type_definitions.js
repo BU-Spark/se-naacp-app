@@ -1,5 +1,14 @@
 import { gql } from "apollo-server-express";
 export const typeDefs = gql `
+  type Uploads {
+    userID: String!
+    uploadID: String!
+    timestamp: String!
+    article_cnt: Int!
+    status: String!
+    message: String!
+  }
+
   type Article {
     neighborhoods: [String!]!
     position_section: String!
@@ -45,6 +54,7 @@ export const typeDefs = gql `
   }
 
   type Query {
+    getUploadByUserId(user_id: String!): [Uploads]
     articleByDate(dateFrom: Int!, dateTo: Int!, area: String!): [Article]
     tractsByNeighborhood(neighborhood: String!): [Neighborhoods]
     demographicsByTracts(tract: String!): [Tracts]

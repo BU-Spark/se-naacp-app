@@ -9,6 +9,12 @@ function isNumber(str: any) {
 
 export const resolvers = {
   Query: {
+    getUploadByUserId: async(_, args, context) => {
+      const { db } = context;
+      const upload_data = db.collection("uploads");
+      const queryResult = upload_data.find({ userID: args.user_id }).toArray();
+      return queryResult;
+    },
     articleByDate: async (_, args, context) => {
       const { db } = context;
       const articles_data = db.collection("articles_data");
