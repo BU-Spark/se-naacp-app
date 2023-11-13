@@ -22,6 +22,8 @@ import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../../contexts/topics_context";
 import { useNavigate } from "react-router-dom";
+import DateField from "../../../components/SearchFields/DateBar/DateBar";
+import { maxDate, minDate } from "../../../App";
 
 function getNeighborhood(
   code: string,
@@ -112,12 +114,15 @@ const TopicsPage: React.FC = () => {
 
   //State
   const [tracts, setTracts] = React.useState<string[]>([]);
-  const [counter, setCounter] = React.useState(0);
+  const [flag, setFlag] = React.useState(true);
+  const [currentTopic, setcurrentTopic] = React.useState("");
 
   // Setting Default Values
   React.useEffect(() => {
     if (topic) {
       queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+        dateFrom: 20200101,
+        dateTo: 20230101,
         area: "all",
         labelOrTopic: topic,
         userId: "1",
@@ -127,7 +132,8 @@ const TopicsPage: React.FC = () => {
 
   //Set deafult count and list
   React.useEffect(() => {
-    if (articleData && counter === 1) {
+    if (articleData && (tractData!.tract == currentTopic || flag)) {
+      setFlag(false);
       const countTemp = countArticlesByKeyWord(
         articleData!,
         topic!,
@@ -136,6 +142,7 @@ const TopicsPage: React.FC = () => {
       );
 
       const extra = extractNeighborhoodTract(countTemp[0]);
+      setcurrentTopic(extra[1]);
 
       queryTractDataType("TRACT_DATA", {
         tract: extra[1],
@@ -143,22 +150,19 @@ const TopicsPage: React.FC = () => {
       setNeighborhood(extra[0]);
       setTracts(countTemp);
     }
-    if (counter === 0) {
-      setCounter(1);
-    }
   }, [articleData]);
 
-  //Sets new Articles when tract changes
-  React.useEffect(() => {
-    if (tractData && topic && neighborhood && counter != 0) {
-      queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
-        area: tractData.tract,
-        labelOrTopic: topic,
-        userId: "1",
-      });
-      setCounter(-1);
-    }
-  }, [tractData]);
+  // //Sets new Articles when tract changes
+  // React.useEffect(() => {
+  //   if (tractData && topic && neighborhood && counter != 0) {
+  //     queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+  //       area: tractData.tract,
+  //       labelOrTopic: topic,
+  //       userId: "1",
+  //     });
+  //     setCounter(-1);
+  //   }
+  // }, [tractData]);
 
   return (
     <>
@@ -182,7 +186,7 @@ const TopicsPage: React.FC = () => {
       ) : (
         <div className="big-container">
           <div className="row justify-content-between">
-            <div className="col-md-5 col-sm-12">
+            <div className="col-md-9 col-sm-12">
               <div
                 className="align-self-start org-back"
                 onClick={handleBoxClick}
@@ -201,6 +205,12 @@ const TopicsPage: React.FC = () => {
                 {topic == null ? "No Topic Selected" : topic}
               </div>
               <h1></h1>
+            </div>
+
+            <div className="col-md-3 col-sm-12">
+              <div>
+                <DateField title="From" isTopicsPage={true}></DateField>
+              </div>
             </div>
           </div>
 

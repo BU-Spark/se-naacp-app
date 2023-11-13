@@ -44,7 +44,7 @@ const columns = [
   { field: "author", headerName: "Author", width: 130 },
   { field: "publishingDate", headerName: "Publishing Date", width: 120 },
   { field: "neighborhood", headerName: "Neighborhood", width: 580 },
-  // { field: "censusTract", headerName: "Census Tract", width: 110 },
+  { field: "censusTract", headerName: "Census Tract", width: 200 },
   { field: "category", headerName: "Category", width: 90 },
 ];
 

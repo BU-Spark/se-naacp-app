@@ -9,46 +9,79 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { ArticleContext } from "../../../contexts/article_context";
 import { TractContext } from "../../../contexts/tract_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
+import { minDate, maxDate } from "../../../App";
+import { TopicsContext } from "../../../contexts/topics_context";
 
 interface DateFieldProps {
   title: string;
-  minDate: Dayjs;
-  maxDate: Dayjs;
-  isFrom: boolean;
+  isTopicsPage: boolean;
 }
 
-const DateField: React.FC<DateFieldProps> = ({ minDate, maxDate, isFrom }) => {
+const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
   const [dateFrom, setdateFrom] = React.useState(minDate);
   const [dateTo, setDateTo] = React.useState(maxDate);
 
+  const { topicsMasterList, topic, setTopic } =
+    React.useContext(TopicsContext)!;
   const { articleData, queryArticleDataType } =
     React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
   const { neighborhood } = React.useContext(NeighborhoodContext)!;
 
   const handleChangeFrom = (d: any) => {
-    queryArticleDataType("ARTICLE_DATA", {
-      dateFrom: dateFrom,
-      dateTo: dateTo,
-      area: tractData?.tract,
-      userId: "1"
-    });
     setdateFrom(d);
+
+    // isTopicsPage
+    //   ? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+    //       dateFrom: dateFrom,
+    //       dateTo: dateTo,
+    //       area: tractData?.tract,
+    //       labelOrTopic: topic,
+    //       userId: "1",
+    //     })
+    //   : queryArticleDataType("ARTICLE_DATA", {
+    //       dateFrom: dateFrom,
+    //       dateTo: dateTo,
+    //       area: tractData?.tract,
+    //       userId: "1",
+    //     });
   };
 
   const handleChangeTo = (d: any) => {
     setDateTo(d);
+
+    // isTopicsPage
+    //   ? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+    //       dateFrom: dateFrom,
+    //       dateTo: dateTo,
+    //       area: tractData?.tract,
+    //       labelOrTopic: topic,
+    //       userId: "1",
+    //     })
+    //   : queryArticleDataType("ARTICLE_DATA", {
+    //       dateFrom: dateFrom,
+    //       dateTo: dateTo,
+    //       area: tractData?.tract,
+    //       userId: "1",
+    //     });
   };
 
   React.useEffect(() => {
-    queryArticleDataType("ARTICLE_DATA", {
-      dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
-      dateTo: parseInt(dateTo.format("YYYYMMDD")),
-      area: tractData?.tract,
-      userId: "1"
-
-    });
-  }, [dateFrom, dateTo, tractData, neighborhood]);
+    isTopicsPage
+      ? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+          dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+          dateTo: parseInt(dateTo.format("YYYYMMDD")),
+          area: tractData?.tract,
+          labelOrTopic: topic,
+          userId: "1",
+        })
+      : queryArticleDataType("ARTICLE_DATA", {
+          dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+          dateTo: parseInt(dateTo.format("YYYYMMDD")),
+          area: tractData?.tract,
+          userId: "1",
+        });
+  }, [dateFrom, dateTo, tractData]);
 
   return (
     <>

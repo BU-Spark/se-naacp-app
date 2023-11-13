@@ -15,7 +15,7 @@ function isNumber(str: any) {
 
 export const resolvers = {
   Query: {
-    getUploadByUserId: async(_, args, context) => {
+    getUploadByUserId: async (_, args, context) => {
       const { db } = context;
       const upload_data = db.collection("uploads");
       const queryResult = upload_data.find({ userID: args.user_id }).toArray();
@@ -25,7 +25,10 @@ export const resolvers = {
     getAllTopics: async (_, args, context): Promise<String[]> => {
       const { db } = context;
       const articles_data = db.collection("articles_data");
-      const topics: string[] = await articles_data.distinct('position_section', {'userID': args.userID });
+      const topics: string[] = await articles_data.distinct(
+        "position_section",
+        { userID: args.userID }
+      );
       return topics;
     },
 
@@ -160,6 +163,10 @@ export const resolvers = {
       if (isNumber(args.area)) {
         const queryResult = articles_data
           .find({
+            dateSum: {
+              $gte: args.dateFrom,
+              $lte: args.dateTo,
+            },
             userID: args.userID,
             tracts: args.area,
             $or: [
@@ -175,6 +182,10 @@ export const resolvers = {
       } else if (args.area === "all") {
         const queryResult = articles_data
           .find({
+            dateSum: {
+              $gte: args.dateFrom,
+              $lte: args.dateTo,
+            },
             userID: args.userID,
             $or: [
               { openai_labels: { $in: [args.labelOrTopic] } },
@@ -189,6 +200,10 @@ export const resolvers = {
       } else {
         const queryResult = articles_data
           .find({
+            dateSum: {
+              $gte: args.dateFrom,
+              $lte: args.dateTo,
+            },
             userID: args.userID,
             neighborhoods: args.area,
             $or: [

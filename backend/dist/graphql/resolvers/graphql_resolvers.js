@@ -14,7 +14,7 @@ export const resolvers = {
         getAllTopics: async (_, args, context) => {
             const { db } = context;
             const articles_data = db.collection("articles_data");
-            const topics = await articles_data.distinct('position_section', { 'userID': args.userID });
+            const topics = await articles_data.distinct("position_section", { userID: args.userID });
             return topics;
         },
         getAllLabels: async (_, args, context) => {
@@ -128,6 +128,10 @@ export const resolvers = {
             if (isNumber(args.area)) {
                 const queryResult = articles_data
                     .find({
+                    dateSum: {
+                        $gte: args.dateFrom,
+                        $lte: args.dateTo,
+                    },
                     userID: args.userID,
                     tracts: args.area,
                     $or: [
@@ -143,6 +147,10 @@ export const resolvers = {
             else if (args.area === "all") {
                 const queryResult = articles_data
                     .find({
+                    dateSum: {
+                        $gte: args.dateFrom,
+                        $lte: args.dateTo,
+                    },
                     userID: args.userID,
                     $or: [
                         { openai_labels: { $in: [args.labelOrTopic] } },
@@ -157,6 +165,10 @@ export const resolvers = {
             else {
                 const queryResult = articles_data
                     .find({
+                    dateSum: {
+                        $gte: args.dateFrom,
+                        $lte: args.dateTo,
+                    },
                     userID: args.userID,
                     neighborhoods: args.area,
                     $or: [

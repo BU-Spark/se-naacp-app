@@ -63,7 +63,7 @@ export const typeDefs = gql`
   type Query {
     getUploadByUserId(user_id: String!): [Uploads]
     articleByDate(dateFrom: Int!, dateTo: Int!, area: String!, userID: String!): [Article]
-    articleByTopicsOrLabels(area: String!, labelOrTopic: String!, userID: String!): [Article]
+    articleByTopicsOrLabels(dateFrom: Int!, dateTo: Int!, area: String!, labelOrTopic: String!, userID: String!): [Article]
     tractsByNeighborhood(neighborhood: String!): [Neighborhoods]
     demographicsByTracts(tract: String!): [Tracts]
     getAllNeighborhoods: [Neighborhoods!]!

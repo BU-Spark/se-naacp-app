@@ -36,11 +36,15 @@ const ARTICLE_DATA_QUERY = gql`
 
 const ARTICLE_BY_LABEL_OR_TOPIC = gql`
   query articleByTopicLabelQuery(
+    $dateFrom: Int!
+    $dateTo: Int!
     $area: String!
     $labelOrTopic: String!
     $userId: String!
   ) {
     articleByTopicsOrLabels(
+      dateFrom: $dateFrom
+      dateTo: $dateTo
       area: $area
       labelOrTopic: $labelOrTopic
       userID: $userId

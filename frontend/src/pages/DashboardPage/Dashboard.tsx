@@ -13,9 +13,7 @@ import dayjs from "dayjs";
 import BasicAccordion from "../../components/Accordion/Accordion";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 export default function Dashboard() {
-  const minDate = dayjs("2020-11-01");
-  const maxDate = dayjs("2023-01-09");
-
+  
   const { user, isAuthenticated } = useAuth0();
 
   var { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;

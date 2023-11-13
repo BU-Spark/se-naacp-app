@@ -23,13 +23,12 @@ import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../contexts/topics_context";
 import { Auth0Context } from "@auth0/auth0-react";
-
+import { minDate } from "../../App";
+import { maxDate } from "../../App";
 const NeighborhoodPage: React.FC = () => {
-  const minDate = dayjs("2020-11-01");
-  const maxDate = dayjs("2023-01-09");
-
   //Context
-  const { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
+  const { articleData, queryArticleDataType } =
+    React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
   const {
     neighborhoodMasterList,
@@ -96,12 +95,7 @@ const NeighborhoodPage: React.FC = () => {
             <div className="col-md-5 col-sm-12"></div>
             <div className="col-md-4 col-sm-12">
               <div>
-                <DateField
-                  title="From"
-                  minDate={minDate}
-                  maxDate={maxDate}
-                  isFrom={true}
-                ></DateField>
+                <DateField title="From" isTopicsPage={false}></DateField>
               </div>
             </div>
           </div>
