@@ -19,7 +19,8 @@ export default function Dashboard() {
   const { user, isAuthenticated } = useAuth0();
 
   var { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
-  const { neighborhoodMasterList,queryNeighborhoodDataType } = React.useContext(NeighborhoodContext)!;
+  const { neighborhoodMasterList, queryNeighborhoodDataType } =
+    React.useContext(NeighborhoodContext)!;
 
   React.useEffect(() => {
     queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
@@ -43,13 +44,14 @@ export default function Dashboard() {
       <div className="big-container">
         <div className="row">
           <div className="col">
-            {isAuthenticated && (
+            {/* {isAuthenticated && (
               <div className="align-self-start">Hello, {user?.given_name}</div>
-            )}
+            )} */}
             <div className="align-self-start your-org">YOUR ORGANIZATION</div>
             <div className="align-self-start org-name">
               WGBH Educational Foundation
             </div>
+
             <p className="week">
               {/* <span className="text-wrapper">Week </span> */}
               <span className="span">Week: 01/01/22 - 02/01/22</span>

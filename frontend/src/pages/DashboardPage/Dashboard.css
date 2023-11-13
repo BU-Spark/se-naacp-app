@@ -38,6 +38,7 @@
 }
 
 .week {
+  text-align: left;
   color: #1c1c1c;
   font-family: "Karla-Regular", Helvetica;
   font-size: 20px;

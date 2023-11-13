@@ -9,7 +9,7 @@ import { ArticleContext } from "../../contexts/article_context";
 import { Article } from "../../__generated__/graphql";
 import Callback from "../../pages/Callback/Callback";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
-
+import "./Accordion.css"
 interface TractCount {
   tract: string;
   count: number;
