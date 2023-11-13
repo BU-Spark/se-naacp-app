@@ -16,6 +16,7 @@ import { Auth0ProviderNavigate } from "../config/Auth0Provider";
 import Callback from "../pages/Callback/Callback";
 import { ProtectedRoute } from "../components/ProtectedRoute/ProtectedRoute";
 import { Topics } from "../__generated__/graphql";
+import CSVUploadBox from "../pages/UploadPage/CSVUploadPage";
 
 export default function MainNavigator() {
  
@@ -38,7 +39,7 @@ export default function MainNavigator() {
             />
             <Route
               path="/Upload"
-              element={<ProtectedRoute child={FileUpload} />}
+              element={<ProtectedRoute child={CSVUploadBox} />}
             />
             <Route
               path="/Dashboard"

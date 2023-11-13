@@ -33,8 +33,9 @@ root.render(
 								<TopicsProvider>
                 <UploadProvider>
   									<App />
+									  </UploadProvider>
+
 								</TopicsProvider>
-                </UploadProvider>
 							</NeighborhoodProvider>
 						</TractProvider>
 					</ArticleProvider>
