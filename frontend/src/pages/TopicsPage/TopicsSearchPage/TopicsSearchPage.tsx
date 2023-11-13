@@ -2,20 +2,18 @@
 import React from "react";
 import dayjs from "dayjs";
 
-import image from "../../../assets/images/bos.png";
-
 //Components
+import TopicsSearchBar from "../../../components/SearchFields/TopicsSearchBar/TopicsSearchBar";
 
 //Types
 
 //CSS
 import "./TopicsSearchPage.css";
-import TopicsSearchBar from "../../../components/SearchFields/TopicsSearchBar/TopicsSearchBar";
-import "bootstrap/dist/css/bootstrap.css";
-import { TopicsContext } from "../../../contexts/topics_context";
-import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
+import image from "../../../assets/images/bos.png";
 
 //Contex
+import { TopicsContext } from "../../../contexts/topics_context";
+import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 
 const TopicsSearchPage: React.FC = () => {
   const { queryNeighborhoodDataType } = React.useContext(NeighborhoodContext);

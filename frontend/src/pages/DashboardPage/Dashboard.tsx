@@ -1,5 +1,4 @@
 import "./Dashboard.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useContext } from "react";
 
 import ArticleCard from "../../components/ArticleCard/ArticleCard";

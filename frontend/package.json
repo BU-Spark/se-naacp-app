@@ -86,7 +86,6 @@
     "@babel/plugin-transform-private-property-in-object": "^7.22.11",
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/client-preset": "^4.1.0",
-    "@types/bootstrap": "^5.2.8",
     "@types/uniqid": "^5.3.2",
     "@types/xmldom": "^0.1.34"
   }
