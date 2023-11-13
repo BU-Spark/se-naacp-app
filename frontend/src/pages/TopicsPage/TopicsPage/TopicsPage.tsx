@@ -98,7 +98,7 @@ const TopicsPage: React.FC = () => {
   const navigate = useNavigate(); // Initialize useNavigate hook
 
   function handleBoxClick() {
-    navigate("../TopicsSearchPage"); // Navigate to the new route
+    navigate("../"); // Navigate to the new route
   }
 
   //Contex

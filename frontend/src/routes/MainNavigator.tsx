@@ -27,12 +27,12 @@ export default function MainNavigator() {
         <Auth0ProviderNavigate>
           <TopNavBar></TopNavBar>
           <Routes>
-            <Route path="/" element={<ProtectedRoute child={IntroPage} />} />
+            <Route path="/" element={<ProtectedRoute child={TopicsSearchPage} />} />
 
-            <Route
+            {/* <Route
               path="/TopicsSearchPage"
               element={<ProtectedRoute child={TopicsSearchPage} />}
-            />
+            /> */}
 
             <Route
               path="/Topics"
