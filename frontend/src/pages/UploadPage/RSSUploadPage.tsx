@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 import { DOMParser } from 'xmldom';
 import axios from 'axios';
 import Button from '@mui/material/Button';
