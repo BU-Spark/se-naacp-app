@@ -17,17 +17,22 @@ export interface DemographicsByTractsArgs {
     tract: string;
 }
 
+// *** Data Types derived from the collections ***
 
+// Define output type for Resolver getAllTopics
+export interface ITopics {
+    articles: string[];
+    value: string;
+}
 
 // Define output type for DemographicsByTracts
 export interface ITracts {
-    _id: string;
     county_name: string;
     tract: string;
     geoid_tract: string;
     neighborhood: string;
-    demographics: IDemographics;
-    articles: string[];
+    demographics: IDemographics | null;
+    articles: string[] | null;
 }
 
 // Define output type for getAllArticles
@@ -45,6 +50,7 @@ export interface IArticles {
     link: string;
     openai_labels: string[];
     dateSum: number
+    userID: string
 }
 
 export interface IDemographics {

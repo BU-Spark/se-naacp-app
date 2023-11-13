@@ -3,7 +3,7 @@ import { useLazyQuery, gql } from "@apollo/client";
 import { Tracts } from "../__generated__/graphql"
 
 type TractContextType = {
-    tractData: Tracts[] | null,
+    tractData: Tracts | null,
     queryTractDataType: (queryType: any, options?: any) => void,
 }
 
@@ -23,6 +23,7 @@ const TRACT_DATA_QUERY = gql`
                 p2_009n
                 p2_010n
             }
+            tract
         }
     }
 `;
@@ -31,11 +32,12 @@ export const TractContext = React.createContext<TractContextType | null>(null);
 
 const TractProvider: React.FC = ({children}: any) => {
     const [queryTractData, { data: tractData, loading: tractDataLoading, error: tractDataError }] = useLazyQuery(TRACT_DATA_QUERY);
-    const [tracts, setTractData] = React.useState<Tracts[] | null>(null);
+    const [tracts, setTractData] = React.useState<Tracts | null>(null);
 
     React.useEffect(() => {
         if (tractData && !tractDataLoading && !tractDataError) {
-            setTractData(tractData.demographicsByTracts);
+        
+            setTractData(tractData.demographicsByTracts[0]);
         }
     }, [tractData, tractDataLoading, tractDataError]);
 
@@ -60,7 +62,6 @@ const TractProvider: React.FC = ({children}: any) => {
 };
 
 export default TractProvider;
-
 
 
 

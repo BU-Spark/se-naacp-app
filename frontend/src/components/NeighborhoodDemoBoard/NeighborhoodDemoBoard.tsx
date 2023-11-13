@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 //css
 import "./NeighborhoodDemoBoard.css";
@@ -16,6 +16,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 //types
 import { Demographics } from "../../__generated__/graphql";
 import { Card, CardContent } from "@mui/material";
+import { TractContext } from "../../contexts/tract_context";
 
 const colors = [
   "hsl(281, 70%, 50%)",
@@ -31,16 +32,42 @@ const colors = [
 ];
 
 interface DemographicsProps {
-  demographics: Demographics;
 }
 
 function getPercentage(total_population: string, population: string) {
   return ((parseInt(population) / parseInt(total_population)) * 100).toFixed(2);
 }
 
-const NeighborhoodDemographicsBoard: React.FC<DemographicsProps> = ({
-  demographics,
-}) => {
+const NeighborhoodDemographicsBoard: React.FC<DemographicsProps> = () => {
+
+  const [demographics, setDemographics] = useState<Demographics | null>(null);
+  const { tractData, queryTractDataType } = React.useContext(TractContext)!;
+
+
+  React.useEffect(() => {
+   if(tractData){
+    setDemographics(tractData.demographics)
+  }
+  }, [tractData]);
+
+
+
+  if (!demographics) {
+    return (
+      <Card className="body" sx={{ width: "100%", height: "62vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <CardContent sx={{ width: "100%", height: "62vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <Lottie
+              loop
+              animationData={emptyAstro}
+              play
+              style={{ width: "100%", height: "auto" }}
+          />
+          <p className="empty-text">{"No Data out there :("}</p>
+      </CardContent>
+  </Card>
+    );
+  }
+
   const total_population = demographics.p2_001n;
 
   const data = [

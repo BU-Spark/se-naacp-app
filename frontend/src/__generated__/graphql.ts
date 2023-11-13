@@ -16,6 +16,8 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+
+
 export type Article = {
   __typename?: 'Article';
   author: Scalars['String']['output'];
@@ -34,7 +36,6 @@ export type Article = {
 };
 
 export type Demographics = {
-  __typename?: 'Demographics';
   p2_001n: Scalars['String']['output'];
   p2_002n: Scalars['String']['output'];
   p2_003n: Scalars['String']['output'];
@@ -87,8 +88,12 @@ export type QueryTractsByNeighborhoodArgs = {
   neighborhood: Scalars['String']['input'];
 };
 
+export type Topics = {
+  articles: Array<Scalars['String']['output']>;
+  value: Scalars['String']['output'];
+};
+
 export type Tracts = {
-  __typename?: 'Tracts';
   articles: Array<Scalars['String']['output']>;
   county_name: Scalars['String']['output'];
   demographics: Demographics;

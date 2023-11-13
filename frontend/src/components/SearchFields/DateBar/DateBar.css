@@ -4,12 +4,12 @@
     width: 170px;
 }
 
-.word {
+.word1 {
     display: flex;
     font-weight: 600;
-    margin: unset;
-    padding-left: 10px;
-    padding-top: 20px;
+    margin-bottom: 10px;
+    padding-left: 0px;
+    /* padding-top: 35px; */
     font-size: 12px;
 }
 

@@ -1,0 +1,11 @@
+.Callback {
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	display: flex;
+	height: 100vh;
+}
+
+.Loading {
+	color: #6a0dad;
+}

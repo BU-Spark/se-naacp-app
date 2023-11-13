@@ -16,7 +16,6 @@ const documents = {
     "\n    query articleQuery($dateFrom: Int!, $dateTo: Int!, $area: String!) {\n        articleByDate(dateFrom: $dateFrom, dateTo: $dateTo, area: $area) {\n            content_id\n            hl1\n            link\n            pub_date\n            position_section\n            author      \n            openai_labels\n        }\n    }\n": types.ArticleQueryDocument,
     "\n    query neighborhoodQuery($neighborhood: String!) {\n        getAllNeighborhoods {\n            value\n        }\n    }\n": types.NeighborhoodQueryDocument,
     "\n    query tractQuery($tract: String!) {\n        demographicsByTracts(tract: $tract) {\n            demographics {\n                p2_001n\n                p2_002n\n                p2_003n\n                p2_004n\n                p2_005n\n                p2_006n\n                p2_007n\n                p2_008n\n                p2_009n\n                p2_010n\n            }\n        }\n    }\n": types.TractQueryDocument,
-    "\n  query GetUploadByUserId($userId: String!) {\n  getUploadByUserId(user_id: $userId) {\n    article_cnt\n    message\n    status\n    timestamp\n    uploadID\n    userID\n  }\n}\n": types.GetUploadByUserIdDocument,
 };
 
 /**

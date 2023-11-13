@@ -1,6 +1,5 @@
 import React from "react";
 import "./atGlance.css";
-import { ResponsiveBar } from "@nivo/bar";
 import { Article } from "../../__generated__/graphql";
 
 import Card from "@mui/material/Card";

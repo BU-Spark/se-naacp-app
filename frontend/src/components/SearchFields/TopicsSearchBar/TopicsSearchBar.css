@@ -1,0 +1,33 @@
+.ant-switch.ant-switch-checked {
+  background-color: #e8a838 !important; /* Pink */
+}
+/* Change the color of the enter button on hover */
+.ant-input-search-button:hover {
+  background-color: #e8a838 !important; /* Indigo */
+  border-color: #e8a838 !important;
+}
+
+/* Change the color of the enter button */
+.ant-input-search-button {
+  background-color: #e8a838 !important; /* Blue */
+  border-color: #e8a838 !important;
+}
+
+.ant-input-search .ant-input {
+  width: calc(500px + 5vw); /* or any specific value you prefer */
+  height: 50px;
+}
+
+/* Increase the height of the search bar */
+.ant-input-search .ant-input,
+.ant-input-search .ant-btn {
+  height: 40px; /* or any specific value you prefer */
+  line-height: 40px; /* Adjust line-height to vertically center the text */
+}
+
+.ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child
+  .ant-input-search-button {
+  height: 50px; /* or any specific value you prefer */
+}

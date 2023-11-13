@@ -23,6 +23,12 @@ export const typeDefs = gql `
     link: String!
     openai_labels: [String!]!
     dateSum: Int!
+    userID: String!
+  }
+
+  type Topics {
+    articles: [String!]!
+    value: String!
   }
 
   type Neighborhoods {
@@ -49,17 +55,19 @@ export const typeDefs = gql `
     tract: String!
     geoid_tract: String!
     neighborhood: String!
-    demographics: Demographics!
-    articles: [String!]!
+    demographics: Demographics
+    articles: [String!]
   }
 
   type Query {
     getUploadByUserId(user_id: String!): [Uploads]
-    articleByDate(dateFrom: Int!, dateTo: Int!, area: String!): [Article]
+    articleByDate(dateFrom: Int!, dateTo: Int!, area: String!, userID: String!): [Article]
+    articleByTopicsOrLabels(area: String!, labelOrTopic: String!, userID: String!): [Article]
     tractsByNeighborhood(neighborhood: String!): [Neighborhoods]
     demographicsByTracts(tract: String!): [Tracts]
     getAllNeighborhoods: [Neighborhoods!]!
     getAllArticles: [Article!]!
-    getAllTopics: [String!]!
+    getAllTopics(userID: String!): [String!]!
+    getAllLabels(userID: String!): [String!]!
   }
 `;

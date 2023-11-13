@@ -48,7 +48,7 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
               <div
                 className="number-box-1"
                 key={item.name}
-                onClick={() => handleBoxClick(item.name)}
+                onClick={() => {}}
               >
                 <img className="vector" alt="Vector" src={svg} />
                 <div className="label-neighborhoods">{item.name}</div>

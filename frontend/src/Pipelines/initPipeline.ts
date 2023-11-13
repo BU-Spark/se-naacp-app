@@ -1,12 +1,11 @@
 import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-const deployment_uri = "https://naacpbackend-production.up.railway.app"
-// const deployment_uri = process.env.NAACP_DEPLOYMENT_URI;
-const local_uri = 'http://localhost:4000';
+const deployment_uri = process.env.NAACP_DEPLOYMENT_URI;
+// const local_uri = 'http://localhost:4000';
 
 // Apollo Client Objects
-const masterURI = `${local_uri}/universalValues`;
+const masterURI = `${deployment_uri}/universalValues`;
 
 const clientMaster = new ApolloClient({
   uri: masterURI,

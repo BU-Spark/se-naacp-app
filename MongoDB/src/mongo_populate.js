@@ -1,7 +1,9 @@
 const { MongoClient } = require('mongodb');
 const MASTER_DATA = require('./JSON_data/non_stochastic_model_output.json');
 
-const url = 'mongodb://localhost:27017'; // Will be automated...
+// const url = 'mongodb://localhost:27017'; // Will be automated...
+const url = NAACP_DEPLOYMENT_URI; // Will be automated...
+
 const dbName = 'se_naacp_gbh'; // Will be automated...
 const client = new MongoClient(url);
 
@@ -12,6 +14,7 @@ async function main() {
     const db = client.db(dbName);
 
     await populate_first_order_data(db, MASTER_DATA, "articles_data", Object.keys(MASTER_DATA)[0], false)
+    await populate_first_order_data(db, MASTER_DATA, "topics_data", Object.keys(MASTER_DATA)[1], false)
     await populate_first_order_data(db, MASTER_DATA, "neighborhood_data", Object.keys(MASTER_DATA)[3], false)
     await populate_first_order_data(db, MASTER_DATA, "tracts_data", Object.keys(MASTER_DATA)[4], false)
   
