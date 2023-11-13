@@ -14,6 +14,14 @@
   margin-bottom: 20px;
 }
 
+.org-back {
+  color: #000000;
+  font-family: "Lexend Deca-Medium", Helvetica;
+  font-size: calc(15px + 0.5vw);
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
 .week-range {
   color: #1c1c1c;
   font-family: "Karla-Regular", Helvetica;

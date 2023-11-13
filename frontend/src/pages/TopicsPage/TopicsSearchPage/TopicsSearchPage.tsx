@@ -23,18 +23,26 @@ const TopicsSearchPage: React.FC = () => {
   }, []);
   return (
     <>
-      <div className="container background" style={{ maxWidth: "100%" }}>
-        <div className="row align-items-start">
-          <div className="text-wrapper">Hi, Boston</div>
+      <div className="container-fluid background" style={{ height: "100vh" }}>
+        <div className="row justify-content-center align-items-center" >
+          <div className="col col-md-6" style={{marginTop: "20vh"}}>
+            <div className="text-wrapper">Hi, Boston</div>
+          </div>
         </div>
-        <div className="row align-items-center">
-          <p>
-            Explore the variations in news coverage across various neighborhoods
-            in Boston.
-          </p>
+
+        <div className="row  justify-content-center align-items-center">
+          <div className="col col-md-6">
+            <p>
+              Explore the variations in news coverage across various
+              neighborhoods in Boston.
+            </p>
+          </div>
         </div>
-        <div className="row align-items-end">
-          <TopicsSearchBar listOfWords={[]}></TopicsSearchBar>
+
+        <div className="row justify-content-center align-items-center">
+          <div className="col col-md-6">
+            <TopicsSearchBar listOfWords={[]}></TopicsSearchBar>
+          </div>
         </div>
       </div>
     </>

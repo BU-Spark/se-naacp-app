@@ -3,24 +3,24 @@ import React from "react";
 import dayjs from "dayjs";
 
 //Components
-import ArticleCard from "../../components/ArticleCard/ArticleCard";
-import NeighborhoodDemographicsBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
-import TractsDropDown from "../../components/TractsDropDown/TractsDropDown";
-import MapCard from "../../components/MapCard/MapCard";
+import ArticleCard from "../../../components/ArticleCard/ArticleCard";
+import NeighborhoodDemographicsBoard from "../../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
+import TractsDropDown from "../../../components/TractsDropDown/TractsDropDown";
+import MapCard from "../../../components/MapCard/MapCard";
 
 //Types
-import { Article, Demographics } from "../../__generated__/graphql";
+import { Article, Demographics } from "../../../__generated__/graphql";
 
 //CSS
 import "./TopicsPage.css";
-import '@fortawesome/fontawesome-free/css/all.css';
+import "@fortawesome/fontawesome-free/css/all.css";
 
 //Contex
-import { TractContext } from "../../contexts/tract_context";
-import { ArticleContext } from "../../contexts/article_context";
-import { NeighborhoodContext } from "../../contexts/neighborhood_context";
+import { TractContext } from "../../../contexts/tract_context";
+import { ArticleContext } from "../../../contexts/article_context";
+import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
-import { TopicsContext } from "../../contexts/topics_context";
+import { TopicsContext } from "../../../contexts/topics_context";
 import { useNavigate } from "react-router-dom";
 
 function getNeighborhood(
@@ -183,15 +183,16 @@ const TopicsPage: React.FC = () => {
         <div className="big-container">
           <div className="row justify-content-between">
             <div className="col-md-5 col-sm-12">
-              <p className="week" onClick={() => handleBoxClick()}>
+              <div className="align-self-start org-back" onClick={handleBoxClick}>
+                {" "}
                 <i
                   className="fa fa-arrow-left"
                   aria-hidden="true"
                   style={{ marginRight: "10px" }}
                 ></i>
+                Back to Search Page
+              </div>
 
-                <span className="span">Back to Search Page </span>
-              </p>
               <div className="align-self-start your-org">SELECTED TOPIC</div>
               <div className="align-self-start org-name">
                 {topic == null ? "No Topic Selected" : topic}

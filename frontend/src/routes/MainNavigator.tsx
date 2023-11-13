@@ -10,7 +10,7 @@ import NeighborhoodPage from "../pages/NeighborhoodsPage/NeighborhoodPage"; // R
 
 import { TopicsContext } from "../contexts/topics_context";
 import { NeighborhoodContext } from "../contexts/neighborhood_context";
-import TopicsPage from "../pages/TopicsPage/TopicsPage";
+import TopicsPage from "../pages/TopicsPage/TopicsPage/TopicsPage";
 import TopicsSearchPage from "../pages/TopicsPage/TopicsSearchPage/TopicsSearchPage";
 import { Auth0ProviderNavigate } from "../config/Auth0Provider";
 import Callback from "../pages/Callback/Callback";
