@@ -183,7 +183,10 @@ const TopicsPage: React.FC = () => {
         <div className="big-container">
           <div className="row justify-content-between">
             <div className="col-md-5 col-sm-12">
-              <div className="align-self-start org-back" onClick={handleBoxClick}>
+              <div
+                className="align-self-start org-back"
+                onClick={handleBoxClick}
+              >
                 {" "}
                 <i
                   className="fa fa-arrow-left"

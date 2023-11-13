@@ -22,3 +22,11 @@ p {
   font-size: 19px;
   font-weight: 400;
 }
+
+
+.alignBar {
+  display: flex;           /* Enables Flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+  height: 100%;            /* Optional: Set to the desired height */
+}
