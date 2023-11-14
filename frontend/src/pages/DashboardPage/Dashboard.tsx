@@ -25,8 +25,8 @@ export default function Dashboard() {
 
   React.useEffect(() => {
     queryArticleDataType("ARTICLE_DATA", {
-      dateFrom: 20220101,
-      dateTo: 20220201,
+      dateFrom: 20200101,
+      dateTo: 20240101,
       area: "all",
       userId: user?.sub,
     });
