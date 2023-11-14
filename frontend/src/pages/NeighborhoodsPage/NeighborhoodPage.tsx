@@ -50,7 +50,7 @@ const NeighborhoodPage: React.FC = () => {
       dateFrom: parseInt(minDate.format("YYYYMMDD")),
       dateTo: parseInt(maxDate.format("YYYYMMDD")),
       area: "010103",
-      userId: "1",
+      userId: user?.sub,
     });
   }, []);
 
@@ -109,7 +109,7 @@ const NeighborhoodPage: React.FC = () => {
             </div>
             <div className="col-md-8 col-sm-12">
               <h1 className="titles">Map</h1>
-              <MapCard></MapCard>
+              <MapCard clickable={true}></MapCard>
             </div>
           </div>
 

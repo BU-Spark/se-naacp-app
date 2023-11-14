@@ -57,7 +57,10 @@ const CSVUploadBox = () => {
   // set up cors proxy for POST csv to api
   const corsProxy = 'https://corsproxy.io/?';
   const url = 'https://dummy-server-toswle5frq-uc.a.run.app/upload_csv';
-  const proxy_Url = corsProxy + url;
+  // const proxy_Url = corsProxy + url;
+  const proxy_Url = "https://ml-service-toswle5frq-uc.a.run.app/upload_csv"
+
+
 
   // click RSS button -> RSS page
   let navigate = useNavigate();

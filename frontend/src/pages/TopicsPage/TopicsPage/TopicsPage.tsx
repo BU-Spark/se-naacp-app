@@ -24,6 +24,7 @@ import { TopicsContext } from "../../../contexts/topics_context";
 import { useNavigate } from "react-router-dom";
 import DateField from "../../../components/SearchFields/DateBar/DateBar";
 import { maxDate, minDate } from "../../../App";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function getNeighborhood(
   code: string,
@@ -111,6 +112,7 @@ const TopicsPage: React.FC = () => {
     React.useContext(NeighborhoodContext)!;
   const { topicsMasterList, topic, setTopic } =
     React.useContext(TopicsContext)!;
+  const { user, isAuthenticated } = useAuth0();
 
   //State
   const [tracts, setTracts] = React.useState<string[]>([]);
@@ -126,14 +128,14 @@ const TopicsPage: React.FC = () => {
         dateTo: parseInt(maxDate.format("YYYYMMDD")),
         area: "all",
         labelOrTopic: topic,
-        userId: "1",
+        userId: user?.sub,
       });
     }
   }, [topic]);
 
   //Set deafult count and list
   React.useEffect(() => {
-    console.log(articleData, shouldRefresh);
+    // console.log(articleData, shouldRefresh);
 
     if (articleData && shouldRefresh) {
       const countTemp = countArticlesByKeyWord(
@@ -153,18 +155,6 @@ const TopicsPage: React.FC = () => {
       setTracts(countTemp);
     }
   }, [articleData, shouldRefresh]);
-
-  // //Sets new Articles when tract changes
-  // React.useEffect(() => {
-  //   if (tractData && topic && neighborhood && counter != 0) {
-  //     queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
-  //       area: tractData.tract,
-  //       labelOrTopic: topic,
-  //       userId: "1",
-  //     });
-  //     setCounter(-1);
-  //   }
-  // }, [tractData]);
 
   return (
     <>
@@ -223,7 +213,7 @@ const TopicsPage: React.FC = () => {
             </div>
             <div className="col-md-7 col-sm-12">
               <h1 className="titles">Map</h1>
-              <MapCard></MapCard>
+              <MapCard clickable={false}></MapCard>
             </div>
           </div>
 

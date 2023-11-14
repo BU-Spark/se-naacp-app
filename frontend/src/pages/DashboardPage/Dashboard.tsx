@@ -13,7 +13,6 @@ import dayjs from "dayjs";
 import BasicAccordion from "../../components/Accordion/Accordion";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 export default function Dashboard() {
-  
   const { user, isAuthenticated } = useAuth0();
 
   var { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
@@ -29,7 +28,7 @@ export default function Dashboard() {
       dateFrom: 20220101,
       dateTo: 20220201,
       area: "all",
-      userId: "1",
+      userId: user?.sub,
     });
   }, [articleData]);
 

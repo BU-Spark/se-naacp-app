@@ -48,6 +48,18 @@ function extractNeighborhoodTract(text: string) {
 
   return [location, number];
 }
+
+function getNeighborhood(
+  code: string,
+  neighborhoods: { [key: string]: string[] }
+): string {
+  for (let [neighborhoodName, codes] of Object.entries(neighborhoods)) {
+    if (codes.includes(code)) {
+      return neighborhoodName;
+    }
+  }
+  return "";
+}
 interface TractsDropDownProps {
   tracts: string[];
 }
@@ -58,16 +70,20 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
   const { neighborhood, setNeighborhood, neighborhoodMasterList } =
     React.useContext(NeighborhoodContext)!;
+  var dummy = tracts;
+  if (!dummy) {
+    dummy = [];
+  }
 
   const items: MenuItem[] = [];
 
-  for (let index = 0; index < tracts.length; index++) {
-    const x = extractNeighborhoodTract(tracts[index]);
-    items.push(getItem(tracts[index], tracts[index]));
+  for (let index = 0; index < dummy.length; index++) {
+    const x = extractNeighborhoodTract(dummy[index]);
+    items.push(getItem(dummy[index], x[1]));
   }
 
   const onSelectItem: MenuProps["onClick"] = (keys) => {
-    console.log(neighborhoodMasterList);
+    // console.log(keys);
     const match = /([\w\s]+ - )?(\d+)/.exec(keys.key);
     let location = "";
     let number = "";
@@ -81,10 +97,12 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
     queryTractDataType("TRACT_DATA", {
       tract: number,
     });
-    
 
     if (location) {
       setNeighborhood(location);
+    } else {
+      // console.log(getNeighborhood(number, neighborhoodMasterList!))
+      setNeighborhood(getNeighborhood(number, neighborhoodMasterList!));
     }
   };
 

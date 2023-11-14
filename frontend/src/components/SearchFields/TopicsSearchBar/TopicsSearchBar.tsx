@@ -8,6 +8,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { LinearProgress, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { ArticleContext } from "../../../contexts/article_context";
+import { Auth0Context } from "@auth0/auth0-react";
 
 const { Search } = Input;
 
@@ -17,6 +18,7 @@ interface SearchBarDropDownProps {
 
 const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
   const navigate = useNavigate(); // Enforce typing here
+  const { user } = useContext(Auth0Context);
 
   const {
     topic,
@@ -38,10 +40,10 @@ const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
       setOptions(topicsMasterList);
     } else {
       queryTopicsDataType("TOPICS_DATA", {
-        userId: "1",
+        userId: user?.sub,
       });
       queryTopicsDataType("LABELS_DATA", {
-        userId: "1",
+        userId: user?.sub,
       });
     }
   }, [topicsMasterList, labelsMasterList]);

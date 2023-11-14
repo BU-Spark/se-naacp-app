@@ -20,15 +20,7 @@ import Lottie from "react-lottie-player";
 import { useState } from "react";
 import { ArticleContext } from "../../contexts/article_context";
 
-// function getHTML(str) {
-//   const htmlString = str;
-//   const parser = new DOMParser();
-//   const html = parser.parseFromString(htmlString, "text/html");
-//   const body = html.body.lastChild;
-//   console.log("HOST: ", body.hostname);
-//   console.log("href: ", body.href);
-//   return body;
-// }
+
 
 const columns = [
   {
@@ -64,7 +56,6 @@ const ArticleCard: React.FC<ArticleCardProps> = () => {
   }, [articleData]);
 
   articles.forEach((article, index) => {
-    // console.log(index, article);
     articleRow.push({
       id: uniqid(),
       title: { link: article.link, title: article.hl1 },

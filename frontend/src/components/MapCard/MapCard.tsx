@@ -27,7 +27,9 @@ import Lottie from "react-lottie-player";
 
 import emptyAstro from "../../assets/lottieFiles/astro_empty.json";
 
-interface MapCardProps {}
+interface MapCardProps {
+  clickable: boolean;
+}
 
 const fixedLatLong = (neighborhood: any) => {
   switch (neighborhood) {
@@ -86,7 +88,12 @@ const setTractShapes = (tracts: string[]) => {
   let GEOJSON_All = geoData.features;
   let features_list: any = [];
 
-  tracts.forEach((tract) => {
+  var dummy = tracts;
+  if (!dummy) {
+    dummy = [];
+  }
+
+  dummy.forEach((tract) => {
     let obj = GEOJSON_All.find((v) => v.properties.TRACTCE20 === "" + tract);
     features_list.push(obj);
   });
@@ -102,14 +109,11 @@ const setTractShapes = (tracts: string[]) => {
   };
 };
 
-const MapCard: React.FC<MapCardProps> = ({}) => {
-
+const MapCard: React.FC<MapCardProps> = ({ clickable }) => {
   //Context
-  const { neighborhoodMasterList, neighborhood, setNeighborhood } = React.useContext(NeighborhoodContext)!;
+  const { neighborhoodMasterList, neighborhood, setNeighborhood } =
+    React.useContext(NeighborhoodContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-
-
-
 
   //UseState
   const [tract, setTract] = React.useState("");
@@ -162,8 +166,13 @@ const MapCard: React.FC<MapCardProps> = ({}) => {
               <GeoJson
                 onClick={(v) => {
                   // console.log(v.payload.properties.TRACTCE20);
-                  // queryTractDataType("TRACT_DATA", { tract: v.payload.properties.TRACTCE20 });
 
+                  if (clickable) {
+                    // console.log(clickable);
+                    queryTractDataType("TRACT_DATA", {
+                      tract: v.payload.properties.TRACTCE20,
+                    });
+                  }
                 }}
                 data={setTractShapes(neighborhoodMasterList![neighborhood!])}
                 styleCallback={(feature: any, hover: boolean) => {
