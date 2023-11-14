@@ -224,7 +224,7 @@ const CSVUploadBox = () => {
     // clear out uploaded Files, validated files (submitted files listen onto validated files)
     for (let i = 0; i < files.length; i++) {
       setUploadedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
-      // setUpValidatedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
+      setUpValidatedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
     };
     // need some logic to handle file history
   }

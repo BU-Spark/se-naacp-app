@@ -5,6 +5,8 @@ import { Article } from "../__generated__/graphql";
 type ArticleContextType = {
   articleData: Article[] | null; // This is for components to consume
   queryArticleDataType: (queryType: any, options?: any) => void;
+  shouldRefresh: boolean | null;
+  setShouldRefresh: (flag: boolean) => void;
 };
 /* Article Queries */
 // We will pass what we need in here
@@ -82,6 +84,7 @@ const ArticleProvider: React.FC = ({ children }: any) => {
   ] = useLazyQuery(ARTICLE_BY_LABEL_OR_TOPIC);
 
   const [articles, setArticleData] = React.useState<Article[] | null>(null);
+  const [shouldRefresh, setShouldRefresh] = React.useState<boolean | null>(null);
 
   React.useEffect(() => {
     if (articleData && !articleDataLoading && !articleDataError) {
@@ -139,7 +142,7 @@ const ArticleProvider: React.FC = ({ children }: any) => {
 
   return (
     <ArticleContext.Provider
-      value={{ articleData: articles, queryArticleDataType }}
+      value={{ articleData: articles, queryArticleDataType, shouldRefresh: shouldRefresh, setShouldRefresh }}
     >
       {children}
     </ArticleContext.Provider>

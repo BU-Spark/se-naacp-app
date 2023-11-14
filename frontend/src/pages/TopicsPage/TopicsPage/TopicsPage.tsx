@@ -104,7 +104,7 @@ const TopicsPage: React.FC = () => {
   }
 
   //Contex
-  const { articleData, queryArticleDataType } =
+  const { articleData, queryArticleDataType, setShouldRefresh, shouldRefresh } =
     React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
   const { neighborhoodMasterList, setNeighborhood, neighborhood } =
@@ -120,9 +120,10 @@ const TopicsPage: React.FC = () => {
   // Setting Default Values
   React.useEffect(() => {
     if (topic) {
+      setShouldRefresh(true);
       queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
-        dateFrom: 20200101,
-        dateTo: 20230101,
+        dateFrom: parseInt(minDate.format("YYYYMMDD")),
+        dateTo: parseInt(maxDate.format("YYYYMMDD")),
         area: "all",
         labelOrTopic: topic,
         userId: "1",
@@ -132,8 +133,9 @@ const TopicsPage: React.FC = () => {
 
   //Set deafult count and list
   React.useEffect(() => {
-    if (articleData && (tractData!.tract == currentTopic || flag)) {
-      setFlag(false);
+    console.log(articleData, shouldRefresh);
+
+    if (articleData && shouldRefresh) {
       const countTemp = countArticlesByKeyWord(
         articleData!,
         topic!,
@@ -142,15 +144,15 @@ const TopicsPage: React.FC = () => {
       );
 
       const extra = extractNeighborhoodTract(countTemp[0]);
-      setcurrentTopic(extra[1]);
 
       queryTractDataType("TRACT_DATA", {
         tract: extra[1],
       });
+
       setNeighborhood(extra[0]);
       setTracts(countTemp);
     }
-  }, [articleData]);
+  }, [articleData, shouldRefresh]);
 
   // //Sets new Articles when tract changes
   // React.useEffect(() => {

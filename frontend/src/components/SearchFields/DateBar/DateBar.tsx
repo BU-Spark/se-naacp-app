@@ -23,14 +23,15 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 
   const { topicsMasterList, topic, setTopic } =
     React.useContext(TopicsContext)!;
-  const { articleData, queryArticleDataType } =
+  const { articleData, queryArticleDataType, setShouldRefresh } =
     React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
   const { neighborhood } = React.useContext(NeighborhoodContext)!;
 
   const handleChangeFrom = (d: any) => {
-    setdateFrom(d);
+    setShouldRefresh(true);
 
+    setdateFrom(d);
     // isTopicsPage
     //   ? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
     //       dateFrom: dateFrom,
@@ -48,8 +49,9 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
   };
 
   const handleChangeTo = (d: any) => {
-    setDateTo(d);
+    setShouldRefresh(true);
 
+    setDateTo(d);
     // isTopicsPage
     //   ? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
     //       dateFrom: dateFrom,
@@ -67,6 +69,8 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
   };
 
   React.useEffect(() => {
+    setShouldRefresh(false);
+
     isTopicsPage
       ? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
           dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
@@ -81,7 +85,24 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
           area: tractData?.tract,
           userId: "1",
         });
-  }, [dateFrom, dateTo, tractData]);
+  }, [tractData]);
+
+  React.useEffect(() => {
+    isTopicsPage
+      ? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+          dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+          dateTo: parseInt(dateTo.format("YYYYMMDD")),
+          area: "all",
+          labelOrTopic: topic,
+          userId: "1",
+        })
+      : queryArticleDataType("ARTICLE_DATA", {
+          dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+          dateTo: parseInt(dateTo.format("YYYYMMDD")),
+          area: tractData?.tract,
+          userId: "1",
+        });
+  }, [dateFrom, dateTo]);
 
   return (
     <>

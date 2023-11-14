@@ -7,6 +7,7 @@ import "./TractsDropDown.css";
 import { TractContext } from "../../contexts/tract_context";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { lchown } from "fs";
+import { ArticleContext } from "../../contexts/article_context";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -52,6 +53,8 @@ interface TractsDropDownProps {
 }
 
 const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
+  const { articleData, queryArticleDataType, setShouldRefresh, shouldRefresh } =
+    React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
   const { neighborhood, setNeighborhood, neighborhoodMasterList } =
     React.useContext(NeighborhoodContext)!;
@@ -73,10 +76,12 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
       location = match[1] ? match[1].slice(0, -3) : ""; // Remove trailing ' - ' from the location
       number = match[2];
     }
+    setShouldRefresh(false);
 
     queryTractDataType("TRACT_DATA", {
       tract: number,
     });
+    
 
     if (location) {
       setNeighborhood(location);
