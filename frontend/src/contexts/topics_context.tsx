@@ -51,7 +51,7 @@ const TopicsProvider: React.FC = ({ children }: any) => {
 
   React.useEffect(() => {
     if (topicsData && !topicsDataLoading && !topicsDataError) {
-      console.log(topicsData);
+      // console.log(topicsData);
       setTopicsData(topicsData.getAllTopics);
     }
   }, [topicsData, topicsDataLoading, topicsDataError]);

@@ -133,7 +133,7 @@ const TopicsPage: React.FC = () => {
 
   //Set deafult count and list
   React.useEffect(() => {
-    console.log(articleData, shouldRefresh);
+    // console.log(articleData, shouldRefresh);
 
     if (articleData && shouldRefresh) {
       const countTemp = countArticlesByKeyWord(

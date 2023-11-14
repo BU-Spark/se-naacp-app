@@ -163,6 +163,7 @@ const MapCard: React.FC<MapCardProps> = ({ clickable }) => {
                   // console.log(v.payload.properties.TRACTCE20);
 
                   if (clickable) {
+                    // console.log(clickable);
                     queryTractDataType("TRACT_DATA", {
                       tract: v.payload.properties.TRACTCE20,
                     });
