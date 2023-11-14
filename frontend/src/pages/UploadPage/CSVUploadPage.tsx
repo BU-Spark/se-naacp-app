@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import { DataGrid } from "@mui/x-data-grid";
-import dayjs from 'dayjs';
 // import CsvUploadComponent from '../../components/Upload/CSVUpload';
 import "./CSVUploadPage.css";
 import { UploadContext } from '../../contexts/upload_context';
@@ -135,6 +134,8 @@ const CSVUploadBox = () => {
             }
             return f;
           }));
+          setSuccessMessage('Successfully submitted!');
+          setTimeout(() => setSuccessMessage(''), 3000);
         })
         .catch(error => {
           console.error(error);
@@ -219,8 +220,6 @@ const CSVUploadBox = () => {
   // Handle file submit
   const handleFileSubmit = (files: File[]) => {
     submitFile();
-    setSuccessMessage('Successfully submitted!');
-    setTimeout(() => setSuccessMessage(''), 3000);
     // clear out uploaded Files, validated files (submitted files listen onto validated files)
     for (let i = 0; i < files.length; i++) {
       setUploadedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));

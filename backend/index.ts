@@ -41,9 +41,9 @@ const connectWithMongoDB = async (
 // Build things you need inside to pass to context
 const contextWrapper: ContextWrapperFunction = async () => {
   // Context Metadata
-  const mongo_url = process.env.NAACP_MONGODB || "mongodb://localhost:27017"; // Local development
+  const mongo_url = process.env.NAACP_MONGODB || "mongodb://mongo:Cca44fB5Ca3eFe6eCcf5HhFBedd1Eh2-@roundhouse.proxy.rlwy.net:20852"; // Local development
   // const mongo_url = process.env.NAACP_MONGODB;
-  const dbName = "se_naacp_gbh";
+  const dbName = "se_naacp_db";
 
   return { db: await connectWithMongoDB(mongo_url, dbName) };
 };
