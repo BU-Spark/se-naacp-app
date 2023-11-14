@@ -70,12 +70,16 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
   const { neighborhood, setNeighborhood, neighborhoodMasterList } =
     React.useContext(NeighborhoodContext)!;
+  var dummy = tracts;
+  if (!dummy) {
+    dummy = [];
+  }
 
   const items: MenuItem[] = [];
 
-  for (let index = 0; index < tracts.length; index++) {
-    const x = extractNeighborhoodTract(tracts[index]);
-    items.push(getItem(tracts[index], x[1]));
+  for (let index = 0; index < dummy.length; index++) {
+    const x = extractNeighborhoodTract(dummy[index]);
+    items.push(getItem(dummy[index], x[1]));
   }
 
   const onSelectItem: MenuProps["onClick"] = (keys) => {
@@ -99,7 +103,6 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
     } else {
       // console.log(getNeighborhood(number, neighborhoodMasterList!))
       setNeighborhood(getNeighborhood(number, neighborhoodMasterList!));
-
     }
   };
 

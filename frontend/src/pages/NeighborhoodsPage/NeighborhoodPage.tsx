@@ -50,7 +50,7 @@ const NeighborhoodPage: React.FC = () => {
       dateFrom: parseInt(minDate.format("YYYYMMDD")),
       dateTo: parseInt(maxDate.format("YYYYMMDD")),
       area: "010103",
-      userId: "1",
+      userId: user?.sub,
     });
   }, []);
 

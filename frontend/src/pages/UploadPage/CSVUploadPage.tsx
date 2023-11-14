@@ -7,6 +7,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import "./CSVUploadPage.css";
 import { UploadContext } from '../../contexts/upload_context';
 import { Uploads } from '../../__generated__/graphql';
+import { Auth0Context } from '@auth0/auth0-react';
 
 
 // Define a type for the file with progress information
@@ -29,7 +30,9 @@ const CSVUploadBox = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const { queryUploadDataType, uploadData } = useContext(UploadContext)!;
   const [uploads, setUpload] = useState<Uploads[]>([]);
-  // const { user } = useContext(Auth0Context)!;
+
+  const { user } = useContext(Auth0Context);
+console.log(user?.sub)
 
   useEffect(() => {
     queryUploadDataType("UPLOAD_DATA", {
@@ -53,7 +56,10 @@ const CSVUploadBox = () => {
   // set up cors proxy for POST csv to api
   const corsProxy = 'https://corsproxy.io/?';
   const url = 'https://dummy-server-toswle5frq-uc.a.run.app/upload_csv';
-  const proxy_Url = corsProxy + url;
+  // const proxy_Url = corsProxy + url;
+  const proxy_Url = "https://ml-service-toswle5frq-uc.a.run.app/upload_csv"
+
+
 
   // click RSS button -> RSS page
   let navigate = useNavigate();

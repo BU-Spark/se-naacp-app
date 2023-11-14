@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./DateBar.css";
 
 import TextField from "@mui/material/TextField";
@@ -11,6 +11,7 @@ import { TractContext } from "../../../contexts/tract_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 import { minDate, maxDate } from "../../../App";
 import { TopicsContext } from "../../../contexts/topics_context";
+import { Auth0Context } from "@auth0/auth0-react";
 
 interface DateFieldProps {
   title: string;
@@ -27,45 +28,16 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
     React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
   const { neighborhood } = React.useContext(NeighborhoodContext)!;
+  const { user } = useContext(Auth0Context);
 
   const handleChangeFrom = (d: any) => {
     setShouldRefresh(true);
-
     setdateFrom(d);
-    // isTopicsPage
-    //   ? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
-    //       dateFrom: dateFrom,
-    //       dateTo: dateTo,
-    //       area: tractData?.tract,
-    //       labelOrTopic: topic,
-    //       userId: "1",
-    //     })
-    //   : queryArticleDataType("ARTICLE_DATA", {
-    //       dateFrom: dateFrom,
-    //       dateTo: dateTo,
-    //       area: tractData?.tract,
-    //       userId: "1",
-    //     });
   };
 
   const handleChangeTo = (d: any) => {
     setShouldRefresh(true);
-
     setDateTo(d);
-    // isTopicsPage
-    //   ? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
-    //       dateFrom: dateFrom,
-    //       dateTo: dateTo,
-    //       area: tractData?.tract,
-    //       labelOrTopic: topic,
-    //       userId: "1",
-    //     })
-    //   : queryArticleDataType("ARTICLE_DATA", {
-    //       dateFrom: dateFrom,
-    //       dateTo: dateTo,
-    //       area: tractData?.tract,
-    //       userId: "1",
-    //     });
   };
 
   React.useEffect(() => {
@@ -77,13 +49,13 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
           dateTo: parseInt(dateTo.format("YYYYMMDD")),
           area: tractData?.tract,
           labelOrTopic: topic,
-          userId: "1",
+          userId: user?.sub,
         })
       : queryArticleDataType("ARTICLE_DATA", {
           dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
           dateTo: parseInt(dateTo.format("YYYYMMDD")),
           area: tractData?.tract,
-          userId: "1",
+          userId: user?.sub,
         });
   }, [tractData]);
 
@@ -94,13 +66,13 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
           dateTo: parseInt(dateTo.format("YYYYMMDD")),
           area: "all",
           labelOrTopic: topic,
-          userId: "1",
+          userId: user?.sub,
         })
       : queryArticleDataType("ARTICLE_DATA", {
           dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
           dateTo: parseInt(dateTo.format("YYYYMMDD")),
           area: tractData?.tract,
-          userId: "1",
+          userId: user?.sub,
         });
   }, [dateFrom, dateTo]);
 

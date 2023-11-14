@@ -88,7 +88,12 @@ const setTractShapes = (tracts: string[]) => {
   let GEOJSON_All = geoData.features;
   let features_list: any = [];
 
-  tracts.forEach((tract) => {
+  var dummy = tracts;
+  if (!dummy) {
+    dummy = [];
+  }
+
+  dummy.forEach((tract) => {
     let obj = GEOJSON_All.find((v) => v.properties.TRACTCE20 === "" + tract);
     features_list.push(obj);
   });
