@@ -1,9 +1,9 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React from "react";
-import { Button } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 export const LoginButton = () => {
-	const { loginWithRedirect } = useAuth0();
+	const { loginWithRedirect, isLoading } = useAuth0();
 
 	const handleLogin = async () => {
 		await loginWithRedirect({
@@ -14,7 +14,7 @@ export const LoginButton = () => {
 	};
 
 	return (
-		<Button
+		<LoadingButton
 			className='button__login Button
 		'
 			onClick={handleLogin}
@@ -24,8 +24,10 @@ export const LoginButton = () => {
 				padding: ".5rem",
 				margin: " 0 1rem",
 			}}
+			loading={isLoading}
+			loadingIndicator='Loading...'
 		>
 			Log In
-		</Button>
+		</LoadingButton>
 	);
 };

@@ -6,7 +6,11 @@ export const LogoutButton = () => {
 	const { logout } = useAuth0();
 
 	const handleLogout = () => {
-		logout();
+		logout({
+			logoutParams: {
+				returnTo: window.location.origin,
+			},
+		});
 	};
 
 	return (

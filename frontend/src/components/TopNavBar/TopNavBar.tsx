@@ -1,7 +1,6 @@
 import { Layout, Button, Anchor } from "antd"; // Ant Design
 import { useNavigate, NavigateFunction, Link, NavLink } from "react-router-dom";
 import Logo from "../../assets/logos/logo.svg";
-import PersonIcon from "@mui/icons-material/Person";
 // CSS
 import "./TopNavBar.css";
 import { useState } from "react";
@@ -15,7 +14,7 @@ const { Header } = Layout;
 const TopNavBar = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
 
-	const { user, isAuthenticated } = useAuth0();
+	const { isAuthenticated, isLoading } = useAuth0();
 
 	return (
 		<nav>
@@ -43,7 +42,11 @@ const TopNavBar = () => {
 				<li>
 					<NavLink to='/Dashboard'>Dashboard</NavLink>
 				</li>
-				<li>{isAuthenticated ? <LogoutButton /> : <LoginButton />}</li>
+				{!isLoading && (
+					<li>
+						{isAuthenticated ? <LogoutButton /> : <LoginButton />}
+					</li>
+				)}
 			</ul>
 		</nav>
 	);
