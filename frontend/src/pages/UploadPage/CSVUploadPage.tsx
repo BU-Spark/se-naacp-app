@@ -7,6 +7,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import "./CSVUploadPage.css";
 import { UploadContext } from '../../contexts/upload_context';
 import { Uploads } from '../../__generated__/graphql';
+import { Auth0Context } from '@auth0/auth0-react';
 
 
 // Define a type for the file with progress information
@@ -29,12 +30,15 @@ const CSVUploadBox = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const { queryUploadDataType, uploadData } = useContext(UploadContext)!;
   const [uploads, setUpload] = useState<Uploads[]>([]);
-  // const { user } = useContext(Auth0Context)!;
+  const { user } = useContext(Auth0Context)!;
+  // console.log("user:", user);
 
   useEffect(() => {
-    queryUploadDataType("UPLOAD_DATA", {
-      "userId": "1",
-    });
+    if (user && user.sub) {
+      queryUploadDataType("UPLOAD_DATA", {
+        "userId": user.sub,
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -120,6 +124,11 @@ const CSVUploadBox = () => {
     for (let i = 0; i < submittedFiles.length; i++) {
       const formData = new FormData();
       formData.append('file', submittedFiles[i]);
+      if (user && user.sub) {
+        formData.append('user_id', user.sub);
+      } else {
+        console.error('User.sub is undefined');
+      }
       axios.post(proxy_Url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'

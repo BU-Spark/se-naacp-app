@@ -37,7 +37,7 @@ const RSSUploadBox = () => {
             const response = await fetch(proxy_Url);
             // console.log(response);
             const contentType = response.headers.get("content-Type") || '';
-            console.log("contentType: ", contentType);
+            // console.log("contentType: ", contentType);
             
             // initialize message list
             setSuccessMessage('');
