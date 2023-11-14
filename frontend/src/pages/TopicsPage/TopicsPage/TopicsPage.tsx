@@ -223,7 +223,7 @@ const TopicsPage: React.FC = () => {
             </div>
             <div className="col-md-7 col-sm-12">
               <h1 className="titles">Map</h1>
-              <MapCard></MapCard>
+              <MapCard clickable ={false}></MapCard>
             </div>
           </div>
 
