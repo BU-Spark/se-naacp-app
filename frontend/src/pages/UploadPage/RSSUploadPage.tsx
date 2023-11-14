@@ -37,14 +37,14 @@ const RSSUploadBox = () => {
             const response = await fetch(proxy_Url);
             // console.log(response);
             const contentType = response.headers.get("content-Type") || '';
-            // console.log("contentType: ", contentType);
+            console.log("contentType: ", contentType);
             
             // initialize message list
             setSuccessMessage('');
             sethttpMessage('');
             setErrorMessage(prevErrors => [...prevErrors, 'Error: ']);
 
-            if (!contentType.includes("xml") || !url.endsWith('.rss')) {
+            if (!(contentType.includes("xml") || (url.endsWith('.rss') || url.endsWith('.xml')))) {
                 setAlertMessage('Only RSS URL is accepted.');
                 setTimeout(() => setAlertMessage(''), 3000);
                 setErrorMessage(prevErrors => [...prevErrors, 'URL does not seem to be an RSS feed. ']);
@@ -149,9 +149,10 @@ const RSSUploadBox = () => {
         sethttpMessage('');
         await validateURL(url);
         if (isPassed) {
+            const endpoint = corsProxy + "https://dummy-server-toswle5frq-uc.a.run.app/upload_RSS";
             const proxy_Url = corsProxy + url;
             const linkData = `RSS_Link=\"${proxy_Url}\"`;
-            axios.post(proxy_Url, linkData, {
+            axios.post(endpoint, linkData, {
                 headers: {
                 'Content-Type': 'x-www-form-urlencoded'
                 }
