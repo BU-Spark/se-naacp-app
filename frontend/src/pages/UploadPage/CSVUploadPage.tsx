@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Button from '@mui/material/Button';
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 // import CsvUploadComponent from '../../components/Upload/CSVUpload';
 import "./CSVUploadPage.css";
-import { UploadContext } from '../../contexts/upload_context';
-import { Uploads } from '../../__generated__/graphql';
-import { Auth0Context } from '@auth0/auth0-react';
-
+import { UploadContext } from "../../contexts/upload_context";
+import { Uploads } from "../../__generated__/graphql";
+import { Auth0Context } from "@auth0/auth0-react";
 
 // Define a type for the file with progress information
 type UploadedFile = {
@@ -26,8 +25,8 @@ const CSVUploadBox = () => {
   // This file list is mapped from validated Files' reference to file object.
   const [submittedFiles, setUpsubmittedFiles] = useState<File[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [alertMessage, setAlertMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const { queryUploadDataType, uploadData } = useContext(UploadContext)!;
   const [uploads, setUpload] = useState<Uploads[]>([]);
   const { user } = useContext(Auth0Context)!;
@@ -36,53 +35,68 @@ const CSVUploadBox = () => {
   useEffect(() => {
     if (user && user.sub) {
       queryUploadDataType("UPLOAD_DATA", {
-        "userId": user.sub,
+        userId: user.sub,
       });
     }
   }, []);
 
   useEffect(() => {
-    if(uploadData){
+    if (uploadData) {
       setUpload(uploadData);
       console.log(uploadData);
-
     }
   }, [uploadData]);
 
   useEffect(() => {
-    const files = validatedFiles.map(f => f.file);
+    const files = validatedFiles.map((f) => f.file);
     setUpsubmittedFiles(files);
   }, [validatedFiles]);
 
   // set up cors proxy for POST csv to api
-  const corsProxy = 'https://corsproxy.io/?';
-  const url = 'https://dummy-server-toswle5frq-uc.a.run.app/upload_csv';
+  const corsProxy = "https://corsproxy.io/?";
+  const url = "https://dummy-server-toswle5frq-uc.a.run.app/upload_csv";
   // const proxy_Url = corsProxy + url;
-  const proxy_Url = "https://ml-service-toswle5frq-uc.a.run.app/upload_csv"
-
-
+  const proxy_Url = process.env.REACT_APP_ML_PIP_URL || "";
 
   // click RSS button -> RSS page
   let navigate = useNavigate();
   const gotoRSS = () => {
-    navigate('/Upload/:RSS');
-  }
+    navigate("/Upload/:RSS");
+  };
 
   // only check missing headers, not extra headers or duplicate headers
-  const validateCsvHeaders = (file: File, callback: (missingHeaders?: string[]) => void) => {
+  const validateCsvHeaders = (
+    file: File,
+    callback: (missingHeaders?: string[]) => void
+  ) => {
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
       const text = e.target?.result as string;
       // handle \r return carriage character
-      const headers = text.slice(0, text.search(/\r?\n/)).split(",").map(header => header.trim());
+      const headers = text
+        .slice(0, text.search(/\r?\n/))
+        .split(",")
+        .map((header) => header.trim());
       // expected header list
-      const expectedHeaders = ["Type", "Label", "Headline", "Byline", "Section", "Tagging", "Paths", "Publish Date", "Body"];
-      const missingHeaders = expectedHeaders.filter(header => !headers.includes(header));
+      const expectedHeaders = [
+        "Type",
+        "Label",
+        "Headline",
+        "Byline",
+        "Section",
+        "Tagging",
+        "Paths",
+        "Publish Date",
+        "Body",
+      ];
+      const missingHeaders = expectedHeaders.filter(
+        (header) => !headers.includes(header)
+      );
 
       callback(missingHeaders);
     };
     reader.readAsText(file);
-  }
+  };
 
   // Drag and drop event handlers
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -108,7 +122,7 @@ const CSVUploadBox = () => {
     // Process all the dropped files.
     for (let i = 0; i < files.length; i++) {
       // Check file MIME type to see if it's csv
-      if (files[i].type === "text/csv" || files[i].name.endsWith('.csv')) {
+      if (files[i].type === "text/csv" || files[i].name.endsWith(".csv")) {
         uploadFile(files[i]);
       } else {
         isCSV = false;
@@ -117,8 +131,8 @@ const CSVUploadBox = () => {
     }
 
     if (!isCSV) {
-      setAlertMessage('Only CSV files are accepted.');
-      setTimeout(() => setAlertMessage(''), 3000);
+      setAlertMessage("Only CSV files are accepted.");
+      setTimeout(() => setAlertMessage(""), 3000);
     }
   };
 
@@ -126,39 +140,48 @@ const CSVUploadBox = () => {
   const submitFile = () => {
     for (let i = 0; i < submittedFiles.length; i++) {
       const formData = new FormData();
-      formData.append('file', submittedFiles[i]);
+      formData.append("file", submittedFiles[i]);
       if (user && user.sub) {
-        formData.append('user_id', user.sub);
+        formData.append("user_id", user.sub);
       } else {
-        console.error('User.sub is undefined');
+        console.error("User.sub is undefined");
       }
-      axios.post(proxy_Url, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+      axios
+        .post(proxy_Url, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
         .then((response) => {
           console.log(response);
           // update the uploaded file status
-          setUploadedFiles(currentFiles => currentFiles.map(f => {
-            if (f.name === submittedFiles[i].name) {
-              return { ...f, status: 'Submit Successful' };
-            }
-            return f;
-          }));
-          setSuccessMessage('Successfully submitted!');
-          setTimeout(() => setSuccessMessage(''), 3000);
+          setUploadedFiles((currentFiles) =>
+            currentFiles.map((f) => {
+              if (f.name === submittedFiles[i].name) {
+                return { ...f, status: "Submit Successful" };
+              }
+              return f;
+            })
+          );
+          setSuccessMessage("Successfully submitted!");
+          setTimeout(() => setSuccessMessage(""), 3000);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
-          setUploadedFiles(currentFiles => currentFiles.map(f => {
-            if (f.name === submittedFiles[i].name) {
-              return { ...f, status: 'Submit Failed', error: error.toString() };
-            }
-            return f;
-          }));
+          setUploadedFiles((currentFiles) =>
+            currentFiles.map((f) => {
+              if (f.name === submittedFiles[i].name) {
+                return {
+                  ...f,
+                  status: "Submit Failed",
+                  error: error.toString(),
+                };
+              }
+              return f;
+            })
+          );
         });
-    };
+    }
   };
 
   // Function that simulates file upload and updates progress
@@ -169,25 +192,27 @@ const CSVUploadBox = () => {
       name: file.name,
       size: file.size,
       progress: 0,
-      status: 'Uploading...',
+      status: "Uploading...",
       file: file,
     };
     // Add the new file to the uploaded files state
-    setUploadedFiles(prevFiles => [...prevFiles, newFile]);
+    setUploadedFiles((prevFiles) => [...prevFiles, newFile]);
 
     validateCsvHeaders(file, (missingHeaders) => {
       // if not validated
       if (missingHeaders && missingHeaders.length > 0) {
-        setUploadedFiles(prevFiles => prevFiles.map(f => {
-          if (f.name === newFile.name) {
-            return {
-              ...f,
-              status: `Failed`,
-              error: `Error: Missing headers ${missingHeaders.join(", ")}.`
-            };
-          }
-          return f;
-        }));
+        setUploadedFiles((prevFiles) =>
+          prevFiles.map((f) => {
+            if (f.name === newFile.name) {
+              return {
+                ...f,
+                status: `Failed`,
+                error: `Error: Missing headers ${missingHeaders.join(", ")}.`,
+              };
+            }
+            return f;
+          })
+        );
       } else {
         // if validated, add files to validatedFiles
         // return test passed status
@@ -195,25 +220,27 @@ const CSVUploadBox = () => {
           name: file.name,
           size: file.size,
           progress: 100,
-          status: 'Passed',
+          status: "Passed",
           file: file,
         };
-        setUpValidatedFiles(prevFiles => [...prevFiles, newValidatedFile]);
+        setUpValidatedFiles((prevFiles) => [...prevFiles, newValidatedFile]);
 
         const interval = setInterval(() => {
-          setUploadedFiles(prevFiles => prevFiles.map(f => {
-            if (f.name === newFile.name) {
-              let newProgress = f.progress + 20;
-              if (newProgress > 100) {
-                clearInterval(interval);
-                return { ...f, progress: 100, status: 'Passed' };
+          setUploadedFiles((prevFiles) =>
+            prevFiles.map((f) => {
+              if (f.name === newFile.name) {
+                let newProgress = f.progress + 20;
+                if (newProgress > 100) {
+                  clearInterval(interval);
+                  return { ...f, progress: 100, status: "Passed" };
+                }
+                return { ...f, progress: newProgress };
               }
-              return { ...f, progress: newProgress };
-            }
-            return f;
-          }));
+              return f;
+            })
+          );
         }, 1000);
-      };
+      }
     });
   };
 
@@ -226,7 +253,9 @@ const CSVUploadBox = () => {
 
   // Handle file removal
   const handleFileRemoval = (fileName: string) => {
-    setUploadedFiles(prevFiles => prevFiles.filter(file => file.name != fileName))
+    setUploadedFiles((prevFiles) =>
+      prevFiles.filter((file) => file.name != fileName)
+    );
   };
 
   // Handle file submit
@@ -234,41 +263,38 @@ const CSVUploadBox = () => {
     submitFile();
     // clear out uploaded Files, validated files (submitted files listen onto validated files)
     for (let i = 0; i < files.length; i++) {
-      setUploadedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
-      setUpValidatedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
-    };
+      setUploadedFiles((prevFiles) =>
+        prevFiles.filter((f) => f.name != files[i].name)
+      );
+      setUpValidatedFiles((prevFiles) =>
+        prevFiles.filter((f) => f.name != files[i].name)
+      );
+    }
     // need some logic to handle file history
-  }
+  };
 
   return (
     <div>
       <div className="RSS-link">
-        <Button
-          variant="outlined" onClick={gotoRSS}>
+        <Button variant="outlined" onClick={gotoRSS}>
           Upload an RSS Link
         </Button>
       </div>
-      {successMessage && (
-        <div className="success-msg">
-          {successMessage}
-        </div>
-      )}
-      {alertMessage && (
-        <div className="alert-message">
-          {alertMessage}
-        </div>
-      )}
+      {successMessage && <div className="success-msg">{successMessage}</div>}
+      {alertMessage && <div className="alert-message">{alertMessage}</div>}
       <h4 className="csv-title">Upload a CSV File</h4>
-      <div className="upload-box"
+      <div
+        className="upload-box"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}>
+        onDragLeave={handleDragLeave}
+      >
         <input
           type="file"
           id="file-upload"
           accept=".csv"
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           onChange={handleFileChange}
           multiple
         />
@@ -277,7 +303,9 @@ const CSVUploadBox = () => {
             <img src="/upload-icon.svg" alt="Upload" />
           </div>
           <p className="drag-and-drop-files">
-            <span className="drag-drop-text-wrapper">Drag and drop files, or </span>
+            <span className="drag-drop-text-wrapper">
+              Drag and drop files, or{" "}
+            </span>
             <span className="drag-drop-text-wrapper">Browse files</span>
           </p>
           <div className="drag-drop-text-wrapper">Only support CSV files</div>
@@ -309,22 +337,25 @@ const CSVUploadBox = () => {
                 <div className="file-upload-progress-wrapper">
                   <div className="file-upload-progress">
                     <div className="progress-bar">
-                      <div className="progress" style={{ width: `${file.progress}%` }}></div>
+                      <div
+                        className="progress"
+                        style={{ width: `${file.progress}%` }}
+                      ></div>
                     </div>
-                    <span className="progress-percentage">{file.progress}%</span>
+                    <span className="progress-percentage">
+                      {file.progress}%
+                    </span>
                   </div>
                   {/* Error Message */}
                   {file.error && (
-                    <div className="error-message">
-                      {file.error}
-                    </div>
+                    <div className="error-message">{file.error}</div>
                   )}
                 </div>
 
                 {/* Action Column */}
                 <div className="file-actions">
                   <span className="file-status">{file.status}</span>
-                  {(file.status === 'Passed' || file.error) && (
+                  {(file.status === "Passed" || file.error) && (
                     <button onClick={() => handleFileRemoval(file.name)}>
                       X
                     </button>
@@ -339,7 +370,8 @@ const CSVUploadBox = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => handleFileSubmit(submittedFiles)}>
+          onClick={() => handleFileSubmit(submittedFiles)}
+        >
           Submit
         </Button>
       </div>
@@ -367,12 +399,12 @@ const CSVUploadBox = () => {
 
                 {/* Article cnt Column */}
                 <div className="file-articleCnt">
-                  <span>{(file.article_cnt === -1 ? 0 : file.article_cnt)}</span>
+                  <span>{file.article_cnt === -1 ? 0 : file.article_cnt}</span>
                 </div>
 
                 {/* http status Column */}
                 <div className="file-httpStatus">
-                  <span>{(file.status)}</span>
+                  <span>{file.status}</span>
                 </div>
               </div>
             ))}
