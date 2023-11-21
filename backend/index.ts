@@ -42,7 +42,7 @@ const connectWithMongoDB = async (
 const contextWrapper: ContextWrapperFunction = async () => {
   // Context Metadata
 
-  const mongo_url = process.env.NAACP_MONGODB || "mongodb://localhost:27017"; // Local development
+  const mongo_url = process.env.NAACP_MONGODB || "mongodb+srv://naacpUser:naacpUser@cluster0.5bib9wc.mongodb.net/"; // Local development
 
   // const mongo_url = process.env.NAACP_MONGODB || "mongodb://mongo:6hVtkUf8XDMeUzsH66dk@containers-us-west-127.railway.app:8024"; // Local development
   // const mongo_url = process.env.NAACP_MONGODB;
