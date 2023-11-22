@@ -182,3 +182,4 @@ cloud_functions/functions/scripts/JSON_data/testnaacpdata.json
 cloud_functions/functions/scripts/JSON_data/naacpdata.json
 cloud_functions/functions/scripts/JSON_data/new_naacp.json
 cloud_functions/functions/config.js
+MongoDB/src/JSON_data/census.json
