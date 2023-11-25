@@ -1,19 +1,36 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-axios.get('https://www.wgbh.org/tags/bunp.rss').then(response => {
-    const html = response.data;
-    const $ = cheerio.load(html);
+const url = 'https://www.wgbh.org/tags/bunp.rss';
 
-    article_count = 0;
+const scrap_data = async (url) => {
+    let titles = [];
 
-    $('item title').each(function() {
-        article_count += 1;
-        console.log('>' + $(this).text()+'\n');
+    await axios.get(url).then(response => {
+        const html = response.data;
+        const $ = cheerio.load(html);
+
+        $('item title').each(function() {
+            //console.log('>' + $(this).text()+'\n');
+            titles.push($(this).text());
+        });
+    })
+    .catch((error) => {
+        console.error('Error fetching data:', error)
     });
-    console.log(article_count);
-})
-.catch((error) => {
-    console.error('Error fetching data:', error)
-});
+
+    return titles;
+}
+
+
+// Example usage
+const main = async () => {
+    let test = await scrap_data(url)
+    console.log("TEST:\n" + test);
+}
+
+main();
+
+
+
 
