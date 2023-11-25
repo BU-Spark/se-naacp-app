@@ -29,7 +29,9 @@ const main = async () => {
     console.log("TEST:\n" + test);
 }
 
-main();
+// main();
+
+module.exports={scrap_data: scrap_data};
 
 
 
