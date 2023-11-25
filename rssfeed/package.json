@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "^1.6.2",
     "cheerio": "^1.0.0-rc.12",
-    "jquery": "^3.7.1"
+    "jquery": "^3.7.1",
+    "mongodb": "^6.3.0"
   }
 }
