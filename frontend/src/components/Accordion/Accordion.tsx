@@ -41,7 +41,7 @@ function getNeighborhood(
       return neighborhoodName;
     }
   }
-  return null;
+  return "";
 }
 
 const getLabelDetailsWithLimitedTracts = (

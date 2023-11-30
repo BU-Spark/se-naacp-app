@@ -35,7 +35,7 @@ function getNeighborhood(
       return neighborhoodName;
     }
   }
-  return null;
+  return "";
 }
 
 function countArticlesByKeyWord(
