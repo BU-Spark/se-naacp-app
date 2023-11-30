@@ -3,20 +3,27 @@ const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
 const papa = require('papaparse');
+const crypto = require('crypto');
 
 const { MongoClient } = require('mongodb');
 
-const mongoUrl = "mongodb://localhost:27017"; // Local development
-const dbName = "se_naacp_gbh";
+// connect to railway mongoDB
+const mongoUrl = "mongodb://mongo:UTwpvdTfzaWxGt29evbw@containers-us-west-177.railway.app:6703"; // GraphQL_DB
+const dbName = "se_naacp_db";
 const client = new MongoClient(mongoUrl);
+
+ // set up cors proxy for POST csv to api
+ const corsProxy = "https://corsproxy.io/?";
+ const url = "https://dummy-server-toswle5frq-uc.a.run.app/upload_csv";
+ const proxy_Url = corsProxy + url;
 
 const get_link = async () => {
     try {
         await client.connect();
         let db = client.db(dbName);
-        const rss_data = db.collection("rss_data");
+        const rss_links = db.collection("rss_links");
         // need to change findOne in the future 
-        const rssLink = await rss_data.findOne({url: "https://www.wgbh.org/tags/bunp.rss"});
+        const rssLink = await rss_links.findOne({url: "https://www.wgbh.org/tags/bunp.rss"});
         return rssLink.url;
     } finally {
         await client.close();
@@ -25,7 +32,7 @@ const get_link = async () => {
 
 // const url = 'https://www.wgbh.org/tags/bunp.rss';
 
-const scrap_data = async () => {
+const scrap_data_to_csv = async () => {
     let titles = [];
     let links = [];
     let descriptions = [];
@@ -74,20 +81,126 @@ const scrap_data = async () => {
         delimiter: ",", // Use comma as the delimiter
     });
     // write to csv
-    fs.writeFileSync(path.resolve(__dirname, 'new_articles.csv'), csv);
+    filePath = path.resolve(__dirname, 'new_articles.csv');
+    fs.writeFileSync(filePath, csv);
+
+    // send to end point
+    const formData = new FormData();
+    formData.append("file", fs.createReadStream(filePath));
+    axios
+        .post(proxy_Url, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+
     return myarr;
 }
+
+const scrap_data_to_db = async() => {
+    let titles = [];
+    let links = [];
+    let descriptions = [];
+    let contents = [];
+    let pubDates = [];
+
+    const url = await get_link();
+    if (url) {
+        await axios.get(url).then(response => {
+            const html = response.data;
+            const $ = cheerio.load(html);
+
+            $('item').each(function() {
+                //console.log('>' + $(this).text()+'\n');
+                titles.push($('title', this).text());
+                links.push($('guid', this).text());
+                descriptions.push($('description', this).text());
+                pubDates.push($('pubDate', this).text());
+                contents.push($('content\\:encoded', this).text());
+                // console.log($('content\\:encoded').text());
+            });
+        })
+        .catch((error) => {
+            console.error('Error fetching data:', error)
+        });
+    };
+
+    // const myarr = titles.map((title, index) => [title, links[index], descriptions[index], pubDates[index], contents[index]]);
+    // console.log(myarr)
+
+    const ids = titles.map(title => {
+        return crypto.createHash('sha256').update(title).digest('hex');
+    })
+
+    let arr = titles.map((title, index) => {
+        return {
+            id: ids[index],
+            title: title,
+            link: links[index],
+            description: descriptions[index],
+            pubDates: pubDates[index],
+            contents: contents[index]
+        }
+    });
+    
+    // connect to db
+    await client.connect();
+    let db = client.db(dbName);
+    const rss_data = db.collection("rss_data");
+
+    // for (let i = 0; i < myarr.length(); i++) {
+    rss_data.insertMany(arr);
+
+    return arr;
+}
+
+const removeDuplicates = async () => {
+    await client.connect();
+    let db = client.db(dbName);
+    const rss_data = db.collection("rss_data");
+
+    const duplicates = await rss_data.aggregate([
+        {
+            // Group documents by the 'id' field
+            $group: {
+                _id: "$id", 
+                ids: { $addToSet: "$_id" }, 
+                count: { $sum: 1 } 
+            }
+        },
+        {
+            $match: {
+                count: { $gt: 1 } 
+            }
+        }
+    ]).toArray(); 
+
+    for (let group of duplicates) {
+        group.ids.shift(); // remove the first element from duplicates -> the one we save in db.
+        await rss_data.deleteMany({ _id: { $in: group.ids } });
+    }
+}
+
+
 
 // Example usage
 const main = async () => {
     let url = await get_link();
-    let test = await scrap_data(url)
+    let test = await scrap_data_to_csv(url)
+    // await scrap_data_to_db(url);
+    // await removeDuplicates();
     // console.log("TEST:\n" + test);
 }
 
 main();
 
-module.exports={scrap_data: scrap_data, get_link: get_link};
+module.exports={scrap_data_to_csv: scrap_data_to_csv, get_link: get_link};
 
 
 
