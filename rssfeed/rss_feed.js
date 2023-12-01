@@ -103,7 +103,7 @@ const scrap_data_to_csv = async () => {
     return myarr;
 }
 
-const scrap_data_to_db = async(url) => {
+const scrap_data_to_db = (url) => {
     // how to plug in user id ?
     // const { user } = useContext(Auth0Context)!;
 
@@ -136,8 +136,10 @@ const scrap_data_to_db = async(url) => {
         });
 
         client.connect().then((client) => {
-            const ids = titles.map(title => {
-                return crypto.createHash('sha256').update(title).digest('hex');
+            const rss_data = client.db(dbName).collection("rss_data");
+
+            const ids = contents.map(content => {
+                return crypto.createHash('sha256').update(content).digest('hex');
             })
         
             let arr = titles.map((title, index) => {
@@ -153,19 +155,33 @@ const scrap_data_to_db = async(url) => {
                 }
             });
 
-            client.db(dbName).collection("rss_data").insertMany(arr)
+            // Check if incoming duplicates and only take in non-duplicates.
+            rss_data.find({id : {$in: ids} }).toArray().then(existingDocs => {
+                // duplicate ones
+                const existingIds = new Set(existingDocs.map(doc => doc.id));
+                // new ones after remove duplicates
+                const newDocs = arr.filter(doc => !existingIds.has(doc.id));
+            
+                if (newDocs.length > 0) {
+                    return rss_data.insertMany(newDocs);
+                } else {
+                    console.log("No new items to add.");
+                    return Promise.resolve();
+                }
+            })
             .catch((error) => {
                 console.error('Error Inserting in MongoDB:', error)
             })
             .finally(() => {
                 client.close();
-            })  
-        })
+            });
+        })  
     });
 
     return;
 }
 
+// This function removes duplicates from existing database. We can save it for future
 const removeDuplicates = async () => {
     await client.connect();
     let db = client.db(dbName);
@@ -195,14 +211,11 @@ const removeDuplicates = async () => {
 
 
 // Example usage
-const main = () => {
-    // let url = await get_link();
+const main = async () => {
+    // let url = get_link();
     // let test = await scrap_data_to_csv(url)
     const url = 'https://www.wgbh.org/tags/bunp.rss';
-
     scrap_data_to_db(url);
-    // await removeDuplicates();
-
     console.log("Main complete.");
 }
 

@@ -16,9 +16,9 @@ function isNumber(str: any) {
 export const resolvers = {
   Query: {
     // RSS Resolver
-    getRssByUserId: async (_, args, context) => {
+    getRssLinkByUserId: async (_, args, context) => {
       const { db } = context;
-      const rss_data = db.collection("rss_data");
+      const rss_data = db.collection("rss_links");
       const queryResult = rss_data.find({userID: args.user_id}).toArray();
       return queryResult;
     },

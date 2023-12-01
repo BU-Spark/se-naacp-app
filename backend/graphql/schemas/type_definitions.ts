@@ -2,6 +2,7 @@ import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
   type Rss_links {
+    userID: String!
     url: String!
   }
   
@@ -12,6 +13,7 @@ export const typeDefs = gql`
     description: String!
     pubDates: String!
     contents: String!
+    rssLink: String!
   }
   
   type Uploads {
