@@ -103,9 +103,13 @@ const scrap_data_to_csv = async () => {
     return myarr;
 }
 
-const scrap_data_to_db = async (url) => {
+const scrap_data_to_db = async(url) => {
     // how to plug in user id ?
     // const { user } = useContext(Auth0Context)!;
+
+    if (!url) {
+        return;
+    }
 
     let titles = [];
     let links = [];
@@ -113,54 +117,53 @@ const scrap_data_to_db = async (url) => {
     let contents = [];
     let pubDates = [];
 
-    const url = await get_link();
-    if (url) {
-        await axios.get(url).then(response => {
-            const html = response.data;
-            const $ = cheerio.load(html);
-
-            $('item').each(function() {
-                //console.log('>' + $(this).text()+'\n');
-                titles.push($('title', this).text());
-                links.push($('guid', this).text());
-                descriptions.push($('description', this).text());
-                pubDates.push($('pubDate', this).text());
-                contents.push($('content\\:encoded', this).text());
-                // console.log($('content\\:encoded').text());
-            });
-        })
-        .catch((error) => {
-            console.error('Error fetching data:', error)
-        });
-    };
-
-    // const myarr = titles.map((title, index) => [title, links[index], descriptions[index], pubDates[index], contents[index]]);
-    // console.log(myarr)
-
-    const ids = titles.map(title => {
-        return crypto.createHash('sha256').update(title).digest('hex');
+    axios.get(url).then(response => {
+        return response
     })
+    .catch((error) => {
+        console.error('Error fetching data:', error)
+    }).then((response) => {
+        const html = response.data;
+        const $ = cheerio.load(html);
 
-    let arr = titles.map((title, index) => {
-        return {
-            userId: "1",
-            id: ids[index],
-            title: title,
-            link: links[index],
-            description: descriptions[index],
-            pubDates: pubDates[index],
-            contents: contents[index]
-        }
+        // Scrapping
+        $('item').each(function() {
+            titles.push($('title', this).text());
+            links.push($('guid', this).text());
+            descriptions.push($('description', this).text());
+            pubDates.push($('pubDate', this).text());
+            contents.push($('content\\:encoded', this).text());
+        });
+
+        client.connect().then((client) => {
+            const ids = titles.map(title => {
+                return crypto.createHash('sha256').update(title).digest('hex');
+            })
+        
+            let arr = titles.map((title, index) => {
+                return {
+                    userId: "1",
+                    rssLink: "https://www.wgbh.org/tags/bunp.rss",
+                    id: ids[index],
+                    title: title,
+                    link: links[index],
+                    description: descriptions[index],
+                    pubDates: pubDates[index],
+                    contents: contents[index]
+                }
+            });
+
+            client.db(dbName).collection("rss_data").insertMany(arr)
+            .catch((error) => {
+                console.error('Error Inserting in MongoDB:', error)
+            })
+            .finally(() => {
+                client.close();
+            })  
+        })
     });
-    
-    // connect to db
-    await client.connect();
-    let db = client.db(dbName);
-    const rss_data = db.collection("rss_data");
 
-    rss_data.insertMany(arr);
-
-    return arr;
+    return;
 }
 
 const removeDuplicates = async () => {
@@ -192,15 +195,18 @@ const removeDuplicates = async () => {
 
 
 // Example usage
-const lol = async () => {
-    let url = await get_link();
+const main = () => {
+    // let url = await get_link();
     // let test = await scrap_data_to_csv(url)
-    await scrap_data_to_db(url);
-    await removeDuplicates();
-    // console.log("TEST:\n" + test);
+    const url = 'https://www.wgbh.org/tags/bunp.rss';
+
+    scrap_data_to_db(url);
+    // await removeDuplicates();
+
+    console.log("Main complete.");
 }
 
-lol();
+main();
 
 module.exports={scrap_data_to_csv: scrap_data_to_csv, get_link: get_link, scrap_data_to_db: scrap_data_to_db};
 
