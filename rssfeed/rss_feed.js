@@ -103,7 +103,7 @@ const scrap_data_to_csv = async () => {
     return myarr;
 }
 
-const scrap_data_to_db = async() => {
+const scrap_data_to_db = async (url) => {
     // how to plug in user id ?
     // const { user } = useContext(Auth0Context)!;
 
@@ -126,7 +126,7 @@ const scrap_data_to_db = async() => {
                 descriptions.push($('description', this).text());
                 pubDates.push($('pubDate', this).text());
                 contents.push($('content\\:encoded', this).text());
-                console.log($('title').text());
+                // console.log($('content\\:encoded').text());
             });
         })
         .catch((error) => {
@@ -144,7 +144,6 @@ const scrap_data_to_db = async() => {
     let arr = titles.map((title, index) => {
         return {
             userId: "1",
-            rssLink: "https://www.wgbh.org/tags/bunp.rss",
             id: ids[index],
             title: title,
             link: links[index],
@@ -155,16 +154,13 @@ const scrap_data_to_db = async() => {
     });
     
     // connect to db
-    try {
-        await client.connect();
-        let db = client.db(dbName);
-        const rss_data = db.collection("rss_data");
-        rss_data.insertMany(arr);
-    } finally {
-        // await client.close();
-    }
+    await client.connect();
+    let db = client.db(dbName);
+    const rss_data = db.collection("rss_data");
 
-    // return arr;
+    rss_data.insertMany(arr);
+
+    return arr;
 }
 
 const removeDuplicates = async () => {
@@ -200,9 +196,7 @@ const lol = async () => {
     let url = await get_link();
     // let test = await scrap_data_to_csv(url)
     await scrap_data_to_db(url);
-    // return;
-    // await removeDuplicates();
-    // process.exit();
+    await removeDuplicates();
     // console.log("TEST:\n" + test);
 }
 
