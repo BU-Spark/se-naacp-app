@@ -5,6 +5,9 @@ const path = require('path');
 const papa = require('papaparse');
 const crypto = require('crypto');
 
+import React, { useContext } from "react";
+import { Auth0Context } from "@auth0/auth0-react";
+
 const { MongoClient } = require('mongodb');
 
 // connect to railway mongoDB
@@ -104,6 +107,9 @@ const scrap_data_to_csv = async () => {
 }
 
 const scrap_data_to_db = async() => {
+    // how to plug in user id ?
+    // const { user } = useContext(Auth0Context)!;
+
     let titles = [];
     let links = [];
     let descriptions = [];
@@ -140,6 +146,7 @@ const scrap_data_to_db = async() => {
 
     let arr = titles.map((title, index) => {
         return {
+            userId: "1",
             id: ids[index],
             title: title,
             link: links[index],
@@ -154,7 +161,6 @@ const scrap_data_to_db = async() => {
     let db = client.db(dbName);
     const rss_data = db.collection("rss_data");
 
-    // for (let i = 0; i < myarr.length(); i++) {
     rss_data.insertMany(arr);
 
     return arr;
@@ -188,13 +194,12 @@ const removeDuplicates = async () => {
 }
 
 
-
 // Example usage
 const main = async () => {
     let url = await get_link();
-    let test = await scrap_data_to_csv(url)
-    // await scrap_data_to_db(url);
-    // await removeDuplicates();
+    // let test = await scrap_data_to_csv(url)
+    await scrap_data_to_db(url);
+    await removeDuplicates();
     // console.log("TEST:\n" + test);
 }
 
