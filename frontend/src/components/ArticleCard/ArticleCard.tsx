@@ -20,8 +20,6 @@ import Lottie from "react-lottie-player";
 import { useState } from "react";
 import { ArticleContext } from "../../contexts/article_context";
 
-
-
 const columns = [
   {
     field: "title",
@@ -35,25 +33,31 @@ const columns = [
   },
   { field: "author", headerName: "Author", width: 130 },
   { field: "publishingDate", headerName: "Publishing Date", width: 120 },
-  { field: "neighborhood", headerName: "Neighborhood", width: 580 },
+  { field: "neighborhood", headerName: "Neighborhood", width: 200 },
   { field: "censusTract", headerName: "Census Tract", width: 200 },
   { field: "category", headerName: "Category", width: 90 },
 ];
 
-interface ArticleCardProps {}
+interface ArticleCardProps {
+  optionalArticles?: Article[];
+}
 
-const ArticleCard: React.FC<ArticleCardProps> = () => {
+const ArticleCard: React.FC<ArticleCardProps> = ({ optionalArticles }) => {
   var articleRow: any = [];
-
   const [articles, setArticles] = useState<Article[]>([]);
-  const { articleData, queryArticleDataType } =
-    React.useContext(ArticleContext)!;
+  const { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
+
+
+  
 
   React.useEffect(() => {
-    if (articleData) {
+    if (optionalArticles && optionalArticles.length > 0) {
+      setArticles(optionalArticles);
+    } else if (articleData) {
       setArticles(articleData);
     }
-  }, [articleData]);
+  }, [articleData, optionalArticles]);  
+  
 
   articles.forEach((article, index) => {
     articleRow.push({
