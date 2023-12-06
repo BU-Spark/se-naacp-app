@@ -1,17 +1,14 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const cron = require("node-cron");
-require("dotenv").config();
 
 const papa = require("papaparse");
 const sha256 = require("js-sha256");
 
 const { MongoClient } = require("mongodb");
 
-const mongoUrl = process.env.REACT_SCRAPPER_MONGO;
-const proxy_Url = process.env.REACT_APP_ML_PIP_URL;
-
-console.log(mongoUrl);
+const mongoUrl =   "mongodb://mongo:UTwpvdTfzaWxGt29evbw@containers-us-west-177.railway.app:6703";
+const proxy_Url = "https://ml-service-toswle5frq-ue.a.run.app/upload_csv";
 const dbName = "se_naacp_db";
 
 async function get_links() {
@@ -175,7 +172,7 @@ function logMessage() {
   console.log("Cron job executed at:", new Date().toLocaleString());
 }
 
-cron.schedule("20 * * * * *", async () => {
+cron.schedule("0 8 * * *", async () => {
   logMessage();
   await main();
 });
