@@ -2,8 +2,9 @@
   "name": "rssfeed",
   "version": "1.0.0",
   "description": "",
-  "main": "cronjob.js",
+  "main": "rss_feed_simple_version.js",
   "scripts": {
+    "start": "node ./rss_feed_simple_version.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,7 +14,9 @@
     "cheerio": "^1.0.0-rc.12",
     "crypto": "^1.0.1",
     "jquery": "^3.7.1",
+    "js-sha256": "^0.10.1",
     "mongodb": "^6.3.0",
+    "node-cron": "^3.0.3",
     "papaparse": "^5.4.1"
   }
 }
