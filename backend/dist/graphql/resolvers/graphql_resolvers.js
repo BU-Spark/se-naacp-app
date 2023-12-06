@@ -4,6 +4,14 @@ function isNumber(str) {
 }
 export const resolvers = {
     Query: {
+        // RSS Resolver
+        getRssLinkByUserId: async (_, args, context) => {
+            const { db } = context;
+            const rss_data = db.collection("rss_links");
+            const queryResult = rss_data.find({ userID: args.user_id }).toArray();
+            return queryResult;
+        },
+        // CSV Upload Resolver
         getUploadByUserId: async (_, args, context) => {
             const { db } = context;
             const upload_data = db.collection("uploads");

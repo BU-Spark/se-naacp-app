@@ -1,5 +1,20 @@
 import { gql } from "apollo-server-express";
 export const typeDefs = gql `
+  type Rss_links {
+    userID: String!
+    url: String!
+  }
+  
+  type Rss_data {
+    userID: String!
+    title: String!
+    link: String!
+    description: String!
+    pubDates: String!
+    contents: String!
+    rssLink: String!
+  }
+  
   type Uploads {
     userID: String!
     uploadID: String!
@@ -60,6 +75,7 @@ export const typeDefs = gql `
   }
 
   type Query {
+    getRssLinkByUserId(user_id: String!): [Rss_links]
     getUploadByUserId(user_id: String!): [Uploads]
     articleByDate(dateFrom: Int!, dateTo: Int!, area: String!, userID: String!): [Article]
     articleByTopicsOrLabels(dateFrom: Int!, dateTo: Int!, area: String!, labelOrTopic: String!, userID: String!): [Article]

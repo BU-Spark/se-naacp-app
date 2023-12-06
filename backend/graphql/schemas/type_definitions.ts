@@ -76,6 +76,7 @@ export const typeDefs = gql`
   }
 
   type Query {
+    getRssLinkByUserId(user_id: String!): [Rss_links]
     getUploadByUserId(user_id: String!): [Uploads]
     articleByDate(dateFrom: Int!, dateTo: Int!, area: String!, userID: String!): [Article]
     articleByTopicsOrLabels(dateFrom: Int!, dateTo: Int!, area: String!, labelOrTopic: String!, userID: String!): [Article]
