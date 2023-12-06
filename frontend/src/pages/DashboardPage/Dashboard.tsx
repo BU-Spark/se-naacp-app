@@ -12,6 +12,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import dayjs from "dayjs";
 import BasicAccordion from "../../components/Accordion/Accordion";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
+import DashboardTabs from "../../components/DashboardTabs/dashboardTabs";
 export default function Dashboard() {
   const { user, isAuthenticated } = useAuth0();
 
@@ -19,6 +20,7 @@ export default function Dashboard() {
   const { neighborhoodMasterList, queryNeighborhoodDataType } =
     React.useContext(NeighborhoodContext)!;
 
+  console.log(user?.sub);
   React.useEffect(() => {
     queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
   }, []);
@@ -69,19 +71,25 @@ export default function Dashboard() {
         </div>
 
         <div className="row justify-content-evenly">
-          <div className="col-md-4 col-sm-12">
-            <h1 className="titles">Top 5 Topics</h1>
-            <FrequencyBarChart num={5} openAI={false}></FrequencyBarChart>
-          </div>
-          <div className="col-md-8 col-sm-12">
-            <h1 className="titles">Articles</h1>
-
-            <ArticleCard></ArticleCard>
-            <Outlet></Outlet>
+          <div className="col-md-12 col-sm-12">
+            <DashboardTabs articles={articleData!}></DashboardTabs>
           </div>
         </div>
 
         <div className="row justify-content-evenly">
+          <div className="col-md-12 col-sm-12">
+            <h1 className="titles">Top 5 Topics</h1>
+            <FrequencyBarChart num={5} openAI={false}></FrequencyBarChart>
+          </div>
+          {/* <div className="col-md-8 col-sm-12">
+            <h1 className="titles">Articles</h1>
+
+            <ArticleCard></ArticleCard>
+            <Outlet></Outlet>
+          </div> */}
+        </div>
+
+        {/* <div className="row justify-content-evenly">
           <div className="col-md-6 col-sm-12">
             <h1 className="titles">Active Labels</h1>
             <BasicAccordion isLabels={true}></BasicAccordion>
@@ -91,7 +99,7 @@ export default function Dashboard() {
 
             <BasicAccordion isLabels={false}></BasicAccordion>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
