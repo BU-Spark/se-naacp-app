@@ -44,8 +44,8 @@ const contextWrapper: ContextWrapperFunction = async () => {
 
   const mongo_url = process.env.NAACP_MONGODB || "mongodb://localhost:27017";
   // const mongo_url = "mongodb://localhost:27017";
-  // const dbName = "se_naacp_db";
-  const dbName = "se_naacp_gbh";
+  const dbName = "se_naacp_db";
+  // const dbName = "se_naacp_gbh";
 
   return { db: await connectWithMongoDB(mongo_url, dbName) };
 };
