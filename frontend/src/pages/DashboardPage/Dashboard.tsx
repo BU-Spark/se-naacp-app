@@ -13,7 +13,16 @@ import dayjs from "dayjs";
 import BasicAccordion from "../../components/Accordion/Accordion";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import DashboardTabs from "../../components/DashboardTabs/dashboardTabs";
+
+const convertDateToInt = (dateString: string) => {
+  return parseInt(dateString.replace(/\//g, ""), 10);
+};
 export default function Dashboard() {
+  const today = dayjs().format("YYYY/MM/DD"); // Formats today's date as YYYY-MM-DD
+  const oneMonthAgo = dayjs().subtract(1, "month").format("YYYY/MM/DD"); // Gets the date one month ago and formats it
+
+  const todayInt = convertDateToInt(today); // Converts today's date
+  const oneMonthAgoInt = convertDateToInt(oneMonthAgo); // Converts the date from one month ago
   const { user, isAuthenticated } = useAuth0();
 
   var { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
@@ -27,8 +36,8 @@ export default function Dashboard() {
 
   React.useEffect(() => {
     queryArticleDataType("ARTICLE_DATA", {
-      dateFrom: 20200101,
-      dateTo: 20240101,
+      dateFrom: oneMonthAgoInt,
+      dateTo: todayInt,
       area: "all",
       userId: user?.sub,
     });
@@ -46,6 +55,7 @@ export default function Dashboard() {
             {/* {isAuthenticated && (
               <div className="align-self-start">Hello, {user?.given_name}</div>
             )} */}
+
             <div className="align-self-start your-org">YOUR ORGANIZATION</div>
             <div className="align-self-start org-name">
               WGBH Educational Foundation
@@ -53,7 +63,9 @@ export default function Dashboard() {
 
             <p className="week">
               {/* <span className="text-wrapper">Week </span> */}
-              <span className="span">Week: 01/01/22 - 02/01/22</span>
+              <span className="span">
+                Month: {oneMonthAgo} - {today}
+              </span>
             </p>
           </div>
         </div>

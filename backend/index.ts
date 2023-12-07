@@ -43,7 +43,8 @@ const contextWrapper: ContextWrapperFunction = async () => {
   // Context Metadata
 
   const mongo_url = process.env.NAACP_MONGODB || "mongodb://localhost:27017";
-  // const mongo_url = "mongodb://localhost:27017";
+  // const mongo_url =
+  //   "mongodb+srv://naacpUser:naacpUser@cluster0.3swdwvx.mongodb.net/";
   const dbName = "se_naacp_db";
   // const dbName = "se_naacp_gbh";
 
@@ -52,7 +53,7 @@ const contextWrapper: ContextWrapperFunction = async () => {
 
 const { url } = await startStandaloneServer(server, {
   context: contextWrapper,
-  listen: { port: (parseInt(process.env.PORT)) || 4000 },
+  listen: { port: parseInt(process.env.PORT) || 4000 },
 });
 
 console.log(`🚀  Server ready at PORT: ${url}`);

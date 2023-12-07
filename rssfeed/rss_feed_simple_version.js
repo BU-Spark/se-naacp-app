@@ -7,7 +7,8 @@ const sha256 = require("js-sha256");
 
 const { MongoClient } = require("mongodb");
 
-const mongoUrl =   "mongodb://mongo:UTwpvdTfzaWxGt29evbw@containers-us-west-177.railway.app:6703";
+const mongoUrl =
+  "mongodb+srv://naacpUser:naacpUser@cluster0.3swdwvx.mongodb.net/";
 const proxy_Url = "https://ml-service-toswle5frq-ue.a.run.app/upload_csv";
 const dbName = "se_naacp_db";
 

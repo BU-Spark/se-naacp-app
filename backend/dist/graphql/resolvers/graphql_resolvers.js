@@ -3,6 +3,18 @@ function isNumber(str) {
     return !isNaN(str);
 }
 export const resolvers = {
+    Mutation: {
+        addRssFeed: async (_, { url, userID }, context) => {
+            const { db } = context;
+            const rss_data = db.collection("rss_links");
+            const newRssFeed = {
+                url: url,
+                userID: userID,
+            };
+            const result = await rss_data.insertOne(newRssFeed);
+            console.log(result);
+        },
+    },
     Query: {
         // RSS Resolver
         getRssLinkByUserId: async (_, args, context) => {

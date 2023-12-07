@@ -14,12 +14,25 @@ function isNumber(str: any) {
 }
 
 export const resolvers = {
+  Mutation: {
+    addRssFeed: async (_, { url, userID }, context) => {
+      const { db } = context;
+      const rss_data = db.collection("rss_links");
+      const newRssFeed = {
+        url: url,
+        userID: userID,
+      };
+
+      const result = await rss_data.insertOne(newRssFeed);
+      console.log(result);
+    },
+  },
   Query: {
     // RSS Resolver
     getRssLinkByUserId: async (_, args, context) => {
       const { db } = context;
       const rss_data = db.collection("rss_links");
-      const queryResult = rss_data.find({userID: args.user_id}).toArray();
+      const queryResult = rss_data.find({ userID: args.user_id }).toArray();
       return queryResult;
     },
     // CSV Upload Resolver
