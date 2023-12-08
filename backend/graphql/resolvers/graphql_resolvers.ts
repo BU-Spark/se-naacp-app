@@ -18,12 +18,18 @@ export const resolvers = {
     addRssFeed: async (_, { url, userID }, context) => {
       const { db } = context;
       const rss_data = db.collection("rss_links");
-      const newRssFeed = {
-        url: url,
-        userID: userID,
+
+      // Create or update the RSS feed for the given userID
+      const filter = { userID: userID };
+      const update = {
+        $set: { url: url, userID: userID }
+      };
+      const options = {
+        upsert: true, // create a new document if no document matches the filter
+        returnDocument: 'after' // return the modified document
       };
 
-      const result = await rss_data.insertOne(newRssFeed);
+      const result = await rss_data.findOneAndUpdate(filter, update, options);
       console.log(result);
     },
   },
