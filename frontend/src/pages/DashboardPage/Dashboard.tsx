@@ -8,7 +8,7 @@ import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods
 import { Outlet } from "react-router-dom";
 
 import { ArticleContext } from "../../contexts/article_context";
-import { useUser } from "@clerk/clerk-react";
+import { useOrganization, useUser } from "@clerk/clerk-react";
 import dayjs from "dayjs";
 import BasicAccordion from "../../components/Accordion/Accordion";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
@@ -23,7 +23,14 @@ export default function Dashboard() {
 
 	const todayInt = convertDateToInt(today); // Converts today's date
 	const oneMonthAgoInt = convertDateToInt(oneMonthAgo); // Converts the date from one month ago
+	// User objects holds all a user's organization memberships, not just the current one
 	const { user, isSignedIn } = useUser();
+	// useOrganization() returns the current organization in the session
+	const { organization } = useOrganization();
+
+	const currentUserOrg = user?.organizationMemberships.find(
+		(ele) => ele.organization.id === organization?.id,
+	);
 
 	var { articleData, queryArticleDataType } =
 		React.useContext(ArticleContext)!;
@@ -53,7 +60,7 @@ export default function Dashboard() {
 				<div className='row'>
 					<div className='col'>
 						<div className='align-self-start your-org'>
-							{user?.organizationMemberships[0].organization.name}
+							{currentUserOrg?.organization.name}
 						</div>
 						<div className='align-self-start your-org'>
 							{user?.fullName} | {user?.id}
