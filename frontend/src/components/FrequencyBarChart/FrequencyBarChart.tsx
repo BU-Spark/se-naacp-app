@@ -32,9 +32,7 @@ const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({
   React.useEffect(() => {
     if (articleData) {
       setArticles(articleData);
-      console.log(articles);
     }
-   
   }, [articleData]);
 
   const listOfLabels = articles

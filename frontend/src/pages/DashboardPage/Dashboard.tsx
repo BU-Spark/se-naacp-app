@@ -8,19 +8,22 @@ import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods
 import { Outlet } from "react-router-dom";
 
 import { ArticleContext } from "../../contexts/article_context";
-
+import { useUser } from "@clerk/clerk-react";
 import dayjs from "dayjs";
 import BasicAccordion from "../../components/Accordion/Accordion";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
-import { resolve } from "path";
-import { useUser } from "@clerk/clerk-react";
+import DashboardTabs from "../../components/DashboardTabs/dashboardTabs";
 
+const convertDateToInt = (dateString: string) => {
+	return parseInt(dateString.replace(/\//g, ""), 10);
+};
 export default function Dashboard() {
-	const minDate = dayjs("2020-11-01");
-	const maxDate = dayjs("2023-01-09");
+	const today = dayjs().format("YYYY/MM/DD"); // Formats today's date as YYYY-MM-DD
+	const oneMonthAgo = dayjs().subtract(1, "month").format("YYYY/MM/DD"); // Gets the date one month ago and formats it
 
-	const { user } = useUser();
-	console.log(user);
+	const todayInt = convertDateToInt(today); // Converts today's date
+	const oneMonthAgoInt = convertDateToInt(oneMonthAgo); // Converts the date from one month ago
+	const { user, isSignedIn } = useUser();
 
 	var { articleData, queryArticleDataType } =
 		React.useContext(ArticleContext)!;
@@ -33,10 +36,10 @@ export default function Dashboard() {
 
 	React.useEffect(() => {
 		queryArticleDataType("ARTICLE_DATA", {
-			dateFrom: 20220101,
-			dateTo: 20220201,
+			dateFrom: oneMonthAgoInt,
+			dateTo: todayInt,
 			area: "all",
-			userId: "1",
+			userId: user?.id,
 		});
 	}, [articleData]);
 
@@ -63,7 +66,7 @@ export default function Dashboard() {
 						<p className='week'>
 							{/* <span className="text-wrapper">Week </span> */}
 							<span className='span'>
-								Week: 01/01/22 - 02/01/22
+								Month: {oneMonthAgo} - {today}
 							</span>
 						</p>
 					</div>
@@ -85,32 +88,38 @@ export default function Dashboard() {
 				</div>
 
 				<div className='row justify-content-evenly'>
-					<div className='col-md-4 col-sm-12'>
+					<div className='col-md-12 col-sm-12'>
+						<DashboardTabs articles={articleData!}></DashboardTabs>
+					</div>
+				</div>
+
+				<div className='row justify-content-evenly'>
+					<div className='col-md-12 col-sm-12'>
 						<h1 className='titles'>Top 5 Topics</h1>
 						<FrequencyBarChart
 							num={5}
 							openAI={false}
 						></FrequencyBarChart>
 					</div>
-					<div className='col-md-8 col-sm-12'>
-						<h1 className='titles'>Articles</h1>
+					{/* <div className="col-md-8 col-sm-12">
+            <h1 className="titles">Articles</h1>
 
-						<ArticleCard></ArticleCard>
-						<Outlet></Outlet>
-					</div>
+            <ArticleCard></ArticleCard>
+            <Outlet></Outlet>
+          </div> */}
 				</div>
 
-				<div className='row justify-content-evenly'>
-					<div className='col-md-6 col-sm-12'>
-						<h1 className='titles'>Active Labels</h1>
-						<BasicAccordion isLabels={true}></BasicAccordion>
-					</div>
-					<div className='col-md-6 col-sm-12'>
-						<h1 className='titles'>Latest Tracts</h1>
+				{/* <div className="row justify-content-evenly">
+          <div className="col-md-6 col-sm-12">
+            <h1 className="titles">Active Labels</h1>
+            <BasicAccordion isLabels={true}></BasicAccordion>
+          </div>
+          <div className="col-md-6 col-sm-12">
+            <h1 className="titles">Latest Tracts</h1>
 
-						<BasicAccordion isLabels={false}></BasicAccordion>
-					</div>
-				</div>
+            <BasicAccordion isLabels={false}></BasicAccordion>
+          </div>
+        </div> */}
 			</div>
 		</>
 	);

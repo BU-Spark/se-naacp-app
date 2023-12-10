@@ -1,20 +1,16 @@
 import React from "react";
 import dayjs, { Dayjs } from "dayjs";
-
+import { minDate, maxDate } from "../../App";
 // Class Component
 import SearchBarDropdown from "./SearchBarDropdown/SearchBarDropdown";
 import DateBar from "./DateBar/DateBar";
 
 interface SearchFieldProps {
-  minDate: Dayjs;
-  maxDate: Dayjs;
   listOfWords: string[];
   showDropDown: boolean;
 }
 
 const SearchFields: React.FC<SearchFieldProps> = ({
-  minDate,
-  maxDate,
   listOfWords,
   showDropDown,
 }) => {
@@ -43,15 +39,11 @@ const SearchFields: React.FC<SearchFieldProps> = ({
         {/* {WarningBtn(warn)} */}
         <DateBar
           title="From"
-          isFrom={true}
-          minDate={minDate}
-          maxDate={maxDate}
+          isTopicsPage={true}
         ></DateBar>
         <DateBar
           title="To"
-          isFrom={false}
-          minDate={minDate}
-          maxDate={maxDate}
+          isTopicsPage={false}
         ></DateBar>
         <div
           style={{

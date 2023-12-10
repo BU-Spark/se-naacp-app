@@ -22,17 +22,6 @@
   /* padding: 20px; */
 }
 
-.number-box {
-  width: 25%;  /* Adjusted to an equal value */
-  height: 80%; /* Adjusted to an equal value */
-  background-color: white;
-  display: flex;
-  flex-direction: column; /* Added to align children vertically */
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-}
 
 .big-number {
     color: #1bb0a1;

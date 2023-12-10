@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./DateBar.css";
 
 import TextField from "@mui/material/TextField";
@@ -9,46 +9,72 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { ArticleContext } from "../../../contexts/article_context";
 import { TractContext } from "../../../contexts/tract_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
+import { minDate, maxDate } from "../../../App";
+import { TopicsContext } from "../../../contexts/topics_context";
+import { Auth0Context } from "@auth0/auth0-react";
 
 interface DateFieldProps {
   title: string;
-  minDate: Dayjs;
-  maxDate: Dayjs;
-  isFrom: boolean;
+  isTopicsPage: boolean;
 }
 
-const DateField: React.FC<DateFieldProps> = ({ minDate, maxDate, isFrom }) => {
+const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
   const [dateFrom, setdateFrom] = React.useState(minDate);
   const [dateTo, setDateTo] = React.useState(maxDate);
 
-  const { articleData, queryArticleDataType } =
+  const { topicsMasterList, topic, setTopic } =
+    React.useContext(TopicsContext)!;
+  const { articleData, queryArticleDataType, setShouldRefresh } =
     React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
   const { neighborhood } = React.useContext(NeighborhoodContext)!;
+  const { user } = useContext(Auth0Context);
 
   const handleChangeFrom = (d: any) => {
-    queryArticleDataType("ARTICLE_DATA", {
-      dateFrom: dateFrom,
-      dateTo: dateTo,
-      area: tractData?.tract,
-      userId: "1"
-    });
+    setShouldRefresh(true);
     setdateFrom(d);
   };
 
   const handleChangeTo = (d: any) => {
+    setShouldRefresh(true);
     setDateTo(d);
   };
 
   React.useEffect(() => {
-    queryArticleDataType("ARTICLE_DATA", {
-      dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
-      dateTo: parseInt(dateTo.format("YYYYMMDD")),
-      area: tractData?.tract,
-      userId: "1"
+    setShouldRefresh(false);
 
-    });
-  }, [dateFrom, dateTo, tractData, neighborhood]);
+    isTopicsPage
+      ? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+          dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+          dateTo: parseInt(dateTo.format("YYYYMMDD")),
+          area: tractData?.tract,
+          labelOrTopic: topic,
+          userId: user?.sub,
+        })
+      : queryArticleDataType("ARTICLE_DATA", {
+          dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+          dateTo: parseInt(dateTo.format("YYYYMMDD")),
+          area: tractData?.tract,
+          userId: user?.sub,
+        });
+  }, [tractData]);
+
+  React.useEffect(() => {
+    isTopicsPage
+      ? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+          dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+          dateTo: parseInt(dateTo.format("YYYYMMDD")),
+          area: "all",
+          labelOrTopic: topic,
+          userId: user?.sub,
+        })
+      : queryArticleDataType("ARTICLE_DATA", {
+          dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+          dateTo: parseInt(dateTo.format("YYYYMMDD")),
+          area: tractData?.tract,
+          userId: user?.sub,
+        });
+  }, [dateFrom, dateTo]);
 
   return (
     <>

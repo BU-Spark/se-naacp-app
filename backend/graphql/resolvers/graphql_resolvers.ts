@@ -14,8 +14,35 @@ function isNumber(str: any) {
 }
 
 export const resolvers = {
+  Mutation: {
+    addRssFeed: async (_, { url, userID }, context) => {
+      const { db } = context;
+      const rss_data = db.collection("rss_links");
+
+      // Create or update the RSS feed for the given userID
+      const filter = { userID: userID };
+      const update = {
+        $set: { url: url, userID: userID }
+      };
+      const options = {
+        upsert: true, // create a new document if no document matches the filter
+        returnDocument: 'after' // return the modified document
+      };
+
+      const result = await rss_data.findOneAndUpdate(filter, update, options);
+      console.log(result);
+    },
+  },
   Query: {
-    getUploadByUserId: async(_, args, context) => {
+    // RSS Resolver
+    getRssLinkByUserId: async (_, args, context) => {
+      const { db } = context;
+      const rss_data = db.collection("rss_links");
+      const queryResult = rss_data.find({ userID: args.user_id }).toArray();
+      return queryResult;
+    },
+    // CSV Upload Resolver
+    getUploadByUserId: async (_, args, context) => {
       const { db } = context;
       const upload_data = db.collection("uploads");
       const queryResult = upload_data.find({ userID: args.user_id }).toArray();
@@ -25,7 +52,10 @@ export const resolvers = {
     getAllTopics: async (_, args, context): Promise<String[]> => {
       const { db } = context;
       const articles_data = db.collection("articles_data");
-      const topics: string[] = await articles_data.distinct('position_section', {'userID': args.userID });
+      const topics: string[] = await articles_data.distinct(
+        "position_section",
+        { userID: args.userID }
+      );
       return topics;
     },
 
@@ -160,6 +190,10 @@ export const resolvers = {
       if (isNumber(args.area)) {
         const queryResult = articles_data
           .find({
+            dateSum: {
+              $gte: args.dateFrom,
+              $lte: args.dateTo,
+            },
             userID: args.userID,
             tracts: args.area,
             $or: [
@@ -175,6 +209,10 @@ export const resolvers = {
       } else if (args.area === "all") {
         const queryResult = articles_data
           .find({
+            dateSum: {
+              $gte: args.dateFrom,
+              $lte: args.dateTo,
+            },
             userID: args.userID,
             $or: [
               { openai_labels: { $in: [args.labelOrTopic] } },
@@ -189,6 +227,10 @@ export const resolvers = {
       } else {
         const queryResult = articles_data
           .find({
+            dateSum: {
+              $gte: args.dateFrom,
+              $lte: args.dateTo,
+            },
             userID: args.userID,
             neighborhoods: args.area,
             $or: [

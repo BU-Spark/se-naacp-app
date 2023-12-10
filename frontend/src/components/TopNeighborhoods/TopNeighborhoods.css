@@ -22,18 +22,15 @@
 }
 
 .number-box-1 {
-  flex-shrink: 0;
-  margin-right: 100px; 
+  margin-right: 55px; 
+  justify-content: center;
 
-  width: 15%;  /* Adjusted to an equal value */
-  height: auto; /* Adjusted to an equal value */
-  background-color: white;
-  display: flex;
+  display: 'flex';
+  flex-wrap: 'wrap';
+  /* display: flex;
   flex-direction: column; 
   justify-content: center;
-  align-items: center;
-  border: 1px solid #ccc;
-  border-radius: 50%; /* Changed from 100% to 50% */
+  align-items: center; */
 }
 
 

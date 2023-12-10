@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
-import dayjs from "dayjs";
 // import CsvUploadComponent from '../../components/Upload/CSVUpload';
 import "./CSVUploadPage.css";
 import { UploadContext } from "../../contexts/upload_context";
@@ -30,13 +29,15 @@ const CSVUploadBox = () => {
 	const [successMessage, setSuccessMessage] = useState("");
 	const { queryUploadDataType, uploadData } = useContext(UploadContext)!;
 	const [uploads, setUpload] = useState<Uploads[]>([]);
-	// const { user } = useContext(Auth0Context)!;
-	const { user } = useUser();
+	const { user, isSignedIn } = useUser();
+	// console.log("user:", user);
 
 	useEffect(() => {
-		queryUploadDataType("UPLOAD_DATA", {
-			userId: "1",
-		});
+		if (isSignedIn && user) {
+			queryUploadDataType("UPLOAD_DATA", {
+				userId: user.id,
+			});
+		}
 	}, []);
 
 	useEffect(() => {
@@ -54,7 +55,8 @@ const CSVUploadBox = () => {
 	// set up cors proxy for POST csv to api
 	const corsProxy = "https://corsproxy.io/?";
 	const url = "https://dummy-server-toswle5frq-uc.a.run.app/upload_csv";
-	const proxy_Url = corsProxy + url;
+	// const proxy_Url = corsProxy + url;
+	const proxy_Url = process.env.REACT_APP_ML_PIP_URL || "";
 
 	// click RSS button -> RSS page
 	let navigate = useNavigate();
@@ -142,6 +144,11 @@ const CSVUploadBox = () => {
 		for (let i = 0; i < submittedFiles.length; i++) {
 			const formData = new FormData();
 			formData.append("file", submittedFiles[i]);
+			if (user) {
+				formData.append("user_id", user.id);
+			} else {
+				console.error("User.sub is undefined");
+			}
 			axios
 				.post(proxy_Url, formData, {
 					headers: {
@@ -159,6 +166,8 @@ const CSVUploadBox = () => {
 							return f;
 						}),
 					);
+					setSuccessMessage("Successfully submitted!");
+					setTimeout(() => setSuccessMessage(""), 3000);
 				})
 				.catch((error) => {
 					console.error(error);
@@ -264,14 +273,14 @@ const CSVUploadBox = () => {
 	// Handle file submit
 	const handleFileSubmit = (files: File[]) => {
 		submitFile();
-		setSuccessMessage("Successfully submitted!");
-		setTimeout(() => setSuccessMessage(""), 3000);
 		// clear out uploaded Files, validated files (submitted files listen onto validated files)
 		for (let i = 0; i < files.length; i++) {
 			setUploadedFiles((prevFiles) =>
 				prevFiles.filter((f) => f.name != files[i].name),
 			);
-			// setUpValidatedFiles(prevFiles => prevFiles.filter(f => f.name != files[i].name));
+			setUpValidatedFiles((prevFiles) =>
+				prevFiles.filter((f) => f.name != files[i].name),
+			);
 		}
 		// need some logic to handle file history
 	};

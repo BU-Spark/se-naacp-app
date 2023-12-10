@@ -20,16 +20,6 @@ import Lottie from "react-lottie-player";
 import { useState } from "react";
 import { ArticleContext } from "../../contexts/article_context";
 
-// function getHTML(str) {
-//   const htmlString = str;
-//   const parser = new DOMParser();
-//   const html = parser.parseFromString(htmlString, "text/html");
-//   const body = html.body.lastChild;
-//   console.log("HOST: ", body.hostname);
-//   console.log("href: ", body.href);
-//   return body;
-// }
-
 const columns = [
   {
     field: "title",
@@ -43,28 +33,33 @@ const columns = [
   },
   { field: "author", headerName: "Author", width: 130 },
   { field: "publishingDate", headerName: "Publishing Date", width: 120 },
-  { field: "neighborhood", headerName: "Neighborhood", width: 580 },
-  // { field: "censusTract", headerName: "Census Tract", width: 110 },
+  { field: "neighborhood", headerName: "Neighborhood", width: 200 },
+  { field: "censusTract", headerName: "Census Tract", width: 200 },
   { field: "category", headerName: "Category", width: 90 },
 ];
 
-interface ArticleCardProps {}
+interface ArticleCardProps {
+  optionalArticles?: Article[];
+}
 
-const ArticleCard: React.FC<ArticleCardProps> = () => {
+const ArticleCard: React.FC<ArticleCardProps> = ({ optionalArticles }) => {
   var articleRow: any = [];
-
   const [articles, setArticles] = useState<Article[]>([]);
-  const { articleData, queryArticleDataType } =
-    React.useContext(ArticleContext)!;
+  const { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
+
+
+  
 
   React.useEffect(() => {
-    if (articleData) {
+    if (optionalArticles && optionalArticles.length > 0) {
+      setArticles(optionalArticles);
+    } else if (articleData) {
       setArticles(articleData);
     }
-  }, [articleData]);
+  }, [articleData, optionalArticles]);  
+  
 
   articles.forEach((article, index) => {
-    // console.log(index, article);
     articleRow.push({
       id: uniqid(),
       title: { link: article.link, title: article.hl1 },

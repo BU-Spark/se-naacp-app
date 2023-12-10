@@ -1,0 +1,44 @@
+.react-tabs__tab-list {
+  /* background: linear-gradient(180deg, rgb(27, 176, 161) 0%, rgba(27, 176, 161, 0.7) 100%); */
+  background-color: linear-gradient(
+    180deg,
+    rgba(210, 229, 98) 0%,
+    rgba(195, 213, 88, 0.7) 100%
+  );
+  display: flex;
+  justify-content: space-between; /* or space-around */
+  width: 100%;
+  list-style-type: none;
+  padding: 0;
+}
+
+.react-tabs__tab:focus {
+  outline: none;
+}
+
+.react-tabs__tab {
+  flex: 1; /* This makes each tab of equal width */
+  text-align: center; /* Optional: to center the text inside each tab */
+}
+
+div {
+  color: linear-gradient(
+    180deg,
+    rgb(27, 176, 161) 0%,
+    rgba(27, 176, 161, 0.7) 100%
+  );
+}
+
+.number-count {
+  color: #2e2b28;
+  font-family: "Karla-Bold", Helvetica;
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.title {
+  color: #8e8e8e;
+  font-family: "Karla-Regular", Helvetica;
+  font-size: 12.7px;
+  font-weight: 400;
+}

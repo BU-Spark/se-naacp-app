@@ -22,6 +22,9 @@ import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../../contexts/topics_context";
 import { useNavigate } from "react-router-dom";
+import DateField from "../../../components/SearchFields/DateBar/DateBar";
+import { maxDate, minDate } from "../../../App";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function getNeighborhood(
   code: string,
@@ -32,7 +35,7 @@ function getNeighborhood(
       return neighborhoodName;
     }
   }
-  return null;
+  return "";
 }
 
 function countArticlesByKeyWord(
@@ -102,32 +105,39 @@ const TopicsPage: React.FC = () => {
   }
 
   //Contex
-  const { articleData, queryArticleDataType } =
+  const { articleData, queryArticleDataType, setShouldRefresh, shouldRefresh } =
     React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
   const { neighborhoodMasterList, setNeighborhood, neighborhood } =
     React.useContext(NeighborhoodContext)!;
   const { topicsMasterList, topic, setTopic } =
     React.useContext(TopicsContext)!;
+  const { user, isAuthenticated } = useAuth0();
 
   //State
   const [tracts, setTracts] = React.useState<string[]>([]);
-  const [counter, setCounter] = React.useState(0);
+  const [flag, setFlag] = React.useState(true);
+  const [currentTopic, setcurrentTopic] = React.useState("");
 
   // Setting Default Values
   React.useEffect(() => {
     if (topic) {
+      setShouldRefresh(true);
       queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+        dateFrom: parseInt(minDate.format("YYYYMMDD")),
+        dateTo: parseInt(maxDate.format("YYYYMMDD")),
         area: "all",
         labelOrTopic: topic,
-        userId: "1",
+        userId: user?.sub,
       });
     }
   }, [topic]);
 
   //Set deafult count and list
   React.useEffect(() => {
-    if (articleData && counter === 1) {
+    // console.log(articleData, shouldRefresh);
+
+    if (articleData && shouldRefresh) {
       const countTemp = countArticlesByKeyWord(
         articleData!,
         topic!,
@@ -140,25 +150,11 @@ const TopicsPage: React.FC = () => {
       queryTractDataType("TRACT_DATA", {
         tract: extra[1],
       });
+
       setNeighborhood(extra[0]);
       setTracts(countTemp);
     }
-    if (counter === 0) {
-      setCounter(1);
-    }
-  }, [articleData]);
-
-  //Sets new Articles when tract changes
-  React.useEffect(() => {
-    if (tractData && topic && neighborhood && counter != 0) {
-      queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
-        area: tractData.tract,
-        labelOrTopic: topic,
-        userId: "1",
-      });
-      setCounter(-1);
-    }
-  }, [tractData]);
+  }, [articleData, shouldRefresh]);
 
   return (
     <>
@@ -182,7 +178,7 @@ const TopicsPage: React.FC = () => {
       ) : (
         <div className="big-container">
           <div className="row justify-content-between">
-            <div className="col-md-5 col-sm-12">
+            <div className="col-md-9 col-sm-12">
               <div
                 className="align-self-start org-back"
                 onClick={handleBoxClick}
@@ -202,6 +198,12 @@ const TopicsPage: React.FC = () => {
               </div>
               <h1></h1>
             </div>
+
+            <div className="col-md-3 col-sm-12">
+              <div>
+                <DateField title="From" isTopicsPage={true}></DateField>
+              </div>
+            </div>
           </div>
 
           <div className="row justify-content-evenly">
@@ -211,7 +213,7 @@ const TopicsPage: React.FC = () => {
             </div>
             <div className="col-md-7 col-sm-12">
               <h1 className="titles">Map</h1>
-              <MapCard></MapCard>
+              <MapCard clickable={false}></MapCard>
             </div>
           </div>
 

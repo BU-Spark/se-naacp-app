@@ -3,7 +3,50 @@ function isNumber(str) {
     return !isNaN(str);
 }
 export const resolvers = {
+    Mutation: {
+        addRssFeed: async (_, { url, userID }, context) => {
+            const { db } = context;
+            const rss_data = db.collection("rss_links");
+            // const newRssFeed = {
+            //   url: url,
+            //   userID: userID,
+            // };
+            // Create or update the RSS feed for the given userID
+            const filter = { userID: userID };
+            const update = {
+                $set: { url: url, userID: userID }
+            };
+            const options = {
+                upsert: true,
+                returnDocument: 'after' // This option is used to return the modified document
+            };
+            const result = await rss_data.findOneAndUpdate(filter, update, options);
+            console.log(result);
+            // const query = { userID: newRssFeed.userID, url: newRssFeed.url };
+            // const doc = rss_data.findOne(query);
+            // if (!doc) {
+            //   rss_data.insertOne(
+            //       { userID: newRssFeed.userID,
+            //         url: { $ne: newRssFeed.url } 
+            //       },
+            //       {
+            //         $set: { url: newRssFeed.url }
+            //       }
+            //   );
+            // }
+            // const result = await rss_data.insertOne(newRssFeed);
+            // console.log(result);
+        },
+    },
     Query: {
+        // RSS Resolver
+        getRssLinkByUserId: async (_, args, context) => {
+            const { db } = context;
+            const rss_data = db.collection("rss_links");
+            const queryResult = rss_data.find({ userID: args.user_id }).toArray();
+            return queryResult;
+        },
+        // CSV Upload Resolver
         getUploadByUserId: async (_, args, context) => {
             const { db } = context;
             const upload_data = db.collection("uploads");
@@ -14,7 +57,7 @@ export const resolvers = {
         getAllTopics: async (_, args, context) => {
             const { db } = context;
             const articles_data = db.collection("articles_data");
-            const topics = await articles_data.distinct('position_section', { 'userID': args.userID });
+            const topics = await articles_data.distinct("position_section", { userID: args.userID });
             return topics;
         },
         getAllLabels: async (_, args, context) => {
@@ -128,6 +171,10 @@ export const resolvers = {
             if (isNumber(args.area)) {
                 const queryResult = articles_data
                     .find({
+                    dateSum: {
+                        $gte: args.dateFrom,
+                        $lte: args.dateTo,
+                    },
                     userID: args.userID,
                     tracts: args.area,
                     $or: [
@@ -143,6 +190,10 @@ export const resolvers = {
             else if (args.area === "all") {
                 const queryResult = articles_data
                     .find({
+                    dateSum: {
+                        $gte: args.dateFrom,
+                        $lte: args.dateTo,
+                    },
                     userID: args.userID,
                     $or: [
                         { openai_labels: { $in: [args.labelOrTopic] } },
@@ -157,6 +208,10 @@ export const resolvers = {
             else {
                 const queryResult = articles_data
                     .find({
+                    dateSum: {
+                        $gte: args.dateFrom,
+                        $lte: args.dateTo,
+                    },
                     userID: args.userID,
                     neighborhoods: args.area,
                     $or: [

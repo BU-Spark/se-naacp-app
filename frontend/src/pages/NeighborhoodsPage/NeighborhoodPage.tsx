@@ -23,10 +23,8 @@ import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../contexts/topics_context";
 import { useUser } from "@clerk/clerk-react";
+import { minDate, maxDate } from "../../App";
 const NeighborhoodPage: React.FC = () => {
-	const minDate = dayjs("2020-11-01");
-	const maxDate = dayjs("2023-01-09");
-
 	//Context
 	const { articleData, queryArticleDataType } =
 		React.useContext(ArticleContext)!;
@@ -51,7 +49,7 @@ const NeighborhoodPage: React.FC = () => {
 			dateFrom: parseInt(minDate.format("YYYYMMDD")),
 			dateTo: parseInt(maxDate.format("YYYYMMDD")),
 			area: "010103",
-			userId: "1",
+			userId: user?.id,
 		});
 	}, []);
 
@@ -102,9 +100,7 @@ const NeighborhoodPage: React.FC = () => {
 							<div>
 								<DateField
 									title='From'
-									minDate={minDate}
-									maxDate={maxDate}
-									isFrom={true}
+									isTopicsPage={false}
 								></DateField>
 							</div>
 						</div>
@@ -119,7 +115,7 @@ const NeighborhoodPage: React.FC = () => {
 						</div>
 						<div className='col-md-8 col-sm-12'>
 							<h1 className='titles'>Map</h1>
-							<MapCard></MapCard>
+							<MapCard clickable={true}></MapCard>
 						</div>
 					</div>
 

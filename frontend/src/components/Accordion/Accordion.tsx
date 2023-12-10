@@ -9,10 +9,11 @@ import { ArticleContext } from "../../contexts/article_context";
 import { Article } from "../../__generated__/graphql";
 import Callback from "../../pages/Callback/Callback";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
-import "./Accordion.css"
+import "./Accordion.css";
+import BubbleChart from "../BubbleChart/BubbleChart";
 interface TractCount {
-  tract: string;
-  count: number;
+  name: string;
+  value: number;
 }
 
 interface LabelDetail {
@@ -22,8 +23,8 @@ interface LabelDetail {
 }
 
 interface LabelCount {
-  label: string;
-  count: number;
+  name: string;
+  value: number;
 }
 
 interface TractDetail {
@@ -41,47 +42,45 @@ function getNeighborhood(
       return neighborhoodName;
     }
   }
-  return null;
+  return "";
 }
 
-const getLabelDetailsWithLimitedTracts = (
-  articles: Article[],
-  neighborhoods: { [key: string]: string[] }
-): React.ReactElement<any, any> => {
+const getLabelDetailsWithLimitedTracts = (articles: Article[], neighborhoods: { [key: string]: string[] }): React.ReactElement<any, any> => {
   const labelDetails: Record<
     string,
-    { totalCount: number; tracts: Record<string, number> }
+    { totalCount: number; tracts: Record<string, { count: number, articles: Article[] }> }
   > = {};
 
-  // Counting labels and tracts
+  // Counting labels, tracts, and storing articles for each tract
   articles.forEach((article) => {
-    const countedLabels: Set<string> = new Set();
-
     article.openai_labels.forEach((label) => {
-      if (!countedLabels.has(label)) {
-        if (!labelDetails[label]) {
-          labelDetails[label] = { totalCount: 0, tracts: {} };
-        }
-        labelDetails[label].totalCount =
-          labelDetails[label].totalCount + article.tracts.length;
-        countedLabels.add(label);
+      if (!labelDetails[label]) {
+        labelDetails[label] = { totalCount: 0, tracts: {} };
       }
+      labelDetails[label].totalCount += article.tracts.length;
 
       article.tracts.forEach((tract) => {
-        labelDetails[label].tracts[tract] =
-          (labelDetails[label].tracts[tract] || 0) + 1;
+        if (!labelDetails[label].tracts[tract]) {
+          labelDetails[label].tracts[tract] = { count: 0, articles: [] };
+        }
+        labelDetails[label].tracts[tract].count++;
+        labelDetails[label].tracts[tract].articles.push(article);
       });
     });
   });
 
-  // Converting to desired structure with sorting and limiting tracts
+  // Transforming to the desired structure
   const labelDetailsArray: LabelDetail[] = Object.entries(labelDetails).map(
     ([label, detail]) => ({
       label: label,
       totalCount: detail.totalCount,
       tractsCount: Object.entries(detail.tracts)
-        .map(([tract, count]) => ({ tract, count }))
-        .sort((a, b) => b.count - a.count)
+        .map(([name, tractDetail]) => ({
+          name,
+          value: tractDetail.count,
+          articles: tractDetail.articles
+        }))
+        .sort((a, b) => b.value - a.value)
         .slice(0, 5), // Limit to first 5 tracts
     })
   );
@@ -90,6 +89,8 @@ const getLabelDetailsWithLimitedTracts = (
   const result = labelDetailsArray
     .sort((a, b) => b.totalCount - a.totalCount)
     .slice(0, 5); // Limit to top 5 labels
+
+    console.log(result);
 
   return (
     <>
@@ -104,13 +105,8 @@ const getLabelDetailsWithLimitedTracts = (
               <Typography color="common.black">{`${label.label} - ${label.totalCount} articles`}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography color="common.black">
-                {label.tractsCount.map((tract) => (
-                  <li key={tract.tract}>
-                    {`${tract.tract} - ${getNeighborhood(tract.tract, neighborhoods)} - ${tract.count} articles`}
-                  </li>
-                ))}
-              </Typography>
+              
+              <BubbleChart bubbleData={label.tractsCount}></BubbleChart>
             </AccordionDetails>
           </Accordion>
         ))}
@@ -118,6 +114,7 @@ const getLabelDetailsWithLimitedTracts = (
     </>
   );
 };
+
 
 const getTractDetailsWithTotalCount = (
   articles: Article[],
@@ -125,10 +122,10 @@ const getTractDetailsWithTotalCount = (
 ): React.ReactElement<any, any> => {
   const tractDetails: Record<
     string,
-    { totalLabelCount: number; labels: Record<string, number> }
+    { totalLabelCount: number; labels: Record<string, { count: number, articles: Article[] }> }
   > = {};
 
-  // Counting tracts and labels within each tract
+  // Counting tracts, labels within each tract, and storing articles
   articles.forEach((article) => {
     article.tracts.forEach((tract) => {
       if (!tractDetails[tract]) {
@@ -136,46 +133,54 @@ const getTractDetailsWithTotalCount = (
       }
 
       article.openai_labels.forEach((label) => {
-        tractDetails[tract].labels[label] =
-          (tractDetails[tract].labels[label] || 0) + 1;
-        tractDetails[tract].totalLabelCount++;
+        if (!tractDetails[tract].labels[label]) {
+          tractDetails[tract].labels[label] = { count: 0, articles: [] };
+        }
+        tractDetails[tract].labels[label].count++;
+        tractDetails[tract].labels[label].articles.push(article);
       });
+
+      tractDetails[tract].totalLabelCount++;
     });
   });
 
-  // Converting to desired structure and slicing top 5 tracts
+  // Converting to desired structure
   const tractDetailsArray: TractDetail[] = Object.entries(tractDetails)
     .map(([tract, detail]) => ({
       tract: tract,
       totalLabelCount: detail.totalLabelCount,
       labelsCount: Object.entries(detail.labels)
-        .map(([label, count]) => ({ label, count }))
-        .sort((a, b) => b.count - a.count)
+        .map(([name, labelDetail]) => ({
+          name,
+          value: labelDetail.count,
+          articles: labelDetail.articles
+        }))
+        .sort((a, b) => b.value - a.value)
         .slice(0, 5), // Limit to top 5 labels
     }))
     .sort((a, b) => b.totalLabelCount - a.totalLabelCount)
     .slice(0, 5); // Limit to top 5 tracts
 
+    console.log(tractDetailsArray);
   return (
     <>
       <div>
-        {tractDetailsArray.map((label, index) => (
-          <Accordion key={label.tract}>
+        {tractDetailsArray.map((tractDetail, index) => (
+          <Accordion key={tractDetail.tract}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls={`panel${index + 1}a-content`}
               id={`panel${index + 1}a-header`}
             >
-              <Typography color="common.black">{`${label.tract} - ${getNeighborhood(label.tract, neighborhoods)} - ${label.totalLabelCount} articles`}</Typography>
+              <Typography color="common.black">{`${
+                tractDetail.tract
+              } - ${getNeighborhood(tractDetail.tract, neighborhoods)} - ${
+                tractDetail.totalLabelCount
+              } articles`}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography color="common.black">
-                {label.labelsCount.map((tract) => (
-                  <li key={tract.label}>
-                    {`${tract.label} - ${tract.count} articles`}
-                  </li>
-                ))}
-              </Typography>
+              
+              <BubbleChart bubbleData={tractDetail.labelsCount}></BubbleChart>
             </AccordionDetails>
           </Accordion>
         ))}
@@ -185,16 +190,16 @@ const getTractDetailsWithTotalCount = (
 };
 
 
-const wrapper = (flag: boolean,
-    articles: Article[],
-    neighborhoods: { [key: string]: string[] }
-  ): React.ReactElement<any, any> => {
 
-    return flag ? getLabelDetailsWithLimitedTracts(articles, neighborhoods) :getTractDetailsWithTotalCount(articles, neighborhoods)
-
-  }
-
-
+const wrapper = (
+  flag: boolean,
+  articles: Article[],
+  neighborhoods: { [key: string]: string[] }
+): React.ReactElement<any, any> => {
+  return flag
+    ? getLabelDetailsWithLimitedTracts(articles, neighborhoods)
+    : getTractDetailsWithTotalCount(articles, neighborhoods);
+};
 
 interface AccordionProps {
   isLabels: boolean;
@@ -211,7 +216,6 @@ const BasicAccordion: React.FC<AccordionProps> = ({ isLabels }) => {
     }
   }, [articleData]);
 
-  
   const component = isLabels
     ? getLabelDetailsWithLimitedTracts(articles, neighborhoodMasterList!)
     : getTractDetailsWithTotalCount(articles, neighborhoodMasterList!);
@@ -220,10 +224,10 @@ const BasicAccordion: React.FC<AccordionProps> = ({ isLabels }) => {
     <>
       <Card className="body" sx={{ width: "100%" }}>
         <CardContent sx={{ width: "100%" }}>
-          {articles === null || articles.length === 0  ?(
+          {articles === null || articles.length === 0 ? (
             <Callback></Callback>
           ) : (
-            wrapper(isLabels,articles, neighborhoodMasterList!)
+            wrapper(isLabels, articles, neighborhoodMasterList!)
           )}
         </CardContent>
       </Card>
