@@ -8,23 +8,19 @@ import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods
 import { Outlet } from "react-router-dom";
 
 import { ArticleContext } from "../../contexts/article_context";
-import { useAuth0 } from "@auth0/auth0-react";
-import type { IdToken } from "@auth0/auth0-react";
+
 import dayjs from "dayjs";
 import BasicAccordion from "../../components/Accordion/Accordion";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { resolve } from "path";
+import { useUser } from "@clerk/clerk-react";
 
 export default function Dashboard() {
 	const minDate = dayjs("2020-11-01");
 	const maxDate = dayjs("2023-01-09");
-	let orgData: IdToken | undefined;
-	let setOrgData: any;
-	[orgData, setOrgData] = React.useState();
 
-	const { isAuthenticated, user } = useAuth0();
-	//console.log(user);
-	const org = useAuth0().getIdTokenClaims();
+	const { user } = useUser();
+	console.log(user);
 
 	var { articleData, queryArticleDataType } =
 		React.useContext(ArticleContext)!;
@@ -33,12 +29,6 @@ export default function Dashboard() {
 
 	React.useEffect(() => {
 		queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
-		const getOrg = async () => {
-			return await org;
-		};
-		getOrg().then((res) => {
-			setOrgData(res);
-		});
 	}, []);
 
 	React.useEffect(() => {
@@ -59,11 +49,12 @@ export default function Dashboard() {
 			<div className='big-container'>
 				<div className='row'>
 					<div className='col'>
-						{isAuthenticated && user && (
-							<div className='align-self-start your-org'>
-								{orgData?.org_id && <div>hello org</div>}
-							</div>
-						)}
+						<div className='align-self-start your-org'>
+							{user?.organizationMemberships[0].organization.name}
+						</div>
+						<div className='align-self-start your-org'>
+							{user?.fullName} | {user?.id}
+						</div>
 
 						<div className='align-self-start org-name'>
 							WGBH Educational Foundation

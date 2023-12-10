@@ -1,25 +1,32 @@
 import { Layout, Button, Anchor } from "antd"; // Ant Design
 import { useNavigate, NavigateFunction, Link, NavLink } from "react-router-dom";
 import Logo from "../../assets/logos/logo.svg";
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 // CSS
 import "./TopNavBar.css";
 import { useState } from "react";
-
-import { useAuth0 } from "@auth0/auth0-react";
-import { LogoutButton } from "../LoginButtons/LogoutButton";
-import { LoginButton } from "../LoginButtons/LoginButton";
 
 const { Header } = Layout;
 
 const TopNavBar = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
-
-	const { isAuthenticated, isLoading } = useAuth0();
+	const { user } = useUser();
 
 	return (
 		<nav>
 			<Link to='/' className='title'>
-				<img style={{ width: "6vw" }} src={Logo} alt='gbh-logo' />
+				{user ? (
+					<img
+						style={{ width: "6vw" }}
+						src={
+							user?.organizationMemberships[0].organization
+								.imageUrl
+						}
+						alt='user org logo'
+					/>
+				) : (
+					<img style={{ width: "6vw" }} src={Logo} alt='gbh-logo' />
+				)}
 			</Link>
 			<div className='menu' onClick={() => setMenuOpen(!menuOpen)}>
 				<span></span>
@@ -42,11 +49,11 @@ const TopNavBar = () => {
 				<li>
 					<NavLink to='/Dashboard'>Dashboard</NavLink>
 				</li>
-				{!isLoading && (
-					<li>
-						{isAuthenticated ? <LogoutButton /> : <LoginButton />}
-					</li>
-				)}
+				<li>
+					<SignedIn>
+						<UserButton />
+					</SignedIn>
+				</li>
 			</ul>
 		</nav>
 	);
