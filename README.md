@@ -81,10 +81,12 @@ https://bu-naacp-media-bias.gitbook.io/sparkmediabias/
 
 
 ## Contributing
-If you would like to contribute, please reach out to BU Spark!
+If you would like to contribute, please reach out to BU Spark! or BU SAIL
 <br>
 <br>
 BU Spark! - https://www.bu.edu/spark/contact-us/
+<br>
+BU SAIL - https://sail.bu.edu/contact
 
 ## Sponsers & Collaborators
 We thank the following institutions for making this project possible!
