@@ -11,7 +11,7 @@ import { TractContext } from "../../../contexts/tract_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 import { minDate, maxDate } from "../../../App";
 import { TopicsContext } from "../../../contexts/topics_context";
-import { useUser } from "@clerk/clerk-react";
+import { useOrganization, useUser } from "@clerk/clerk-react";
 interface DateFieldProps {
 	title: string;
 	isTopicsPage: boolean;
@@ -28,6 +28,7 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 	const { tractData, queryTractDataType } = React.useContext(TractContext)!;
 	const { neighborhood } = React.useContext(NeighborhoodContext)!;
 	const { user } = useUser();
+	const { organization } = useOrganization();
 
 	const handleChangeFrom = (d: any) => {
 		setShouldRefresh(true);
@@ -41,38 +42,71 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 
 	React.useEffect(() => {
 		setShouldRefresh(false);
-
-		isTopicsPage
-			? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
-					dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
-					dateTo: parseInt(dateTo.format("YYYYMMDD")),
-					area: tractData?.tract,
-					labelOrTopic: topic,
-					userId: user?.id,
-			  })
-			: queryArticleDataType("ARTICLE_DATA", {
-					dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
-					dateTo: parseInt(dateTo.format("YYYYMMDD")),
-					area: tractData?.tract,
-					userId: user?.id,
-			  });
+		if (organization) {
+			isTopicsPage
+				? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+						dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+						dateTo: parseInt(dateTo.format("YYYYMMDD")),
+						area: tractData?.tract,
+						labelOrTopic: topic,
+						userId: organization.id,
+				  })
+				: queryArticleDataType("ARTICLE_DATA", {
+						dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+						dateTo: parseInt(dateTo.format("YYYYMMDD")),
+						area: tractData?.tract,
+						userId: organization.id,
+				  });
+		} else if (user) {
+			isTopicsPage
+				? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+						dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+						dateTo: parseInt(dateTo.format("YYYYMMDD")),
+						area: tractData?.tract,
+						labelOrTopic: topic,
+						userId: user?.id,
+				  })
+				: queryArticleDataType("ARTICLE_DATA", {
+						dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+						dateTo: parseInt(dateTo.format("YYYYMMDD")),
+						area: tractData?.tract,
+						userId: user?.id,
+				  });
+		}
 	}, [tractData]);
 
 	React.useEffect(() => {
-		isTopicsPage
-			? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
-					dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
-					dateTo: parseInt(dateTo.format("YYYYMMDD")),
-					area: "all",
-					labelOrTopic: topic,
-					userId: user?.id,
-			  })
-			: queryArticleDataType("ARTICLE_DATA", {
-					dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
-					dateTo: parseInt(dateTo.format("YYYYMMDD")),
-					area: tractData?.tract,
-					userId: user?.id,
-			  });
+		if (organization) {
+			isTopicsPage
+				? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+						dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+						dateTo: parseInt(dateTo.format("YYYYMMDD")),
+						area: "all",
+						labelOrTopic: topic,
+						userId: organization.id,
+				  })
+				: queryArticleDataType("ARTICLE_DATA", {
+						dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+						dateTo: parseInt(dateTo.format("YYYYMMDD")),
+						area: tractData?.tract,
+						userId: organization.id,
+				  });
+		} else if (user) {
+			isTopicsPage
+				? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+						dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+						dateTo: parseInt(dateTo.format("YYYYMMDD")),
+						area: "all",
+						labelOrTopic: topic,
+						userId: user?.id,
+				  })
+				: queryArticleDataType("ARTICLE_DATA", {
+						dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+						dateTo: parseInt(dateTo.format("YYYYMMDD")),
+						area: tractData?.tract,
+						userId: user?.id,
+				  });
+		}
 	}, [dateFrom, dateTo]);
 
 	return (

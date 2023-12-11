@@ -42,12 +42,21 @@ export default function Dashboard() {
 	}, []);
 
 	React.useEffect(() => {
-		queryArticleDataType("ARTICLE_DATA", {
-			dateFrom: oneMonthAgoInt,
-			dateTo: todayInt,
-			area: "all",
-			userId: user?.id,
-		});
+		if (organization) {
+			queryArticleDataType("ARTICLE_DATA", {
+				dateFrom: oneMonthAgoInt,
+				dateTo: todayInt,
+				area: "all",
+				userId: organization.id,
+			});
+		} else {
+			queryArticleDataType("ARTICLE_DATA", {
+				dateFrom: oneMonthAgoInt,
+				dateTo: todayInt,
+				area: "all",
+				userId: user?.id,
+			});
+		}
 	}, [articleData]);
 
 	if (!articleData) {
@@ -60,16 +69,14 @@ export default function Dashboard() {
 				<div className='row'>
 					<div className='col'>
 						<div className='align-self-start your-org'>
-							{currentUserOrg?.organization.name}
-						</div>
-						<div className='align-self-start your-org'>
 							{user?.fullName} | {user?.id}
 						</div>
 
-						<div className='align-self-start org-name'>
-							WGBH Educational Foundation
-						</div>
-
+						{organization && (
+							<div className='align-self-start org-name'>
+								{organization.name}
+							</div>
+						)}
 						<p className='week'>
 							{/* <span className="text-wrapper">Week </span> */}
 							<span className='span'>

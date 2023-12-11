@@ -7,7 +7,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import "./CSVUploadPage.css";
 import { UploadContext } from "../../contexts/upload_context";
 import { Uploads } from "../../__generated__/graphql";
-import { useUser } from "@clerk/clerk-react";
+import { useOrganization, useUser } from "@clerk/clerk-react";
 
 // Define a type for the file with progress information
 type UploadedFile = {
@@ -30,13 +30,19 @@ const CSVUploadBox = () => {
 	const { queryUploadDataType, uploadData } = useContext(UploadContext)!;
 	const [uploads, setUpload] = useState<Uploads[]>([]);
 	const { user, isSignedIn } = useUser();
-	// console.log("user:", user);
+	const { organization } = useOrganization();
 
 	useEffect(() => {
 		if (isSignedIn && user) {
-			queryUploadDataType("UPLOAD_DATA", {
-				userId: user.id,
-			});
+			if (organization) {
+				queryUploadDataType("UPLOAD_DATA", {
+					userId: organization.id,
+				});
+			} else {
+				queryUploadDataType("UPLOAD_DATA", {
+					userId: user.id,
+				});
+			}
 		}
 	}, []);
 

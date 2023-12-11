@@ -24,7 +24,7 @@ import { TopicsContext } from "../../../contexts/topics_context";
 import { useNavigate } from "react-router-dom";
 import DateField from "../../../components/SearchFields/DateBar/DateBar";
 import { maxDate, minDate } from "../../../App";
-import { useUser } from "@clerk/clerk-react";
+import { useOrganization, useUser } from "@clerk/clerk-react";
 
 function getNeighborhood(
 	code: string,
@@ -123,6 +123,7 @@ const TopicsPage: React.FC = () => {
 	const { topicsMasterList, topic, setTopic } =
 		React.useContext(TopicsContext)!;
 	const { user } = useUser();
+	const { organization } = useOrganization();
 
 	//State
 	const [tracts, setTracts] = React.useState<string[]>([]);
@@ -133,13 +134,23 @@ const TopicsPage: React.FC = () => {
 	React.useEffect(() => {
 		if (topic) {
 			setShouldRefresh(true);
-			queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "all",
-				labelOrTopic: topic,
-				userId: user?.id,
-			});
+			if (organization) {
+				queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+					dateFrom: parseInt(minDate.format("YYYYMMDD")),
+					dateTo: parseInt(maxDate.format("YYYYMMDD")),
+					area: "all",
+					labelOrTopic: topic,
+					userId: organization.id,
+				});
+			} else {
+				queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
+					dateFrom: parseInt(minDate.format("YYYYMMDD")),
+					dateTo: parseInt(maxDate.format("YYYYMMDD")),
+					area: "all",
+					labelOrTopic: topic,
+					userId: user?.id,
+				});
+			}
 		}
 	}, [topic]);
 

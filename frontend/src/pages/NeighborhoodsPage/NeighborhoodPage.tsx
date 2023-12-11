@@ -22,7 +22,7 @@ import { ArticleContext } from "../../contexts/article_context";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../contexts/topics_context";
-import { useUser } from "@clerk/clerk-react";
+import { useOrganization, useUser } from "@clerk/clerk-react";
 import { minDate, maxDate } from "../../App";
 const NeighborhoodPage: React.FC = () => {
 	//Context
@@ -38,6 +38,7 @@ const NeighborhoodPage: React.FC = () => {
 	const [isLoading, setIsLoading] = React.useState(true);
 	const { queryTopicsDataType } = React.useContext(TopicsContext);
 	const { user } = useUser();
+	const { organization } = useOrganization();
 
 	React.useEffect(() => {
 		queryTopicsDataType("TOPICS_DATA");
@@ -45,12 +46,21 @@ const NeighborhoodPage: React.FC = () => {
 		queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
 		setNeighborhood("Fenway");
 		queryTractDataType("TRACT_DATA", { tract: "010103" });
-		queryArticleDataType("ARTICLE_DATA", {
-			dateFrom: parseInt(minDate.format("YYYYMMDD")),
-			dateTo: parseInt(maxDate.format("YYYYMMDD")),
-			area: "010103",
-			userId: user?.id,
-		});
+		if (organization) {
+			queryArticleDataType("ARTICLE_DATA", {
+				dateFrom: parseInt(minDate.format("YYYYMMDD")),
+				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				area: "010103",
+				userId: organization.id,
+			});
+		} else {
+			queryArticleDataType("ARTICLE_DATA", {
+				dateFrom: parseInt(minDate.format("YYYYMMDD")),
+				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				area: "010103",
+				userId: user?.id,
+			});
+		}
 	}, []);
 
 	React.useEffect(() => {
