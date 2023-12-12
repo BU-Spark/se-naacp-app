@@ -7,10 +7,6 @@ export const resolvers = {
         addRssFeed: async (_, { url, userID }, context) => {
             const { db } = context;
             const rss_data = db.collection("rss_links");
-            // const newRssFeed = {
-            //   url: url,
-            //   userID: userID,
-            // };
             // Create or update the RSS feed for the given userID
             const filter = { userID: userID };
             const update = {
@@ -18,24 +14,10 @@ export const resolvers = {
             };
             const options = {
                 upsert: true,
-                returnDocument: 'after' // This option is used to return the modified document
+                returnDocument: 'after' // return the modified document
             };
             const result = await rss_data.findOneAndUpdate(filter, update, options);
             console.log(result);
-            // const query = { userID: newRssFeed.userID, url: newRssFeed.url };
-            // const doc = rss_data.findOne(query);
-            // if (!doc) {
-            //   rss_data.insertOne(
-            //       { userID: newRssFeed.userID,
-            //         url: { $ne: newRssFeed.url } 
-            //       },
-            //       {
-            //         $set: { url: newRssFeed.url }
-            //       }
-            //   );
-            // }
-            // const result = await rss_data.insertOne(newRssFeed);
-            // console.log(result);
         },
     },
     Query: {

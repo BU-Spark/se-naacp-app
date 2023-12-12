@@ -24,15 +24,16 @@ const connectWithMongoDB = async (mongo_url, db_name) => {
         });
     }
 };
+// const mongo_url = process.env.NAACP_MONGODB || "mongodb://localhost:27017";
+const mongo_url = "mongodb+srv://naacpUser:naacpUser@cluster0.8yebjzr.mongodb.net/";
+const dbName = "se_naacp_db";
+// const dbName = "se_naacp_gbh";
+let x = await connectWithMongoDB(mongo_url, dbName);
 // Context Wrapper
 // Build things you need inside to pass to context
 const contextWrapper = async () => {
     // Context Metadata
-    // const mongo_url = process.env.NAACP_MONGODB || "mongodb://localhost:27017";
-    const mongo_url = "mongodb+srv://naacpUser:naacpUser@cluster0.3swdwvx.mongodb.net/";
-    const dbName = "se_naacp_db";
-    // const dbName = "se_naacp_gbh";
-    return { db: await connectWithMongoDB(mongo_url, dbName) };
+    return { db: x };
 };
 const { url } = await startStandaloneServer(server, {
     context: contextWrapper,

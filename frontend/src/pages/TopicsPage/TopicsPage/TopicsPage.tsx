@@ -156,6 +156,16 @@ const TopicsPage: React.FC = () => {
     }
   }, [articleData, shouldRefresh]);
 
+  React.useEffect(() => {
+    console.log(
+      articleData,
+      topic,
+      neighborhood,
+      tractData,
+      neighborhoodMasterList
+    );
+  }, [articleData, topic, neighborhood, tractData, neighborhoodMasterList]);
+
   return (
     <>
       {!(
