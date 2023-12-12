@@ -38,9 +38,7 @@ const connectWithMongoDB = async (
 };
 
 const mongo_url = process.env.NAACP_MONGODB || "mongodb://localhost:27017";
-// const mongo_url = "mongodb+srv://naacpUser:naacpUser@cluster0.8yebjzr.mongodb.net/";
 const dbName = "se_naacp_db";
-// const dbName = "se_naacp_gbh";
 
 let x = await connectWithMongoDB(mongo_url, dbName);
 
