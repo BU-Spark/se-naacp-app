@@ -3,25 +3,11 @@
   <br>
   <a href="https://www.bu.edu/spark/"><img src="https://www.bu.edu/spark/files/2017/04/spark-logo-round.png" alt="BU Spark" width="200"></a>
   <br>
-BU Spark! NAACP Journalism
+Media Bias in Boston
   <br>
 </h1>
 
 <h4 align="center">An all-in-one place for data visualization for journalists made by journalists.</h4>
-
-<p align="center">
-  <a href="https://badge.fury.io/js/electron-markdownify">
-    <img src="https://badge.fury.io/js/electron-markdownify.svg"
-         alt="Gitter">
-  </a>
-<!--   <a href="https://gitter.im/amitmerchant1990/electron-markdownify"><img src="https://badges.gitter.im/amitmerchant1990/electron-markdownify.svg"></a> -->
-<!--   <a href="https://saythanks.io/to/bullredeyes@gmail.com">
-      <img src="https://img.shields.io/badge/SayThanks.io-%E2%98%BC-1EAEDB.svg">
-  </a> -->
-<!--   <a href="https://www.paypal.me/AmitMerchant">
-    <img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat">
-  </a> -->
-</p>
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
@@ -33,13 +19,16 @@ BU Spark! NAACP Journalism
 <!-- ![screenshot](https://raw.githubusercontent.com/amitmerchant1990/electron-markdownify/master/app/img/markdownify.gif) -->
 
 ## Key Features
-
-* XXXXX - XXXXXXX
-  - XXXXXXXXXXXXXXXXXXXXX.
-* XXXXXXX
-  - XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
-* XXXXXXXXXXXXXXXXXXXXX  
-* XXXXXXXXXXXXXXXXXXXXX
+Media Bias in Boston is an innovative application harnessing the techniques of NLP to revolutionize the way we interact with news data. This application is designed to intelligently read and identify the key topics within news articles, and then accurately pin them to their relevant geographical locations for advanced data analytics.
+    
+* Topic Identification: With our topic modeling and entity recognition, we utilize state of the art NLP to scan news articles and identify core topics, ranging from politics and finance to technology and health.
+  - Simply upload articles based on our data schema and you are done! 
+* Geographical Pinning: Each identified topic is geographically tagged, linking the content to specific global locations, enhancing the understanding of regional news trends.
+  - Our system is adaptable for any location as we use the Census tracks provieded by the U.S Census.
+* Data Analytics Interface: Offers a robust analytics dashboard, allowing users to visualize and analyze trends based on topics and their geographical distribution.
+* Real-Time Updates: Continuously updates with the latest news, ensuring the data is current and reflective of ongoing global events.
+  - We soon will offer real-time email updates on the latest news analytics giving you powerful insights at a moment's notice
+* User-Friendly Interface: Designed with the user in mind, ensuring ease of use for individuals with varying levels of technical expertise.
 
 ## Documentation
 We provide an awesome gitbook to walk-through the use of the product and useful information for developers jumpstarting this project!
@@ -51,6 +40,11 @@ https://bu-naacp-media-bias.gitbook.io/sparkmediabias/
 <table>
   <tbody>
     <tr>
+    <td align="center" valign="top" width="14.28%">
+      <a href="https://github.com/malbaker">
+      <img src="https://avatars.githubusercontent.com/u/78194321?v=4" width="100px;" alt="malbaker"/>
+      <br /><sub><b>malbaker</b></sub></a>
+    </td>
     <td align="center" valign="top" width="14.28%">
       <a href="https://github.com/zoexili">
       <img src="https://avatars.githubusercontent.com/u/25307411?v=4" width="100px;" alt="LiXi"/>
@@ -87,10 +81,21 @@ https://bu-naacp-media-bias.gitbook.io/sparkmediabias/
 
 
 ## Contributing
-If you would like to contribute, please reach out to BU Spark!
+If you would like to contribute, please reach out to BU Spark! or BU SAIL
 <br>
 <br>
 BU Spark! - https://www.bu.edu/spark/contact-us/
+<br>
+BU SAIL - https://sail.bu.edu/contact
+
+## Sponsers & Collaborators
+We thank the following institutions for making this project possible!
+<p align="center">
+  <img src="https://www.bu.edu/spark/files/2023/08/logo.png" alt="Spark!" width="100"/>
+  <img src="https://avatars.githubusercontent.com/u/13788335?s=200&v=4" alt="SAIL" width="90"/>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/GBH_logo_2020.svg/800px-GBH_logo_2020.svg.png" alt="GBH" width="170"/> 
+  <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/0f/NAACP_seal.svg/150px-NAACP_seal.svg.png" alt="NAACP" width="110"/> 
+</p>
 
 ## License
 
