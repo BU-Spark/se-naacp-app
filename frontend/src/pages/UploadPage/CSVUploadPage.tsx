@@ -150,10 +150,14 @@ const CSVUploadBox = () => {
 		for (let i = 0; i < submittedFiles.length; i++) {
 			const formData = new FormData();
 			formData.append("file", submittedFiles[i]);
-			if (user) {
-				formData.append("user_id", user.id);
+			if (user && isSignedIn) {
+				if (organization) {
+					formData.append("user_id", organization.id);
+				} else {
+					formData.append("user_id", user.id);
+				}
 			} else {
-				console.error("User.sub is undefined");
+				console.error("User is not signed in");
 			}
 			axios
 				.post(proxy_Url, formData, {

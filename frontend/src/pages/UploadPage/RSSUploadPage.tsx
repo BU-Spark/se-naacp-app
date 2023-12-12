@@ -8,11 +8,12 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import "./RSSUploadPage.css";
 import { UploadContext } from "../../contexts/upload_context";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useOrganization } from "@clerk/clerk-react";
 
 const RSSUploadBox = () => {
 	const { addRssFeed } = React.useContext(UploadContext)!;
-	const { user } = useUser();
+	const { user, isSignedIn } = useUser();
+	const { organization } = useOrganization();
 
 	// click CSV button -> CSV page
 	let navigate = useNavigate();
@@ -206,8 +207,12 @@ const RSSUploadBox = () => {
 			//     sethttpMessage(`${error}`);
 			// });
 
-			if (user) {
-				addRssFeed(url, user.id);
+			if (user && isSignedIn) {
+				if (organization) {
+					addRssFeed(url, organization.id);
+				} else {
+					addRssFeed(url, user.id);
+				}
 			}
 		}
 	}
