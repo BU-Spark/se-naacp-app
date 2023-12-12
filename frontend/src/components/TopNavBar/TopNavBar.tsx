@@ -1,25 +1,40 @@
 import { Layout, Button, Anchor } from "antd"; // Ant Design
 import { useNavigate, NavigateFunction, Link, NavLink } from "react-router-dom";
 import Logo from "../../assets/logos/logo.svg";
+import {
+	OrganizationSwitcher,
+	SignedIn,
+	SignedOut,
+	UserButton,
+	useOrganization,
+	useUser,
+} from "@clerk/clerk-react";
 // CSS
 import "./TopNavBar.css";
 import { useState } from "react";
-
-import { useAuth0 } from "@auth0/auth0-react";
-import { LogoutButton } from "../LoginButtons/LogoutButton";
-import { LoginButton } from "../LoginButtons/LoginButton";
 
 const { Header } = Layout;
 
 const TopNavBar = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
-
-	const { isAuthenticated, isLoading } = useAuth0();
+	const { user } = useUser();
+	const { organization } = useOrganization();
+	const currentUserOrg = user?.organizationMemberships.find(
+		(ele) => ele.organization.id === organization?.id,
+	);
 
 	return (
 		<nav>
 			<Link to='/' className='title'>
-				<img style={{ width: "6vw" }} src={Logo} alt='gbh-logo' />
+				{currentUserOrg ? (
+					<img
+						style={{ width: "6vw" }}
+						src={currentUserOrg.organization.imageUrl}
+						alt='user org logo'
+					/>
+				) : (
+					<img style={{ width: "6vw" }} src={Logo} alt='gbh-logo' />
+				)}
 			</Link>
 			<div className='menu' onClick={() => setMenuOpen(!menuOpen)}>
 				<span></span>
@@ -42,11 +57,14 @@ const TopNavBar = () => {
 				<li>
 					<NavLink to='/Dashboard'>Dashboard</NavLink>
 				</li>
-				{!isLoading && (
-					<li>
-						{isAuthenticated ? <LogoutButton /> : <LoginButton />}
-					</li>
-				)}
+				<li>
+					<OrganizationSwitcher hidePersonal={true} />
+				</li>
+				<li>
+					<SignedIn>
+						<UserButton />
+					</SignedIn>
+				</li>
 			</ul>
 		</nav>
 	);
