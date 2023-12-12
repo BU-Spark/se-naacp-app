@@ -9,7 +9,7 @@ const { MongoClient } = require("mongodb");
 
 const mongoUrl =
   "mongodb+srv://naacpUser:naacpUser@cluster0.8yebjzr.mongodb.net/";
-const proxy_Url = "https://ml-cloud-run-toswle5frq-uc.a.run.app/upload_csv";
+const proxy_Url = "https://ml-cloud-run-toswle5frq-ue.a.run.app/upload_csv";
 const dbName = "se_naacp_db";
 
 async function get_links() {
