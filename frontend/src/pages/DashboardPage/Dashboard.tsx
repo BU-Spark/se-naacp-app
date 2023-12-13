@@ -44,8 +44,8 @@ export default function Dashboard() {
 	React.useEffect(() => {
 		if (organization) {
 			queryArticleDataType("ARTICLE_DATA", {
-				dateFrom: oneMonthAgoInt,
-				dateTo: todayInt,
+				dateFrom: 20200101,
+				dateTo: 20240101,
 				area: "all",
 				userId: organization.id,
 			});
