@@ -205,7 +205,7 @@ const scrap_data_to_csv = async (client) => {
 
           $("item").each(function () {
             headline.push($("title", this).text());
-            byline.push("Nawaf Alrasheed");
+            byline.push("GBH News");
             section.push("Politics");
             tagging.push(sha256($("content\\:encoded", this).text()));
             paths.push($("guid", this).text());

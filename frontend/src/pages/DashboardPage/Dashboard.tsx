@@ -43,8 +43,8 @@ export default function Dashboard() {
   React.useEffect(() => {
     if (organization) {
       queryArticleDataType("ARTICLE_DATA", {
-        dateFrom: 20200101,
-        dateTo: 20240101,
+        dateFrom: 20200101, // Here to change the date
+        dateTo: 20240101, // Here to change the date
         area: "all",
         userId: organization.id,
       });
