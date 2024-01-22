@@ -44,6 +44,25 @@ const CSVUploadBox = () => {
 				});
 			}
 		}
+
+		if (submittedFiles.length > 0) {
+			// Warning to users before closing tab or refreshing
+			const handleBeforeUnload = (e: any) => {
+				e.preventDefault();
+				// The message becomes the chrome/firefox default. Do not support safari.
+				e.returnValue = 'Are you sure you want to leave? The request is still processing.';
+				return 'Are you sure you want to leave? The request is still processing.';
+			};
+		
+			// Add event listener for beforeunload
+			window.addEventListener('beforeunload', handleBeforeUnload);
+		
+			// Clean up
+			return () => {
+				window.removeEventListener('beforeunload', handleBeforeUnload);
+			};
+		};
+		
 	}, []);
 
 	useEffect(() => {

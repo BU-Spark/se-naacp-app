@@ -7,8 +7,8 @@ import "bootstrap/dist/css/bootstrap.css";
 
 // Main navigator
 import MainNavigator from "./routes/MainNavigator";
-export const minDate = dayjs("2020-11-01");
-export const maxDate = dayjs("2023-01-09");
+export const minDate = dayjs(dayjs().subtract(1, "month").format("YYYY-MM-DD"));
+export const maxDate = dayjs(dayjs().format("YYYY-MM-DD"));
 function App() {
   return (
     <>
