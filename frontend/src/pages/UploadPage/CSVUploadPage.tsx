@@ -278,6 +278,10 @@ const CSVUploadBox = () => {
 		setUploadedFiles((prevFiles) =>
 			prevFiles.filter((file) => file.name != fileName),
 		);
+		// update the validatedFiles so that X the file will update the submit list.
+		setUpValidatedFiles((prevFiles) =>
+			prevFiles.filter((file) => file.name != fileName)
+		);
 	};
 
 	// Handle file submit
