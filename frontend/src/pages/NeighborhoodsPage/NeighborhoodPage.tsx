@@ -11,7 +11,7 @@ import MapCard from "../../components/MapCard/MapCard";
 import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
 import DateField from "../../components/SearchFields/DateBar/DateBar";
 //Types
-import { Article, Demographics } from "../../__generated__/graphql";
+// import { Article, Demographics } from "../../__generated__/graphql";
 
 //CSS
 import "./NeighborhoodPage.css";
