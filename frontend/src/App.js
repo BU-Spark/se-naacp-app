@@ -7,7 +7,7 @@ import "bootstrap/dist/css/bootstrap.css";
 
 // Main navigator
 import MainNavigator from "./routes/MainNavigator";
-export const minDate = dayjs(dayjs().subtract(1, "month").format("YYYY-MM-DD"));
+export const minDate = dayjs("2000-01-01"); // Hardcoded: Better to consult DB of smallest "DateSum"
 export const maxDate = dayjs(dayjs().format("YYYY-MM-DD"));
 function App() {
   return (
