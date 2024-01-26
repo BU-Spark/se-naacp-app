@@ -32,7 +32,7 @@ const CSVUploadBox = () => {
 	const { user, isSignedIn } = useUser();
 	const { organization } = useOrganization();
 
-	useEffect(() => {
+	const queryUpload = () => {
 		if (isSignedIn && user) {
 			if (organization) {
 				queryUploadDataType("UPLOAD_DATA", {
@@ -44,7 +44,11 @@ const CSVUploadBox = () => {
 				});
 			}
 		}
+	}
 
+	useEffect(() => {
+		queryUpload();
+		
 		if (submittedFiles.length > 0) {
 			// Warning to users before closing tab or refreshing
 			const handleBeforeUnload = (e: any) => {
@@ -197,6 +201,8 @@ const CSVUploadBox = () => {
 					);
 					setSuccessMessage("Successfully submitted!");
 					setTimeout(() => setSuccessMessage(""), 3000);
+					// Refetch the upload data after file is submitted
+					queryUpload(); 
 				})
 				.catch((error) => {
 					console.error(error);
