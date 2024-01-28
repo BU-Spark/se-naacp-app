@@ -31,11 +31,11 @@ const columns = [
       </Link>
     ),
   },
-  { field: "author", headerName: "Author", width: 130 },
-  { field: "publishingDate", headerName: "Publishing Date", width: 120 },
+  { field: "category", headerName: "Topic", width: 250 },
   { field: "neighborhood", headerName: "Neighborhood", width: 200 },
   { field: "censusTract", headerName: "Census Tract", width: 200 },
-  { field: "category", headerName: "Category", width: 90 },
+  { field: "publishingDate", headerName: "Publishing Date", width: 120 },
+  { field: "author", headerName: "Author", width: 130 },
 ];
 
 interface ArticleCardProps {
@@ -67,7 +67,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ optionalArticles }) => {
       publishingDate: `${dayjs(article.pub_date).format("MMM D, YYYY")}`,
       neighborhood: `${article.neighborhoods}`,
       censusTract: `${article.tracts}`,
-      category: `${article.position_section}`,
+      category: `${article.openai_labels[0]}`,
     });
   });
 

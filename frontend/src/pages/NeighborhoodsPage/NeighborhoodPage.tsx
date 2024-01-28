@@ -130,11 +130,14 @@ const NeighborhoodPage: React.FC = () => {
 					</div>
 
 					<div className='row justify-content-evenly'>
-						<div className='col-md-5 col-sm-12'>
-							<h1 className='titles'>Demographics</h1>
-							<NeighborhoodDemographicsBoard></NeighborhoodDemographicsBoard>
+						<div className='col-md-12 col-sm-12'>
+							<h1 className='titles'>Top 5 Topics</h1>
+							<FrequencyBarChart
+								num={5}
+								openAI={true}
+							></FrequencyBarChart>
 						</div>
-						<div className='col-md-7 col-sm-12'>
+						<div className='col-md-12 col-sm-12'>
 							<h1 className='titles'>Articles</h1>
 							<ArticleCard></ArticleCard>
 						</div>
@@ -142,11 +145,8 @@ const NeighborhoodPage: React.FC = () => {
 
 					<div className='row justify-content-evenly'>
 						<div className='col-md-12 col-sm-12'>
-							<h1 className='titles'>Top 5 Topics</h1>
-							<FrequencyBarChart
-								num={5}
-								openAI={true}
-							></FrequencyBarChart>
+							<h1 className='titles'>Demographics</h1>
+							<NeighborhoodDemographicsBoard></NeighborhoodDemographicsBoard>
 						</div>
 					</div>
 				</div>
