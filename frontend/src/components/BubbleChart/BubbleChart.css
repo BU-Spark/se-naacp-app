@@ -45,3 +45,18 @@
   margin-right: 50px;
   margin-bottom: 50px;
 }
+
+.closeArticleButton {
+  padding: 0px 10px;
+  font-size: 15px;
+  text-align: right;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #FFFFFF;
+  border: none;
+  border-radius: 5px;
+  transition: all 0.3s;
+  margin-top: 8px;
+  margin-right: 16px;
+}

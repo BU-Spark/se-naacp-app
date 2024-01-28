@@ -20,6 +20,8 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import ArticleCard from "../ArticleCard/ArticleCard";
 
+import Button from "@mui/material/Button";
+
 
 interface BubbleChartProps {
   bubbleData: { name: string; value: number }[];
@@ -29,6 +31,10 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ bubbleData }) => {
   const [zoomedId, setZoomedId] = useState(null);
   const [length, setLength] = useState("col-md-12 col-sm-12");
   const [articles, setArticles] = useState([]);
+
+  const handleCloseArticles = () => {
+    setZoomedId(null); // This will hide the article list
+  };
 
   const data = {
     name: "root",
@@ -83,7 +89,16 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ bubbleData }) => {
             </CardContent>
           </Card>
         </div>
-        <div className="col-md-8 col-sm-12">{zoomedId && <ArticleCard optionalArticles={articles}></ArticleCard>}</div>
+        {zoomedId && (
+        <div className="col-md-8 col-sm-12">
+          <div className='closeArticleButton'>
+            <Button variant='outlined' color='primary' onClick={handleCloseArticles}>
+                Close
+            </Button>
+          </div>
+          <ArticleCard optionalArticles={articles}></ArticleCard>
+        </div>
+        )}
       </div>
     </>
   );
