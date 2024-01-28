@@ -110,6 +110,7 @@ const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 0,
+                  tickValues: 1,
                   legend: "Article Count",
                   legendPosition: "middle",
                   legendOffset: -40,
