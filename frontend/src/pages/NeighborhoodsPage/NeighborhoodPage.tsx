@@ -40,6 +40,15 @@ const NeighborhoodPage: React.FC = () => {
 	const { user } = useUser();
 	const { organization } = useOrganization();
 
+	// select bar data
+	const [selectBarData, setSelectBarData] = React.useState(null);
+
+	// handle click
+	const clickHandler = (barData: any) => {
+		setSelectBarData(barData);
+	}
+	
+
 	React.useEffect(() => {
 		queryTopicsDataType("TOPICS_DATA");
 		queryTopicsDataType("LABELS_DATA");
@@ -135,11 +144,12 @@ const NeighborhoodPage: React.FC = () => {
 							<FrequencyBarChart
 								num={5}
 								openAI={true}
+								onBarClick={clickHandler} 
 							></FrequencyBarChart>
 						</div>
 						<div className='col-md-12 col-sm-12'>
 							<h1 className='titles'>Articles</h1>
-							<ArticleCard></ArticleCard>
+							<ArticleCard selectBarData={selectBarData} />
 						</div>
 					</div>
 

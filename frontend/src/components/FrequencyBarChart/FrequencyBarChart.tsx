@@ -11,6 +11,7 @@ import { ArticleContext } from "../../contexts/article_context";
 interface FrequencyBarChartProps {
   num: number;
   openAI: boolean;
+  onBarClick: (barData: any) => void;
 }
 
 // This function counts the occurrences of each string in an array and returns an object with the strings as keys and counts as values.
@@ -24,6 +25,7 @@ const countStrings = (arr: string[]) => {
 const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({
   num,
   openAI,
+  onBarClick,
 }) => {
   const [articles, setArticles] = useState<Article[]>([]);
   const { articleData, queryArticleDataType } =
@@ -59,6 +61,13 @@ const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({
 
   // Extracting the keys (labels) from the top 5 data for use in the bar chart.
   const top5Keys = top5Data.map(([key]) => key);
+
+  // neighborhood pass the prop onBarClick here, we call the bar click func here
+  // neighborhood page: set the state variable of which bar I click
+  // bar chart component: onClick the bar
+  const clickBar = (barData: any) => {
+    onBarClick(barData);
+  }
 
   return (
     <Card className="body" sx={{ width: "100%", height: "62vh" }}>
@@ -133,6 +142,7 @@ const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({
                     e.indexValue
                   );
                 }}
+                onClick={clickBar}
               />
             </div>
           </div>

@@ -39,16 +39,14 @@ const columns = [
 ];
 
 interface ArticleCardProps {
+  selectBarData?: any;
   optionalArticles?: Article[];
 }
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ optionalArticles }) => {
+const ArticleCard: React.FC<ArticleCardProps> = ({ selectBarData, optionalArticles }) => {
   var articleRow: any = [];
   const [articles, setArticles] = useState<Article[]>([]);
   const { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
-
-
-  
 
   React.useEffect(() => {
     if (optionalArticles && optionalArticles.length > 0) {
@@ -58,8 +56,12 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ optionalArticles }) => {
     }
   }, [articleData, optionalArticles]);  
   
+  const selectedArticles = selectBarData 
+  ? articles.filter(article => 
+      article.openai_labels && article.openai_labels[0] === selectBarData.id)
+  : articles;
 
-  articles.forEach((article, index) => {
+  selectedArticles.forEach((article, index) => {
     articleRow.push({
       id: uniqid(),
       title: { link: article.link, title: article.hl1 },
