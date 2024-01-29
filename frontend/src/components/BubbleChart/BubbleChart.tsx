@@ -92,8 +92,12 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ bubbleData }) => {
         {zoomedId && (
         <div className="col-md-8 col-sm-12">
           <div className='closeArticleButton'>
-            <Button variant='outlined' color='primary' onClick={handleCloseArticles}>
-                Close
+            <Button 
+            variant='outlined' 
+            color='error' 
+            size='small'
+            onClick={handleCloseArticles}>
+                X
             </Button>
           </div>
           <ArticleCard optionalArticles={articles}></ArticleCard>
