@@ -26,13 +26,6 @@ const getOrgMembers = async (org) => {
 };
 
 (async () => {
-	const today = new Date();
-	var querydate = new Date(today);
-	querydate.setDate(today.getDate() - 7);
-
-	const todaydate = today.toISOString().split("T")[0].split("-").join("");
-	const sevendays = querydate.toISOString().split("T")[0].split("-").join("");
-	console.log(todaydate, sevendays);
 	// Only the data we want from the orgs
 	const raw_orgs = (await getOrgs()).data;
 	raw_orgs.forEach((ele) => {
