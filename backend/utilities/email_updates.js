@@ -1,6 +1,7 @@
-require("dotenv").config();
+import "dotenv/config";
 
 let orgs = [];
+let results = {};
 
 const getOrgs = async () => {
 	const res = await fetch("https://api.clerk.com/v1/organizations/", {
@@ -25,11 +26,18 @@ const getOrgMembers = async (org) => {
 };
 
 (async () => {
+	const today = new Date();
+	var querydate = new Date(today);
+	querydate.setDate(today.getDate() - 7);
+
+	const todaydate = today.toISOString().split("T")[0].split("-").join("");
+	const sevendays = querydate.toISOString().split("T")[0].split("-").join("");
+	console.log(todaydate, sevendays);
+	// Only the data we want from the orgs
 	const raw_orgs = (await getOrgs()).data;
 	raw_orgs.forEach((ele) => {
 		orgs.push({ name: ele.name, id: ele.id });
 	});
-	let results = {};
 	for (const org of orgs) {
 		const res = await getOrgMembers(org.id);
 		let mems = [];
@@ -38,28 +46,10 @@ const getOrgMembers = async (org) => {
 		}
 		results[org.name] = { id: org.id, members: mems };
 	}
-	console.log(results);
-	// const msg = {
-	//     to: 'malbaker@bu.edu', // Change to your recipient
-	//     from: 'malbaker@bu.edu', // Change to your verified sender
-	//     subject: 'Sending with SendGrid is Fun',
-	//     text: 'and easy to do anywhere, even with Node.js',
-	//     html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-	// }
-	// sgMail
-	//     .send(msg)
-	//     .then(() => {
-	//         console.log('Email sent')
-	//     })
-	//     .catch((error) => {
-	//         console.error(error)
-	//     })
+	console.table(results);
+
 	// Loop to email each org's members
-	// for (const key in results) {
-	//     if (results.hasOwnProperty(key)) {
-	//         const msg = {
-	//             to: results[key]
-	//         }
-	//     }
+	// for (const org in results) {
+
 	// }
 })();
