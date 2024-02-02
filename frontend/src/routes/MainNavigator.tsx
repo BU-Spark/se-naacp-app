@@ -46,7 +46,7 @@ export default function MainNavigator() {
 						<Route
 							path='/'
 							element={
-								<ProtectedRoute child={<TopicsSearchPage />} />
+								<ProtectedRoute child={<NeighborhoodPage />} />
 							}
 						/>
 
@@ -65,7 +65,7 @@ export default function MainNavigator() {
 
 						<Route
 							path='/Topics'
-							element={<ProtectedRoute child={<TopicsPage />} />}
+							element={<ProtectedRoute child={<TopicsSearchPage />} />}
 						/>
 						<Route
 							path='/Upload'

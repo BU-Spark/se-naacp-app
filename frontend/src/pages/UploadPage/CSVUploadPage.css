@@ -114,7 +114,7 @@
     width: 25%;
     display: flex;
     justify-content: center;
-    padding-right: 100px;
+    padding-right: 120px;
 }
 
 .file-upload-progress-wrapper {
@@ -127,6 +127,10 @@
     justify-content: right;
 }
 
+.file-actions button {
+    max-height: 30px;
+}
+
 .file-status {
     margin-right: 2px;
 }
@@ -135,48 +139,6 @@
     display: flex;
     flex-basis: 30%;
     align-items: center;
-}
-
-.progress-bar {
-    flex-grow: 1; /* Take up available space */
-    width: 100%;
-    background-color: #eee;
-    margin-right: 10px; /* Space between the progress bar and the percentage */
-}
-
-.progress {
-    height: 20px;
-    background-color: #4caf50;
-}
-
-.progress-percentage {
-    white-space: nowrap; /* Prevents wrapping */
-}
-
-.file-actions button {
-    padding: 2px 7px;
-    font-size: 10px;
-    text-align: center;
-    cursor: pointer;
-    outline: none;
-    color: #fff;
-    background-color: #FF4136;
-    border: none;
-    border-radius: 5px;
-    transition: all 0.3s;
-    max-height: 30px;
-}
-
-.button:hover { background-color: #FF4136 }
-
-.button:active {
-  background-color: #C1302C;
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
-
-.button:focus {
-  outline: none;
 }
 
 .alert-message {
@@ -203,8 +165,13 @@
     z-index: 1000; /* Make sure it's above other elements */
 }
 
+/* I need to add to this */
 .error-message {
     color: #f44336;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-left: 40px;
 }
 
 .submit-button {
@@ -251,5 +218,12 @@
     display: flex;
     justify-content: center;
     padding-left: 180px;
+}
+
+.file-status {
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    padding-left: 160px;
 }
 

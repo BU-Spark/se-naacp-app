@@ -45,3 +45,10 @@
   margin-right: 50px;
   margin-bottom: 50px;
 }
+
+.closeArticleButton {
+  text-align: right;
+  cursor: pointer;
+  margin-top: 8px;
+  margin-right: 16px;
+}

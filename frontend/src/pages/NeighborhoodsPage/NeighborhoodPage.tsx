@@ -40,6 +40,15 @@ const NeighborhoodPage: React.FC = () => {
 	const { user } = useUser();
 	const { organization } = useOrganization();
 
+	// select bar data
+	const [selectBarData, setSelectBarData] = React.useState(null);
+
+	// handle click
+	const clickHandler = (barData: any) => {
+		setSelectBarData(barData);
+	}
+	
+
 	React.useEffect(() => {
 		queryTopicsDataType("TOPICS_DATA");
 		queryTopicsDataType("LABELS_DATA");
@@ -130,23 +139,24 @@ const NeighborhoodPage: React.FC = () => {
 					</div>
 
 					<div className='row justify-content-evenly'>
-						<div className='col-md-5 col-sm-12'>
-							<h1 className='titles'>Demographics</h1>
-							<NeighborhoodDemographicsBoard></NeighborhoodDemographicsBoard>
-						</div>
-						<div className='col-md-7 col-sm-12'>
-							<h1 className='titles'>Articles</h1>
-							<ArticleCard></ArticleCard>
-						</div>
-					</div>
-
-					<div className='row justify-content-evenly'>
 						<div className='col-md-12 col-sm-12'>
 							<h1 className='titles'>Top 5 Topics</h1>
 							<FrequencyBarChart
 								num={5}
 								openAI={true}
+								onBarClick={clickHandler} 
 							></FrequencyBarChart>
+						</div>
+						<div className='col-md-12 col-sm-12'>
+							<h1 className='titles'>Articles</h1>
+							<ArticleCard selectBarData={selectBarData} />
+						</div>
+					</div>
+
+					<div className='row justify-content-evenly'>
+						<div className='col-md-12 col-sm-12'>
+							<h1 className='titles'>Demographics</h1>
+							<NeighborhoodDemographicsBoard></NeighborhoodDemographicsBoard>
 						</div>
 					</div>
 				</div>

@@ -262,26 +262,19 @@ const CSVUploadBox = () => {
 					newValidatedFile,
 				]);
 
-				const interval = setInterval(() => {
-					setUploadedFiles((prevFiles) =>
-						prevFiles.map((f) => {
-							if (f.name === newFile.name) {
-								let newProgress = f.progress + 20;
-								if (newProgress > 100) {
-									clearInterval(interval);
-									return {
-										...f,
-										progress: 100,
-										status: "Passed",
-									};
-								}
-								return { ...f, progress: newProgress };
+				
+				setUploadedFiles((prevFiles) =>
+					prevFiles.map((f) => {
+						if (f.name === newFile.name) {	
+							return {
+								...f,
+								status: "Passed",
 							}
-							return f;
-						}),
-					);
-				}, 1000);
-			}
+						}
+						return f;
+					})
+				);
+			};
 		});
 	};
 
@@ -371,7 +364,7 @@ const CSVUploadBox = () => {
 						<div className='files-list-header'>
 							<span>FILE NAME</span>
 							<span>SIZE</span>
-							<span>UPLOAD STATUS</span>
+							<span>VALIDATION STATUS</span>
 							<span>ACTIONS</span>
 						</div>
 						{uploadedFiles.map((file, index) => (
@@ -391,41 +384,29 @@ const CSVUploadBox = () => {
 
 								{/* Upload Status Column */}
 								<div className='file-upload-progress-wrapper'>
-									<div className='file-upload-progress'>
-										<div className='progress-bar'>
-											<div
-												className='progress'
-												style={{
-													width: `${file.progress}%`,
-												}}
-											></div>
-										</div>
-										<span className='progress-percentage'>
-											{file.progress}%
-										</span>
+									<div className='file-status'>
+										{file.status}
 									</div>
-									{/* Error Message */}
-									{file.error && (
-										<div className='error-message'>
-											{file.error}
-										</div>
-									)}
+								{file.error && (
+									<div className='error-message'>
+										{file.error}
+									</div>
+								)}
 								</div>
-
 								{/* Action Column */}
 								<div className='file-actions'>
-									<span className='file-status'>
-										{file.status}
-									</span>
 									{(file.status === "Passed" ||
 										file.error) && (
-										<button
-											onClick={() =>
-												handleFileRemoval(file.name)
-											}
+										<Button
+										variant="outlined"
+										color="error"
+										size="small"
+										onClick={() =>
+											handleFileRemoval(file.name)
+										}
 										>
-											X
-										</button>
+											Delete
+										</Button>
 									)}
 								</div>
 							</div>
