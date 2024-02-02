@@ -15,15 +15,6 @@ MONGO_PORT="27017"
 JSON_DIR="$(pwd)/sample_data"
 MONGO_DB="se_naacp_db" # TODO: This is an env defined from bootstrap script
 
-echo "Conducting Docker Checks..."
-
-docker info > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-    echo "Docker daemon is not running."
-    exit 1
-fi
-echo "Done!"
-
 # Potential Bug pitfall if we have to wait for MongoDB forever...
 wait_for_mongo_and_insert() {
     echo "Waiting for MongoDB to be ready..."
