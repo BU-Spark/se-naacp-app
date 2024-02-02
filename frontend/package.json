@@ -52,6 +52,7 @@
     "react-tabs": "^6.0.2",
     "react-tooltip": "^5.10.0",
     "redux-logger": "^3.0.6",
+    "serve": "^14.2.1",
     "typescript": "^4.9.5",
     "uniqid": "^5.4.0",
     "use-state-with-callback": "^3.0.2",
@@ -60,7 +61,8 @@
     "yarn": "^1.22.19"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev": "react-scripts start",
+    "start": "serve build -s -n -L -p $PORT",
     "build": "cross-env CI=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
