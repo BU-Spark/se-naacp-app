@@ -12,16 +12,11 @@ echo "--------------------------------------------------------"
 # Some local variables
 MONGO_HOST="localhost"
 MONGO_PORT="27017"
-JSON_DIR="$(pwd)/sample_data"
+JSON_DIR="$(pwd)/sample_data" # This depends on your shell pwd!
 MONGO_DB="se_naacp_db" # TODO: This is an env defined from bootstrap script
 
 # Potential Bug pitfall if we have to wait for MongoDB forever...
 wait_for_mongo_and_insert() {
-    echo "Waiting for MongoDB to be ready..."
-    while ! docker exec shiply-db mongosh --eval "db.stats()" > /dev/null 2>&1; do
-        sleep 1
-    done
-    echo "MongoDB is ready!"
     echo "Inserting Data..."
     for json_file in "$JSON_DIR"/*.json; do
         COLLECTION_NAME=$(basename "$json_file" .json) # Collection name is in the files
