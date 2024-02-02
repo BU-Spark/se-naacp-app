@@ -1,16 +1,12 @@
 import "./Dashboard.css";
 import React, { useContext } from "react";
 
-import ArticleCard from "../../components/ArticleCard/ArticleCard";
-import FrequencyBarChart from "../../components/FrequencyBarChart/FrequencyBarChart";
 import AtGlance from "../../components/AtGlance/atGlance";
 import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods";
-import { Outlet } from "react-router-dom";
 
+import dayjs from "dayjs";
 import { ArticleContext } from "../../contexts/article_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
-import dayjs from "dayjs";
-import BasicAccordion from "../../components/Accordion/Accordion";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import DashboardTabs from "../../components/DashboardTabs/dashboardTabs";
 
@@ -33,8 +29,7 @@ export default function Dashboard() {
   );
 
   var { articleData, queryArticleDataType } = React.useContext(ArticleContext)!;
-  const { neighborhoodMasterList, queryNeighborhoodDataType } =
-    React.useContext(NeighborhoodContext)!;
+  const { neighborhoodMasterList, queryNeighborhoodDataType } = React.useContext(NeighborhoodContext)!;
 
   React.useEffect(() => {
     queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
@@ -43,9 +38,7 @@ export default function Dashboard() {
   React.useEffect(() => {
     if (organization) {
       queryArticleDataType("ARTICLE_DATA", {
-        // dateFrom: 20200101,
-        // dateTo: 20240101,
-        dateFrom: oneMonthAgoInt,
+        dateFrom: 20200101,
         dateTo: todayInt,
         area: "all",
         userId: organization.id,
@@ -69,10 +62,6 @@ export default function Dashboard() {
       <div className="big-container">
         <div className="row">
           <div className="col">
-            
-			{/* <div className="align-self-start your-org">
-              {user?.fullName} | {user?.id}
-            </div> */}
 
             {organization && (
               <div className="align-self-start org-name">

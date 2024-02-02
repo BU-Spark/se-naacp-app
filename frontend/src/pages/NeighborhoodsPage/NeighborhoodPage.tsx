@@ -10,6 +10,7 @@ import TractsDropDown from "../../components/TractsDropDown/TractsDropDown";
 import MapCard from "../../components/MapCard/MapCard";
 import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
 import DateField from "../../components/SearchFields/DateBar/DateBar";
+
 //Types
 import { Article, Demographics } from "../../__generated__/graphql";
 
@@ -24,6 +25,8 @@ import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../contexts/topics_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
 import { minDate, maxDate } from "../../App";
+import AtGlance from "../../components/AtGlance/atGlance";
+import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods";
 const NeighborhoodPage: React.FC = () => {
 	//Context
 	const { articleData, queryArticleDataType } =
@@ -40,6 +43,7 @@ const NeighborhoodPage: React.FC = () => {
 	const { user } = useUser();
 	const { organization } = useOrganization();
 
+	// Article card React useEffect
 	React.useEffect(() => {
 		queryTopicsDataType("TOPICS_DATA");
 		queryTopicsDataType("LABELS_DATA");
@@ -62,7 +66,8 @@ const NeighborhoodPage: React.FC = () => {
 			});
 		}
 	}, []);
-
+	
+	// 
 	React.useEffect(() => {
 		if (articleData && tractData && neighborhoodMasterList) {
 			setIsLoading(false);
@@ -93,6 +98,19 @@ const NeighborhoodPage: React.FC = () => {
 								{neighborhood}
 							</div>
 							<h1></h1>
+						</div>
+					</div>
+
+					{/* Horizontal Bar for that displays top articles */}
+					<div className="row justify-content-evenly">
+						<div className="col-md-4 col-sm-12">
+							<AtGlance articles={articleData!} height="20vh"></AtGlance>
+						</div>
+						<div className="col-md-8 col-sm-12">
+							<TopNeighborhoods
+							articles={articleData!}
+							height="20vh"
+							></TopNeighborhoods>
 						</div>
 					</div>
 

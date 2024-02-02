@@ -2,12 +2,17 @@ import React from "react";
 import { useLazyQuery, gql } from "@apollo/client";
 import { Article } from "../__generated__/graphql";
 
+// Dynamic Runtime Dictionary
+type ObjectTypes = string | number | boolean | string[] | Article[]; // I added some fundamental types as well
+type DynamicDictionary = { [key: string]: ObjectTypes };
+
 type ArticleContextType = {
-  articleData: Article[] | null; // This is for components to consume
+  articleData: DynamicDictionary | null; // This is for components to consume
   queryArticleDataType: (queryType: any, options?: any) => void;
   shouldRefresh: boolean | null;
   setShouldRefresh: (flag: boolean) => void;
 };
+
 /* Article Queries */
 // We will pass what we need in here
 const ARTICLE_DATA_QUERY = gql`
@@ -83,12 +88,16 @@ const ArticleProvider: React.FC = ({ children }: any) => {
     },
   ] = useLazyQuery(ARTICLE_BY_LABEL_OR_TOPIC);
 
-  const [articles, setArticleData] = React.useState<Article[] | null>(null);
+  const [writtenKey, setWrittenKey] = React.useState<string | null>(null); 
+  const [articles, setArticleData] = React.useState<DynamicDictionary>({});
   const [shouldRefresh, setShouldRefresh] = React.useState<boolean | null>(null);
 
   React.useEffect(() => {
     if (articleData && !articleDataLoading && !articleDataError) {
-      setArticleData(articleData.articleByDate);
+      if (writtenKey != null) {
+        articles[writtenKey] = articleData.articleByDate;
+        setArticleData(articles);
+      }
     }
   }, [articleData, articleDataLoading, articleDataError]);
 
@@ -99,9 +108,16 @@ const ArticleProvider: React.FC = ({ children }: any) => {
       !articleTopicsOrLabelsDataError
     ) {
       if (articleTopicsOrLabelsData.articleByTopicsOrLabels.length === 0) {
-        setArticleData(null);
+        if (writtenKey != null) {
+          delete articles[writtenKey];
+          setArticleData(articles); 
+        }
       } else {
-        setArticleData(articleTopicsOrLabelsData.articleByTopicsOrLabels);
+        if (writtenKey != null) {
+          // Articles[] -> articleTopicsOrLabelsData.articleByTopicsOrLabels
+          articles[writtenKey] = articleTopicsOrLabelsData.articleByTopicsOrLabels
+          setArticleData(articles);
+        }
       }
     }
   }, [
@@ -118,10 +134,12 @@ const ArticleProvider: React.FC = ({ children }: any) => {
   // Main fetch sequence
   // *Note* Maybe change queryType to take Enum?
 
-  // query Type -> Indicates which useLazyQuery hook to execute
+  // queryType -> Indicates which useLazyQuery hook to execute
+  // key -> The key you want the data to be stored as
   // options? -> (Optional) Give the parameters needed for that useLazyQeury hook
-  // func_ops? -> (Optional) What functions to execute left to right to the data
-  const queryArticleDataType = (queryType: string, options?: any) => {
+  // func_ops? -> (Optional) What functions to execute left to right to the data (DEPRECATED)
+  const queryArticleDataType = (queryType: string, key: string,  options?: any) => {
+    setWrittenKey(key); // Set the key for the dictionary
     switch (queryType) {
       case "ARTICLE_DATA":
         queryArticleData({
