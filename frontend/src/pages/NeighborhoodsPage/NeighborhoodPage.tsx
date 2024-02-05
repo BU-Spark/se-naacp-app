@@ -1,5 +1,5 @@
 //Libaries
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import dayjs from "dayjs";
 
 //Components
@@ -10,6 +10,8 @@ import TractsDropDown from "../../components/TractsDropDown/TractsDropDown";
 import MapCard from "../../components/MapCard/MapCard";
 import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
 import DateField from "../../components/SearchFields/DateBar/DateBar";
+import AtGlance from "../../components/AtGlance/atGlance";
+import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods";
 import Button from "@mui/material/Button";
 //Types
 import { Article, Demographics } from "../../__generated__/graphql";
@@ -25,24 +27,24 @@ import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../contexts/topics_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
 import { minDate, maxDate } from "../../App";
+
 const NeighborhoodPage: React.FC = () => {
 	//Context
-	const { articleData, queryArticleDataType } =
-		React.useContext(ArticleContext)!;
-	const { tractData, queryTractDataType } = React.useContext(TractContext)!;
+	const { articleData, queryArticleDataType } = useContext(ArticleContext)!;
+	const { tractData, queryTractDataType } = useContext(TractContext)!;
 	const {
 		neighborhoodMasterList,
 		neighborhood,
 		setNeighborhood,
 		queryNeighborhoodDataType,
-	} = React.useContext(NeighborhoodContext);
-	const [isLoading, setIsLoading] = React.useState(true);
-	const { queryTopicsDataType } = React.useContext(TopicsContext);
+	} = useContext(NeighborhoodContext);
+	const [isLoading, setIsLoading] = useState(true);
+	const { queryTopicsDataType } = useContext(TopicsContext);
 	const { user } = useUser();
 	const { organization } = useOrganization();
 
 	// select bar data
-	const [selectBarData, setSelectBarData] = React.useState(null);
+	const [selectBarData, setSelectBarData] = useState(null);
 
 	// handle click
 	const clickHandler = (barData: any) => {
@@ -54,20 +56,20 @@ const NeighborhoodPage: React.FC = () => {
 		queryTopicsDataType("TOPICS_DATA");
 		queryTopicsDataType("LABELS_DATA");
 		queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
-		setNeighborhood("Fenway");
-		queryTractDataType("TRACT_DATA", { tract: "010103" });
+		setNeighborhood("Downtown");
+		queryTractDataType("TRACT_DATA", { tract: "030302" });
 		if (organization) {
 			queryArticleDataType("ARTICLE_DATA", {
 				dateFrom: parseInt(minDate.format("YYYYMMDD")),
 				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "010103",
+				area: "030302",
 				userId: organization.id,
 			});
 		} else {
 			queryArticleDataType("ARTICLE_DATA", {
 				dateFrom: parseInt(minDate.format("YYYYMMDD")),
 				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "010103",
+				area: "030302",
 				userId: user?.id,
 			});
 		}
@@ -97,12 +99,23 @@ const NeighborhoodPage: React.FC = () => {
 					<div className='row'>
 						<div className='col'>
 							<div className='align-self-start your-org'>
-								SELECTED NEIGHBORHOOD
+								NEIGHBORHOODS
 							</div>
 							<div className='align-self-start org-name'>
 								{neighborhood}
 							</div>
-							<h1></h1>
+						</div>
+					</div>
+
+					<div className="row justify-content-evenly">
+						<div className="col-md-4 col-sm-12">
+							<AtGlance articles={articleData!} height="20vh"></AtGlance>
+						</div>
+						<div className="col-md-8 col-sm-12">
+							<TopNeighborhoods
+							articles={articleData!}
+							height="20vh"
+							></TopNeighborhoods>
 						</div>
 					</div>
 
