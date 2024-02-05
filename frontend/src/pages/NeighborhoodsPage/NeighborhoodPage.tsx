@@ -10,6 +10,7 @@ import TractsDropDown from "../../components/TractsDropDown/TractsDropDown";
 import MapCard from "../../components/MapCard/MapCard";
 import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
 import DateField from "../../components/SearchFields/DateBar/DateBar";
+import Button from "@mui/material/Button";
 //Types
 import { Article, Demographics } from "../../__generated__/graphql";
 
@@ -149,6 +150,15 @@ const NeighborhoodPage: React.FC = () => {
 						</div>
 						<div className='col-md-12 col-sm-12'>
 							<h1 className='titles'>Articles</h1>
+							<div className='reset-button'>
+								<Button
+									variant="outlined"
+									size="small"
+									onClick={() =>
+										setSelectBarData(null)}>
+											Reset Filter
+								</Button>
+							</div>
 							<ArticleCard selectBarData={selectBarData} />
 						</div>
 					</div>

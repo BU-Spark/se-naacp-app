@@ -54,3 +54,8 @@
   font-weight: 700;
 }
 
+.reset-button {
+  text-align: right;
+  margin-right: 16px;
+}
+
