@@ -57,9 +57,16 @@
   flex-grow: 1; /* This property will allow your container to take up as much space as available */
 }
 
- .vector {
+.vector {
   height: 50%;
   margin: 15px;
   /* width: 55px; */
-  }
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
   

@@ -40,6 +40,12 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
     queryTractDataType("TRACT_DATA", {tract: neighborhoodMasterList![neighborhood][0]});
   };
 
+  const reset = () => {
+    setNeighborhood("Downtown");
+    setSelectedWord("Downtown");
+    queryTractDataType("TRACT_DATA", {tract: neighborhoodMasterList!["Downtown"][0]});
+  }
+
   const sortedNeighborhoods = Object.keys(articlesPerNeighborhood)
     .map((neighborhood) => ({
       name: neighborhood,
@@ -60,7 +66,17 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
     <>
       <Card className="body" sx={{ width: "100%", height: "auto" }}>
         <div className="card-header">
-          <span className="header-word">Top Neighborhoods</span>
+          <div className="header-word">Selected Neighborhoods</div>
+          <div className='reset'>
+            <Button
+              variant="text"
+              size="large"
+              color="success"
+              onClick={() =>
+                reset()}>
+                  RESET
+            </Button>
+					</div>
         </div>
         <CardContent className="content" sx={{ height: height }}>
           <div className="scroll-container">
