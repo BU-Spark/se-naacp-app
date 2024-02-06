@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import "./TopNeighborhoods.css";
-import { Card, CardContent, Stack, styled } from "@mui/material";
+import { Card, CardContent, Stack, styled, Button } from "@mui/material";
 import { Article } from "../../__generated__/graphql";
 import svg from "../../assets/NeighborhoodIcons/Vector 46.svg";
 import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import Paper from "@mui/material/Paper";
+
+// Context
+import { NeighborhoodContext } from "../../contexts/neighborhood_context";
+import { TractContext } from "../../contexts/tract_context";
 
 interface TopNeighborhoodsProps {
   articles: Article[];
@@ -15,7 +19,10 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
   articles,
   height,
 }) => {
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  // const navigate = useNavigate(); // Initialize useNavigate hook
+  var {neighborhoodMasterList,neighborhood, setNeighborhood } = useContext(NeighborhoodContext)!;
+  var {tractData, queryTractDataType } = useContext(TractContext)!;
+  const [selectedWord, setSelectedWord] = useState<string>(neighborhood!);
 
   const articlesPerNeighborhood: Record<string, number> = {};
   articles.forEach((article) => {
@@ -27,7 +34,10 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
   });
 
   const handleBoxClick = (neighborhood: string) => {
-    navigate(`./${neighborhood}`); // Navigate to the new route
+    // navigate(`./${neighborhood}`); // Navigate to the new route
+    setNeighborhood(neighborhood);
+    setSelectedWord(neighborhood);
+    queryTractDataType("TRACT_DATA", {tract: neighborhoodMasterList![neighborhood][0]});
   };
 
   const sortedNeighborhoods = Object.keys(articlesPerNeighborhood)
@@ -36,7 +46,7 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
       count: articlesPerNeighborhood[neighborhood],
     }))
     .sort((a, b) => b.count - a.count);
-
+  
   const DemoPaper = styled(Paper)(({ theme }) => ({
     bgcolor: "color.black",
     width: 120,
@@ -57,7 +67,13 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
             {sortedNeighborhoods.map((item) => (
               <div className="number-box-1">
                 <Stack direction="row" spacing={2}>
-                  <DemoPaper variant="outlined" square={false}>
+                  <DemoPaper 
+                  variant="outlined" 
+                  square={false}
+                  onClick={() => {
+                    handleBoxClick(item.name);
+                  }}
+                  >
                     <div className="number-box">
                       <div className="big-number">{item.count}</div>
                       <div className="label">{item.name}</div>

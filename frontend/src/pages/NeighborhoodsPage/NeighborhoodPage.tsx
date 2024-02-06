@@ -38,8 +38,9 @@ const NeighborhoodPage: React.FC = () => {
 		setNeighborhood,
 		queryNeighborhoodDataType,
 	} = useContext(NeighborhoodContext);
-	const [isLoading, setIsLoading] = useState(true);
 	const { queryTopicsDataType } = useContext(TopicsContext);
+
+	const [isLoading, setIsLoading] = useState(true);
 	const { user } = useUser();
 	const { organization } = useOrganization();
 
@@ -51,7 +52,6 @@ const NeighborhoodPage: React.FC = () => {
 		setSelectBarData(barData);
 	}
 	
-
 	React.useEffect(() => {
 		queryTopicsDataType("TOPICS_DATA");
 		queryTopicsDataType("LABELS_DATA");
