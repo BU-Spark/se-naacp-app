@@ -24,10 +24,8 @@ const connectWithMongoDB = async (mongo_url, db_name) => {
         });
     }
 };
-// const mongo_url = process.env.NAACP_MONGODB || "mongodb://localhost:27017";
-const mongo_url = "mongodb+srv://naacpUser:naacpUser@cluster0.8yebjzr.mongodb.net/";
-const dbName = "se_naacp_db";
-// const dbName = "se_naacp_gbh";
+const dbName = process.env.DB_NAME;
+const mongo_url = process.env.NAACP_MONGODB;
 let x = await connectWithMongoDB(mongo_url, dbName);
 // Context Wrapper
 // Build things you need inside to pass to context

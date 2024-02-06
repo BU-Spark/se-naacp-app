@@ -37,8 +37,8 @@ const connectWithMongoDB = async (
   }
 };
 
-const mongo_url = process.env.NAACP_MONGODB || "mongodb://localhost:27017";
-const dbName = "se_naacp_db";
+const dbName = process.env.DB_NAME;
+const mongo_url = process.env.NAACP_MONGODB;
 
 let x = await connectWithMongoDB(mongo_url, dbName);
 
