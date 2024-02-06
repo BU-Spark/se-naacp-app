@@ -154,23 +154,28 @@ const NeighborhoodPage: React.FC = () => {
 
 					<div className='row justify-content-evenly'>
 						<div className='col-md-12 col-sm-12'>
-							<h1 className='titles'>Top 5 Topics</h1>
-							<FrequencyBarChart
-								num={5}
-								openAI={true}
-								onBarClick={clickHandler} 
-							></FrequencyBarChart>
-						</div>
+								<h1 className='titles'>Top 5 Topics</h1>
+								<FrequencyBarChart
+									num={5}
+									openAI={true}
+									onBarClick={clickHandler} 
+								></FrequencyBarChart>
+						</div>	
+					</div>
+					
+					<div className='row justify-content-evenly'>
 						<div className='col-md-12 col-sm-12'>
-							<h1 className='titles'>Articles</h1>
-							<div className='reset-button'>
-								<Button
-									variant="outlined"
-									size="small"
-									onClick={() =>
-										setSelectBarData(null)}>
-											Reset Filter
-								</Button>
+							<div className='title-reset'>
+								<div><h1 className='titles'>Articles</h1></div>
+								<div className='reset-button'>
+									<Button
+										variant="outlined"
+										size="small"
+										onClick={() =>
+											setSelectBarData(null)}>
+												Reset Filter
+									</Button>
+								</div>
 							</div>
 							<ArticleCard selectBarData={selectBarData} />
 						</div>

@@ -54,8 +54,13 @@
   font-weight: 700;
 }
 
-.reset-button {
-  text-align: right;
-  margin-right: 16px;
+.title-reset {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+/* .reset-button {
+  text-align: right;
+  margin-right: 16px;
+} */
