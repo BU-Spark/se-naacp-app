@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import "./TopNeighborhoods.css";
+import "./AllNeighborhoodsBar.css";
 import { Card, CardContent, Stack, styled, Button } from "@mui/material";
 import { Article } from "../../__generated__/graphql";
 import svg from "../../assets/NeighborhoodIcons/Vector 46.svg";
@@ -10,12 +10,12 @@ import Paper from "@mui/material/Paper";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { TractContext } from "../../contexts/tract_context";
 
-interface TopNeighborhoodsProps {
+interface AllNeighborhoodsBarProps {
   articles: Article[];
   height: string;
 }
 
-const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
+const AllNeighborhoodsBar: React.FC<AllNeighborhoodsBarProps> = ({
   articles,
   height,
 }) => {
@@ -68,16 +68,7 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
     <>
       <Card className="body" sx={{ width: "100%", height: "auto" }}>
         <div className="card-header">
-          <div className="header-word">{neighborhood}</div>
-          <div className='reset'>
-            <Button
-              variant="text"
-              size="large"
-              onClick={() =>
-                reset()}>
-                  RESET
-            </Button>
-					</div>
+          <div className="header-word">Neighborhoods</div>
         </div>
         <CardContent className="content" sx={{ height: height }}>
           <div className="scroll-container">
@@ -109,4 +100,4 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
   );
 };
 
-export default TopNeighborhoods;
+export default AllNeighborhoodsBar;
