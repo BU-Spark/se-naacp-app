@@ -31,6 +31,7 @@ import { minDate, maxDate } from "../../App";
 const NeighborhoodPage: React.FC = () => {
 	//Context
 	const { articleData, queryArticleDataType } = useContext(ArticleContext)!;
+	const { articleData2, queryArticleDataType2 } = useContext(ArticleContext)!;
 	const { tractData, queryTractDataType } = useContext(TractContext)!;
 	const {
 		neighborhoodMasterList,
@@ -65,11 +66,23 @@ const NeighborhoodPage: React.FC = () => {
 				area: "030302",
 				userId: organization.id,
 			});
+			queryArticleDataType2("ARTICLE_DATA", {
+				dateFrom: parseInt(minDate.format("YYYYMMDD")),
+				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				area: "all",
+				userId: organization.id,
+			});
 		} else {
 			queryArticleDataType("ARTICLE_DATA", {
 				dateFrom: parseInt(minDate.format("YYYYMMDD")),
 				dateTo: parseInt(maxDate.format("YYYYMMDD")),
 				area: "030302",
+				userId: user?.id,
+			});
+			queryArticleDataType2("ARTICLE_DATA", {
+				dateFrom: parseInt(minDate.format("YYYYMMDD")),
+				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				area: "all",
 				userId: user?.id,
 			});
 		}
@@ -80,6 +93,9 @@ const NeighborhoodPage: React.FC = () => {
 			setIsLoading(false);
 		}
 	}, [articleData, tractData, neighborhoodMasterList]);
+
+	console.log("articleData: ", articleData);
+	console.log("articleData2: ", articleData2);
 
 	return (
 		<>
@@ -105,18 +121,29 @@ const NeighborhoodPage: React.FC = () => {
 								{neighborhood}
 							</div>
 						</div>
-					</div>
 
-					<div className="row justify-content-evenly">
 						<div className="col-md-4 col-sm-12">
 							<AtGlance articles={articleData!} height="20vh"></AtGlance>
 						</div>
+					</div>
+
+					<div className="col-md-12 col-sm-12">
+						<TopNeighborhoods
+						articles={articleData2!}
+						height="20vh"
+						></TopNeighborhoods>
+					</div>
+
+					<div className="row justify-content-evenly">
+						
 						<div className="col-md-8 col-sm-12">
 							<TopNeighborhoods
 							articles={articleData!}
 							height="20vh"
 							></TopNeighborhoods>
 						</div>
+
+						
 					</div>
 
 					<div className='row justify-content-evenly'>

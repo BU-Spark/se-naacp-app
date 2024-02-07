@@ -25,13 +25,15 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
   const [selectedWord, setSelectedWord] = useState<string>(neighborhood!);
 
   const articlesPerNeighborhood: Record<string, number> = {};
-  articles.forEach((article) => {
-    const uniqueNeighborhoods = new Set(article.neighborhoods);
-    uniqueNeighborhoods.forEach((neighborhood) => {
-      articlesPerNeighborhood[neighborhood] =
-        (articlesPerNeighborhood[neighborhood] || 0) + 1;
+  if (articles) {
+    articles.forEach((article) => {
+      const uniqueNeighborhoods = new Set(article.neighborhoods);
+      uniqueNeighborhoods.forEach((neighborhood) => {
+        articlesPerNeighborhood[neighborhood] =
+          (articlesPerNeighborhood[neighborhood] || 0) + 1;
+      });
     });
-  });
+  };
 
   const handleBoxClick = (neighborhood: string) => {
     // navigate(`./${neighborhood}`); // Navigate to the new route
@@ -66,7 +68,7 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
     <>
       <Card className="body" sx={{ width: "100%", height: "auto" }}>
         <div className="card-header">
-          <div className="header-word">Selected Neighborhoods</div>
+          <div className="header-word">{neighborhood}</div>
           <div className='reset'>
             <Button
               variant="text"

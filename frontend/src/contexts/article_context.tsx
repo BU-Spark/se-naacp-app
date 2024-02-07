@@ -4,7 +4,9 @@ import { Article } from "../__generated__/graphql";
 
 type ArticleContextType = {
   articleData: Article[] | null; // This is for components to consume
+  articleData2: Article[] | null // for all neighborhood bar
   queryArticleDataType: (queryType: any, options?: any) => void;
+  queryArticleDataType2: (queryType: any, options?: any) => void;
   shouldRefresh: boolean | null;
   setShouldRefresh: (flag: boolean) => void;
 };
@@ -75,6 +77,11 @@ const ArticleProvider: React.FC = ({ children }: any) => {
   ] = useLazyQuery(ARTICLE_DATA_QUERY);
 
   const [
+    queryArticleData2,
+    { data: articleData2, loading: articleData2Loading, error: articleData2Error },
+  ] = useLazyQuery(ARTICLE_DATA_QUERY);
+
+  const [
     queryArticleTopicsOrLabels,
     {
       data: articleTopicsOrLabelsData,
@@ -84,6 +91,8 @@ const ArticleProvider: React.FC = ({ children }: any) => {
   ] = useLazyQuery(ARTICLE_BY_LABEL_OR_TOPIC);
 
   const [articles, setArticleData] = React.useState<Article[] | null>(null);
+  // article 2
+  const [articles2, setArticleData2] = React.useState<Article[] | null>(null);
   const [shouldRefresh, setShouldRefresh] = React.useState<boolean | null>(null);
 
   React.useEffect(() => {
@@ -93,6 +102,12 @@ const ArticleProvider: React.FC = ({ children }: any) => {
   }, [articleData, articleDataLoading, articleDataError]);
 
   React.useEffect(() => {
+    if (articleData2 && !articleData2Loading && !articleData2Error) {
+      setArticleData2(articleData2.articleByDate);
+    }
+  }, [articleData2, articleData2Loading, articleData2Error]);
+
+  React.useEffect(() => {
     if (
       articleTopicsOrLabelsData &&
       !articleTopicsOrLabelsDataLoading &&
@@ -100,8 +115,10 @@ const ArticleProvider: React.FC = ({ children }: any) => {
     ) {
       if (articleTopicsOrLabelsData.articleByTopicsOrLabels.length === 0) {
         setArticleData(null);
+        setArticleData2(null);
       } else {
         setArticleData(articleTopicsOrLabelsData.articleByTopicsOrLabels);
+        setArticleData2(articleTopicsOrLabelsData.articleByTopicsOrLabels);
       }
     }
   }, [
@@ -140,9 +157,34 @@ const ArticleProvider: React.FC = ({ children }: any) => {
     }
   };
 
+  const queryArticleDataType2 = (queryType: string, options?: any) => {
+    switch (queryType) {
+      case "ARTICLE_DATA":
+        queryArticleData2({
+          variables: options, // This is where you pass in parameters
+        });
+        break;
+      case "ARTICLE_BY_LABEL_OR_TOPIC":
+        queryArticleTopicsOrLabels({
+          variables: options, // This is where you pass in parameters
+        });
+        break;
+      default:
+        // Something went wrong here, Needs to throw error to user...
+        console.log("ERROR: Fetch Article Data 2 does not have this queryType!");
+        break;
+    }
+  };
+
   return (
     <ArticleContext.Provider
-      value={{ articleData: articles, queryArticleDataType, shouldRefresh: shouldRefresh, setShouldRefresh }}
+      value={
+        { articleData: articles, 
+          articleData2: articles2,
+          queryArticleDataType, 
+          queryArticleDataType2,
+          shouldRefresh: shouldRefresh, 
+          setShouldRefresh }}
     >
       {children}
     </ArticleContext.Provider>
