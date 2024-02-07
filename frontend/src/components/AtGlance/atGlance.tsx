@@ -30,7 +30,7 @@ const AtGlance: React.FC<AtGlanceProps> = ({ articles, height }) => {
 
   const DemoPaper = styled(Paper)(({ theme }) => ({
     bgcolor: "color.black",
-    width: 100,
+    width: 120,
     height: 70,
     padding: theme.spacing(2),
     ...theme.typography.body2,

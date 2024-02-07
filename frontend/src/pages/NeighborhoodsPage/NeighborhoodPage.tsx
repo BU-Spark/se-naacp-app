@@ -12,6 +12,7 @@ import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/S
 import DateField from "../../components/SearchFields/DateBar/DateBar";
 import AtGlance from "../../components/AtGlance/atGlance";
 import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods";
+import AllNeighborhoodsBar from "../../components/AllNeighborhoodsBar/AllNeighborhoodsBar";
 import Button from "@mui/material/Button";
 //Types
 import { Article, Demographics } from "../../__generated__/graphql";
@@ -111,20 +112,25 @@ const NeighborhoodPage: React.FC = () => {
 				<div className='big-container'>
 					<div className='row'>
 						<div className='col'>
-							<div className='align-self-start your-org'>
-								NEIGHBORHOODS
-							</div>
 							<div className='align-self-start org-name'>
-								{neighborhood}
+								Explore Neighborhoods
+							</div>
+						</div>
+						<div className='col-md-4 col-sm-12'>
+							<div>
+								<DateField
+									title='From'
+									isTopicsPage={false}
+								></DateField>
 							</div>
 						</div>
 					</div>
 
 					<div className="col-md-12 col-sm-12">
-						<TopNeighborhoods
+						<AllNeighborhoodsBar
 						articles={articleData2!}
 						height="15vh"
-						></TopNeighborhoods>
+						></AllNeighborhoodsBar>
 					</div>
 
 					<div className="row justify-content-evenly">
@@ -140,7 +146,7 @@ const NeighborhoodPage: React.FC = () => {
 
 					</div>
 
-					<div className='row justify-content-evenly'>
+					{/* <div className='row justify-content-evenly'>
 						<div className='col-md-3 col-sm-12'>
 							<SearchBarDropDown
 								title='Neighborhoods'
@@ -149,29 +155,23 @@ const NeighborhoodPage: React.FC = () => {
 								)}
 							></SearchBarDropDown>
 						</div>
-						<div className='col-md-5 col-sm-12'></div>
-						<div className='col-md-4 col-sm-12'>
-							<div>
-								<DateField
-									title='From'
-									isTopicsPage={false}
-								></DateField>
-							</div>
-						</div>
-					</div>
+					</div> */}
 
 					<div className='row justify-content-evenly'>
+						<div className='col-md-12 col-sm-12'>
+							<h1 className='titles'>Map</h1>
+							<MapCard clickable={true}></MapCard>
+						</div>
+					</div> 
+
+					{/* <div className='row justify-content-evenly'>
 						<div className='col-md-4 col-sm-12'>
 							<h1 className='titles'>Tracts</h1>
 							<TractsDropDown
 								tracts={neighborhoodMasterList![neighborhood!]}
 							></TractsDropDown>
 						</div>
-						<div className='col-md-8 col-sm-12'>
-							<h1 className='titles'>Map</h1>
-							<MapCard clickable={true}></MapCard>
-						</div>
-					</div>
+					</div> */}
 
 					<div className='row justify-content-evenly'>
 						<div className='col-md-12 col-sm-12'>
