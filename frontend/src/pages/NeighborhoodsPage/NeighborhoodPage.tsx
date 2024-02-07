@@ -94,9 +94,6 @@ const NeighborhoodPage: React.FC = () => {
 		}
 	}, [articleData, tractData, neighborhoodMasterList]);
 
-	console.log("articleData: ", articleData);
-	console.log("articleData2: ", articleData2);
-
 	return (
 		<>
 			{isLoading ? (
@@ -121,29 +118,26 @@ const NeighborhoodPage: React.FC = () => {
 								{neighborhood}
 							</div>
 						</div>
-
-						<div className="col-md-4 col-sm-12">
-							<AtGlance articles={articleData!} height="20vh"></AtGlance>
-						</div>
 					</div>
 
 					<div className="col-md-12 col-sm-12">
 						<TopNeighborhoods
 						articles={articleData2!}
-						height="20vh"
+						height="15vh"
 						></TopNeighborhoods>
 					</div>
 
 					<div className="row justify-content-evenly">
-						
+						<div className="col-md-4 col-sm-12">
+							<AtGlance articles={articleData!} height="15vh"></AtGlance>
+						</div>
 						<div className="col-md-8 col-sm-12">
 							<TopNeighborhoods
 							articles={articleData!}
-							height="20vh"
+							height="15vh"
 							></TopNeighborhoods>
 						</div>
 
-						
 					</div>
 
 					<div className='row justify-content-evenly'>

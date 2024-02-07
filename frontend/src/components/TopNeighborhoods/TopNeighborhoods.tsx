@@ -57,8 +57,8 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
   
   const DemoPaper = styled(Paper)(({ theme }) => ({
     bgcolor: "color.black",
-    width: 120,
-    height: 120,
+    width:100,
+    height: 70,
     padding: theme.spacing(2),
     ...theme.typography.body2,
     textAlign: "center",
@@ -73,7 +73,6 @@ const TopNeighborhoods: React.FC<TopNeighborhoodsProps> = ({
             <Button
               variant="text"
               size="large"
-              color="success"
               onClick={() =>
                 reset()}>
                   RESET
