@@ -115,13 +115,13 @@ const connectMongo = async() => {
 		if (articles.length>0){
 			// Email org members with the number of articles in the past week
 
-			// const email_info = await transporter.sendMail({
-			// 	from: 'malbaker@bu.edu', // sender address
-			// 	to: results[org].members, // list of receivers
-			// 	subject: "Test notification", // Subject line
-			// 	text: `Hello ${org} members, your organization has uploaded ${articles.length} new articles in the past week. Please log into the Media Bias app to see more details.`
-			// });
-			// console.log("Message sent: %s", email_info.messageId);
+			const email_info = await transporter.sendMail({
+				from: 'malbaker@bu.edu', // sender address
+				to: results[org].members, // list of receivers
+				subject: `Update for ${org} from Spark Media Bias`, // Subject line
+				text: `Hello ${org} members, your organization has uploaded ${articles.length} new articles in the past week. Please log into the Media Bias app to see more details.`
+			});
+			console.log("Message sent: %s", email_info.messageId);
 		}
 	}
 		
