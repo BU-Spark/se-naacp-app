@@ -31,7 +31,7 @@ const AtGlance: React.FC<AtGlanceProps> = ({ articles, height }) => {
   const DemoPaper = styled(Paper)(({ theme }) => ({
     bgcolor: "color.black",
     width: 120,
-    height: 120,
+    height: 70,
     padding: theme.spacing(2),
     ...theme.typography.body2,
     textAlign: "center",
@@ -40,7 +40,7 @@ const AtGlance: React.FC<AtGlanceProps> = ({ articles, height }) => {
     <>
       <Card className="body" sx={{ width: "100%", height: "auto" }}>
         <div className="card-header">
-          <span className="header-word">At a Glance</span>
+          <span className="header-word">Overview</span>
         </div>
         <CardContent className="content" sx={{ height: height }}>
           <Stack direction="row" spacing={2}>

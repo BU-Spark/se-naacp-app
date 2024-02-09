@@ -54,3 +54,13 @@
   font-weight: 700;
 }
 
+.title-reset {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* .reset-button {
+  text-align: right;
+  margin-right: 16px;
+} */

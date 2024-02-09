@@ -57,8 +57,8 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ bubbleData }) => {
     <>
       <div className="row justify-content-evenly">
         <div className={length}>
-          <Card className="body" sx={{ width: "100%", height: "62vh" }}>
-            <CardContent sx={{ height: "62vh" }}>
+          <Card className="body" sx={{ width: "100%", height: "68vh" }}>
+            <CardContent sx={{ height: "68vh" }}>
               <ResponsiveCirclePackingCanvas
                 data={data}
                 margin={{ top: 20, right: 20, bottom: 20, left: 20 }}

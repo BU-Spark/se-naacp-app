@@ -1,5 +1,5 @@
 //Libaries
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import dayjs from "dayjs";
 
 //Components
@@ -10,6 +10,10 @@ import TractsDropDown from "../../components/TractsDropDown/TractsDropDown";
 import MapCard from "../../components/MapCard/MapCard";
 import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
 import DateField from "../../components/SearchFields/DateBar/DateBar";
+import AtGlance from "../../components/AtGlance/atGlance";
+import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods";
+import AllNeighborhoodsBar from "../../components/AllNeighborhoodsBar/AllNeighborhoodsBar";
+import Button from "@mui/material/Button";
 //Types
 import { Article, Demographics } from "../../__generated__/graphql";
 
@@ -24,49 +28,62 @@ import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../contexts/topics_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
 import { minDate, maxDate } from "../../App";
+
 const NeighborhoodPage: React.FC = () => {
 	//Context
-	const { articleData, queryArticleDataType } =
-		React.useContext(ArticleContext)!;
-	const { tractData, queryTractDataType } = React.useContext(TractContext)!;
+	const { articleData, queryArticleDataType } = useContext(ArticleContext)!;
+	const { articleData2, queryArticleDataType2 } = useContext(ArticleContext)!;
+	const { tractData, queryTractDataType } = useContext(TractContext)!;
 	const {
 		neighborhoodMasterList,
 		neighborhood,
 		setNeighborhood,
 		queryNeighborhoodDataType,
-	} = React.useContext(NeighborhoodContext);
-	const [isLoading, setIsLoading] = React.useState(true);
-	const { queryTopicsDataType } = React.useContext(TopicsContext);
+	} = useContext(NeighborhoodContext);
+	const { queryTopicsDataType } = useContext(TopicsContext);
+
+	const [isLoading, setIsLoading] = useState(true);
 	const { user } = useUser();
 	const { organization } = useOrganization();
 
 	// select bar data
-	const [selectBarData, setSelectBarData] = React.useState(null);
+	const [selectBarData, setSelectBarData] = useState(null);
 
 	// handle click
 	const clickHandler = (barData: any) => {
 		setSelectBarData(barData);
 	}
 	
-
 	React.useEffect(() => {
 		queryTopicsDataType("TOPICS_DATA");
 		queryTopicsDataType("LABELS_DATA");
 		queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
-		setNeighborhood("Fenway");
-		queryTractDataType("TRACT_DATA", { tract: "010103" });
+		setNeighborhood("Downtown");
+		queryTractDataType("TRACT_DATA", { tract: "030302" });
 		if (organization) {
 			queryArticleDataType("ARTICLE_DATA", {
 				dateFrom: parseInt(minDate.format("YYYYMMDD")),
 				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "010103",
+				area: "030302",
+				userId: organization.id,
+			});
+			queryArticleDataType2("ARTICLE_DATA", {
+				dateFrom: parseInt(minDate.format("YYYYMMDD")),
+				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				area: "all",
 				userId: organization.id,
 			});
 		} else {
 			queryArticleDataType("ARTICLE_DATA", {
 				dateFrom: parseInt(minDate.format("YYYYMMDD")),
 				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "010103",
+				area: "030302",
+				userId: user?.id,
+			});
+			queryArticleDataType2("ARTICLE_DATA", {
+				dateFrom: parseInt(minDate.format("YYYYMMDD")),
+				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				area: "all",
 				userId: user?.id,
 			});
 		}
@@ -95,26 +112,10 @@ const NeighborhoodPage: React.FC = () => {
 				<div className='big-container'>
 					<div className='row'>
 						<div className='col'>
-							<div className='align-self-start your-org'>
-								SELECTED NEIGHBORHOOD
-							</div>
 							<div className='align-self-start org-name'>
-								{neighborhood}
+								Explore Neighborhoods
 							</div>
-							<h1></h1>
 						</div>
-					</div>
-
-					<div className='row justify-content-evenly'>
-						<div className='col-md-3 col-sm-12'>
-							<SearchBarDropDown
-								title='Neighborhoods'
-								listOfWords={Object.keys(
-									neighborhoodMasterList!,
-								)}
-							></SearchBarDropDown>
-						</div>
-						<div className='col-md-5 col-sm-12'></div>
 						<div className='col-md-4 col-sm-12'>
 							<div>
 								<DateField
@@ -124,6 +125,44 @@ const NeighborhoodPage: React.FC = () => {
 							</div>
 						</div>
 					</div>
+
+					<div className="col-md-12 col-sm-12">
+						<AllNeighborhoodsBar
+						articles={articleData2!}
+						height="15vh"
+						></AllNeighborhoodsBar>
+					</div>
+
+					<div className="row justify-content-evenly">
+						<div className="col-md-4 col-sm-12">
+							<AtGlance articles={articleData!} height="15vh"></AtGlance>
+						</div>
+						<div className="col-md-8 col-sm-12">
+							<TopNeighborhoods
+							articles={articleData!}
+							height="15vh"
+							></TopNeighborhoods>
+						</div>
+
+					</div>
+
+					{/* <div className='row justify-content-evenly'>
+						<div className='col-md-3 col-sm-12'>
+							<SearchBarDropDown
+								title='Neighborhoods'
+								listOfWords={Object.keys(
+									neighborhoodMasterList!,
+								)}
+							></SearchBarDropDown>
+						</div>
+					</div> */}
+
+					{/* <div className='row justify-content-evenly'>
+						<div className='col-md-12 col-sm-12'>
+							<h1 className='titles'>Map</h1>
+							<MapCard clickable={true}></MapCard>
+						</div>
+					</div>  */}
 
 					<div className='row justify-content-evenly'>
 						<div className='col-md-4 col-sm-12'>
@@ -140,15 +179,29 @@ const NeighborhoodPage: React.FC = () => {
 
 					<div className='row justify-content-evenly'>
 						<div className='col-md-12 col-sm-12'>
-							<h1 className='titles'>Top 5 Topics</h1>
-							<FrequencyBarChart
-								num={5}
-								openAI={true}
-								onBarClick={clickHandler} 
-							></FrequencyBarChart>
-						</div>
+								<h1 className='titles'>Top 5 Topics</h1>
+								<FrequencyBarChart
+									num={5}
+									openAI={true}
+									onBarClick={clickHandler} 
+								></FrequencyBarChart>
+						</div>	
+					</div>
+					
+					<div className='row justify-content-evenly'>
 						<div className='col-md-12 col-sm-12'>
-							<h1 className='titles'>Articles</h1>
+							<div className='title-reset'>
+								<div><h1 className='titles'>Articles</h1></div>
+								<div className='reset-button'>
+									<Button
+										variant="outlined"
+										size="small"
+										onClick={() =>
+											setSelectBarData(null)}>
+												Reset Filter
+									</Button>
+								</div>
+							</div>
 							<ArticleCard selectBarData={selectBarData} />
 						</div>
 					</div>
