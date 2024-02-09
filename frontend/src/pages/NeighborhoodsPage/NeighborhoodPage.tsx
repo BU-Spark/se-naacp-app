@@ -157,21 +157,25 @@ const NeighborhoodPage: React.FC = () => {
 						</div>
 					</div> */}
 
-					<div className='row justify-content-evenly'>
+					{/* <div className='row justify-content-evenly'>
 						<div className='col-md-12 col-sm-12'>
 							<h1 className='titles'>Map</h1>
 							<MapCard clickable={true}></MapCard>
 						</div>
-					</div> 
+					</div>  */}
 
-					{/* <div className='row justify-content-evenly'>
+					<div className='row justify-content-evenly'>
 						<div className='col-md-4 col-sm-12'>
 							<h1 className='titles'>Tracts</h1>
 							<TractsDropDown
 								tracts={neighborhoodMasterList![neighborhood!]}
 							></TractsDropDown>
 						</div>
-					</div> */}
+						<div className='col-md-8 col-sm-12'>
+							<h1 className='titles'>Map</h1>
+							<MapCard clickable={true}></MapCard>
+						</div>
+					</div>
 
 					<div className='row justify-content-evenly'>
 						<div className='col-md-12 col-sm-12'>
