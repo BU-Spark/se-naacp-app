@@ -38,3 +38,4 @@ const { url } = await startStandaloneServer(server, {
     listen: { port: parseInt(process.env.PORT) || 4000 },
 });
 console.log(`🚀  Server ready at PORT: ${url}`);
+

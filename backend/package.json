@@ -16,10 +16,12 @@
     "apollo-server-express": "^3.12.1",
     "cors": "^2.8.5",
     "csv-parser": "^3.0.0",
+    "dotenv": "^16.4.1",
     "graphql": "^16.8.1",
     "mongodb": "^5.4.0",
     "mongoose": "^7.5.3",
     "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.9",
     "typescipt": "^1.0.0"
   },
   "devDependencies": {
