@@ -1,7 +1,7 @@
 import "dotenv/config";
 import mongoose, { Query, Schema } from "mongoose";
 import nodemailer from "nodemailer";
-
+import * as cron from "node-cron"
 const transporter =  nodemailer.createTransport({
 	host: "smtp.sendgrid.net",
 	port: 465,
@@ -13,6 +13,7 @@ const transporter =  nodemailer.createTransport({
 })
 
 let orgs = [];
+// Shape of results: results[org_name] = { id: org_id, members: [...] }
 let results = {};
 
 const getOrgs = async () => {
@@ -52,7 +53,7 @@ const articleSchema = new Schema({
 		openai_labels: [String],
 		dateSum: Number,
 		userID: String,
-}, {collection: "article_data"})
+}, {collection: "articles_data"})
 const Article = mongoose.model('Article', articleSchema, "articles_data");
 
 const connectMongo = async() => {
@@ -60,13 +61,13 @@ const connectMongo = async() => {
 	
 }
 
-
 (async () => {
+	// Connect to mongo
 	await connectMongo().then(
 		console.log("mongo connected")
 	);
 	
-
+	// Converting todays date and 7 days previous, into the datesum format for querying articles
 	const today = new Date();
 	var querydate = new Date(today);
 	querydate.setDate(today.getDate() - 7)
@@ -81,9 +82,9 @@ const connectMongo = async() => {
 		.split("-")
 		.join(""));
 	console.log(todaydate, sevendays)
+
 	// Only the data we want from the orgs
 	const orgs = (await getOrgs()).data;
-
 	for (const org of orgs) {
 		const res = await getOrgMembers(org.id);
 		let mems = [];
@@ -94,27 +95,45 @@ const connectMongo = async() => {
 	}
 	//console.table(results);
 
-	//Loop to email each org's members
-	// for (const org in results) {
-	// 	console.log(org)
-	// 	const articles = await Article.find({
-	// 		dateSum: {
-	// 			$lte: todaydate,
-	// 			$gte: sevendays
-	// 		},
-	// 		userID: results[org].id
-	// 	}).then(res => console.log(res))
-	// }
+	
+
+	for (const org in results) {
+		// Query articles from org in the past week
+
+		const articles = await Article.find({
+			dateSum: {
+				$lte: todaydate,
+				$gte: sevendays
+			},
+			userID: results[org].id
+		}, {
+			hl1: 1, dateSum: 1
+		}).exec()
+
+		console.log(articles)
+
+		if (articles.length>0){
+			// Email org members with the number of articles in the past week
+
+			// const email_info = await transporter.sendMail({
+			// 	from: 'malbaker@bu.edu', // sender address
+			// 	to: results[org].members, // list of receivers
+			// 	subject: "Test notification", // Subject line
+			// 	text: `Hello ${org} members, your organization has uploaded ${articles.length} new articles in the past week. Please log into the Media Bias app to see more details.`
+			// });
+			// console.log("Message sent: %s", email_info.messageId);
+		}
+	}
 		
 
-	// EMAIL SENDING TEMPLATE
-	// const info = await transporter.sendMail({
-  	//   	from: 'malbaker@bu.edu', // sender address
-  	//   	to: "mb@malbaker.me", // list of receivers
-  	//   	subject: "more testing", // Subject line
-  	//   	text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", // plain text body
-	// });
+	//EMAIL SENDING TEMPLATE
 
-	// console.log("Message sent: %s", info.messageId);
-	
+	// const email_info = await transporter.sendMail({
+  	//   	from: 'malbaker@bu.edu', // sender address
+  	//   	to: "", // list of receivers
+  	//   	subject: "", // Subject line
+  	//   	text: "", // plain text body
+	// });
+	// console.log("Message sent: %s", email_info.messageId);
+	mongoose.disconnect().then(console.log("Bye mongo"));
 })();
