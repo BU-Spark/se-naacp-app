@@ -1,7 +1,7 @@
 import "dotenv/config";
 import mongoose, { Query, Schema } from "mongoose";
 import nodemailer from "nodemailer";
-import * as cron from "node-cron"
+
 const transporter =  nodemailer.createTransport({
 	host: "smtp.sendgrid.net",
 	port: 465,
