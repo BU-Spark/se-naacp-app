@@ -58,14 +58,14 @@ export default function MainNavigator() {
 							path='/sign-up/*'
 							element={<SignUp routing='path' path='/sign-up' />}
 						/>
-						{/* <Route
-              path="/TopicsSearchPage"
-              element={<ProtectedRoute child={TopicsSearchPage} />}
-            /> */}
+						<Route
+              				path="/TopicsSearchPage"
+              				element={<ProtectedRoute child={<TopicsSearchPage />} />}
+            			/>
 
 						<Route
 							path='/Topics'
-							element={<ProtectedRoute child={<TopicsSearchPage />} />}
+							element={<ProtectedRoute child={<TopicsPage />} />}
 						/>
 						<Route
 							path='/Upload'
