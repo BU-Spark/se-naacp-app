@@ -184,3 +184,5 @@ cloud_functions/functions/scripts/JSON_data/new_naacp.json
 cloud_functions/functions/config.js
 MongoDB/src/JSON_data/census.json
 rssfeed/.env
+dev_tools/scripts/env_graphql.sh
+dev_tools/scripts/env_react.sh
