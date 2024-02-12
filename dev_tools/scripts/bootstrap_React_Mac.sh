@@ -33,7 +33,7 @@ PROJECT_ROOT_DIR=$(find "$SEARCH_PATH" -type d -name "$DIR_NAME" 2>&1 | grep -v 
 if [ -n "$PROJECT_ROOT_DIR" ]; then
     cd $PROJECT_ROOT_DIR/frontend/src
     npm install # Just incase
-    npm start
+    npm run dev
 else
     echo "Project directory not found. React Client Bootstrap Failed!"
 fi
