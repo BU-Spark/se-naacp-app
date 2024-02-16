@@ -35,8 +35,8 @@ const getOrgMembers = async (org) => {
 		},
 	);
 
-// 	return await res.json();
-// };
+	return await res.json();
+};
 
 const articleSchema = new Schema({
 		neighborhoods: [String],
@@ -59,61 +59,61 @@ const Article = mongoose.model('Article', articleSchema, "articles_data");
 const connectMongo = async() => {
 	await mongoose.connect(config.MONGODB_PROD_CONN);
 	
-// }
+}
 
-// (async () => {
-// 	// Connect to mongo
-// 	await connectMongo().then(
-// 		console.log("mongo connected")
-// 	);
+(async () => {
+	// Connect to mongo
+	await connectMongo().then(
+		console.log("mongo connected")
+	);
 	
-// 	// Converting todays date and 7 days previous, into the datesum format for querying articles
-// 	const today = new Date();
-// 	var querydate = new Date(today);
-// 	querydate.setDate(today.getDate() - 7)
-// 	const todaydate = Number(today
-// 		.toISOString()
-// 		.split("T")[0]
-// 		.split("-")
-// 		.join(""));
-// 	const sevendays = Number(querydate
-// 		.toISOString()
-// 		.split("T")[0]
-// 		.split("-")
-// 		.join(""));
-// 	console.log(todaydate, sevendays)
+	// Converting todays date and 7 days previous, into the datesum format for querying articles
+	const today = new Date();
+	var querydate = new Date(today);
+	querydate.setDate(today.getDate() - 7)
+	const todaydate = Number(today
+		.toISOString()
+		.split("T")[0]
+		.split("-")
+		.join(""));
+	const sevendays = Number(querydate
+		.toISOString()
+		.split("T")[0]
+		.split("-")
+		.join(""));
+	console.log(todaydate, sevendays)
 
-// 	// Only the data we want from the orgs
-// 	const orgs = (await getOrgs()).data;
-// 	for (const org of orgs) {
-// 		const res = await getOrgMembers(org.id);
-// 		let mems = [];
-// 		for (const mem of res.data) {
-// 			mems.push(mem.public_user_data.identifier);
-// 		}
-// 		results[org.name] = { id: org.id, members: mems };
-// 	}
-// 	//console.table(results);
+	// Only the data we want from the orgs
+	const orgs = (await getOrgs()).data;
+	for (const org of orgs) {
+		const res = await getOrgMembers(org.id);
+		let mems = [];
+		for (const mem of res.data) {
+			mems.push(mem.public_user_data.identifier);
+		}
+		results[org.name] = { id: org.id, members: mems };
+	}
+	//console.table(results);
 
 	
 
-// 	for (const org in results) {
-// 		// Query articles from org in the past week
+	for (const org in results) {
+		// Query articles from org in the past week
 
-// 		const articles = await Article.find({
-// 			dateSum: {
-// 				$lte: todaydate,
-// 				$gte: sevendays
-// 			},
-// 			userID: results[org].id
-// 		}, {
-// 			hl1: 1, dateSum: 1
-// 		}).exec()
+		const articles = await Article.find({
+			dateSum: {
+				$lte: todaydate,
+				$gte: sevendays
+			},
+			userID: results[org].id
+		}, {
+			hl1: 1, dateSum: 1
+		}).exec()
 
-// 		console.log(articles)
+		console.log(articles)
 
-// 		if (articles.length>0){
-// 			// Email org members with the number of articles in the past week
+		if (articles.length>0){
+			// Email org members with the number of articles in the past week
 
 			const email_info = await transporter.sendMail({
 				from: 'malbaker@bu.edu', // sender address
@@ -126,14 +126,14 @@ const connectMongo = async() => {
 	}
 		
 
-// 	//EMAIL SENDING TEMPLATE
+	//EMAIL SENDING TEMPLATE
 
-// 	// const email_info = await transporter.sendMail({
-//   	//   	from: 'malbaker@bu.edu', // sender address
-//   	//   	to: "", // list of receivers
-//   	//   	subject: "", // Subject line
-//   	//   	text: "", // plain text body
-// 	// });
-// 	// console.log("Message sent: %s", email_info.messageId);
-// 	mongoose.disconnect().then(console.log("Bye mongo"));
-// })();
+	// const email_info = await transporter.sendMail({
+  	//   	from: 'malbaker@bu.edu', // sender address
+  	//   	to: "", // list of receivers
+  	//   	subject: "", // Subject line
+  	//   	text: "", // plain text body
+	// });
+	// console.log("Message sent: %s", email_info.messageId);
+	mongoose.disconnect().then(console.log("Bye mongo"));
+})();
