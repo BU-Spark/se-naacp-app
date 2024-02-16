@@ -1,6 +1,6 @@
-import "dotenv/config";
-import mongoose, { Query, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import nodemailer from "nodemailer";
+import config from "./config.json" with {type: json};
 
 const transporter =  nodemailer.createTransport({
 	host: "smtp.sendgrid.net",
@@ -8,7 +8,7 @@ const transporter =  nodemailer.createTransport({
 	secure: true,
 	auth: {
 		user: "apikey",
-		pass: process.env.SENDGRID_RELAY_KEY
+		pass: config.SENDGRID_RELAY_KEY
 	},
 })
 
@@ -19,7 +19,7 @@ let results = {};
 const getOrgs = async () => {
 	const res = await fetch("https://api.clerk.com/v1/organizations/", {
 		headers: {
-			Authorization: `Bearer ${process.env.CLERK_BACKEND_KEY}`,
+			Authorization: `Bearer ${config.CLERK_BACKEND_KEY}`,
 		},
 	});
 	return await res.json();
@@ -30,7 +30,7 @@ const getOrgMembers = async (org) => {
 		`https://api.clerk.com/v1/organizations/${org}/memberships`,
 		{
 			headers: {
-				Authorization: `Bearer ${process.env.CLERK_BACKEND_KEY}`,
+				Authorization: `Bearer ${config.CLERK_BACKEND_KEY}`,
 			},
 		},
 	);
@@ -57,7 +57,7 @@ const articleSchema = new Schema({
 const Article = mongoose.model('Article', articleSchema, "articles_data");
 
 const connectMongo = async() => {
-	await mongoose.connect(process.env.MONGODB_PROD_CONN);
+	await mongoose.connect(config.MONGODB_PROD_CONN);
 	
 }
 
