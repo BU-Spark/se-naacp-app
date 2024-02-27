@@ -37,7 +37,6 @@ const SearchBarDropDown: React.FC<SearchBarDropDownPros> = ({
 
   return (
     <div className="search">
-      <p className="word">{title}</p>
       <FormControl sx={{ m: 1, minWidth: 120, marginTop: 0.9 }}>
         <InputLabel id="neighborhood-select-label">Neighborhood</InputLabel>
         <Select

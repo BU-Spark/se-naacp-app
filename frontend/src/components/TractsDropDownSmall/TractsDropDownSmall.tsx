@@ -110,7 +110,7 @@ const TractsDropDownSmall: React.FC<TractsDropDownSmallProps> = ({ tracts }) => 
 
   return (
     <FormControl sx={{ m: 1, minWidth: 120, marginTop: 0.9 }}>
-      <InputLabel id="tract-select-label">Census Tract</InputLabel>
+      <InputLabel id="tract-select-label">Tract</InputLabel>
       <Select
         style={{ height: "32px", borderRadius: 0, backgroundColor: "white" }}
         labelId="tract-select-label"

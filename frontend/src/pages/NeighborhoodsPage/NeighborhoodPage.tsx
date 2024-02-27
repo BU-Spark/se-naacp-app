@@ -157,7 +157,6 @@ const NeighborhoodPage: React.FC = () => {
 							<AtGlance articles={articleData!} height="15vh"></AtGlance>
 						</div>
 						<div className='col-md-8 col-sm-12'>
-							<h1 className='titles'>Map</h1>
 							<MapCard clickable={true}></MapCard>
 						</div>
 						{/* <div className="col-md-8 col-sm-12">
