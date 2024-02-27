@@ -5,6 +5,7 @@ import "./SearchBarDropdown.css";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
 
 // Uniqid for unique keys
 import uniqid from "uniqid";
@@ -36,8 +37,8 @@ const SearchBarDropDown: React.FC<SearchBarDropDownPros> = ({
 
   return (
     <div className="search">
-      <p className="word">{title}</p>
       <FormControl sx={{ m: 1, minWidth: 120, marginTop: 0.9 }}>
+        <InputLabel id="neighborhood-select-label">Neighborhood</InputLabel>
         <Select
           style={{ height: "32px", borderRadius: 0, backgroundColor: "white" }}
           value={selectedWord}

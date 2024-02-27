@@ -113,7 +113,6 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 		<>
 			<div style={{ display: "flex" }}>
 				<div>
-					<p className='word1'>Start Date</p>
 					<LocalizationProvider dateAdapter={AdapterDayjs}>
 						<DesktopDatePicker
 							inputFormat='MM/DD/YYYY'
@@ -150,8 +149,6 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 				</div>
 
 				<div>
-					<p className='word1'>End Date</p>
-
 					<LocalizationProvider dateAdapter={AdapterDayjs}>
 						<DesktopDatePicker
 							inputFormat='MM/DD/YYYY'

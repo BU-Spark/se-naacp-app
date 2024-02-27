@@ -1,10 +1,9 @@
 .body .card-header {
-  background-color: black;
-  height: 50px;
+  background-color: rebeccapurple;
+  height: 20px;
   width: 100%;
   display: flex;
   align-items: center;
-  padding-left: 10px;
 }
 
 .body .card-header .header-word {

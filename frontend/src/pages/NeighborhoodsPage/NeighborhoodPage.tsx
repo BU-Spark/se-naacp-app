@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
 import FrequencyBarChart from "../../components/FrequencyBarChart/FrequencyBarChart";
 import NeighborhoodDemographicsBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
+import TractsDropDownSmall from "../../components/TractsDropDownSmall/TractsDropDownSmall";
 import TractsDropDown from "../../components/TractsDropDown/TractsDropDown";
 import MapCard from "../../components/MapCard/MapCard";
 import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
@@ -111,71 +112,70 @@ const NeighborhoodPage: React.FC = () => {
 			) : (
 				<div className='big-container'>
 					<div className='row'>
-						<div className='col'>
-							<div className='align-self-start org-name'>
-								Explore Neighborhoods
+						<div className='align-self-start org-name'>
+									Explore Neighborhoods
+						</div>
+						
+						<div className='col d-flex justify-content-start'>
+							<div className='col-md-3 col-sm-12'>
+								<SearchBarDropDown
+									title='Neighborhoods'
+									listOfWords={Object.keys(
+										neighborhoodMasterList!,
+									)}
+								></SearchBarDropDown>
+							</div>
+
+							<div className='col-md-3 col-sm-12'>
+								<TractsDropDownSmall
+									tracts={neighborhoodMasterList![neighborhood!]}
+								></TractsDropDownSmall>
 							</div>
 						</div>
-						<div className='col-md-4 col-sm-12'>
-							<div>
-								<DateField
-									title='From'
-									isTopicsPage={false}
-								></DateField>
+						
+						<div className='col d-flex justify-content-end'>
+							<div className='col-md-5 col-sm-12'>
+								<div>
+									<DateField
+										title='From'
+										isTopicsPage={false}
+									></DateField>
+								</div>
 							</div>
 						</div>
 					</div>
 
-					<div className="col-md-12 col-sm-12">
+					{/* <div className="col-md-12 col-sm-12">
 						<AllNeighborhoodsBar
 						articles={articleData2!}
 						height="15vh"
 						></AllNeighborhoodsBar>
-					</div>
+					</div> */}
 
 					<div className="row justify-content-evenly">
 						<div className="col-md-4 col-sm-12">
 							<AtGlance articles={articleData!} height="15vh"></AtGlance>
 						</div>
-						<div className="col-md-8 col-sm-12">
+						<div className='col-md-8 col-sm-12'>
+							<MapCard clickable={true}></MapCard>
+						</div>
+						{/* <div className="col-md-8 col-sm-12">
 							<TopNeighborhoods
 							articles={articleData!}
 							height="15vh"
 							></TopNeighborhoods>
-						</div>
-
+						</div> */}
 					</div>
 
 					{/* <div className='row justify-content-evenly'>
-						<div className='col-md-3 col-sm-12'>
-							<SearchBarDropDown
-								title='Neighborhoods'
-								listOfWords={Object.keys(
-									neighborhoodMasterList!,
-								)}
-							></SearchBarDropDown>
-						</div>
-					</div> */}
-
-					{/* <div className='row justify-content-evenly'>
-						<div className='col-md-12 col-sm-12'>
-							<h1 className='titles'>Map</h1>
-							<MapCard clickable={true}></MapCard>
-						</div>
-					</div>  */}
-
-					<div className='row justify-content-evenly'>
 						<div className='col-md-4 col-sm-12'>
 							<h1 className='titles'>Tracts</h1>
 							<TractsDropDown
 								tracts={neighborhoodMasterList![neighborhood!]}
 							></TractsDropDown>
 						</div>
-						<div className='col-md-8 col-sm-12'>
-							<h1 className='titles'>Map</h1>
-							<MapCard clickable={true}></MapCard>
-						</div>
-					</div>
+					</div> */}
+					
 
 					<div className='row justify-content-evenly'>
 						<div className='col-md-12 col-sm-12'>
