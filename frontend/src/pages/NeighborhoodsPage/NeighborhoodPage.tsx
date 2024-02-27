@@ -145,56 +145,37 @@ const NeighborhoodPage: React.FC = () => {
 						</div>
 					</div>
 
-					<div className="col-md-12 col-sm-12">
+					{/* <div className="col-md-12 col-sm-12">
 						<AllNeighborhoodsBar
 						articles={articleData2!}
 						height="15vh"
 						></AllNeighborhoodsBar>
-					</div>
+					</div> */}
 
 					<div className="row justify-content-evenly">
 						<div className="col-md-4 col-sm-12">
 							<AtGlance articles={articleData!} height="15vh"></AtGlance>
 						</div>
-						<div className="col-md-8 col-sm-12">
+						<div className='col-md-8 col-sm-12'>
+							<h1 className='titles'>Map</h1>
+							<MapCard clickable={true}></MapCard>
+						</div>
+						{/* <div className="col-md-8 col-sm-12">
 							<TopNeighborhoods
 							articles={articleData!}
 							height="15vh"
 							></TopNeighborhoods>
-						</div>
+						</div> */}
 					</div>
 
-					<div className='row justify-content-evenly'>
+					{/* <div className='row justify-content-evenly'>
 						<div className='col-md-4 col-sm-12'>
 							<h1 className='titles'>Tracts</h1>
 							<TractsDropDown
 								tracts={neighborhoodMasterList![neighborhood!]}
 							></TractsDropDown>
 						</div>
-						<div className='col-md-8 col-sm-12'>
-							<h1 className='titles'>Map</h1>
-							<MapCard clickable={true}></MapCard>
-						</div>
-					</div>
-
-					{/* <div className='row justify-content-evenly'>
-						<div className='col-md-3 col-sm-12'>
-							<SearchBarDropDown
-								title='Neighborhoods'
-								listOfWords={Object.keys(
-									neighborhoodMasterList!,
-								)}
-							></SearchBarDropDown>
-						</div>
 					</div> */}
-
-					{/* <div className='row justify-content-evenly'>
-						<div className='col-md-12 col-sm-12'>
-							<h1 className='titles'>Map</h1>
-							<MapCard clickable={true}></MapCard>
-						</div>
-					</div>  */}
-
 					
 
 					<div className='row justify-content-evenly'>
