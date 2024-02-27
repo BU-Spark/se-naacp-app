@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
 import FrequencyBarChart from "../../components/FrequencyBarChart/FrequencyBarChart";
 import NeighborhoodDemographicsBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
+import TractsDropDownSmall from "../../components/TractsDropDownSmall/TractsDropDownSmall";
 import TractsDropDown from "../../components/TractsDropDown/TractsDropDown";
 import MapCard from "../../components/MapCard/MapCard";
 import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
@@ -28,7 +29,6 @@ import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../contexts/topics_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
 import { minDate, maxDate } from "../../App";
-import TractsDropDownSmall from "../../components/TractsDropDown/TractsDropDownSmall";
 
 const NeighborhoodPage: React.FC = () => {
 	//Context

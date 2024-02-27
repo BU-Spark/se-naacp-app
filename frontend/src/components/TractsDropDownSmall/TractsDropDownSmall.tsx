@@ -64,11 +64,11 @@ function getNeighborhood(
   }
   return "";
 }
-interface TractsDropDownProps {
+interface TractsDropDownSmallProps {
   tracts: string[];
 }
 
-const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
+const TractsDropDownSmall: React.FC<TractsDropDownSmallProps> = ({ tracts }) => {
   const { articleData, queryArticleDataType, setShouldRefresh, shouldRefresh } =
     React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
@@ -79,66 +79,21 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
 
   const handleChange = (event: any) => {
     setSelectedTract(event.target.value);
+
+    // set dummy array if no tract data - prevent rendering error 
     var dummy = tracts;
     if (!dummy) {
       dummy = [];
     }
 
     const items: MenuItem[] = [];
-
     for (let index = 0; index < dummy.length; index++) {
       const x = extractNeighborhoodTract(dummy[index]);
       items.push(getItem(dummy[index], x[1]));
     }
-
-    const onSelectItem: MenuProps["onClick"] = (keys) => {
-      // console.log(keys);
-      const match = /([\w\s]+ - )?(\d+)/.exec(keys.key);
-      let location = "";
-      let number = "";
-
-      if (match) {
-        location = match[1] ? match[1].slice(0, -3) : ""; // Remove trailing ' - ' from the location
-        number = match[2];
-      }
-      setShouldRefresh(false);
-
-      queryTractDataType("TRACT_DATA", {
-        tract: number,
-      });
-
-      if (location) {
-        setNeighborhood(location);
-      } else {
-        // console.log(getNeighborhood(number, neighborhoodMasterList!))
-        setNeighborhood(getNeighborhood(number, neighborhoodMasterList!));
-      }
-    };
-
-  }
-
-  var dummy = tracts;
-  if (!dummy) {
-    dummy = [];
-  }
-
-  const items: MenuItem[] = [];
-
-  for (let index = 0; index < dummy.length; index++) {
-    const x = extractNeighborhoodTract(dummy[index]);
-    items.push(getItem(dummy[index], x[1]));
-  }
-
-  const onSelectItem: MenuProps["onClick"] = (keys) => {
-    // console.log(keys);
-    const match = /([\w\s]+ - )?(\d+)/.exec(keys.key);
-    let location = "";
-    let number = "";
-
-    if (match) {
-      location = match[1] ? match[1].slice(0, -3) : ""; // Remove trailing ' - ' from the location
-      number = match[2];
-    }
+    
+    // get location and number
+    const [location, number] = extractNeighborhoodTract(event.target.value);
     setShouldRefresh(false);
 
     queryTractDataType("TRACT_DATA", {
@@ -151,12 +106,13 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
       // console.log(getNeighborhood(number, neighborhoodMasterList!))
       setNeighborhood(getNeighborhood(number, neighborhoodMasterList!));
     }
-  };
+  }
 
   return (
-    <FormControl fullWidth>
-      <InputLabel id="tract-select-label">Tract</InputLabel>
+    <FormControl sx={{ m: 1, minWidth: 120, marginTop: 0.9 }}>
+      <InputLabel id="tract-select-label">Census Tract</InputLabel>
       <Select
+        style={{ height: "32px", borderRadius: 0, backgroundColor: "white" }}
         labelId="tract-select-label"
         id="tract-select"
         value={selectedTract}
@@ -171,4 +127,4 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
   );
 };
 
-export default TractsDropDown;
+export default TractsDropDownSmall;
