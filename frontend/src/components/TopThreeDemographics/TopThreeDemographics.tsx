@@ -143,7 +143,7 @@ const TopThreeDemographics: React.FC<TopThreeDemographicsProps> = ({ articles, h
                 color: data[2].color  
               }
             ]}
-            
+            tooltip={{ trigger: 'item' }}
 
 		    />	
         </CardContent>
