@@ -15,6 +15,7 @@ import AtGlance from "../../components/AtGlance/atGlance";
 import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods";
 import AllNeighborhoodsBar from "../../components/AllNeighborhoodsBar/AllNeighborhoodsBar";
 import Button from "@mui/material/Button";
+import { BarChart } from "@mui/x-charts/BarChart";
 //Types
 import { Article, Demographics } from "../../__generated__/graphql";
 
@@ -29,6 +30,7 @@ import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../contexts/topics_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
 import { minDate, maxDate } from "../../App";
+import TopThreeDemographics from "../../components/TopThreeDemographics/TopThreeDemographics";
 
 const NeighborhoodPage: React.FC = () => {
 	//Context
@@ -155,6 +157,7 @@ const NeighborhoodPage: React.FC = () => {
 					<div className="row justify-content-evenly">
 						<div className="col-md-4 col-sm-12">
 							<AtGlance articles={articleData!} height="15vh"></AtGlance>
+							<TopThreeDemographics articles={articleData!} height="30vh"></TopThreeDemographics>							
 						</div>
 						<div className='col-md-8 col-sm-12'>
 							<MapCard clickable={true}></MapCard>

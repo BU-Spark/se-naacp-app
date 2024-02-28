@@ -1,0 +1,39 @@
+.body .card-header {
+  background-color: rebeccapurple;
+  height: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.body .card-header .header-word {
+  color: #ffffff;
+  font-family: "Karla-Bold", Helvetica;
+  font-size: 20px;
+  font-weight: 700;
+  margin-left: 20px;
+}
+
+.content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-height: max-content;
+  padding: 20px; 
+}
+
+
+.big-number {
+    color: #1bb0a1;
+    font-family: "Karla-Bold", Helvetica;
+    font-size: calc(20px + 0.4vw);
+    font-weight: 700;
+}
+
+.label {
+    color: #1c1c1c;
+    font-family: "Karla-Regular", Helvetica;
+    font-size: calc(3px + 0.4vw);
+    font-weight: 900;
+    margin-bottom: 10px;
+}
