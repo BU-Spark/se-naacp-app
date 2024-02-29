@@ -4,6 +4,11 @@
   width: 100%;
   display: flex;
   align-items: center;
+ 
+}
+
+.body {
+    margin-top: 1em
 }
 
 .body .card-header .header-word {

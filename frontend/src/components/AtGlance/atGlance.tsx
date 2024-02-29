@@ -43,7 +43,7 @@ const AtGlance: React.FC<AtGlanceProps> = ({ articles, height }) => {
           <span className="header-word">Overview</span>
         </div>
         <CardContent className="content" sx={{ height: height }}>
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={1}>
             <DemoPaper variant="outlined" square={false}>
               <div className="number-box">
                 <div className="big-number">{uniqueArticles}</div>
@@ -52,7 +52,7 @@ const AtGlance: React.FC<AtGlanceProps> = ({ articles, height }) => {
             </DemoPaper>
           </Stack>
 
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={1}>
             <DemoPaper variant="outlined" square={false}>
               <div className="number-box">
                 <div className="big-number">{uniqueOpenaiLabels.size}</div>
@@ -61,14 +61,7 @@ const AtGlance: React.FC<AtGlanceProps> = ({ articles, height }) => {
             </DemoPaper>
           </Stack>
 
-          <Stack direction="row" spacing={2}>
-            <DemoPaper variant="outlined" square={false}>
-              <div className="number-box">
-                <div className="big-number">{uniqueNeighborhoods.size}</div>
-                <div className="label">NEIGHBORHOODS</div>
-              </div>
-            </DemoPaper>
-          </Stack>
+          
         </CardContent>
       </Card>
     </>
