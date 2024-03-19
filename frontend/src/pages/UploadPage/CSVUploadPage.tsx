@@ -7,7 +7,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import "./CSVUploadPage.css";
 import { UploadContext } from "../../contexts/upload_context";
 import { Uploads } from "../../__generated__/graphql";
-import { useOrganization, useUser } from "@clerk/clerk-react";
+import { useOrganization, useUser, useAuth } from "@clerk/clerk-react";
 
 // Define a type for the file with progress information
 type UploadedFile = {
@@ -31,6 +31,9 @@ const CSVUploadBox = () => {
 	const [uploads, setUpload] = useState<Uploads[]>([]);
 	const { user, isSignedIn } = useUser();
 	const { organization } = useOrganization();
+	//permission check for uploading CSVs
+	const {has} = useAuth();
+	const canManageSettings = has ? has({ permission: "org:test:limit" }) : false;
 
 	useEffect(() => {
 		if (isSignedIn && user) {
@@ -310,6 +313,19 @@ const CSVUploadBox = () => {
 		}
 		// need some logic to handle file history
 	};
+	//If the user is does not have access to the upload page
+	if (!canManageSettings) { 
+		return (
+		<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+			<div style={{ textAlign: 'center' }}>
+			  <div>You do not have permission to access this page.</div>
+			</div>
+			<div style={{ textAlign: 'center' }}>
+			  <div>Please contact the administrator.</div>
+			</div>
+		</div>
+		);
+	}
 
 	return (
 		<div>
