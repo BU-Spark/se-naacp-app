@@ -3,10 +3,8 @@ import React from "react";
 import dayjs from "dayjs";
 
 //Components
-import TopicsSearchBar from "../../../components/SearchFields/TopicsSearchBar/TopicsSearchBar";
-import BubbleChart from "../../../components/BubbleChart/BubbleChart";
-
-//Types
+import BasicAccordionSmall from "../../../components/AccordionSmall/AccordionSmall";
+import TopicsSearchBarLabelOnly from "../../../components/SearchFields/TopicsSearchBarLabelOnly/TopicsSearchBarLabelOnly";
 
 //CSS
 import "./TopicsSearchPage.css";
@@ -15,7 +13,7 @@ import image from "../../../assets/images/bos.png";
 //Contex
 import { TopicsContext } from "../../../contexts/topics_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
-import BasicAccordionSmall from "../../../components/AccordionSmall/AccordionSmall";
+
 
 const TopicsSearchPage: React.FC = () => {
   const { queryNeighborhoodDataType } = React.useContext(NeighborhoodContext);
@@ -33,7 +31,7 @@ const TopicsSearchPage: React.FC = () => {
 
             <div className="row justify-content-center align-items-center">
                 <div className="col alignBar">
-                  <TopicsSearchBar listOfWords={[]}></TopicsSearchBar>
+                  <TopicsSearchBarLabelOnly listOfWords={[]}></TopicsSearchBarLabelOnly>
                 </div>
             </div>
 
