@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import nodemailer from "nodemailer";
-import config from "./config.json" with {type: json};
+import config from "./config.json" assert {type: json};
 
 const transporter =  nodemailer.createTransport({
 	host: "smtp.sendgrid.net",
@@ -119,7 +119,13 @@ const connectMongo = async() => {
 				from: 'malbaker@bu.edu', // sender address
 				to: results[org].members, // list of receivers
 				subject: `Update for ${org} from Spark Media Bias`, // Subject line
-				text: `Hello ${org} members, your organization has uploaded ${articles.length} new articles in the past week. Please log into the Media Bias app to see more details.`
+				text: `Hello ${org} members, your organization has uploaded ${articles.length} new articles in the past week. 
+					Please log into the Media Bias app with the link below to see more details. \n \n https://bu-naacp.up.railway.app`,
+				html: `<p> \
+					Hello ${org} members, <br/> \
+					Your organization has uploaded ${articles.length} new articles in the past week. \
+					Please <a href=\"https://bu-naacp.up.railway.app/Dashboard\">log into the Media Bias app</a> to see more details.\
+				</p>`,
 			});
 			console.log("Message sent: %s", email_info.messageId);
 		}
@@ -127,12 +133,20 @@ const connectMongo = async() => {
 		
 
 	//EMAIL SENDING TEMPLATE
+    // let articles = [1,2,3,5,6]
+	// let org  = "TEST"
 
 	// const email_info = await transporter.sendMail({
   	//   	from: 'malbaker@bu.edu', // sender address
-  	//   	to: "", // list of receivers
-  	//   	subject: "", // Subject line
-  	//   	text: "", // plain text body
+  	//   	to: "malbaker@bu.edu", // list of receivers
+  	//   	subject: "test with link", // Subject line
+  	//   	text: `Hello ${org} members, your organization has uploaded ${articles.length} new articles in the past week. 
+	// 				Please log into the Media Bias app with the link below to see more details. \n \n https://bu-naacp.up.railway.app`,
+	// 			html: `<p> \
+	// 				Hello ${org} members, <br/> \
+	// 				Your organization has uploaded ${articles.length} new articles in the past week. \
+	// 				Please <a href=\"https://bu-naacp.up.railway.app/Dashboard\">log into the Media Bias app</a> to see more details.\
+	// 			</p>`,
 	// });
 	// console.log("Message sent: %s", email_info.messageId);
 	mongoose.disconnect().then(console.log("Bye mongo"));
