@@ -1,5 +1,0 @@
-{
-    "CLERK_BACKEND_KEY" : "",
-    "SENDGRID_RELAY_KEY": "",
-    "MONGODB_PROD_CONN" : ""
-}
