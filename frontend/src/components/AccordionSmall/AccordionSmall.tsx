@@ -73,6 +73,32 @@ const getTractDetailsWithTotalCount = (
     });
   });
 
+  // Aggregate all tracts into one for topics landing page
+  const aggregatedLabels: Record<
+    string,
+    {count: number, 
+     articles: Article[]
+    }
+  > = {};
+  Object.values(tractDetails).forEach(detail => {
+    Object.entries(detail.labels).forEach(([label, { count, articles }]) => {
+      if (!aggregatedLabels[label]) {
+        aggregatedLabels[label] = { count: 0, articles: [] }
+      }
+      aggregatedLabels[label].count += count;
+      // need to use set
+      aggregatedLabels[label].articles = aggregatedLabels[label].articles.concat(articles.filter(article => !aggregatedLabels[label].articles.find(a => a.content_id === article.content_id)));
+    })
+  })
+
+  // Transform Aggregated data into an array and sort it by count
+  const aggregatedLabelsArray = Object.entries(aggregatedLabels).map(([name, { count, articles }]) => ({
+    name,
+    value: count,
+    articles
+  })).sort((a, b) => b.value - a.value )
+
+
   // Converting to desired structure
   const tractDetailsArray: TractDetail[] = Object.entries(tractDetails)
     .map(([tract, detail]) => ({
@@ -88,11 +114,16 @@ const getTractDetailsWithTotalCount = (
         .slice(0, 10), // Limit to top 10 labels
     }))
     .sort((a, b) => b.totalLabelCount - a.totalLabelCount)
-    .slice(0, 10); // Limit to top 10 tracts
+    .slice(0, 1); // Limit to top 10 tracts
 
     console.log(tractDetailsArray);
   return (
     <>
+      {/* <div>
+          <Accordion key={aggregatedLabelsArray[0].name}>
+            <BubbleChart bubbleData={aggregatedLabelsArray[0].name}></BubbleChart>
+          </Accordion>
+      </div> */}
       <div>
           <Accordion key={tractDetailsArray[0].tract}>
             <BubbleChart bubbleData={tractDetailsArray[0].labelsCount}></BubbleChart>
@@ -125,15 +156,15 @@ const BasicAccordionSmall: React.FC = () => {
   return (
     <>
       <Card className="body" sx={{ width: "100%" }}>
-        <CardContent sx={{ width: "100%" }}>
-          <div><h1 className='titles'>Top 10 Topics</h1></div>
+        {/* <CardContent sx={{ width: "100%" }}> */}
+          <h1 className='titles'>Top 10 Topics</h1>
 
           {articles === null || articles.length === 0 ? (
             <Callback></Callback>
           ) : (
             wrapper(articles, neighborhoodMasterList!)
           )}
-        </CardContent>
+        {/* </CardContent> */}
       </Card>
     </>
   );
