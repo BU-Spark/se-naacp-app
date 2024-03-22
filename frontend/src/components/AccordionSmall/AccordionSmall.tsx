@@ -10,7 +10,9 @@ import { Article } from "../../__generated__/graphql";
 import Callback from "../../pages/Callback/Callback";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import "./AccordionSmall.css";
-import BubbleChart from "../BubbleChart/BubbleChart";
+// import BubbleChart from "../BubbleChart/BubbleChart";
+import BubbleChartBig from "../BubbleChartBig/BubbleChartBig";
+
 interface TractCount {
   name: string;
   value: number;
@@ -126,7 +128,7 @@ const getTractDetailsWithTotalCount = (
       </div> */}
       <div>
           <Accordion key={tractDetailsArray[0].tract}>
-            <BubbleChart bubbleData={tractDetailsArray[0].labelsCount}></BubbleChart>
+            <BubbleChartBig bubbleData={tractDetailsArray[0].labelsCount}></BubbleChartBig>
           </Accordion>
       </div>
     </>

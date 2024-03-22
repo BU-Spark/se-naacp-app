@@ -1,0 +1,54 @@
+.bubble-chart {
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  width: 40vw;
+  height: 70vh;
+  padding-bottom: 8vh;
+  padding-top: 3vh;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  border-radius: 4px;
+}
+
+.card {
+  text-align: left;
+}
+
+.body {
+  font-family: -apple-system, system-ui;
+  
+}
+
+
+.data-cards {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.graph_card{
+  margin-top: 20px;
+
+  width: 45vw;
+  height: 50.5vh;
+  padding-bottom: 8vh;
+  padding-top: 3vh;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  border-radius: 4px;
+}
+
+.master_content_container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-bottom: 50px;
+}
+
+.closeArticleButton {
+  text-align: right;
+  cursor: pointer;
+  margin-top: 8px;
+  margin-right: 16px;
+}
