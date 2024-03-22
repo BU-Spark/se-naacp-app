@@ -1,0 +1,17 @@
+{
+  "name": "email_updates",
+  "version": "1.0.0",
+  "description": "",
+  "main": "email_updates.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./email_updates.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^8.2.3",
+    "nodemailer": "^6.9.13"
+  }
+}
