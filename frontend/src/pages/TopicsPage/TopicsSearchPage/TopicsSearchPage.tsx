@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 
 //Components
 import TopicsSearchBar from "../../../components/SearchFields/TopicsSearchBar/TopicsSearchBar";
+import BubbleChart from "../../../components/BubbleChart/BubbleChart";
 
 //Types
 
@@ -14,6 +15,7 @@ import image from "../../../assets/images/bos.png";
 //Contex
 import { TopicsContext } from "../../../contexts/topics_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
+import BasicAccordionSmall from "../../../components/AccordionSmall/AccordionSmall";
 
 const TopicsSearchPage: React.FC = () => {
   const { queryNeighborhoodDataType } = React.useContext(NeighborhoodContext);
@@ -22,29 +24,24 @@ const TopicsSearchPage: React.FC = () => {
     queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
   }, []);
   return (
-    <>
-      <div className="container-fluid background" style={{ height: "100vh" }}>
-        <div className="row justify-content-center align-items-center" >
-          <div className="col" style={{marginTop: "25vh"}}>
-            <div className="text-wrapper">Hi, Boston</div>
-          </div>
-        </div>
+    <>				
+    <div className='big-container'>
+        <div className='row'>
+            <div className='align-self-start org-name'>
+                  Explore Topics
+            </div>
 
-        <div className="row  justify-content-center align-items-center">
-          <div className="col">
-            <p>
-              Explore the variations in news coverage across various
-              neighborhoods in Boston.
-            </p>
-          </div>
-        </div>
+            <div className="row justify-content-center align-items-center">
+                <div className="col alignBar">
+                  <TopicsSearchBar listOfWords={[]}></TopicsSearchBar>
+                </div>
+            </div>
 
-        <div className="row justify-content-center align-items-center">
-          <div className="col alignBar">
-            <TopicsSearchBar listOfWords={[]}></TopicsSearchBar>
-          </div>
+            <div>
+                <BasicAccordionSmall></BasicAccordionSmall>
+            </div>
         </div>
-      </div>
+    </div>
     </>
   );
 };

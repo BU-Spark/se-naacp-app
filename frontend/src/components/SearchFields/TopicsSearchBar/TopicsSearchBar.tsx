@@ -109,7 +109,7 @@ const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
 				onSearch={handleInputChange}
 			>
 				<Search
-					placeholder='input a term'
+					placeholder='Search a Topic'
 					enterButton
 					onSearch={handleSearch}
 					suffix={
