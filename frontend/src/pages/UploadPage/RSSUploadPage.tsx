@@ -8,12 +8,15 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import "./RSSUploadPage.css";
 import { UploadContext } from "../../contexts/upload_context";
-import { useUser, useOrganization } from "@clerk/clerk-react";
+import { useUser, useOrganization, useAuth } from "@clerk/clerk-react";
 
 const RSSUploadBox = () => {
 	const { addRssFeed } = React.useContext(UploadContext)!;
 	const { user, isSignedIn } = useUser();
 	const { organization } = useOrganization();
+	//permission check for uploading RSS
+	const {has} = useAuth();
+	const canManageSettings = has ? has({ permission: "org:test:limit" }) : false;
 
 	// click CSV button -> CSV page
 	let navigate = useNavigate();
@@ -215,6 +218,19 @@ const RSSUploadBox = () => {
 				}
 			}
 		}
+	}
+	//If the user is does not have access to the upload page
+	if (!canManageSettings) { 
+		return (
+		<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+			<div style={{ textAlign: 'center' }}>
+			  <div>You do not have permission to access this page.</div>
+			</div>
+			<div style={{ textAlign: 'center' }}>
+			  <div>Please contact the administrator.</div>
+			</div>
+		</div>
+		);
 	}
 
 	return (
