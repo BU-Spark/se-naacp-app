@@ -35,6 +35,7 @@ interface TractDetail {
   labelsCount: LabelCount[];
 }
 
+
 function getNeighborhood(
   code: string,
   neighborhoods: { [key: string]: string[] }
@@ -51,85 +52,93 @@ const getTractDetailsWithTotalCount = (
   articles: Article[],
   neighborhoods: { [key: string]: string[] }
 ): React.ReactElement<any, any> => {
-  const tractDetails: Record<
-    string,
-    { totalLabelCount: number; labels: Record<string, { count: number, articles: Article[] }> }
+  // const tractDetails: Record<
+  //   string,
+  //   { totalLabelCount: number; labels: Record<string, { count: number, articles: Article[] }> }
+  // > = {};
+
+  const labelDetails: Record<
+    string, { count: number, articles: Article[] }
   > = {};
 
   // Counting tracts, labels within each tract, and storing articles
+  // articles.forEach((article) => {
+  //   article.tracts.forEach((tract) => {
+  //     if (!tractDetails[tract]) {
+  //       tractDetails[tract] = { totalLabelCount: 0, labels: {} };
+  //     }
+  //     article.openai_labels.forEach((label) => {
+  //       if (!tractDetails[tract].labels[label]) {
+  //         tractDetails[tract].labels[label] = { count: 0, articles: [] };
+  //       }
+  //       tractDetails[tract].labels[label].count++;
+  //       tractDetails[tract].labels[label].articles.push(article);
+  //     });
+
+  //     tractDetails[tract].totalLabelCount++;
+  //   });
+  // });
+
+  // Count of Articles, Article[] within each openAI label
   articles.forEach((article) => {
-    article.tracts.forEach((tract) => {
-      if (!tractDetails[tract]) {
-        tractDetails[tract] = { totalLabelCount: 0, labels: {} };
+    article.openai_labels.forEach((openai_label) => {
+      if (!labelDetails[openai_label]) {
+        labelDetails[openai_label] = { count: 0, articles: [] };
       }
-
-      article.openai_labels.forEach((label) => {
-        if (!tractDetails[tract].labels[label]) {
-          tractDetails[tract].labels[label] = { count: 0, articles: [] };
-        }
-        tractDetails[tract].labels[label].count++;
-        tractDetails[tract].labels[label].articles.push(article);
-      });
-
-      tractDetails[tract].totalLabelCount++;
+      labelDetails[openai_label].count++;
+      labelDetails[openai_label].articles.push(article)
     });
   });
 
-  // Aggregate all tracts into one for topics landing page
-  const aggregatedLabels: Record<
-    string,
-    {count: number, 
-     articles: Article[]
-    }
-  > = {};
-  Object.values(tractDetails).forEach(detail => {
-    Object.entries(detail.labels).forEach(([label, { count, articles }]) => {
-      if (!aggregatedLabels[label]) {
-        aggregatedLabels[label] = { count: 0, articles: [] }
-      }
-      aggregatedLabels[label].count += count;
-      // need to use set
-      aggregatedLabels[label].articles = aggregatedLabels[label].articles.concat(articles.filter(article => !aggregatedLabels[label].articles.find(a => a.content_id === article.content_id)));
-    })
-  })
+  // Article is dynamic based on context, so does labelDetails
+  // console.log("labelDetails", labelDetails);
+  // console.log("articles", articles);
 
-  // Transform Aggregated data into an array and sort it by count
-  const aggregatedLabelsArray = Object.entries(aggregatedLabels).map(([name, { count, articles }]) => ({
-    name,
-    value: count,
-    articles
-  })).sort((a, b) => b.value - a.value )
+  // Converting to desired structure
+  const labelDetailsArray:  LabelCount[] = Object.entries(labelDetails)
+    .map(([name, detail]) => ({
+      name: name,
+      value: detail.count,
+      articles: detail.articles
+    }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 10); // Limit to top 10 labels
+
+  console.log("labelDetailsArray", labelDetailsArray)
 
 
   // Converting to desired structure
-  const tractDetailsArray: TractDetail[] = Object.entries(tractDetails)
-    .map(([tract, detail]) => ({
-      tract: tract,
-      totalLabelCount: detail.totalLabelCount,
-      labelsCount: Object.entries(detail.labels)
-        .map(([name, labelDetail]) => ({
-          name,
-          value: labelDetail.count,
-          articles: labelDetail.articles
-        }))
-        .sort((a, b) => b.value - a.value)
-        .slice(0, 10), // Limit to top 10 labels
-    }))
-    .sort((a, b) => b.totalLabelCount - a.totalLabelCount)
-    .slice(0, 1); // Limit to top 10 tracts
+  // const tractDetailsArray: TractDetail[] = Object.entries(tractDetails)
+  //   .map(([tract, detail]) => ({
+  //     tract: tract,
+  //     totalLabelCount: detail.totalLabelCount,
+  //     labelsCount: Object.entries(detail.labels)
+  //       .map(([name, labelDetail]) => ({
+  //         name,
+  //         value: labelDetail.count,
+  //         articles: labelDetail.articles
+  //       }))
+  //       .sort((a, b) => b.value - a.value)
+  //       .slice(0, 10), // Limit to top 10 labels
+  //   }))
+  //   .sort((a, b) => b.totalLabelCount - a.totalLabelCount)
+  //   .slice(0, 1); // Limit to top 10 tracts
 
-    console.log(tractDetailsArray);
+  // console.log(tractDetailsArray);
+  // console.log("tractDetailsArray", tractDetailsArray)
+  // console.log("tractDetailsArray[0]", tractDetailsArray[0].labelsCount)
+  
+
   return (
     <>
       {/* <div>
-          <Accordion key={aggregatedLabelsArray[0].name}>
-            <BubbleChart bubbleData={aggregatedLabelsArray[0].name}></BubbleChart>
-          </Accordion>
-      </div> */}
-      <div>
           <Accordion key={tractDetailsArray[0].tract}>
             <BubbleChartBig bubbleData={tractDetailsArray[0].labelsCount}></BubbleChartBig>
           </Accordion>
+      </div> */}
+
+      <div>
+          <BubbleChartBig bubbleData={labelDetailsArray}></BubbleChartBig>
       </div>
     </>
   );
