@@ -22,7 +22,9 @@ const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
 	const { organization } = useOrganization();
 
 	const {
+		topic,
 		setTopic,
+		topicsMasterList,
 		labelsMasterList,
 		queryTopicsDataType,
 	} = useContext(TopicsContext)!;
@@ -31,31 +33,30 @@ const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
 		React.useContext(ArticleContext)!;
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [options, setOptions] = useState<string[]>([]);
-	// const [isOpenAI, setIsOpenAI] = useState<boolean>(false);
+	const [isOpenAI, setIsOpenAI] = useState<boolean>(false);
 
 	React.useEffect(() => {
-		if (labelsMasterList) {
+		if (topicsMasterList && labelsMasterList) {
 			setIsLoading(false);
-			// setOptions(topicsMasterList);
 			setOptions(labelsMasterList);
 		} else {
 			if (organization) {
-				// queryTopicsDataType("TOPICS_DATA", {
-				// 	userId: organization.id,
-				// });
+				queryTopicsDataType("TOPICS_DATA", {
+					userId: organization.id,
+				});
 				queryTopicsDataType("LABELS_DATA", {
 					userId: organization.id,
 				});
 			} else {
-				// queryTopicsDataType("TOPICS_DATA", {
-				// 	userId: user?.id,
-				// });
+				queryTopicsDataType("TOPICS_DATA", {
+					userId: user?.id,
+				});
 				queryTopicsDataType("LABELS_DATA", {
 					userId: user?.id,
 				});
 			}
 		}
-	}, [labelsMasterList]);
+	}, [topicsMasterList, labelsMasterList]);
 
 	const handleSearch = (value: string) => {
 		if (value.trim() === "") {
@@ -72,25 +73,23 @@ const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
 			);
 			setOptions(matchedOptions);
 		} else {
-			setOptions(labelsMasterList!);
-
-			// if (isOpenAI) {
-			// 	setOptions(labelsMasterList!);
-			// } else {
-			// 	setOptions(topicsMasterList!);
-			// }
+			if (isOpenAI) {
+				setOptions(labelsMasterList!);
+			} else {
+				setOptions(topicsMasterList!);
+			}
 		}
 	};
 
-	// const onSwitchChange = (checked: boolean) => {
-	// 	setIsOpenAI(checked);
+	const onSwitchChange = (checked: boolean) => {
+		setIsOpenAI(checked);
 
-	// 	if (checked) {
-	// 		setOptions(labelsMasterList!);
-	// 	} else {
-	// 		setOptions(topicsMasterList!);
-	// 	}
-	// };
+		if (checked) {
+			setOptions(labelsMasterList!);
+		} else {
+			setOptions(topicsMasterList!);
+		}
+	};
 
 	return isLoading ? (
 		<Stack

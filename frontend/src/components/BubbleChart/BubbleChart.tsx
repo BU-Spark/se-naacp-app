@@ -1,27 +1,17 @@
 import "./BubbleChart.css";
 
-import { ResponsiveCirclePackingCanvas } from "@nivo/circle-packing";
 import { useState } from "react";
-
-import { ResponsivePie } from "@nivo/pie";
-
-import queryMethods from "../../Pipelines/data";
-
 import * as React from "react";
-
-import { Link } from "@mui/material";
-
 import uniqid from "uniqid";
-
 import dayjs from "dayjs";
-import { DataGrid } from "@mui/x-data-grid";
 
+import { ResponsiveCirclePackingCanvas } from "@nivo/circle-packing";
+import { Link } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import ArticleCard from "../ArticleCard/ArticleCard";
-
 import Button from "@mui/material/Button";
-
 
 interface BubbleChartProps {
   bubbleData: { name: string; value: number }[];

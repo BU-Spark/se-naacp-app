@@ -1,57 +1,43 @@
 import "./BubbleChartBig.css";
 
-import { ResponsiveCirclePackingCanvas } from "@nivo/circle-packing";
-import { useState } from "react";
-
-import { ResponsivePie } from "@nivo/pie";
-
-import queryMethods from "../../Pipelines/data";
-
+import { useContext, useState } from "react";
 import * as React from "react";
-
-import { Link } from "@mui/material";
-
 import uniqid from "uniqid";
-
 import dayjs from "dayjs";
-import { DataGrid } from "@mui/x-data-grid";
 
+import { ResponsiveCirclePackingCanvas } from "@nivo/circle-packing";
+import { Link } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import ArticleCard from "../ArticleCard/ArticleCard";
-
 import Button from "@mui/material/Button";
-
+import { TopicsContext } from "../../contexts/topics_context";
+import { useNavigate } from "react-router-dom";
 
 interface BubbleChartProps {
   bubbleData: { name: string; value: number }[];
 }
 
 const BubbleChart: React.FC<BubbleChartProps> = ({ bubbleData }) => {
+  const {
+		setTopic
+	} = useContext(TopicsContext)!;
+  const navigate = useNavigate(); // Enforce typing here
   const [zoomedId, setZoomedId] = useState(null);
   const [length, setLength] = useState("col-md-12 col-sm-12");
-  const [articles, setArticles] = useState([]);
-
-  const handleCloseArticles = () => {
-    setZoomedId(null); // This will hide the article list
-    setLength("col-md-12 col-sm-12");
-  };
 
   const data = {
     name: "root",
     children: bubbleData,
   };
 
+  // route to topic page
   const handleNodeClick = async (node: any) => {
-    console.log();
-    if (zoomedId === node.id) {
-      setZoomedId(null);
-      setLength("col-md-12 col-sm-12");
-    } else {
-      setArticles(node.data.articles);
-      setLength("col-md-4 col-sm-12");
-      setZoomedId(node.id);
-    }
+    // console.log("node: ", node);
+    // node.id is the label
+    setTopic(node.id);
+    navigate("/Topics");
   };
 
   return (
@@ -90,20 +76,6 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ bubbleData }) => {
             {/* </CardContent> */}
           </Card>
         </div>
-        {zoomedId && (
-        <div className="col-md-8 col-sm-12">
-          <div className='closeArticleButton'>
-            <Button 
-            variant='outlined' 
-            color='error' 
-            size='small'
-            onClick={handleCloseArticles}>
-                X
-            </Button>
-          </div>
-          <ArticleCard optionalArticles={articles}></ArticleCard>
-        </div>
-        )}
       </div>
     </>
   );
