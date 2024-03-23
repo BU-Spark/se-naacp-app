@@ -34,6 +34,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ bubbleData }) => {
 
   const handleCloseArticles = () => {
     setZoomedId(null); // This will hide the article list
+    setLength("col-md-12 col-sm-12");
   };
 
   const data = {
