@@ -13,27 +13,27 @@ import "./AccordionSmall.css";
 // import BubbleChart from "../BubbleChart/BubbleChart";
 import BubbleChartBig from "../BubbleChartBig/BubbleChartBig";
 
-interface TractCount {
-  name: string;
-  value: number;
-}
+// interface TractCount {
+//   name: string;
+//   value: number;
+// }
 
-interface LabelDetail {
-  label: string;
-  totalCount: number;
-  tractsCount: TractCount[];
-}
+// interface LabelDetail {
+//   label: string;
+//   totalCount: number;
+//   tractsCount: TractCount[];
+// }
 
 interface LabelCount {
   name: string;
   value: number;
 }
 
-interface TractDetail {
-  tract: string;
-  totalLabelCount: number;
-  labelsCount: LabelCount[];
-}
+// interface TractDetail {
+//   tract: string;
+//   totalLabelCount: number;
+//   labelsCount: LabelCount[];
+// }
 
 
 function getNeighborhood(
@@ -91,8 +91,8 @@ const getTractDetailsWithTotalCount = (
   });
 
   // Article is dynamic based on context, so does labelDetails
-  // console.log("labelDetails", labelDetails);
-  // console.log("articles", articles);
+  console.log("labelDetails", labelDetails);
+  console.log("articles", articles);
 
   // Converting to desired structure
   const labelDetailsArray:  LabelCount[] = Object.entries(labelDetails)
@@ -154,15 +154,15 @@ const wrapper = (
 
 
 const BasicAccordionSmall: React.FC = () => {
-  const { articleData, queryArticleDataType } =
+  const { articleData2, queryArticleDataType } =
     React.useContext(ArticleContext)!;
   const [articles, setArticles] = React.useState<Article[]>([]);
   const { neighborhoodMasterList } = React.useContext(NeighborhoodContext)!;
   React.useEffect(() => {
-    if (articleData) {
-      setArticles(articleData);
+    if (articleData2) {
+      setArticles(articleData2);
     }
-  }, [articleData]);
+  }, [articleData2]);
 
   return (
     <>
