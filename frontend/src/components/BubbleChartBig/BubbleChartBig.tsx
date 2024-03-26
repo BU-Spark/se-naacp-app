@@ -2,16 +2,9 @@ import "./BubbleChartBig.css";
 
 import { useContext, useState } from "react";
 import * as React from "react";
-import uniqid from "uniqid";
-import dayjs from "dayjs";
 
 import { ResponsiveCirclePackingCanvas } from "@nivo/circle-packing";
-import { Link } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import ArticleCard from "../ArticleCard/ArticleCard";
-import Button from "@mui/material/Button";
 import { TopicsContext } from "../../contexts/topics_context";
 import { useNavigate } from "react-router-dom";
 
@@ -21,6 +14,7 @@ interface BubbleChartProps {
 
 const BubbleChart: React.FC<BubbleChartProps> = ({ bubbleData }) => {
   const {
+    topic,
 		setTopic
 	} = useContext(TopicsContext)!;
   const navigate = useNavigate(); // Enforce typing here

@@ -12,6 +12,9 @@ import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import "./AccordionSmall.css";
 // import BubbleChart from "../BubbleChart/BubbleChart";
 import BubbleChartBig from "../BubbleChartBig/BubbleChartBig";
+import { gql, useLazyQuery } from "@apollo/client";
+import { maxDate, minDate } from "../../App";
+import { useOrganization } from "@clerk/clerk-react";
 
 // interface TractCount {
 //   name: string;
@@ -92,7 +95,7 @@ const getTractDetailsWithTotalCount = (
 
   // Article is dynamic based on context, so does labelDetails
   // console.log("labelDetails", labelDetails);
-  // console.log("articles", articles);
+  console.log("articles", articles);
 
   // Converting to desired structure
   const labelDetailsArray:  LabelCount[] = Object.entries(labelDetails)
@@ -104,7 +107,7 @@ const getTractDetailsWithTotalCount = (
     .sort((a, b) => b.value - a.value)
     .slice(0, 10); // Limit to top 10 labels
 
-  // console.log("labelDetailsArray", labelDetailsArray)
+  console.log("labelDetailsArray", labelDetailsArray)
 
 
   // Converting to desired structure
@@ -154,11 +157,21 @@ const wrapper = (
 
 
 const BasicAccordionSmall: React.FC = () => {
-  const { articleData2, queryArticleDataType } =
+  const { articleData2, queryArticleDataType2 } =
     React.useContext(ArticleContext)!;
   const [articles, setArticles] = React.useState<Article[]>([]);
   const { neighborhoodMasterList } = React.useContext(NeighborhoodContext)!;
+
+  const { organization } = useOrganization();
+
   React.useEffect(() => {
+    // Band-aid Solution, need to find out how articles is leaking into articles 2
+    queryArticleDataType2("ARTICLE_DATA", {
+      dateFrom: parseInt(minDate.format("YYYYMMDD")),
+      dateTo: parseInt(maxDate.format("YYYYMMDD")),
+      area: "all",
+      userId: organization?.id,
+    });
     if (articleData2) {
       setArticles(articleData2);
     }

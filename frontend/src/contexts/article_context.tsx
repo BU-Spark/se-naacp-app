@@ -105,7 +105,9 @@ const ArticleProvider: React.FC = ({ children }: any) => {
     if (articleData2 && !articleData2Loading && !articleData2Error) {
       setArticleData2(articleData2.articleByDate);
     }
-  }, [articleData2, articleData2Loading, articleData2Error]);
+  }, [articleData2 ? JSON.parse(JSON.stringify(articleData2)) : articleData2, articleData2Loading, articleData2Error]);
+  // we added JSON.parse here because we force react to recognize both articleData and articleData2. 
+  // Otherwise, react thinks they are the same and only processes articleData and ignores useEffect of articleData2. 
 
   React.useEffect(() => {
     if (

@@ -1,6 +1,5 @@
 //Libaries
 import React from "react";
-import dayjs from "dayjs";
 
 //Components
 import BasicAccordionSmall from "../../../components/AccordionSmall/AccordionSmall";
@@ -8,12 +7,9 @@ import TopicsSearchBarLabelOnly from "../../../components/SearchFields/TopicsSea
 
 //CSS
 import "./TopicsSearchPage.css";
-import image from "../../../assets/images/bos.png";
 
-//Contex
-import { TopicsContext } from "../../../contexts/topics_context";
+//Context
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
-
 
 const TopicsSearchPage: React.FC = () => {
   const { queryNeighborhoodDataType } = React.useContext(NeighborhoodContext);
