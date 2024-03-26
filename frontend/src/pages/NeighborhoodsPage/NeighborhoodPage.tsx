@@ -1,6 +1,5 @@
 //Libaries
 import React, { useContext, useState } from "react";
-import dayjs from "dayjs";
 
 //Components
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
@@ -12,17 +11,12 @@ import MapCard from "../../components/MapCard/MapCard";
 import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
 import DateField from "../../components/SearchFields/DateBar/DateBar";
 import AtGlance from "../../components/AtGlance/atGlance";
-import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods";
-import AllNeighborhoodsBar from "../../components/AllNeighborhoodsBar/AllNeighborhoodsBar";
 import Button from "@mui/material/Button";
-import { BarChart } from "@mui/x-charts/BarChart";
-//Types
-import { Article, Demographics } from "../../__generated__/graphql";
 
 //CSS
 import "./NeighborhoodPage.css";
 
-//Contex
+//Context
 import { TractContext } from "../../contexts/tract_context";
 import { ArticleContext } from "../../contexts/article_context";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";

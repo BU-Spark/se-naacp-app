@@ -1,6 +1,5 @@
 //Libaries
 import React from "react";
-import dayjs from "dayjs";
 
 //Components
 import ArticleCard from "../../../components/ArticleCard/ArticleCard";
@@ -9,13 +8,13 @@ import TractsDropDown from "../../../components/TractsDropDown/TractsDropDown";
 import MapCard from "../../../components/MapCard/MapCard";
 
 //Types
-import { Article, Demographics } from "../../../__generated__/graphql";
+import { Article } from "../../../__generated__/graphql";
 
 //CSS
 import "./TopicsPage.css";
 import "@fortawesome/fontawesome-free/css/all.css";
 
-//Contex
+//Context
 import { TractContext } from "../../../contexts/tract_context";
 import { ArticleContext } from "../../../contexts/article_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
@@ -106,16 +105,14 @@ function extractNeighborhoodTract(text: string) {
 const TopicsPage: React.FC = () => {
 	const navigate = useNavigate(); // Initialize useNavigate hook
 
-	function handleBoxClick() {
-		navigate("../TopicsSearchPage"); // Navigate to the new route
-	}
-
-	//Contex
+	//Context
 	const {
 		articleData,
+		articleData2,
 		queryArticleDataType,
 		setShouldRefresh,
 		shouldRefresh,
+		queryArticleDataType2
 	} = React.useContext(ArticleContext)!;
 	const { tractData, queryTractDataType } = React.useContext(TractContext)!;
 	const { neighborhoodMasterList, setNeighborhood, neighborhood } =
@@ -129,6 +126,10 @@ const TopicsPage: React.FC = () => {
 	const [tracts, setTracts] = React.useState<string[]>([]);
 	const [flag, setFlag] = React.useState(true);
 	const [currentTopic, setcurrentTopic] = React.useState("");
+
+	function handleBoxClick() {
+		navigate("../TopicsSearchPage"); // Navigate to the new route
+	}
 
 	// Setting Default Values
 	React.useEffect(() => {

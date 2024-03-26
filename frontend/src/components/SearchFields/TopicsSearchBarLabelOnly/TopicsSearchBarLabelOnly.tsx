@@ -1,5 +1,5 @@
 import React from "react";
-import "./TopicsSearchBar.css";
+import "./TopicsSearchBarLabelOnly.css";
 
 import { Input, Switch, AutoComplete } from "antd";
 import { useContext, useState } from "react";
@@ -38,7 +38,7 @@ const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
 	React.useEffect(() => {
 		if (topicsMasterList && labelsMasterList) {
 			setIsLoading(false);
-			setOptions(topicsMasterList);
+			setOptions(labelsMasterList);
 		} else {
 			if (organization) {
 				queryTopicsDataType("TOPICS_DATA", {
@@ -112,15 +112,15 @@ const TopicsSearchBar: React.FC<SearchBarDropDownProps> = ({ listOfWords }) => {
 					placeholder='Search a Topic'
 					enterButton
 					onSearch={handleSearch}
-					suffix={
-						<Switch
-							checkedChildren='Labels'
-							unCheckedChildren='Topics'
-							checked={isOpenAI}
-							onChange={onSwitchChange}
-							className='search-switch'
-						/>
-					}
+					// suffix={
+					// 	<Switch
+					// 		checkedChildren='Labels'
+					// 		unCheckedChildren='Topics'
+					// 		checked={isOpenAI}
+					// 		onChange={onSwitchChange}
+					// 		className='search-switch'
+					// 	/>
+					// }
 				/>
 			</AutoComplete>
 		</>

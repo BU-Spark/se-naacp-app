@@ -1,18 +1,14 @@
 //Libaries
 import React from "react";
-import dayjs from "dayjs";
 
 //Components
-import TopicsSearchBar from "../../../components/SearchFields/TopicsSearchBar/TopicsSearchBar";
-
-//Types
+import BasicAccordionSmall from "../../../components/AccordionSmall/AccordionSmall";
+import TopicsSearchBarLabelOnly from "../../../components/SearchFields/TopicsSearchBarLabelOnly/TopicsSearchBarLabelOnly";
 
 //CSS
 import "./TopicsSearchPage.css";
-import image from "../../../assets/images/bos.png";
 
-//Contex
-import { TopicsContext } from "../../../contexts/topics_context";
+//Context
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 
 const TopicsSearchPage: React.FC = () => {
@@ -22,29 +18,24 @@ const TopicsSearchPage: React.FC = () => {
     queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
   }, []);
   return (
-    <>
-      <div className="container-fluid background" style={{ height: "100vh" }}>
-        <div className="row justify-content-center align-items-center" >
-          <div className="col" style={{marginTop: "25vh"}}>
-            <div className="text-wrapper">Hi, Boston</div>
-          </div>
-        </div>
+    <>				
+    <div className='big-container'>
+        <div className='row'>
+            <div className='align-self-start org-name'>
+                  Explore Topics
+            </div>
 
-        <div className="row  justify-content-center align-items-center">
-          <div className="col">
-            <p>
-              Explore the variations in news coverage across various
-              neighborhoods in Boston.
-            </p>
-          </div>
-        </div>
+            <div className="row justify-content-center align-items-center">
+                <div className="col alignBar">
+                  <TopicsSearchBarLabelOnly listOfWords={[]}></TopicsSearchBarLabelOnly>
+                </div>
+            </div>
 
-        <div className="row justify-content-center align-items-center">
-          <div className="col alignBar">
-            <TopicsSearchBar listOfWords={[]}></TopicsSearchBar>
-          </div>
+            <div>
+                <BasicAccordionSmall></BasicAccordionSmall>
+            </div>
         </div>
-      </div>
+    </div>
     </>
   );
 };
