@@ -14,5 +14,6 @@
     "mongoose": "^8.2.3",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.13"
-  }
+  },
+  "type": "module"
 }
