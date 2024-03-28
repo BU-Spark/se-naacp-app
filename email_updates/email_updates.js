@@ -155,7 +155,7 @@ const main = async () => {
 };
 
 
-cron.schedule("31 16 * * *", async () => {
+cron.schedule("35 16 * * *", async () => {
     console.log("node cron hit")
     await main();
 })
