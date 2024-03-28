@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import nodemailer from "nodemailer";
-import config from "./config.json" assert {type: json};
+//import config from "./config.json" assert {type: json};
 import cron from "node-cron"
 
 const transporter =  nodemailer.createTransport({
