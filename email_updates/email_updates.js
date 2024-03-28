@@ -64,6 +64,7 @@ const connectMongo = async() => {
 
 const main = async () => {
     // Connect to mongo
+
     await connectMongo().then(
         console.log("mongo connected")
     );
@@ -155,5 +156,6 @@ const main = async () => {
 
 
 cron.schedule("0 10 28 * *", async () => {
+    console.log("node cron hit")
     await main();
 })
