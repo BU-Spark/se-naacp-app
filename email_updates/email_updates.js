@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import nodemailer from "nodemailer";
-//import config from "./config.json" assert {type: json};
-import cron from "node-cron"
+// import config from "./config.json" assert {type: "json"};
 
 const transporter =  nodemailer.createTransport({
 	host: "smtp.sendgrid.net",
@@ -62,7 +61,7 @@ const connectMongo = async() => {
 }
 
 
-const main = async () => {
+(async () => {
     // Connect to mongo
 
     await connectMongo().then(
@@ -72,7 +71,7 @@ const main = async () => {
     // Converting todays date and 7 days previous, into the datesum format for querying articles
     const today = new Date();
     var querydate = new Date(today);
-    querydate.setDate(today.getDate() - 7)
+    querydate.setMonth(today.getMonth() - 1)
     const todaydate = Number(today
         .toISOString()
         .split("T")[0]
@@ -112,24 +111,24 @@ const main = async () => {
             hl1: 1, dateSum: 1
         }).exec()
 
-        console.log(articles)
+        console.log(org,articles.length())
 
         if (articles.length>0){
             // Email org members with the number of articles in the past week
 
-            const email_info = await transporter.sendMail({
-                from: 'malbaker@bu.edu', // sender address
-                to: results[org].members, // list of receivers
-                subject: `Update for ${org} from Spark Media Bias`, // Subject line
-                text: `Hello ${org} members, your organization has uploaded ${articles.length} new articles in the past week. 
-                    Please log into the Media Bias app with the link below to see more details. \n \n https://bu-naacp.up.railway.app`,
-                html: `<p> \
-                    Hello ${org} members, <br/> \
-                    Your organization has uploaded ${articles.length} new articles in the past week. \
-                    Please <a href=\"https://bu-naacp.up.railway.app/Dashboard\">log into the Media Bias app</a> to see more details.\
-                </p>`,
-            });
-            console.log("Message sent: %s", email_info.messageId);
+            // const email_info = await transporter.sendMail({
+            //     from: 'malbaker@bu.edu', // sender address
+            //     to: results[org].members, // list of receivers
+            //     subject: `Update for ${org} from Spark Media Bias`, // Subject line
+            //     text: `Hello ${org} members, your organization has uploaded ${articles.length} new articles in the past week. 
+            //         Please log into the Media Bias app with the link below to see more details. \n \n https://bu-naacp.up.railway.app`,
+            //     html: `<p> \
+            //         Hello ${org} members, <br/> \
+            //         Your organization has uploaded ${articles.length} new articles in the past week. \
+            //         Please <a href=\"https://bu-naacp.up.railway.app/Dashboard\">log into the Media Bias app</a> to see more details.\
+            //     </p>`,
+            // });
+            // console.log("Message sent: %s", email_info.messageId);
         }
     }
         
@@ -152,10 +151,10 @@ const main = async () => {
     // });
     // console.log("Message sent: %s", email_info.messageId);
     mongoose.disconnect().then(console.log("Bye mongo"));
-};
+})();
 
 
-cron.schedule("35 16 * * *", async () => {
-    console.log("node cron hit")
-    await main();
-})
+// cron.schedule("0 10 1 * *", async () => {
+//     console.log("node cron hit")
+//     await main();
+// })
