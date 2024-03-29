@@ -71,18 +71,18 @@ const connectMongo = async() => {
     // Converting todays date and 7 days previous, into the datesum format for querying articles
     const today = new Date();
     var querydate = new Date(today);
-    querydate.setMonth(today.getMonth() - 1)
+    querydate.setMonth(today.getMonth() - 1 < 0 ? 11 : today.getMonth() - 1 )
     const todaydate = Number(today
         .toISOString()
         .split("T")[0]
         .split("-")
         .join(""));
-    const sevendays = Number(querydate
+    const onemonth = Number(querydate
         .toISOString()
         .split("T")[0]
         .split("-")
         .join(""));
-    console.log(todaydate, sevendays)
+    console.log(todaydate, onemonth)
 
     // Only the data we want from the orgs
     const orgs = (await getOrgs()).data;
@@ -104,7 +104,7 @@ const connectMongo = async() => {
         const articles = await Article.find({
             dateSum: {
                 $lte: todaydate,
-                $gte: sevendays
+                $gte: onemonth
             },
             userID: results[org].id
         }, {
@@ -116,19 +116,19 @@ const connectMongo = async() => {
         if (articles.length>0){
             // Email org members with the number of articles in the past week
 
-            // const email_info = await transporter.sendMail({
-            //     from: 'malbaker@bu.edu', // sender address
-            //     to: results[org].members, // list of receivers
-            //     subject: `Update for ${org} from Spark Media Bias`, // Subject line
-            //     text: `Hello ${org} members, your organization has uploaded ${articles.length} new articles in the past week. 
-            //         Please log into the Media Bias app with the link below to see more details. \n \n https://bu-naacp.up.railway.app`,
-            //     html: `<p> \
-            //         Hello ${org} members, <br/> \
-            //         Your organization has uploaded ${articles.length} new articles in the past week. \
-            //         Please <a href=\"https://bu-naacp.up.railway.app/Dashboard\">log into the Media Bias app</a> to see more details.\
-            //     </p>`,
-            // });
-            // console.log("Message sent: %s", email_info.messageId);
+            const email_info = await transporter.sendMail({
+                from: 'malbaker@bu.edu', // sender address
+                to: results[org].members, // list of receivers
+                subject: `Update for ${org} from Spark Media Bias`, // Subject line
+                text: `Hello ${org} members, your organization has uploaded ${articles.length} new articles in the past month. 
+                    Please log into the Media Bias app with the link below to see more details. \n \n https://bu-naacp.up.railway.app`,
+                html: `<p> \
+                    Hello ${org} members, <br/> \
+                    Your organization has uploaded ${articles.length} new articles in the past month. \
+                    Please <a href=\"https://bu-naacp.up.railway.app/Dashboard\">log into the Media Bias app</a> to see more details.\
+                </p>`,
+            });
+            console.log("Message sent: %s", email_info.messageId);
         }
     }
         
