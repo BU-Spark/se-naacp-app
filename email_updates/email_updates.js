@@ -111,7 +111,7 @@ const connectMongo = async() => {
             hl1: 1, dateSum: 1
         }).exec()
 
-        console.log(org,articles.length())
+        console.log(org, articles.length)
 
         if (articles.length>0){
             // Email org members with the number of articles in the past week
