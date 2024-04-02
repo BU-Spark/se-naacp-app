@@ -100,8 +100,8 @@ const CSVUploadBox = () => {
 		const reader = new FileReader();
 		reader.onload = (e: ProgressEvent<FileReader>) => {
 			const text = e.target?.result as string;
-			const lines = text.split(/\r?\n/).map(line => line.split(',').map(cell => cell.trim()));
-	
+			//for lines we want this regex for the HTLM data on 'content' header
+			const lines = text.split(/\r?\n/).map(line => line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
 			const expectedHeaders = [
 				"Title",
 				"Author",
@@ -119,15 +119,14 @@ const CSVUploadBox = () => {
 	
 			lines.slice(1).forEach((row, rowIndex) => {
 				expectedHeaders.forEach((header, headerIndex) => {
-					// Only check for missing data if the column exists in the row
+					// check for missing data if the column exists in the row
 					if (headerIndex < row.length) {
 						const cell = row[headerIndex];
 						if (cell.trim() === '') {
 							missingDataWarnings.push(`Article ${rowIndex + 1} is missing data in "${header}" column.`);
-							console.log("hello", header);
 						}
 					} else {
-						// If the row has fewer columns than expected, indicate the missing columns
+						// if the row has fewer columns than expected show the missing columns
 						missingDataWarnings.push(`Article ${rowIndex + 1} is missing data in "${header}" column.`);
 					}
 				});
@@ -194,7 +193,6 @@ const CSVUploadBox = () => {
 			} else {
 				console.error("User is not signed in");
 			}
-			console.log("hey");
 			axios
 				.post(proxy_Url, formData, {
 					headers: {
@@ -252,15 +250,16 @@ const CSVUploadBox = () => {
 					if (f.name === newFile.name) {
 						let updatedFile = { ...f };
 	
-						if (missingHeaders.length > 0) {
+						if (missingHeaders && missingHeaders.length > 0) {
 							updatedFile.status = 'Failed';
 							updatedFile.error = `Error: Missing headers ${missingHeaders.join(", ")}.`;
-						} else if (missingDataWarnings.length > 0) {
-							updatedFile.status = 'Passed'; //or warning, the user should know that sth is missing but still be able to upload
-							updatedFile.error = `Warnings: ${missingDataWarnings.join("\n")}`;
 						} else {
+							updatedFile.status = 'Passed';
 							updatedFile.progress = 100;
-							updatedFile.status = "Passed";
+	
+							if (missingDataWarnings && missingDataWarnings.length > 0) {
+								updatedFile.error = `Warning: ${missingDataWarnings.join(", ")}`;
+							}
 						}
 	
 						return updatedFile;
@@ -268,6 +267,15 @@ const CSVUploadBox = () => {
 					return f;
 				})
 			);
+			// Also update validatedFiles state if needed
+			if (!missingHeaders || missingHeaders.length === 0) {
+				const newValidatedFile: UploadedFile = {
+					...newFile,
+					status: missingDataWarnings.length > 0 ? 'Warning' : 'Passed',
+					error: missingDataWarnings.length > 0 ? `Warning: ${missingDataWarnings.join(", ")}` : undefined,
+				};
+				setUpValidatedFiles((prevFiles) => [...prevFiles, newValidatedFile]);
+			}
 		});
 	};
 
