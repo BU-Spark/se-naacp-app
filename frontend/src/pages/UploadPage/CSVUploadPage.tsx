@@ -125,9 +125,6 @@ const CSVUploadBox = () => {
 						if (cell.trim() === '') {
 							missingDataWarnings.push(`Article ${rowIndex + 1} is missing data in "${header}" column.`);
 						}
-					} else {
-						// if the row has fewer columns than expected show the missing columns
-						missingDataWarnings.push(`Article ${rowIndex + 1} is missing data in "${header}" column.`);
 					}
 				});
 			});
