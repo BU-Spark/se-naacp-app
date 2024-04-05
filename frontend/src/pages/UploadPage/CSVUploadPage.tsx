@@ -92,40 +92,49 @@ const CSVUploadBox = () => {
 		navigate("/Upload/:RSS");
 	};
 
-	// only check missing headers, not extra headers or duplicate headers
+	// only check missing headers and data, not extra headers or duplicate headers
 	const validateCsvHeaders = (
 		file: File,
-		callback: (missingHeaders?: string[]) => void,
+		callback: (missingHeaders: string[], missingDataWarnings: string[]) => void,
 	) => {
 		const reader = new FileReader();
 		reader.onload = (e: ProgressEvent<FileReader>) => {
 			const text = e.target?.result as string;
-			// handle \r return carriage character
-			const headers = text
-				.slice(0, text.search(/\r?\n/))
-				.split(",")
-				.map((header) => header.trim());
-			// expected header list
+			//for lines we want this regex for the HTLM data on 'content' header
+			const lines = text.split(/\r?\n/).map(line => line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
 			const expectedHeaders = [
-				"Type",
-				"Label",
-				"Headline",
-				"Byline",
-				"Section",
-				"Tagging",
-				"Paths",
-				"Publish Date",
-				"Body",
+				"Title",
+				"Author",
+				"Category",
+				"Article ID",
+				"URL Link",
+				"Publication Date",
+				"Content",
 			];
-			const missingHeaders = expectedHeaders.filter(
-				(header) => !headers.includes(header),
-			);
-
-			callback(missingHeaders);
+	
+			const headers = lines[0];
+			const missingHeaders = expectedHeaders.filter(header => !headers.includes(header));
+	
+			let missingDataWarnings: string[] = [];
+	
+			lines.slice(1).forEach((row, rowIndex) => {
+				expectedHeaders.forEach((header, headerIndex) => {
+					// check for missing data if the column exists in the row
+					if (headerIndex < row.length) {
+						const cell = row[headerIndex];
+						if (cell.trim() === '') {
+							missingDataWarnings.push(`Article ${rowIndex + 1} is missing data in "${header}" column.`);
+						}
+					}
+				});
+			});
+	
+			callback(missingHeaders, missingDataWarnings);
 		};
 		reader.readAsText(file);
 	};
-
+	
+	
 	// Drag and drop event handlers
 	const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
@@ -222,7 +231,6 @@ const CSVUploadBox = () => {
 	// Function that simulates file upload and updates progress
 	// Need to change this to real func converting csv into json as input to backend
 	const uploadFile = (file: File) => {
-		// Initialize a new uploaded file object
 		const newFile: UploadedFile = {
 			name: file.name,
 			size: file.size,
@@ -230,54 +238,41 @@ const CSVUploadBox = () => {
 			status: "Uploading...",
 			file: file,
 		};
-		// Add the new file to the uploaded files state
+	
 		setUploadedFiles((prevFiles) => [...prevFiles, newFile]);
-
-		validateCsvHeaders(file, (missingHeaders) => {
-			// if not validated
-			if (missingHeaders && missingHeaders.length > 0) {
-				setUploadedFiles((prevFiles) =>
-					prevFiles.map((f) => {
-						if (f.name === newFile.name) {
-							return {
-								...f,
-								status: `Failed`,
-								error: `Error: Missing headers ${missingHeaders.join(
-									", ",
-								)}.`,
-							};
-						}
-						return f;
-					}),
-				);
-			} else {
-				// if validated, add files to validatedFiles
-				// return test passed status
-				const newValidatedFile: UploadedFile = {
-					name: file.name,
-					size: file.size,
-					progress: 100,
-					status: "Passed",
-					file: file,
-				};
-				setUpValidatedFiles((prevFiles) => [
-					...prevFiles,
-					newValidatedFile,
-				]);
-
-				
-				setUploadedFiles((prevFiles) =>
-					prevFiles.map((f) => {
-						if (f.name === newFile.name) {	
-							return {
-								...f,
-								status: "Passed",
+	
+		validateCsvHeaders(file, (missingHeaders, missingDataWarnings) => {
+			setUploadedFiles((prevFiles) =>
+				prevFiles.map((f) => {
+					if (f.name === newFile.name) {
+						let updatedFile = { ...f };
+	
+						if (missingHeaders && missingHeaders.length > 0) {
+							updatedFile.status = 'Failed';
+							updatedFile.error = `Error: Missing headers ${missingHeaders.join(", ")}.`;
+						} else {
+							updatedFile.status = 'Passed';
+							updatedFile.progress = 100;
+	
+							if (missingDataWarnings && missingDataWarnings.length > 0) {
+								updatedFile.error = `Warning: ${missingDataWarnings.join(", ")}`;
 							}
 						}
-						return f;
-					})
-				);
-			};
+	
+						return updatedFile;
+					}
+					return f;
+				})
+			);
+			// Also update validatedFiles state if needed
+			if (!missingHeaders || missingHeaders.length === 0) {
+				const newValidatedFile: UploadedFile = {
+					...newFile,
+					status: missingDataWarnings.length > 0 ? 'Warning' : 'Passed',
+					error: missingDataWarnings.length > 0 ? `Warning: ${missingDataWarnings.join(", ")}` : undefined,
+				};
+				setUpValidatedFiles((prevFiles) => [...prevFiles, newValidatedFile]);
+			}
 		});
 	};
 
