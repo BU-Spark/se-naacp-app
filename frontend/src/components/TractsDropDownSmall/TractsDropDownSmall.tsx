@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import type { MenuProps } from "antd";
 
 import "./TractsDropDownSmall.css";
@@ -76,16 +77,21 @@ const TractsDropDownSmall: React.FC<TractsDropDownSmallProps> = ({ tracts }) => 
     React.useContext(NeighborhoodContext)!;
   
   const [selectedTract, setSelectedTract] = React.useState<string>(tractData!.tract || '');
+  
+  const [searchParams, setSearchParams] = useSearchParams();
+  const myParam = searchParams.get('myParam');
 
   // update drop down when map clicks
   React.useEffect(() => {
     if (tractData!.tract) {
       setSelectedTract(tractData!.tract);
+      setSearchParams({tract: tractData!.tract});
     }
   }, [tractData]);
 
   const handleChange = (event: any) => {
     setSelectedTract(event.target.value);
+    setSearchParams({ tract: tractData!.tract});
 
     // set dummy array if no tract data - prevent rendering error 
     var dummy = tracts;
