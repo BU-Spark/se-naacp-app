@@ -392,16 +392,9 @@ const CSVUploadBox = () => {
                		onMouseOver={() => {/* Show the back arrow */}}
                 	onMouseOut={() => {/* Hide the back arrow */}}
             	>
-					<ArrowBackIcon 
-                	onClick={handleClose} 
-                	style={{ 
-                    cursor: 'pointer', 
-                    position: 'absolute', 
-                    top: '10px', 
-                    left: '10px',
-                    zIndex: 1000  // Ensure the icon is above other content
-                }} 
-            	/>
+					<button onClick={handleClose} style={{ margin: '20px 0', display: 'block' }}>
+        				&#8592; Go Back
+    				</button>
             		</div>
 						<div>
                         <h2> <br/> Required CSV Structure</h2>
@@ -511,9 +504,6 @@ const CSVUploadBox = () => {
 								</ol>
 							</li>
 						</ol>
-						<button onClick={handleClose} style={{ margin: '20px 0', display: 'block' }}>
-        				&#8592; Go Back
-    					</button>
 					 </div>
                 </Box>
             </Modal>
