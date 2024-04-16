@@ -9,6 +9,13 @@ import { UploadContext } from "../../contexts/upload_context";
 import { Uploads } from "../../__generated__/graphql";
 import { useOrganization, useUser, useAuth } from "@clerk/clerk-react";
 
+import HelpIcon from '@mui/icons-material/Help';
+import Tooltip from '@mui/material/Tooltip';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+//import image from 'frontend/public/image1.png';
+
 // Define a type for the file with progress information
 type UploadedFile = {
 	name: string;
@@ -34,6 +41,11 @@ const CSVUploadBox = () => {
 	//permission check for uploading CSVs
 	const {has} = useAuth();
 	const canManageSettings = has ? has({ permission: "org:test:limit" }) : false;
+
+	//new pop up window for the guide
+	const [open, setOpen] = useState(false);
+	const handleOpen = () => setOpen(true);
+	const handleClose = () => setOpen(false);	
 
 	useEffect(() => {
 		if (isSignedIn && user) {
@@ -81,8 +93,8 @@ const CSVUploadBox = () => {
 	}, [validatedFiles]);
 
 	// set up cors proxy for POST csv to api
-	const corsProxy = "https://corsproxy.io/?";
-	const url = "https://dummy-server-toswle5frq-uc.a.run.app/upload_csv";
+	// const corsProxy = "https://corsproxy.io/?";
+	// const url = "https://dummy-server-toswle5frq-uc.a.run.app/upload_csv";
 	// const proxy_Url = corsProxy + url;
 	const proxy_Url = process.env.REACT_APP_ML_PIP_URL || "";
 
@@ -240,7 +252,7 @@ const CSVUploadBox = () => {
 		};
 	
 		setUploadedFiles((prevFiles) => [...prevFiles, newFile]);
-	
+
 		validateCsvHeaders(file, (missingHeaders, missingDataWarnings) => {
 			setUploadedFiles((prevFiles) =>
 				prevFiles.map((f) => {
@@ -252,7 +264,7 @@ const CSVUploadBox = () => {
 							updatedFile.error = `Error: Missing headers ${missingHeaders.join(", ")}.`;
 						} else {
 							updatedFile.status = 'Passed';
-							updatedFile.progress = 100;
+							//updatedFile.progress = 100;
 	
 							if (missingDataWarnings && missingDataWarnings.length > 0) {
 								updatedFile.error = `Warning: ${missingDataWarnings.join(", ")}`;
@@ -335,7 +347,167 @@ const CSVUploadBox = () => {
 			{alertMessage && (
 				<div className='alert-message'>{alertMessage}</div>
 			)}
-			<h4 className='csv-title'>Upload a CSV File</h4>
+			<h4 className='csv-title'>
+    		Upload a CSV File
+    			<Tooltip title="Click to see uploading guide">
+        			<HelpIcon 
+					onClick={handleOpen}
+					style={{ color: '#6495ED', position: 'relative', top: '-2px', marginLeft: '5px', cursor: 'pointer' }} 
+					/>
+				</Tooltip>
+			</h4>
+			<Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 1100,
+						height: 700,
+                        bgcolor: 'background.paper',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 2,
+						overflowY: 'auto',
+                    }}
+                >
+					<div 
+                	style={{ 
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '50px',  // Adjust based on desired hover area
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    padding: '10px',
+                }}
+               		onMouseOver={() => {/* Show the back arrow */}}
+                	onMouseOut={() => {/* Hide the back arrow */}}
+            	>
+					<button onClick={handleClose} style={{ margin: '20px 0', display: 'block' }}>
+        				&#8592; Go Back
+    				</button>
+            		</div>
+						<div>
+                        <h2> <br/> Required CSV Structure</h2>
+                        <p style={{ color: 'black', fontSize: '16px', textAlign: 'left'}}>Your CSV file must include the following headers in the specified order:</p>
+                        <ul>
+                            <li>
+                                <strong>Title</strong>
+                                <ul>
+                                    <li>Description: The title of the article.</li>
+                                    <li>Example: 'Miss Scarlet & The Duke' Episode 4 Recap: You Oughta Know</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Author</strong>
+                                <ul>
+                                    <li>Description: The name of the author.</li>
+                                    <li>Example: Joshua Eaton</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Category</strong>
+                                <ul>
+                                    <li>Description: The category of the article.</li>
+                                    <li>Example: ‘News’, ‘Politics’, ‘Lifestyle’</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Article ID</strong>
+                                <ul>
+                                    <li>Description: A unique identifier for the article.</li>
+                                    <li>Example: 00000176-fd72-d4ee-a5fe-fd7747b80001</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>URL Link (Permalink)</strong>
+                                <ul>
+                                    <li>Description: The stable URL where the article can be accessed at any time.</li>
+                                    <li>Example: /news/national/2021-01-13/rep-ayanna-pressleys-husband-tests-positive-for-covid-19</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Publication Date</strong>
+                                <ul>
+                                    <li>Description: The date and time when the article was published.</li>
+                                    <li>Example: Tue Oct 05 15:06:37 EDT 2021</li>
+                                    <li>Format: Day (Abbreviated), Month (Abbreviated), Day of Month, Time (HH:MM:SS in 24-hour format), Time Zone, Year</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Content</strong>
+                                <ul>
+                                    <li>Description: The full content of the article, including HTML formatting.</li>
+                                    <li>Example: If there are two things you can’t spit without hitting in this town <br/> it’s a Dunkin' Donuts and a historic statue.<br/>...</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+						<h2>Example of a Corrected CSV File</h2>
+						<br/>
+    					<img src="/example.png" alt="Example of a Corrected CSV File" style={{ width: '800px', height: 'auto' }} />
+						<br/><br/> 
+						<h2>FAQ</h2>
+    					<ol>
+   							 <li>
+       							 <strong>What is Permalink?</strong>
+        						<p style={{ color: 'black', fontSize: '16px', textAlign: 'left'}}>The permalink would be the stable URL where the article can be accessed at any time. This ensures that even if the website updates its content or layout, the article can still be found using the same permalink.</p>
+    						</li>
+							<li>
+								<strong>What happens when there is a problem?</strong>
+								<ol>
+									<li>
+										<strong>Error: If a header is missing</strong>
+										<p style={{ color: 'black', fontSize: '16px', textAlign: 'left'}}>When trying to upload, if a header is missing you will get a clear message about what needs to be fixed. You won’t be able to finish the upload until these issues are fixed.</p>
+										<p style={{ color: 'black', fontSize: '16px', textAlign: 'left'}}>For example, if there is no 'Article ID' header in your CSV file, you’ll see a message like "Error: Missing headers Article ID." and the validation status will be ‘Failed’.</p>
+										<div style={{ textAlign: 'center' }}>
+   	 									<img src="/nohead.png" alt="Description" style={{ width: '300px', height: 'auto' }} />
+										</div>
+							<h5>Steps to fix errors:</h5>
+								<ul>
+									<li><strong>Delete this file:</strong> First, click the ‘Delete’ button next to the file with errors to remove it from the upload queue.</li>
+									<li><strong>Make the necessary corrections:</strong> Open your CSV file and add the missing ‘Article ID’ header, or correct any other issues mentioned in the error message.</li>
+									<li><strong>Upload Again:</strong> Save your corrected CSV file and try uploading it once more.</li>
+								</ul>
+									<p style={{ color: 'black', fontSize: '16px', textAlign: 'left'}}> <br/> If there are no other issues, your file’s status will change to ‘Passed’. This means your file is correctly
+									 formatted and has been successfully uploaded.</p>
+										<div style={{ textAlign: 'center' }}>
+   	 									<img src="/passed.png" alt="Description" style={{ width: '250px', height: 'auto' }} />
+										</div>
+										<strong>2.2 Warning: If data is missing</strong>
+										<p style={{ color: 'black', fontSize: '16px', textAlign: 'left'}}> When trying to upload if data in a column is missing, you will get a clear message about what
+										is missing.
+										<br/> <br/> For example, if there is no data in article’s 204 ‘Author’ header in your CSV file, you’ll see a
+										message like "Warning: Article 204 is missing data in the 'Author' column." This message is
+										just a warning, meaning your file can still be uploaded. The validation status will show as
+										‘Passed’. This means that you have the choice to fix these issues or to proceed with the
+										upload. If the missing data is not critical, you may decide to continue without making changes.
+										Otherwise, you can add the missing information to your CSV file and upload it again.
+										</p>
+										<div style={{ textAlign: 'center' }}>
+   	 									<img src="/nodata.png" alt="Description" style={{ width: '300px', height: 'auto' }} />
+										</div>
+										<div>
+											<strong> <br/> If you face more issues or have questions about the CSV upload process, please contact the
+											administrator.</strong>
+										</div>
+									</li>
+								</ol>
+							</li>
+						</ol>
+					 </div>
+                </Box>
+            </Modal>
+
 			<div
 				className='upload-box'
 				onDrop={handleDrop}
@@ -356,11 +528,11 @@ const CSVUploadBox = () => {
 						<img src='/upload-icon.svg' alt='Upload' />
 					</div>
 					<p className='drag-and-drop-files'>
-						<span className='drag-drop-text-wrapper'>
-							Drag and drop files, or{" "}
+						<span className='drag-drop-text-wrapper' style={{ color: '#6495ED' }}>
+							Click to upload
 						</span>
 						<span className='drag-drop-text-wrapper'>
-							Browse files
+						, or{" "} Drag and drop files
 						</span>
 					</p>
 					<div className='drag-drop-text-wrapper'>
