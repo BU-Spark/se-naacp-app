@@ -76,22 +76,34 @@ const TractsDropDownSmall: React.FC<TractsDropDownSmallProps> = ({ tracts }) => 
   const { neighborhood, setNeighborhood, neighborhoodMasterList } =
     React.useContext(NeighborhoodContext)!;
   
-  const [selectedTract, setSelectedTract] = React.useState<string>(tractData!.tract || '');
+  // const [selectedTract, setSelectedTract] = React.useState<string>(tractData!.tract || '');
   
   const [searchParams, setSearchParams] = useSearchParams();
-  const myParam = searchParams.get('myParam');
+  // const myParam = searchParams.get('myParam');
+
+  const initialTract = searchParams.get('tract') || (tractData ? tractData.tract : '');
+  const [selectedTract, setSelectedTract] = React.useState(initialTract);
 
   // update drop down when map clicks
+  // Effect to handle initialization and re-fetching data when the tract changes
   React.useEffect(() => {
     if (tractData!.tract) {
       setSelectedTract(tractData!.tract);
-      setSearchParams({tract: tractData!.tract});
+      setSearchParams({ neighborhood: neighborhood!, tract: tractData!.tract });
     }
-  }, [tractData]);
+  }, [tractData, setSearchParams]);
+
+  // Effect to handle component mount
+  useEffect(() => {
+    // If there is a tract in the URL on initial load, set it
+    if (initialTract) {
+      setSelectedTract(initialTract);
+    }
+  }, [initialTract]);
 
   const handleChange = (event: any) => {
     setSelectedTract(event.target.value);
-    setSearchParams({ tract: tractData!.tract});
+    setSearchParams({ neighborhood: neighborhood!, tract: tractData!.tract });
 
     // set dummy array if no tract data - prevent rendering error 
     var dummy = tracts;

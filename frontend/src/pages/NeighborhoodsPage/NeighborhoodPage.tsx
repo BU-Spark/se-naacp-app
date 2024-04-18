@@ -25,6 +25,7 @@ import { TopicsContext } from "../../contexts/topics_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
 import { minDate, maxDate } from "../../App";
 import TopThreeDemographics from "../../components/TopThreeDemographics/TopThreeDemographics";
+import { useLocation } from "react-router-dom";
 
 const NeighborhoodPage: React.FC = () => {
 	//Context
@@ -46,45 +47,96 @@ const NeighborhoodPage: React.FC = () => {
 	// select bar data
 	const [selectBarData, setSelectBarData] = useState(null);
 
+	const [ tractInfo, setTractInfo ] = useState('');
+	const [ neighborhoodInfo, setNeighborhoodInfo ] = useState('');
+
+	const location = useLocation();
+
 	// handle click
 	const clickHandler = (barData: any) => {
 		setSelectBarData(barData);
 	}
+
+	React.useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const tract = queryParams.get('tract');
+		const neighborhood = queryParams.get('neighborhood');
+        if (tract) {
+            // Perform actions based on tract, e.g., fetching data, displaying info, etc.
+            console.log(`Tract selected: ${tract}`);
+			setTractInfo(tract);
+			setNeighborhoodInfo(neighborhood!);
+        }
+    }, [location]);
+
 	
 	React.useEffect(() => {
 		queryTopicsDataType("TOPICS_DATA");
 		queryTopicsDataType("LABELS_DATA");
 		queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
-		setNeighborhood("Downtown");
-		queryTractDataType("TRACT_DATA", { tract: "030302" });
-		if (organization) {
-			queryArticleDataType("ARTICLE_DATA", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "030302",
-				userId: organization.id,
-			});
-			queryArticleDataType2("ARTICLE_DATA", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "all",
-				userId: organization.id,
-			});
-		} else {
-			queryArticleDataType("ARTICLE_DATA", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "030302",
-				userId: user?.id,
-			});
-			queryArticleDataType2("ARTICLE_DATA", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "all",
-				userId: user?.id,
-			});
+		if (neighborhoodInfo && tractInfo) {
+			setNeighborhood(neighborhoodInfo);
+			if (organization) {
+				queryArticleDataType("ARTICLE_DATA", {
+					dateFrom: parseInt(minDate.format("YYYYMMDD")),
+					dateTo: parseInt(maxDate.format("YYYYMMDD")),
+					area: tractInfo,
+					userId: organization.id,
+				});
+				queryArticleDataType2("ARTICLE_DATA", {
+					dateFrom: parseInt(minDate.format("YYYYMMDD")),
+					dateTo: parseInt(maxDate.format("YYYYMMDD")),
+					area: "all",
+					userId: organization.id,
+				});
+			} else {
+				queryArticleDataType("ARTICLE_DATA", {
+					dateFrom: parseInt(minDate.format("YYYYMMDD")),
+					dateTo: parseInt(maxDate.format("YYYYMMDD")),
+					area: tractInfo,
+					userId: user?.id,
+				});
+				queryArticleDataType2("ARTICLE_DATA", {
+					dateFrom: parseInt(minDate.format("YYYYMMDD")),
+					dateTo: parseInt(maxDate.format("YYYYMMDD")),
+					area: "all",
+					userId: user?.id,
+				});
+			}
 		}
-	}, []);
+		else {
+			setNeighborhood("Downtown");
+			queryTractDataType("TRACT_DATA", { tract: "030302" });
+			if (organization) {
+				queryArticleDataType("ARTICLE_DATA", {
+					dateFrom: parseInt(minDate.format("YYYYMMDD")),
+					dateTo: parseInt(maxDate.format("YYYYMMDD")),
+					area: '030302',
+					userId: organization.id,
+				});
+				queryArticleDataType2("ARTICLE_DATA", {
+					dateFrom: parseInt(minDate.format("YYYYMMDD")),
+					dateTo: parseInt(maxDate.format("YYYYMMDD")),
+					area: "all",
+					userId: organization.id,
+				});
+			} else {
+				queryArticleDataType("ARTICLE_DATA", {
+					dateFrom: parseInt(minDate.format("YYYYMMDD")),
+					dateTo: parseInt(maxDate.format("YYYYMMDD")),
+					area: '030302',
+					userId: user?.id,
+				});
+				queryArticleDataType2("ARTICLE_DATA", {
+					dateFrom: parseInt(minDate.format("YYYYMMDD")),
+					dateTo: parseInt(maxDate.format("YYYYMMDD")),
+					area: "all",
+					userId: user?.id,
+				});
+			}
+		}
+		
+	}, [tractInfo, neighborhoodInfo]);
 
 	React.useEffect(() => {
 		if (articleData && tractData && neighborhoodMasterList) {
