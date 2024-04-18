@@ -67,6 +67,11 @@ const NeighborhoodPage: React.FC = () => {
 			setTractInfo(tract);
 			setNeighborhoodInfo(neighborhood!);
         }
+		// if no tract or neighborhood info
+		else {
+			setNeighborhoodInfo("Downtown");
+			setTractInfo("030302");
+		}
     }, [location]);
 
 	
@@ -74,68 +79,35 @@ const NeighborhoodPage: React.FC = () => {
 		queryTopicsDataType("TOPICS_DATA");
 		queryTopicsDataType("LABELS_DATA");
 		queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
-		if (neighborhoodInfo && tractInfo) {
-			setNeighborhood(neighborhoodInfo);
-			if (organization) {
-				queryArticleDataType("ARTICLE_DATA", {
-					dateFrom: parseInt(minDate.format("YYYYMMDD")),
-					dateTo: parseInt(maxDate.format("YYYYMMDD")),
-					area: tractInfo,
-					userId: organization.id,
-				});
-				queryArticleDataType2("ARTICLE_DATA", {
-					dateFrom: parseInt(minDate.format("YYYYMMDD")),
-					dateTo: parseInt(maxDate.format("YYYYMMDD")),
-					area: "all",
-					userId: organization.id,
-				});
-			} else {
-				queryArticleDataType("ARTICLE_DATA", {
-					dateFrom: parseInt(minDate.format("YYYYMMDD")),
-					dateTo: parseInt(maxDate.format("YYYYMMDD")),
-					area: tractInfo,
-					userId: user?.id,
-				});
-				queryArticleDataType2("ARTICLE_DATA", {
-					dateFrom: parseInt(minDate.format("YYYYMMDD")),
-					dateTo: parseInt(maxDate.format("YYYYMMDD")),
-					area: "all",
-					userId: user?.id,
-				});
-			}
+		setNeighborhood(neighborhoodInfo);
+		queryTractDataType("TRACT_DATA", { tract: tractInfo });
+		if (organization) {
+			queryArticleDataType("ARTICLE_DATA", {
+				dateFrom: parseInt(minDate.format("YYYYMMDD")),
+				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				area: tractInfo,
+				userId: organization.id,
+			});
+			queryArticleDataType2("ARTICLE_DATA", {
+				dateFrom: parseInt(minDate.format("YYYYMMDD")),
+				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				area: "all",
+				userId: organization.id,
+			});
+		} else {
+			queryArticleDataType("ARTICLE_DATA", {
+				dateFrom: parseInt(minDate.format("YYYYMMDD")),
+				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				area: tractInfo,
+				userId: user?.id,
+			});
+			queryArticleDataType2("ARTICLE_DATA", {
+				dateFrom: parseInt(minDate.format("YYYYMMDD")),
+				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				area: "all",
+				userId: user?.id,
+			});
 		}
-		else {
-			setNeighborhood("Downtown");
-			queryTractDataType("TRACT_DATA", { tract: "030302" });
-			if (organization) {
-				queryArticleDataType("ARTICLE_DATA", {
-					dateFrom: parseInt(minDate.format("YYYYMMDD")),
-					dateTo: parseInt(maxDate.format("YYYYMMDD")),
-					area: '030302',
-					userId: organization.id,
-				});
-				queryArticleDataType2("ARTICLE_DATA", {
-					dateFrom: parseInt(minDate.format("YYYYMMDD")),
-					dateTo: parseInt(maxDate.format("YYYYMMDD")),
-					area: "all",
-					userId: organization.id,
-				});
-			} else {
-				queryArticleDataType("ARTICLE_DATA", {
-					dateFrom: parseInt(minDate.format("YYYYMMDD")),
-					dateTo: parseInt(maxDate.format("YYYYMMDD")),
-					area: '030302',
-					userId: user?.id,
-				});
-				queryArticleDataType2("ARTICLE_DATA", {
-					dateFrom: parseInt(minDate.format("YYYYMMDD")),
-					dateTo: parseInt(maxDate.format("YYYYMMDD")),
-					area: "all",
-					userId: user?.id,
-				});
-			}
-		}
-		
 	}, [tractInfo, neighborhoodInfo]);
 
 	React.useEffect(() => {
