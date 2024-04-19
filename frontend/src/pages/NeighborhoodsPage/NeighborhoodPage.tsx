@@ -25,6 +25,7 @@ import { TopicsContext } from "../../contexts/topics_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
 import { minDate, maxDate } from "../../App";
 import TopThreeDemographics from "../../components/TopThreeDemographics/TopThreeDemographics";
+import { useLocation } from "react-router-dom";
 
 const NeighborhoodPage: React.FC = () => {
 	//Context
@@ -46,22 +47,45 @@ const NeighborhoodPage: React.FC = () => {
 	// select bar data
 	const [selectBarData, setSelectBarData] = useState(null);
 
+	const [ tractInfo, setTractInfo ] = useState('');
+	const [ neighborhoodInfo, setNeighborhoodInfo ] = useState('');
+
+	const location = useLocation();
+
 	// handle click
 	const clickHandler = (barData: any) => {
 		setSelectBarData(barData);
 	}
+
+	React.useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const tract = queryParams.get('tract');
+		const neighborhood = queryParams.get('neighborhood');
+        if (tract) {
+            // Perform actions based on tract, e.g., fetching data, displaying info, etc.
+            console.log(`Tract selected: ${tract}`);
+			setTractInfo(tract);
+			setNeighborhoodInfo(neighborhood!);
+        }
+		// if no tract or neighborhood info
+		else {
+			setNeighborhoodInfo("Downtown");
+			setTractInfo("030302");
+		}
+    }, [location]);
+
 	
 	React.useEffect(() => {
 		queryTopicsDataType("TOPICS_DATA");
 		queryTopicsDataType("LABELS_DATA");
 		queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
-		setNeighborhood("Downtown");
-		queryTractDataType("TRACT_DATA", { tract: "030302" });
+		setNeighborhood(neighborhoodInfo);
+		queryTractDataType("TRACT_DATA", { tract: tractInfo });
 		if (organization) {
 			queryArticleDataType("ARTICLE_DATA", {
 				dateFrom: parseInt(minDate.format("YYYYMMDD")),
 				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "030302",
+				area: tractInfo,
 				userId: organization.id,
 			});
 			queryArticleDataType2("ARTICLE_DATA", {
@@ -74,7 +98,7 @@ const NeighborhoodPage: React.FC = () => {
 			queryArticleDataType("ARTICLE_DATA", {
 				dateFrom: parseInt(minDate.format("YYYYMMDD")),
 				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "030302",
+				area: tractInfo,
 				userId: user?.id,
 			});
 			queryArticleDataType2("ARTICLE_DATA", {
@@ -84,7 +108,7 @@ const NeighborhoodPage: React.FC = () => {
 				userId: user?.id,
 			});
 		}
-	}, []);
+	}, [tractInfo, neighborhoodInfo]);
 
 	React.useEffect(() => {
 		if (articleData && tractData && neighborhoodMasterList) {
