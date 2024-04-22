@@ -58,27 +58,27 @@ const NeighborhoodPage: React.FC = () => {
 		setSelectBarData(barData);
 	}
 
-	// React.useEffect(() => {
-        // const queryParams = new URLSearchParams(location.search);
-        // const tract = queryParams.get('tract');
-		// const neighborhood = queryParams.get('neighborhood');
-		// console.log('Tract: ', tract);
-		// console.log('Neighborhood: ', neighborhood);
+	React.useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const tract = queryParams.get('tract');
+		const neighborhood = queryParams.get('neighborhood');
+		console.log('Tract: ', tract);
+		console.log('Neighborhood: ', neighborhood);
 
-    //     if (tract) {
-    //         // Perform actions based on tract, e.g., fetching data, displaying info, etc.
-    //         // console.log(`Tract selected: ${tract}`);
-	// 		setTractInfo(tract);
-	// 		setNeighborhoodInfo(neighborhood!);
-	// 		setNeighborhood(neighborhoodInfo);
-    //     }
-	// 	// if no tract or neighborhood info
-	// 	else {
-	// 		setNeighborhoodInfo("Downtown");
-	// 		setNeighborhood("Downtown");
-	// 		setTractInfo("030302");
-	// 	}
-    // }, [location, navigate]);
+        if (tract) {
+            // Perform actions based on tract, e.g., fetching data, displaying info, etc.
+            // console.log(`Tract selected: ${tract}`);
+			setTractInfo(tract);
+			setNeighborhoodInfo(neighborhood!);
+			setNeighborhood(neighborhoodInfo);
+        }
+		// if no tract or neighborhood info
+		else {
+			setNeighborhoodInfo("Downtown");
+			setNeighborhood("Downtown");
+			setTractInfo("030302");
+		}
+    }, [location, navigate]);
 
 	React.useEffect(() => {
 		queryTopicsDataType("TOPICS_DATA");
