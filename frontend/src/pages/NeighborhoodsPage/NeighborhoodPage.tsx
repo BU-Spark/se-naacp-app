@@ -25,7 +25,7 @@ import { TopicsContext } from "../../contexts/topics_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
 import { minDate, maxDate } from "../../App";
 import TopThreeDemographics from "../../components/TopThreeDemographics/TopThreeDemographics";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const NeighborhoodPage: React.FC = () => {
 	//Context
@@ -47,34 +47,39 @@ const NeighborhoodPage: React.FC = () => {
 	// select bar data
 	const [selectBarData, setSelectBarData] = useState(null);
 
-	const [ tractInfo, setTractInfo ] = useState('');
-	const [ neighborhoodInfo, setNeighborhoodInfo ] = useState('');
+	const [ tractInfo, setTractInfo ] = useState('030302');
+	const [ neighborhoodInfo, setNeighborhoodInfo ] = useState('Downtown');
 
 	const location = useLocation();
+	const navigate = useNavigate();
 
 	// handle click
 	const clickHandler = (barData: any) => {
 		setSelectBarData(barData);
 	}
 
-	React.useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        const tract = queryParams.get('tract');
-		const neighborhood = queryParams.get('neighborhood');
-        if (tract) {
-            // Perform actions based on tract, e.g., fetching data, displaying info, etc.
-            console.log(`Tract selected: ${tract}`);
-			setTractInfo(tract);
-			setNeighborhoodInfo(neighborhood!);
-        }
-		// if no tract or neighborhood info
-		else {
-			setNeighborhoodInfo("Downtown");
-			setTractInfo("030302");
-		}
-    }, [location]);
+	// React.useEffect(() => {
+        // const queryParams = new URLSearchParams(location.search);
+        // const tract = queryParams.get('tract');
+		// const neighborhood = queryParams.get('neighborhood');
+		// console.log('Tract: ', tract);
+		// console.log('Neighborhood: ', neighborhood);
 
-	
+    //     if (tract) {
+    //         // Perform actions based on tract, e.g., fetching data, displaying info, etc.
+    //         // console.log(`Tract selected: ${tract}`);
+	// 		setTractInfo(tract);
+	// 		setNeighborhoodInfo(neighborhood!);
+	// 		setNeighborhood(neighborhoodInfo);
+    //     }
+	// 	// if no tract or neighborhood info
+	// 	else {
+	// 		setNeighborhoodInfo("Downtown");
+	// 		setNeighborhood("Downtown");
+	// 		setTractInfo("030302");
+	// 	}
+    // }, [location, navigate]);
+
 	React.useEffect(() => {
 		queryTopicsDataType("TOPICS_DATA");
 		queryTopicsDataType("LABELS_DATA");
@@ -115,6 +120,7 @@ const NeighborhoodPage: React.FC = () => {
 			setIsLoading(false);
 		}
 	}, [articleData, tractData, neighborhoodMasterList]);
+
 
 	return (
 		<>

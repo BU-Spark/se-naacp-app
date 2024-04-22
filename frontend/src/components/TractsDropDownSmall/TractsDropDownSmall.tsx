@@ -69,7 +69,7 @@ interface TractsDropDownSmallProps {
   tracts: string[];
 }
 
-const TractsDropDownSmall: React.FC<TractsDropDownSmallProps> = ({ tracts }) => {
+const TractsDropDownSmall: React.FC<TractsDropDownSmallProps> = ({ tracts = [] }) => {
   const { articleData, queryArticleDataType, setShouldRefresh, shouldRefresh } =
     React.useContext(ArticleContext)!;
   const { tractData, queryTractDataType } = React.useContext(TractContext)!;
@@ -82,6 +82,7 @@ const TractsDropDownSmall: React.FC<TractsDropDownSmallProps> = ({ tracts }) => 
   // const myParam = searchParams.get('myParam');
 
   const initialTract = searchParams.get('tract') || (tractData ? tractData.tract : '');
+  // const initialNeighborhood = searchParams.get('neighborhood') || (neighborhood ? neighborhood : '');
   const [selectedTract, setSelectedTract] = React.useState(initialTract);
 
   // update drop down when map clicks
@@ -94,17 +95,18 @@ const TractsDropDownSmall: React.FC<TractsDropDownSmallProps> = ({ tracts }) => 
   }, [tractData, setSearchParams]);
 
   // Effect to handle component mount
-  useEffect(() => {
-    // If there is a tract in the URL on initial load, set it
-    if (initialTract) {
-      setSelectedTract(initialTract);
-    }
-  }, [initialTract]);
+  // useEffect(() => {
+  //   // If there is a tract in the URL on initial load, set it
+  //   setNeighborhood(initialNeighborhood)
+  //   setSelectedTract(initialTract);
+  //   console.log("initialTract", initialTract);
+  //   console.log("Initial neighborhood:", neighborhood);
+  // }, [initialTract]);
 
   const handleChange = (event: any) => {
     setSelectedTract(event.target.value);
     setSearchParams({ neighborhood: neighborhood!, tract: tractData!.tract });
-
+    
     // set dummy array if no tract data - prevent rendering error 
     var dummy = tracts;
     if (!dummy) {
@@ -118,6 +120,7 @@ const TractsDropDownSmall: React.FC<TractsDropDownSmallProps> = ({ tracts }) => 
     }
     
     // get location and number
+    // const [location, number] = extractNeighborhoodTract(selectedTract);
     const [location, number] = extractNeighborhoodTract(event.target.value);
     setShouldRefresh(false);
 
