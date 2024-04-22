@@ -95,7 +95,7 @@ const getTractDetailsWithTotalCount = (
 
   // Article is dynamic based on context, so does labelDetails
   // console.log("labelDetails", labelDetails);
-  console.log("articles", articles);
+  // console.log("articles", articles);
 
   // Converting to desired structure
   const labelDetailsArray:  LabelCount[] = Object.entries(labelDetails)
@@ -107,7 +107,7 @@ const getTractDetailsWithTotalCount = (
     .sort((a, b) => b.value - a.value)
     .slice(0, 10); // Limit to top 10 labels
 
-  console.log("labelDetailsArray", labelDetailsArray)
+  // console.log("labelDetailsArray", labelDetailsArray)
 
 
   // Converting to desired structure

@@ -82,7 +82,6 @@ const TractsDropDownSmall: React.FC<TractsDropDownSmallProps> = ({ tracts = [] }
   // const myParam = searchParams.get('myParam');
 
   const initialTract = searchParams.get('tract') || (tractData ? tractData.tract : '');
-  // const initialNeighborhood = searchParams.get('neighborhood') || (neighborhood ? neighborhood : '');
   const [selectedTract, setSelectedTract] = React.useState(initialTract);
 
   // update drop down when map clicks
@@ -95,13 +94,10 @@ const TractsDropDownSmall: React.FC<TractsDropDownSmallProps> = ({ tracts = [] }
   }, [tractData, setSearchParams]);
 
   // Effect to handle component mount
-  // useEffect(() => {
-  //   // If there is a tract in the URL on initial load, set it
-  //   setNeighborhood(initialNeighborhood)
-  //   setSelectedTract(initialTract);
-  //   console.log("initialTract", initialTract);
-  //   console.log("Initial neighborhood:", neighborhood);
-  // }, [initialTract]);
+  useEffect(() => {
+    // If there is a tract in the URL on initial load, set it
+    setSelectedTract(initialTract);
+  }, [initialTract]);
 
   const handleChange = (event: any) => {
     setSelectedTract(event.target.value);
