@@ -16,7 +16,7 @@ const TopNavBar = () => {
     );
 
     // Permission check for demo
-    const canUpload = has ? !has({ permission: "org:test:demo" }) : true;
+    const noAccess = has ? !has({ permission: "org:test:demo" }) : true;
 
 	return (
 		<nav>
@@ -36,19 +36,24 @@ const TopNavBar = () => {
 				<span></span>
 				<span></span>
 			</div>
+            {/* check if they are a member of an organization to have access to the dashboard and upload page */}
 			<ul className={menuOpen ? "open" : ""}>
+                {currentUserOrg && (
 				<li>
 					<NavLink to='/TopicsSearchPage'>Explore Topics</NavLink>
 				</li>
+                )}
+                {currentUserOrg && (
 				<li>
 					<NavLink to='/'>Neighborhoods</NavLink>
 				</li>
-                {canUpload && (
+                )}
+                {noAccess && currentUserOrg && (
                     <li>
                         <NavLink to='/Upload'>Upload</NavLink>
                     </li>
                 )}
-				{canUpload && (
+				{noAccess && currentUserOrg && (
                     <li>
                         <NavLink to='/Dashboard'>Dashboard</NavLink>
                     </li>
