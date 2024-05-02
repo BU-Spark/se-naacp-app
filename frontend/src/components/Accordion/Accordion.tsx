@@ -159,9 +159,9 @@ const getTractDetailsWithTotalCount = (
         .slice(0, 5), // Limit to top 5 labels
     }))
     .sort((a, b) => b.totalLabelCount - a.totalLabelCount)
-    .slice(0, 5); // Limit to top 5 tracts
+    .slice(0, 10); // Limit to top 5 tracts
 
-    console.log(tractDetailsArray);
+    console.log("tractDetailsArray: ", tractDetailsArray);
   return (
     <>
       <div>
