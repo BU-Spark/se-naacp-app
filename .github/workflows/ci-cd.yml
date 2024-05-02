@@ -24,9 +24,15 @@ jobs:
 
     - name: Build frontend
       run: cd frontend && npm run build
+
+    - name: Test frontend
+      run: cd frontend && npm test
     
     - name: Install backend dependencies
       run: cd backend && npm install
+    
+    - name: Test backend
+      run: cd backend && npm test
 
     - name: Test start backend server
       run: |
