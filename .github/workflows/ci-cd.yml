@@ -19,9 +19,6 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Check Environment Variable
-      run: echo "Secret Key is ${{ secrets.REACT_APP_CLERK_PUBLISHABLE_KEY }}"
-
     - name: Install frontend dependencies
       run: cd frontend && npm install
 
