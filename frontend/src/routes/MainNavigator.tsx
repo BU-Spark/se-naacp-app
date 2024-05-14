@@ -22,15 +22,38 @@ import {
 	SignedIn,
 	SignedOut,
 	RedirectToSignIn,
+	useUser,
+	useOrganization
 } from "@clerk/clerk-react";
 import { ClerkProviderNavigate } from "../config/ClerkProvider";
 
+//if the user is not a part of an org he cannot have access to the app's pages
+const NoAccessPage = () => (
+	<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+			<div style={{ textAlign: 'center' }}>
+			  <div>You do not have permission to access this page.</div>
+			</div>
+			<div style={{ textAlign: 'center' }}>
+			  <div>Please contact the administrator.</div>
+			</div>
+		</div>
+  );
+  
+//check if the user is part of an org
 const ProtectedRoute = ({ child }: { child: React.ReactNode }) => {
+	const { user } = useUser();
+  	const { organization } = useOrganization()
+  	const currentUserOrg = user?.organizationMemberships.find(
+    (ele) => ele.organization.id === organization?.id,
+  );
+  if (!currentUserOrg) {
+    return <NoAccessPage />;
+  }
 	return (
 		<>
 			<SignedIn>{child}</SignedIn>
 			<SignedOut>
-				<RedirectToSignIn redirectUrl={"/Dashboard"} />
+				<RedirectToSignIn redirectUrl={"/sign-in"} />
 			</SignedOut>
 		</>
 	);

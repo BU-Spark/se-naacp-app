@@ -27,6 +27,8 @@ jobs:
 
     - name: Test frontend
       run: cd frontend && npm test
+      env:
+        REACT_APP_CLERK_PUBLISHABLE_KEY: ${{ secrets.REACT_APP_CLERK_PUBLISHABLE_KEY }}
     
     - name: Install backend dependencies
       run: cd backend && npm install

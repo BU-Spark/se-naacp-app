@@ -32,6 +32,7 @@ const NeighborhoodPage: React.FC = () => {
 	const { articleData, queryArticleDataType } = useContext(ArticleContext)!;
 	const { articleData2, queryArticleDataType2 } = useContext(ArticleContext)!;
 	const { tractData, queryTractDataType } = useContext(TractContext)!;
+	console.log('tract data', tractData)
 	const {
 		neighborhoodMasterList,
 		neighborhood,
