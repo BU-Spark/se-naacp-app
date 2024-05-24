@@ -42,16 +42,20 @@ const Wrapper: React.FC<{ children: React.ReactNode, hasPermission: boolean }> =
 };
 
 describe('CSVUploadPage Permissions', () => {
+
+  //Test 1 to check that if users have not permission they cannot access the uploading page
   it('should show permission denied message when user does not have permissions', () => {
     render(<Wrapper hasPermission={false}><CSVUploadBox /></Wrapper>);
     expect(screen.getByText(/You do not have permission to access this page./)).toBeInTheDocument();
   });
 
+  //Test 2 to check that if users have permission they can access the uploading page
   it('should render upload interface when user has permissions', () => {
     render(<Wrapper hasPermission={true}><CSVUploadBox /></Wrapper>);
     expect(screen.getByText(/Upload a CSV File/)).toBeInTheDocument();
   });
 
+  //Test 3 to check the uploading process 
   it('should handle file upload process correctly', async () => {
     render(<Wrapper hasPermission={true}><CSVUploadBox /></Wrapper>);
   
