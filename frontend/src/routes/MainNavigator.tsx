@@ -6,7 +6,7 @@ import IntroPage from "../pages/LandingPage/IntroPage";
 import FileUpload from "../pages/UploadArticles/UploadArticles";
 import TopNavBar from "../components/TopNavBar/TopNavBar";
 import Dashboard from "../pages/DashboardPage/Dashboard";
-import NeighborhoodPage from "../pages/NeighborhoodsPage/NeighborhoodPage"; // Replace with actual path
+import NeighborhoodPage from "../pages/NeighborhoodsPage/NeighborhoodPage"; 
 
 import { TopicsContext } from "../contexts/topics_context";
 import { NeighborhoodContext } from "../contexts/neighborhood_context";
@@ -28,7 +28,7 @@ import {
 import { ClerkProviderNavigate } from "../config/ClerkProvider";
 
 //if the user is not a part of an org he cannot have access to the app's pages
-const NoAccessPage = () => (
+export const NoAccessPage = () => (
 	<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
 			<div style={{ textAlign: 'center' }}>
 			  <div>You do not have permission to access this page.</div>
