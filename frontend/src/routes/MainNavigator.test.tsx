@@ -43,8 +43,10 @@ const Wrapper: React.FC<{ hasPermission: boolean }> = ({ hasPermission }) => {
   });
   (useOrganization as jest.Mock).mockReturnValue({ organization: { id: 'org-123' } });
 
+  const publishableKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY || '';
+
   return (
-    <ClerkProvider publishableKey={process.env.REACT_APP_CLERK_PUBLISHABLE_KEY}>
+    <ClerkProvider publishableKey={publishableKey}>
       <MemoryRouter>
         <MainNavigator />
       </MemoryRouter>
