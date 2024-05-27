@@ -1,7 +1,7 @@
 jest.mock('react-lottie-player', () => () => <div>Mocked Lottie Player</div>); 
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter, BrowserRouter } from 'react-router-dom';
 import { ClerkProvider, useAuth, useUser, useOrganization } from '@clerk/clerk-react';
 import MainNavigator, { NoAccessPage } from './MainNavigator';
 import { ClerkProviderNavigate } from "../config/ClerkProvider";
@@ -44,9 +44,11 @@ const Wrapper: React.FC<{ hasPermission: boolean }> = ({ hasPermission }) => {
   (useOrganization as jest.Mock).mockReturnValue({ organization: { id: 'org-123' } });
 
   return (
-    <>
-      <MainNavigator />
-    </>
+    <ClerkProvider publishableKey={process.env.REACT_APP_CLERK_PUBLISHABLE_KEY}>
+      <MemoryRouter>
+        <MainNavigator />
+      </MemoryRouter>
+    </ClerkProvider>
   );
 };
 
@@ -70,4 +72,30 @@ describe('MainNavigator', () => {
     expect(screen.getByText(/You do not have permission to access this page./)).toBeInTheDocument();
     expect(screen.getByText(/Please contact the administrator./)).toBeInTheDocument();
   });
+
+  it('should show the main navigator if user is part of an organization', () => {
+    (useUser as jest.Mock).mockReturnValue({
+      user: {
+        organizationMemberships: [
+          { organization: { id: 'org-123' } }
+        ]
+      }
+    });
+    (useOrganization as jest.Mock).mockReturnValue({ organization: { id: 'org-123' } });
+
+    render(
+      <Wrapper hasPermission={true}></Wrapper>
+    );
+
+    expect(screen.getByText('Explore Topics')).toBeInTheDocument();
+    expect(screen.getByText('Neighborhoods')).toBeInTheDocument();
+    // cannot access Upload and Dashboard if no access in this org
+    expect(screen.queryByText('Upload')).not.toBeInTheDocument();
+    expect(screen.queryByText('Dashboard')).not.toBeInTheDocument();
+  });
+
+  // Test 3: If user has org:test:demo permission check they can see all elements
+
+  // Test 4: What happens if you press a link on navigate
+  // https://javascript.plainenglish.io/testing-react-router-with-react-testing-library-8e24f7bdca18
 });
