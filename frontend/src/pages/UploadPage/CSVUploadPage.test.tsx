@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { BrowserRouter } from 'react-router-dom';
 import CSVUploadBox from './CSVUploadPage';
@@ -42,13 +42,43 @@ const Wrapper: React.FC<{ children: React.ReactNode, hasPermission: boolean }> =
 };
 
 describe('CSVUploadPage Permissions', () => {
+
+  //Test 1 to check that if users have not permission they cannot access the uploading page
   it('should show permission denied message when user does not have permissions', () => {
     render(<Wrapper hasPermission={false}><CSVUploadBox /></Wrapper>);
     expect(screen.getByText(/You do not have permission to access this page./)).toBeInTheDocument();
   });
 
+  //Test 2 to check that if users have permission they can access the uploading page
   it('should render upload interface when user has permissions', () => {
     render(<Wrapper hasPermission={true}><CSVUploadBox /></Wrapper>);
     expect(screen.getByText(/Upload a CSV File/)).toBeInTheDocument();
   });
+
+  //Test 3 to check the uploading process 
+  it('should handle file upload process correctly', async () => {
+    render(<Wrapper hasPermission={true}><CSVUploadBox /></Wrapper>);
+  
+    const file = new File([`Title,Author,Category,Article ID,URL Link,Publication Date,Content
+      Test Title,Test Author,Test Category,12345,/test-url,2021-01-01,Test Content`], 'test.csv', { type: 'text/csv' });
+  
+    const input = screen.getByLabelText(/Click to upload/i);
+    
+    // Simulate file selection
+    fireEvent.change(input, { target: { files: [file] } });
+  
+    // Verify the file appears in the upload list
+    await waitFor(() => {
+      expect(screen.getByText('test.csv')).toBeInTheDocument();
+    });
+  
+    // Verify the upload status
+    expect(screen.getByText('Uploading...')).toBeInTheDocument();
+  
+    // Simulate the file upload completion
+    await waitFor(() => {
+      expect(screen.getByText('Passed')).toBeInTheDocument();
+    });
+  });
+  
 });
