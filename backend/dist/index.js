@@ -1,14 +1,13 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
+import express from "express";
 import { typeDefs } from "./graphql/schemas/type_definitions.js";
 import { resolvers } from "./graphql/resolvers/graphql_resolvers.js";
 import { MongoClient } from "mongodb";
 import { GraphQLError } from "graphql";
-// Apollo Server
-const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-});
+import { authMiddleware } from "./authMiddleware.js"; // Import your middleware
+import 'dotenv/config';
+// Connect to MongoDB
 const connectWithMongoDB = async (mongo_url, db_name) => {
     const client = new MongoClient(mongo_url);
     try {
@@ -26,16 +25,26 @@ const connectWithMongoDB = async (mongo_url, db_name) => {
 };
 const dbName = process.env.DB_NAME;
 const mongo_url = process.env.NAACP_MONGODB;
-let x = await connectWithMongoDB(mongo_url, dbName);
-// Context Wrapper
-// Build things you need inside to pass to context
-const contextWrapper = async () => {
-    // Context Metadata
-    return { db: x };
-};
+let dbInstance = await connectWithMongoDB(mongo_url, dbName);
+// Create an Express application
+const app = express();
+// Apply your auth middleware to all requests
+app.use(authMiddleware);
+// Apollo Server
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    formatError: (err) => {
+        return { message: err.message };
+    },
+});
+// Start the Apollo Server using startStandaloneServer
 const { url } = await startStandaloneServer(server, {
-    context: contextWrapper,
+    context: async ({ req }) => ({
+        db: dbInstance,
+        req,
+        token: req.headers.authorization?.split('Bearer ')[1],
+    }),
     listen: { port: parseInt(process.env.PORT) || 4000 },
 });
 console.log(`🚀  Server ready at PORT: ${url}`);
-
