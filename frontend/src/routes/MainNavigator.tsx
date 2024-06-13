@@ -1,19 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Pages
-import IntroPage from "../pages/LandingPage/IntroPage";
-import FileUpload from "../pages/UploadArticles/UploadArticles";
 import TopNavBar from "../components/TopNavBar/TopNavBar";
 import Dashboard from "../pages/DashboardPage/Dashboard";
 import NeighborhoodPage from "../pages/NeighborhoodsPage/NeighborhoodPage"; 
 
-import { TopicsContext } from "../contexts/topics_context";
-import { NeighborhoodContext } from "../contexts/neighborhood_context";
 import TopicsPage from "../pages/TopicsPage/TopicsPage/TopicsPage";
 import TopicsSearchPage from "../pages/TopicsPage/TopicsSearchPage/TopicsSearchPage";
-import Callback from "../pages/Callback/Callback";
-import { Topics } from "../__generated__/graphql";
 import CSVUploadBox from "../pages/UploadPage/CSVUploadPage";
 import RSSUploadBox from "../pages/UploadPage/RSSUploadPage";
 import {
@@ -23,7 +17,8 @@ import {
 	SignedOut,
 	RedirectToSignIn,
 	useUser,
-	useOrganization
+	useOrganization,
+	useAuth
 } from "@clerk/clerk-react";
 import { ClerkProviderNavigate } from "../config/ClerkProvider";
 
@@ -42,10 +37,31 @@ export const NoAccessPage = () => (
 //check if the user is part of an org
 const ProtectedRoute = ({ child }: { child: React.ReactNode }) => {
 	const { user } = useUser();
-  	const { organization } = useOrganization()
-  	const currentUserOrg = user?.organizationMemberships.find(
-    (ele) => ele.organization.id === organization?.id,
-  );
+	const { organization } = useOrganization();
+	const { getToken } = useAuth(); // useAuth hook to get the getToken function
+
+	const currentUserOrg = user?.organizationMemberships.find(
+		(ele) => ele.organization.id === organization?.id
+	);
+
+	// Fetch token and store in local storage
+	useEffect(() => {
+		const fetchToken = async () => {
+			try {
+				const token = await getToken({ template: 'GraphQLAuth' }); // Use the getToken function from useAuth
+				if (token) {
+					localStorage.setItem('token', token);
+				}
+			} catch (error) {
+				console.error("Error fetching token:", error);
+			}
+		};
+
+		if (user) {
+			fetchToken();
+		}
+	}, [user, getToken]);
+
   if (!currentUserOrg) {
     return <NoAccessPage />;
   }
