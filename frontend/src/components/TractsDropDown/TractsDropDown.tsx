@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import { Card, CardContent } from "@mui/material";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "./TractsDropDown.css";
 import { TractContext } from "../../contexts/tract_context";
@@ -94,6 +96,11 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
     }
     setShouldRefresh(false);
 
+    if (getNeighborhood(number, neighborhoodMasterList!) === "") {
+      toast.error("Greater Boston Coming Soon!");
+      return;
+    }
+
     queryTractDataType("TRACT_DATA", {
       tract: number,
     });
@@ -107,17 +114,20 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
   };
 
   return (
-    <Card sx={{ width: "100%", height: "62vh" }}>
-      <CardContent sx={{ width: "100%", height: "62vh" }}>
-        <Menu
-          mode="inline"
-          onClick={onSelectItem}
-          style={{ width: "100%", height: "100%", overflow: "auto" }} // Added overflow: 'auto'
-          items={items}
-          selectedKeys={[tractData!.tract]}
-        />
-      </CardContent>
-    </Card>
+    <div>
+      <ToastContainer />
+      <Card sx={{ width: "100%", height: "62vh" }}>
+        <CardContent sx={{ width: "100%", height: "62vh" }}>
+          <Menu
+            mode="inline"
+            onClick={onSelectItem}
+            style={{ width: "100%", height: "100%", overflow: "auto" }} // Added overflow: 'auto'
+            items={items}
+            selectedKeys={[tractData!.tract]}
+          />
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
