@@ -79,13 +79,15 @@ function getDisplayTractList(
 	const result: string[] = [];
 
 	countOfTract.forEach((element) => {
+		let neighborhoodName = getNeighborhood(element[0], neighborhoods);
+		if (neighborhoodName === "") {
+			neighborhoodName = "Greater Boston"; // Set neighborhood name to "Greater Boston" if it's not found
+		}
 		result.push(
-			`${getNeighborhood(element[0], neighborhoods)} - ${element[0]} - ${
-				element[1]
-			}`,
+			`${neighborhoodName} - ${element[0]} - ${element[1]}`,
 		);
 	});
-
+	console.log("result: ", result);
 	return result;
 }
 
