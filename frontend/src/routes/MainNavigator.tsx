@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 // Pages
 import TopNavBar from "../components/TopNavBar/TopNavBar";
@@ -63,7 +64,7 @@ const ProtectedRoute = ({ child }: { child: React.ReactNode }) => {
 	}, [user, getToken]);
 
   if (!currentUserOrg) {
-    return <NoAccessPage />;
+    return <Navigate to="/sign-in" />;
   }
 	return (
 		<>
