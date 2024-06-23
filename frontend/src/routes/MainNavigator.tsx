@@ -36,11 +36,11 @@ export const NoAccessPage = () => (
   
 //check if the user is part of an org
 const ProtectedRoute = ({ child }: { child: React.ReactNode }) => {
-	const { user } = useUser();
-	const { organization } = useOrganization();
-	const { getToken } = useAuth(); // useAuth hook to get the getToken function
+	const { user, isLoaded: isUserLoaded } = useUser();
+	const { organization, isLoaded: isOrgLoaded } = useOrganization();
+	const { getToken } = useAuth();// useAuth hook to get the getToken function
 	const [isTokenLoaded, setTokenLoaded] = useState(false);
-    const location = useLocation();
+	const location = useLocation();
 
 	const currentUserOrg = user?.organizationMemberships.find(
 		(ele) => ele.organization.id === organization?.id
@@ -54,23 +54,33 @@ const ProtectedRoute = ({ child }: { child: React.ReactNode }) => {
 				if (token) {
 					localStorage.setItem('token', token);
 				}
-        setTokenLoaded(true);
+		setTokenLoaded(true);
 			} catch (error) {
 				console.error("Error fetching token:", error);
 			}
 		};
 
-		if (user) {
-			fetchToken();
-		}
-	}, [user, getToken]);
+	if (user) {
+	  fetchToken();
+	}
+  }, [user, getToken]);
 
-  if (!isTokenLoaded || !user || !organization) {
-    return <div>Loading...</div>;
+  // redirect to sign-in if user is not authenticated
+  if (!isUserLoaded) {
+	return <div>Loading...</div>;
+  }
+  // if user is not authenticated, redirect to the sign-in page
+  if (!user) {
+	return <Navigate to="/sign-in" state={{ from: location }} />;
+  }
+
+  // ensure the token and organization are loaded before rendering the protected route
+  if (!isTokenLoaded || !isOrgLoaded) {
+	return <div>Loading...</div>;
   }
 
   if (!currentUserOrg) {
-    return <Navigate to="/sign-in" state={{ from: location }} />;
+	return <Navigate to="/no-access" />;
   }
 
 	return (
@@ -84,58 +94,54 @@ const ProtectedRoute = ({ child }: { child: React.ReactNode }) => {
 };
 
 export default function MainNavigator() {
-	return (
-			<BrowserRouter>
-				<ClerkProviderNavigate>
-					<TopNavBar></TopNavBar>
-					<Routes>
-						<Route
-							path='/'
-							element={
-								<ProtectedRoute child={<NeighborhoodPage />} />
-							}
-						/>
-						<Route
-							path='/sign-in/*'
-							element={<SignIn routing='path' path='/sign-in' />}
-						/>
-						<Route
-							path='/sign-up/*'
-							element={<SignUp routing='path' path='/sign-up' />}
-						/>
-						<Route
-              				path="/TopicsSearchPage"
-              				element={<ProtectedRoute child={<TopicsSearchPage />} />}
-            			/>
-						<Route
-							path='/Topics'
-							element={<ProtectedRoute child={<TopicsPage />} />}
-						/>
-						<Route
-							path='/Upload'
-							element={
-								<ProtectedRoute child={<CSVUploadBox />} />
-							}
-						/>
-						<Route
-							path='/Upload/:RSS'
-							element={
-								<ProtectedRoute child={<RSSUploadBox />} />
-							}
-						/>
-						<Route
-							path='/Dashboard'
-							element={<ProtectedRoute child={<Dashboard />} />}
-						></Route>
-						<Route
-							path='/Neighborhoods'
-							element={
-								<ProtectedRoute child={<NeighborhoodPage />} />
-							}
-						/>
-						<Route path='*' element={<div>404</div>} />
-					</Routes>
-				</ClerkProviderNavigate>
-			</BrowserRouter>
-	);
+  return (
+	<BrowserRouter>
+	  <ClerkProviderNavigate>
+		<TopNavBar />
+		<Routes>
+		  <Route
+			path='/'
+			element={<ProtectedRoute child={<NeighborhoodPage />} />}
+		  />
+		  <Route
+			path='/sign-in/*'
+			element={<SignIn routing='path' path='/sign-in' />}
+		  />
+		  <Route
+			path='/sign-up/*'
+			element={<SignUp routing='path' path='/sign-up' />}
+		  />
+		  <Route
+			path="/TopicsSearchPage"
+			element={<ProtectedRoute child={<TopicsSearchPage />} />}
+		  />
+		  <Route
+			path='/Topics'
+			element={<ProtectedRoute child={<TopicsPage />} />}
+		  />
+		  <Route
+			path='/Upload'
+			element={<ProtectedRoute child={<CSVUploadBox />} />}
+		  />
+		  <Route
+			path='/Upload/:RSS'
+			element={<ProtectedRoute child={<RSSUploadBox />} />}
+		  />
+		  <Route
+			path='/Dashboard'
+			element={<ProtectedRoute child={<Dashboard />} />}
+		  />
+		  <Route
+			path='/Neighborhoods'
+			element={<ProtectedRoute child={<NeighborhoodPage />} />}
+		  />
+		  <Route
+			path='/no-access'
+			element={<NoAccessPage />}
+		  />
+		  <Route path='*' element={<div>404</div>} />
+		</Routes>
+	  </ClerkProviderNavigate>
+	</BrowserRouter>
+  );
 }
