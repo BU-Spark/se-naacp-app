@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Navigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 // Pages
 import TopNavBar from "../components/TopNavBar/TopNavBar";
@@ -23,7 +22,7 @@ import {
 } from "@clerk/clerk-react";
 import { ClerkProviderNavigate } from "../config/ClerkProvider";
 
-//if the user is not a part of an org he cannot have access to the app's pages
+// If the user is not part of an org, they cannot have access to the app's pages
 export const NoAccessPage = () => (
 	<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
 			<div style={{ textAlign: 'center' }}>
@@ -40,6 +39,8 @@ const ProtectedRoute = ({ child }: { child: React.ReactNode }) => {
 	const { user } = useUser();
 	const { organization } = useOrganization();
 	const { getToken } = useAuth(); // useAuth hook to get the getToken function
+	const [isTokenLoaded, setTokenLoaded] = useState(false);
+    const location = useLocation();
 
 	const currentUserOrg = user?.organizationMemberships.find(
 		(ele) => ele.organization.id === organization?.id
@@ -53,6 +54,7 @@ const ProtectedRoute = ({ child }: { child: React.ReactNode }) => {
 				if (token) {
 					localStorage.setItem('token', token);
 				}
+        setTokenLoaded(true);
 			} catch (error) {
 				console.error("Error fetching token:", error);
 			}
@@ -63,9 +65,14 @@ const ProtectedRoute = ({ child }: { child: React.ReactNode }) => {
 		}
 	}, [user, getToken]);
 
-  if (!currentUserOrg) {
-    return <Navigate to="/sign-in" />;
+  if (!isTokenLoaded || !user || !organization) {
+    return <div>Loading...</div>;
   }
+
+  if (!currentUserOrg) {
+    return <Navigate to="/sign-in" state={{ from: location }} />;
+  }
+
 	return (
 		<>
 			<SignedIn>{child}</SignedIn>
@@ -78,7 +85,6 @@ const ProtectedRoute = ({ child }: { child: React.ReactNode }) => {
 
 export default function MainNavigator() {
 	return (
-		<>
 			<BrowserRouter>
 				<ClerkProviderNavigate>
 					<TopNavBar></TopNavBar>
@@ -89,7 +95,6 @@ export default function MainNavigator() {
 								<ProtectedRoute child={<NeighborhoodPage />} />
 							}
 						/>
-
 						<Route
 							path='/sign-in/*'
 							element={<SignIn routing='path' path='/sign-in' />}
@@ -102,7 +107,6 @@ export default function MainNavigator() {
               				path="/TopicsSearchPage"
               				element={<ProtectedRoute child={<TopicsSearchPage />} />}
             			/>
-
 						<Route
 							path='/Topics'
 							element={<ProtectedRoute child={<TopicsPage />} />}
@@ -129,15 +133,9 @@ export default function MainNavigator() {
 								<ProtectedRoute child={<NeighborhoodPage />} />
 							}
 						/>
-						{/*
-							/Callback basically a loading screen to show while auth context is
-							delivered, before being redirected back to home page
-						 */}
-						{/* <Route path="/Callback" element={<Callback />} /> */}
 						<Route path='*' element={<div>404</div>} />
 					</Routes>
 				</ClerkProviderNavigate>
 			</BrowserRouter>
-		</>
 	);
 }
