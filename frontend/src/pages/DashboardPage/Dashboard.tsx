@@ -8,7 +8,7 @@ import TopNeighborhoods from "../../components/TopNeighborhoods/TopNeighborhoods
 import { Outlet } from "react-router-dom";
 
 import { ArticleContext } from "../../contexts/article_context";
-import { useOrganization, useUser } from "@clerk/clerk-react";
+import { useOrganization, useUser, useAuth } from "@clerk/clerk-react";
 import dayjs from "dayjs";
 import BasicAccordion from "../../components/Accordion/Accordion";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
@@ -27,6 +27,8 @@ export default function Dashboard() {
   const { user, isSignedIn } = useUser();
   // useOrganization() returns the current organization in the session
   const { organization } = useOrganization();
+  const { has } = useAuth();
+  const canManageSettings = has ? has({ permission: "org:test:limit" }) : false;
 
   const currentUserOrg = user?.organizationMemberships.find(
     (ele) => ele.organization.id === organization?.id
@@ -63,6 +65,19 @@ export default function Dashboard() {
   if (!articleData) {
     articleData = [];
   }
+    // If the user does not have access to the dashboard page
+    if (!canManageSettings) {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div>You do not have permission to access this page.</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div>Please contact the administrator.</div>
+          </div>
+        </div>
+      );
+    }
 
   return (
     <>
