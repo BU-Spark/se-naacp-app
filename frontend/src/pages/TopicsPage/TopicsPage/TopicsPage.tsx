@@ -20,7 +20,7 @@ import { ArticleContext } from "../../../contexts/article_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../../contexts/topics_context";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import DateField from "../../../components/SearchFields/DateBar/DateBar";
 import { maxDate, minDate } from "../../../App";
 import { useOrganization, useUser } from "@clerk/clerk-react";
@@ -40,12 +40,12 @@ function getNeighborhood(
 function countArticlesByKeyWord(
 	articles: Article[],
 	positionSection: string,
-	listOfTopics: string[],
+	listOfTopics: string[] | undefined, 
 	neighborhoods: { [key: string]: string[] },
 ) {
 	let counts: any = {};
 	articles.forEach((article) => {
-		if (listOfTopics.indexOf(positionSection) == -1) {
+		if (listOfTopics && listOfTopics.indexOf(positionSection) == -1) {
 			if (
 				article.openai_labels[0] === positionSection &&
 				article.tracts
@@ -101,11 +101,13 @@ function extractNeighborhoodTract(text: string) {
 		number = match[2];
 	}
 
+
 	return [location, number];
 }
 
 const TopicsPage: React.FC = () => {
 	const navigate = useNavigate(); // Initialize useNavigate hook
+	const location = useLocation(); // Initialize useLocation hook
 
 	//Context
 	const {
@@ -116,11 +118,12 @@ const TopicsPage: React.FC = () => {
 		shouldRefresh,
 		queryArticleDataType2
 	} = React.useContext(ArticleContext)!;
+	const { topicsMasterList, topic, setTopic, queryTopicsDataType } =
+	React.useContext(TopicsContext)!;
 	const { tractData, queryTractDataType } = React.useContext(TractContext)!;
-	const { neighborhoodMasterList, setNeighborhood, neighborhood } =
+	const { neighborhoodMasterList, setNeighborhood, neighborhood, queryNeighborhoodDataType } =
 		React.useContext(NeighborhoodContext)!;
-	const { topicsMasterList, topic, setTopic } =
-		React.useContext(TopicsContext)!;
+	
 	const { user } = useUser();
 	const { organization } = useOrganization();
 
@@ -132,6 +135,44 @@ const TopicsPage: React.FC = () => {
 	function handleBoxClick() {
 		navigate("../TopicsSearchPage"); // Navigate to the new route
 	}
+
+	React.useEffect(() => {
+		if (!neighborhoodMasterList) {
+			queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
+			queryTopicsDataType("TOPICS_DATA", {
+				userId: user?.id,
+			});
+			queryTopicsDataType("LABELS_DATA", {
+				userId: user?.id,
+			});
+		}
+
+	  }, []);
+
+
+	React.useEffect(() => {
+		const queryParams = new URLSearchParams(location.search);
+		const urlTopic = queryParams.get("topic");
+		console.log("topic: ", topic);
+		console.log("urlTopic: ", urlTopic);
+	
+		if (topic) {
+			// If there is a topic in the context, update the URL with this topic
+			if (urlTopic !== topic) {
+				queryParams.set("topic", topic);
+				navigate({
+					pathname: location.pathname,
+					search: queryParams.toString()
+				});
+			}
+		} else if (urlTopic) {
+			// If no topic in context but there is one in the URL, set it as the current topic
+			setTopic(urlTopic);
+		} else {
+			// If no topic in context and URL, redirect to the search topic page
+			navigate("../TopicsSearchPage");
+		}
+	}, [location, navigate, topic, setTopic]);
 
 	// Setting Default Values
 	React.useEffect(() => {
@@ -182,11 +223,12 @@ const TopicsPage: React.FC = () => {
 
   React.useEffect(() => {
     console.log(
-      articleData,
-      topic,
-      neighborhood,
-      tractData,
-      neighborhoodMasterList
+		
+      "article data", articleData,
+      "topic",topic,
+      "neighborhood",neighborhood,
+      "tractData", tractData,
+      "neighborhoodMasterList",neighborhoodMasterList
     );
   }, [articleData, topic, neighborhood, tractData, neighborhoodMasterList]);
 
