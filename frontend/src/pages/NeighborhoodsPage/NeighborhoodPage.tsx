@@ -1,5 +1,6 @@
 //Libaries
 import React, { useContext, useState } from "react";
+import dayjs from "dayjs";
 
 //Components
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
@@ -50,6 +51,8 @@ const NeighborhoodPage: React.FC = () => {
 
 	const [ tractInfo, setTractInfo ] = useState('');
 	const [ neighborhoodInfo, setNeighborhoodInfo ] = useState('Downtown');
+	const [ dateFrom, setDateFrom ] = useState(minDate);
+	const [ dateTo, setDateTo ] = useState(maxDate);
 
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -65,8 +68,21 @@ const NeighborhoodPage: React.FC = () => {
         const queryParams = new URLSearchParams(location.search);
         const tract = queryParams.get('tract');
 		const neighborhood = queryParams.get('neighborhood');
+		const urlFrom = queryParams.get("from");
+		const urlTo = queryParams.get("to");
+
 		console.log('Tract: ', tract);
 		console.log('Neighborhood: ', neighborhood);
+
+
+		if (urlFrom && urlTo) {
+			if (urlTo !== dateTo.format("MM/DD/YYYY")) {
+				setDateTo(dayjs(urlTo));
+			}
+			if (urlFrom !== dateFrom.format("MM/DD/YYYY")) {
+				setDateFrom(dayjs(urlFrom));
+			}
+		}
 
         if (tract) {
             // Perform actions based on tract, e.g., fetching data, displaying info, etc.
@@ -81,6 +97,7 @@ const NeighborhoodPage: React.FC = () => {
 			setNeighborhood("Downtown");
 			setTractInfo("030302");
 		}
+
 		setSelectBarData(null);
     }, [location, navigate]);
 
@@ -93,27 +110,27 @@ const NeighborhoodPage: React.FC = () => {
 		queryTractDataType("TRACT_DATA", { tract: tractInfo });
 		if (organization) {
 			queryArticleDataType("ARTICLE_DATA", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+				dateTo: parseInt(dateTo.format("YYYYMMDD")),
 				area: tractInfo,
 				userId: organization.id,
 			});
 			queryArticleDataType2("ARTICLE_DATA", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+				dateTo: parseInt(dateTo.format("YYYYMMDD")),
 				area: "all",
 				userId: organization.id,
 			});
 		} else {
 			queryArticleDataType("ARTICLE_DATA", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+				dateTo: parseInt(dateTo.format("YYYYMMDD")),
 				area: tractInfo,
 				userId: user?.id,
 			});
 			queryArticleDataType2("ARTICLE_DATA", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
+				dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+				dateTo: parseInt(dateTo.format("YYYYMMDD")),
 				area: "all",
 				userId: user?.id,
 			});
