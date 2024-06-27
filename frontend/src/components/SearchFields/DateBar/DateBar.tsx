@@ -12,6 +12,7 @@ import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 import { minDate, maxDate } from "../../../App";
 import { TopicsContext } from "../../../contexts/topics_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
+import { useLocation, useNavigate } from "react-router-dom";
 interface DateFieldProps {
 	title: string;
 	isTopicsPage: boolean;
@@ -20,6 +21,8 @@ interface DateFieldProps {
 const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 	const [dateFrom, setdateFrom] = React.useState(minDate);
 	const [dateTo, setDateTo] = React.useState(maxDate);
+	const location = useLocation();
+	const navigate = useNavigate();
 
 	const { topicsMasterList, topic, setTopic } =
 		React.useContext(TopicsContext)!;
@@ -31,14 +34,67 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 	const { organization } = useOrganization();
 
 	const handleChangeFrom = (d: any) => {
-		setShouldRefresh(true);
 		setdateFrom(d);
 	};
 
 	const handleChangeTo = (d: any) => {
-		setShouldRefresh(true);
+
 		setDateTo(d);
+
 	};
+
+	React.useEffect(() => {
+		console.log("new date checker", dateTo.format("MM/DD/YYYY"));
+		
+	}, [dateTo]);
+
+	React.useEffect(() => {
+		const queryParams = new URLSearchParams(location.search);
+		const urlFrom = queryParams.get("from");
+		const urlTo = queryParams.get("to");
+
+		
+		if (urlFrom && urlTo) {
+
+			if (urlTo !== dateTo.format("MM/DD/YYYY")) {
+				handleChangeTo(dayjs(urlTo));
+			}
+
+			if (urlFrom !== dateFrom.format("MM/DD/YYYY")) {
+				handleChangeFrom(dayjs(urlFrom));
+			}
+
+
+		} else {
+			queryParams.set("from", dateFrom.format("MM/DD/YYYY"));
+			queryParams.set("to", dateTo.format("MM/DD/YYYY"));
+			navigate(`?${queryParams.toString()}`);
+		}
+	}, []);
+
+	React.useEffect(() => {
+		const queryParams = new URLSearchParams(location.search);
+		const urlFrom = queryParams.get("from");
+		const urlTo = queryParams.get("to");
+
+		if (urlFrom && urlTo) {
+			if (urlFrom !== dateFrom.format("MM/DD/YYYY")) {
+				console.log("pass2")
+				queryParams.set("from", dateFrom.format("MM/DD/YYYY"));
+				navigate(`?${queryParams.toString()}`);
+			}
+			if (urlTo !== dateTo.format("MM/DD/YYYY")) {
+				console.log("pass3")
+				queryParams.set("to", dateTo.format("MM/DD/YYYY"));
+				navigate(`?${queryParams.toString()}`);
+			}
+		} else {
+			queryParams.set("from", dateFrom.format("MM/DD/YYYY"));
+			queryParams.set("to", dateTo.format("MM/DD/YYYY"));
+			navigate(`?${queryParams.toString()}`);
+		}
+	}, [dateFrom, dateTo]);
+
 
 	React.useEffect(() => {
 		setShouldRefresh(false);
@@ -107,6 +163,7 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 						userId: user?.id,
 				  });
 		}
+		setShouldRefresh(true);
 	}, [dateFrom, dateTo]);
 
 	return (
