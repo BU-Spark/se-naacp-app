@@ -81,7 +81,8 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
 
   for (let index = 0; index < dummy.length; index++) {
     const x = extractNeighborhoodTract(dummy[index]);
-    items.push(getItem(dummy[index], x[1]));
+
+    items.push(getItem(dummy[index] + " Articles", x[1]));
   }
 
   const onSelectItem: MenuProps["onClick"] = (keys) => {
