@@ -9,7 +9,6 @@ import { Request, Response, NextFunction } from 'express';
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   // Retrieve the public key from environment variables
   const publicKey = process.env.CLERK_PEM_PUBLIC_KEY;
-  console.log("Public Key:", publicKey);
   if (!publicKey) {
     console.error("CLERK_PEM_PUBLIC_KEY is not set in the environment variables");
     throw new Error("Internal Server Error");

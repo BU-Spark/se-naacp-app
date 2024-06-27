@@ -35,7 +35,7 @@ const columns = [
   { field: "neighborhood", headerName: "Neighborhood", width: 200 },
   { field: "censusTract", headerName: "Census Tract", width: 200 },
   { field: "publishingDate", headerName: "Publishing Date", width: 120 },
-  { field: "author", headerName: "Author", width: 130 },
+  // { field: "author", headerName: "Author", width: 130 },
 ];
 
 interface ArticleCardProps {
