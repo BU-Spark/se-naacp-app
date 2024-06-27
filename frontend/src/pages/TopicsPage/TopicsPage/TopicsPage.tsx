@@ -233,86 +233,77 @@ const TopicsPage: React.FC = () => {
   }, [articleData, topic, neighborhood, tractData, neighborhoodMasterList]);
 
   return (
-    <>
-      {!(
-        articleData &&
-        topic &&
-        neighborhood &&
-        tractData &&
-        neighborhoodMasterList
-      ) ? (
-        <Stack
-          sx={{
-            width: "100%",
-            color: "grey.500",
-            marginTop: "10px",
-          }}
-          spacing={2}
-        >
-          <LinearProgress color="secondary" />
-        </Stack>
-      ) : (
-        <div className="big-container">
-          <div className="row justify-content-between">
-            <div className="col-md-9 col-sm-12">
-              <div
-                className="align-self-start org-back"
-                onClick={handleBoxClick}
-              >
-                {" "}
-                <i
-                  className="fa fa-arrow-left"
-                  aria-hidden="true"
-                  style={{ marginRight: "10px" }}
-                ></i>
-                Back to Search Page
-              </div>
-
-							<div className='align-self-start your-org'>
-								SELECTED TOPIC
-							</div>
-							<div className='align-self-start org-name'>
-								{topic == null ? "No Topic Selected" : topic}
-							</div>
-							<h1></h1>
-						</div>
-
-						<div className='col-md-3 col-sm-12'>
-							<div>
-								<DateField
-									title='From'
-									isTopicsPage={true}
-								></DateField>
-							</div>
-						</div>
-					</div>
-
-					<div className='row justify-content-evenly'>
-						<div className='col-md-5 col-sm-12'>
-							<h1 className='titles'>Tracts</h1>
-							<TractsDropDown tracts={tracts}></TractsDropDown>
-						</div>
-						<div className='col-md-7 col-sm-12'>
-							<h1 className='titles'>Map</h1>
-							<MapCard clickable={false}></MapCard>
-						</div>
-					</div>
-
-					<div className='row justify-content-evenly'>
-						<div className='col-md-5 col-sm-12'>
-							<h1 className='titles'>Demographics</h1>
-							<NeighborhoodDemographicsBoard></NeighborhoodDemographicsBoard>
-						</div>
-						<div className='col-md-7 col-sm-12'>
-							<h1 className='titles'>Articles</h1>
-
-							<ArticleCard></ArticleCard>
-						</div>
-					</div>
-				</div>
+	<>
+	  <div className="big-container">
+		<div className="row justify-content-between">
+		  <div className="col-md-9 col-sm-12">
+			<div
+			  className="align-self-start org-back"
+			  onClick={handleBoxClick}
+			>
+			  <i
+				className="fa fa-arrow-left"
+				aria-hidden="true"
+				style={{ marginRight: "10px" }}
+			  ></i>
+			  Back to Search Page
+			</div>
+  
+			<div className='align-self-start your-org'>
+			  SELECTED TOPIC
+			</div>
+			<div className='align-self-start org-name'>
+			  {topic == null ? "No Topic Selected" : topic}
+			</div>
+			<h1></h1>
+		  </div>
+  
+		  <div className='col-md-3 col-sm-12'>
+			<div>
+			  <DateField
+				title='From'
+				isTopicsPage={true}
+			  ></DateField>
+			</div>
+		  </div>
+		</div>
+  
+		<div className='row justify-content-evenly'>
+		  <div className='col-md-5 col-sm-12'>
+			<h1 className='titles'>Tracts</h1>
+			{articleData && topic && neighborhood && tractData && neighborhoodMasterList ? (
+			  <TractsDropDown tracts={tracts}></TractsDropDown>
+			) : (
+			  <div>No articles in this date range</div>
 			)}
-		</>
-	);
+		  </div>
+		  <div className='col-md-7 col-sm-12'>
+			<h1 className='titles'>Map</h1>
+			  <MapCard clickable={false}></MapCard>
+		  </div>
+		</div>
+  
+		<div className='row justify-content-evenly'>
+		  <div className='col-md-5 col-sm-12'>
+			<h1 className='titles'>Demographics</h1>
+			{articleData && topic && neighborhood && tractData && neighborhoodMasterList ? (
+			  <NeighborhoodDemographicsBoard></NeighborhoodDemographicsBoard>
+			) : (
+			  <div className="placeholder-box"></div>
+			)}
+		  </div>
+		  <div className='col-md-7 col-sm-12'>
+			<h1 className='titles'>Articles</h1>
+			{articleData && topic && neighborhood && tractData && neighborhoodMasterList ? (
+			  <ArticleCard></ArticleCard>
+			) : (
+			  <div className="placeholder-box"></div>
+			)}
+		  </div>
+		</div>
+	  </div>
+	</>
+  );
 };
 
 export default TopicsPage;
