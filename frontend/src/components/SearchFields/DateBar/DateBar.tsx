@@ -43,10 +43,7 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 
 	};
 
-	React.useEffect(() => {
-		console.log("new date checker", dateTo.format("MM/DD/YYYY"));
-		
-	}, [dateTo]);
+
 
 	React.useEffect(() => {
 		const queryParams = new URLSearchParams(location.search);
@@ -79,12 +76,10 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 
 		if (urlFrom && urlTo) {
 			if (urlFrom !== dateFrom.format("MM/DD/YYYY")) {
-				console.log("pass2")
 				queryParams.set("from", dateFrom.format("MM/DD/YYYY"));
 				navigate(`?${queryParams.toString()}`);
 			}
 			if (urlTo !== dateTo.format("MM/DD/YYYY")) {
-				console.log("pass3")
 				queryParams.set("to", dateTo.format("MM/DD/YYYY"));
 				navigate(`?${queryParams.toString()}`);
 			}
