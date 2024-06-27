@@ -48,7 +48,7 @@ const NeighborhoodPage: React.FC = () => {
 	// select bar data
 	const [selectBarData, setSelectBarData] = useState(null);
 
-	const [ tractInfo, setTractInfo ] = useState('030302');
+	const [ tractInfo, setTractInfo ] = useState('');
 	const [ neighborhoodInfo, setNeighborhoodInfo ] = useState('Downtown');
 
 	const location = useLocation();
@@ -59,7 +59,9 @@ const NeighborhoodPage: React.FC = () => {
 		setSelectBarData(barData);
 	}
 
+
 	React.useEffect(() => {
+		console.log("hit this one")
         const queryParams = new URLSearchParams(location.search);
         const tract = queryParams.get('tract');
 		const neighborhood = queryParams.get('neighborhood');
@@ -79,7 +81,9 @@ const NeighborhoodPage: React.FC = () => {
 			setNeighborhood("Downtown");
 			setTractInfo("030302");
 		}
+		setSelectBarData(null);
     }, [location, navigate]);
+
 
 	React.useEffect(() => {
 		queryTopicsDataType("TOPICS_DATA");
@@ -120,6 +124,7 @@ const NeighborhoodPage: React.FC = () => {
 		if (articleData && tractData && neighborhoodMasterList) {
 			setIsLoading(false);
 		}
+		console.log('article data', articleData);
 	}, [articleData, tractData, neighborhoodMasterList]);
 
 
@@ -161,7 +166,7 @@ const NeighborhoodPage: React.FC = () => {
 						</div>
 						
 						<div className='col d-flex justify-content-end'>
-							<div className='col-md-5 col-sm-12'>
+							<div className='col-md-6 col-sm-12'>
 								<div>
 									<DateField
 										title='From'

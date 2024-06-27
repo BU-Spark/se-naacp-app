@@ -6,6 +6,8 @@ import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import IconButton from "@mui/material/IconButton";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { ArticleContext } from "../../../contexts/article_context";
 import { TractContext } from "../../../contexts/tract_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
@@ -42,6 +44,12 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 		setDateTo(d);
 
 	};
+
+	const handleResetDates = () => {
+		setdateFrom(minDate);
+		setDateTo(maxDate);
+	};
+
 
 
 
@@ -235,7 +243,13 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 						/>
 					</LocalizationProvider>
 				</div>
+				<div>
+					<IconButton onClick={handleResetDates}>
+						<RefreshIcon />
+					</IconButton>
+				</div>
 			</div>
+			
 		</>
 	);
 };
