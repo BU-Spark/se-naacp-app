@@ -18,7 +18,6 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import { TractContext } from "../../../contexts/tract_context";
 import { ArticleContext } from "../../../contexts/article_context";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
-import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../../contexts/topics_context";
 import { useNavigate, useLocation } from "react-router-dom";
 import DateField from "../../../components/SearchFields/DateBar/DateBar";
@@ -87,7 +86,7 @@ function getDisplayTractList(
 			`${neighborhoodName} - ${element[0]} - ${element[1]}`,
 		);
 	});
-	console.log("result: ", result);
+
 	return result;
 }
 
@@ -153,8 +152,6 @@ const TopicsPage: React.FC = () => {
 	React.useEffect(() => {
 		const queryParams = new URLSearchParams(location.search);
 		const urlTopic = queryParams.get("topic");
-		console.log("topic: ", topic);
-		console.log("urlTopic: ", urlTopic);
 	
 		if (topic) {
 			// If there is a topic in the context, update the URL with this topic
@@ -200,8 +197,6 @@ const TopicsPage: React.FC = () => {
 
 	//Set deafult count and list
 	React.useEffect(() => {
-		// console.log(articleData, shouldRefresh);
-
 		if (articleData && shouldRefresh) {
 			const countTemp = countArticlesByKeyWord(
 				articleData!,
@@ -221,98 +216,69 @@ const TopicsPage: React.FC = () => {
 		}
 	}, [articleData, shouldRefresh]);
 
-  React.useEffect(() => {
-    console.log(
-		
-      "article data", articleData,
-      "topic",topic,
-      "neighborhood",neighborhood,
-      "tractData", tractData,
-      "neighborhoodMasterList",neighborhoodMasterList
-    );
-  }, [articleData, topic, neighborhood, tractData, neighborhoodMasterList]);
-
-  return (
-    <>
-      {!(
-        articleData &&
-        topic &&
-        neighborhood &&
-        tractData &&
-        neighborhoodMasterList
-      ) ? (
-        <Stack
-          sx={{
-            width: "100%",
-            color: "grey.500",
-            marginTop: "10px",
-          }}
-          spacing={2}
-        >
-          <LinearProgress color="secondary" />
-        </Stack>
-      ) : (
-        <div className="big-container">
-          <div className="row justify-content-between">
-            <div className="col-md-9 col-sm-12">
-              <div
-                className="align-self-start org-back"
-                onClick={handleBoxClick}
-              >
-                {" "}
-                <i
-                  className="fa fa-arrow-left"
-                  aria-hidden="true"
-                  style={{ marginRight: "10px" }}
-                ></i>
-                Back to Search Page
-              </div>
-
-							<div className='align-self-start your-org'>
-								SELECTED TOPIC
-							</div>
-							<div className='align-self-start org-name'>
-								{topic == null ? "No Topic Selected" : topic}
-							</div>
-							<h1></h1>
-						</div>
-
-						<div className='col-md-3 col-sm-12'>
-							<div>
-								<DateField
-									title='From'
-									isTopicsPage={true}
-								></DateField>
-							</div>
-						</div>
-					</div>
-
-					<div className='row justify-content-evenly'>
-						<div className='col-md-5 col-sm-12'>
-							<h1 className='titles'>Tracts</h1>
-							<TractsDropDown tracts={tracts}></TractsDropDown>
-						</div>
-						<div className='col-md-7 col-sm-12'>
-							<h1 className='titles'>Map</h1>
-							<MapCard clickable={false}></MapCard>
-						</div>
-					</div>
-
-					<div className='row justify-content-evenly'>
-						<div className='col-md-5 col-sm-12'>
-							<h1 className='titles'>Demographics</h1>
-							<NeighborhoodDemographicsBoard></NeighborhoodDemographicsBoard>
-						</div>
-						<div className='col-md-7 col-sm-12'>
-							<h1 className='titles'>Articles</h1>
-
-							<ArticleCard></ArticleCard>
-						</div>
-					</div>
+	return (
+		<>
+		  <div className="big-container">
+			<div className="row justify-content-between">
+			  <div className="col-md-9 col-sm-12">
+				<div className="align-self-start org-back" onClick={handleBoxClick}>
+				  <i className="fa fa-arrow-left" aria-hidden="true" style={{ marginRight: "10px" }}></i>
+				  Back to Search Page
 				</div>
+	  
+				<div className="align-self-start your-org">
+				  SELECTED TOPIC
+				</div>
+				<div className="align-self-start org-name">
+				  {topic == null ? "No Topic Selected" : topic}
+				</div>
+				<h1></h1>
+			  </div>
+	  
+			  <div className="col-md-3 col-sm-12">
+				<div>
+				  <DateField title="From" isTopicsPage={true}></DateField>
+				</div>
+			  </div>
+			</div>
+	  
+			{articleData && topic && neighborhood && tractData && neighborhoodMasterList ? (
+			  <>
+				<div className="row justify-content-evenly">
+				  <div className="col-md-5 col-sm-12">
+					<h1 className="titles">Tracts</h1>
+					<TractsDropDown tracts={tracts}></TractsDropDown>
+				  </div>
+				  <div className="col-md-7 col-sm-12">
+					<h1 className="titles">Map</h1>
+					<MapCard clickable={false}></MapCard>
+				  </div>
+				</div>
+	  
+				<div className="row justify-content-evenly">
+				  <div className="col-md-5 col-sm-12">
+					<h1 className="titles">Demographics</h1>
+					<NeighborhoodDemographicsBoard></NeighborhoodDemographicsBoard>
+				  </div>
+				  <div className="col-md-7 col-sm-12">
+					<h1 className="titles">Articles</h1>
+					<ArticleCard></ArticleCard>
+				  </div>
+				</div>
+			  </>
+			) : (
+			  <div className="row justify-content-evenly">
+				<div className="col-md-5 col-sm-12">
+				  <h1 className="titles">Tracts</h1>
+				  <div>No articles in this date range</div>
+				</div>
+				<div className="col-md-5 col-sm-12">
+				</div>
+			  </div>
 			)}
+		  </div>
 		</>
-	);
-};
-
+	  );
+	  };
+	  
 export default TopicsPage;
