@@ -6,6 +6,7 @@ import ArticleCard from "../../../components/ArticleCard/ArticleCard";
 import NeighborhoodDemographicsBoard from "../../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
 import TractsDropDown from "../../../components/TractsDropDown/TractsDropDown";
 import MapCard from "../../../components/MapCard/MapCard";
+import { LinearProgress, Stack } from "@mui/material";
 
 //Types
 import { Article } from "../../../__generated__/graphql";
@@ -130,6 +131,8 @@ const TopicsPage: React.FC = () => {
 	const [tracts, setTracts] = React.useState<string[]>([]);
 	const [flag, setFlag] = React.useState(true);
 	const [currentTopic, setcurrentTopic] = React.useState("");
+	const [isLoading, setIsLoading] = React.useState(true);
+
 
 	function handleBoxClick() {
 		navigate("../TopicsSearchPage"); // Navigate to the new route
@@ -216,8 +219,28 @@ const TopicsPage: React.FC = () => {
 		}
 	}, [articleData, shouldRefresh]);
 
+	React.useEffect(() => {
+		if (articleData && tractData && neighborhoodMasterList) {
+			setIsLoading(false);
+		}
+		console.log('article data', articleData);
+	}, [articleData, tractData, neighborhoodMasterList]);
+
 	return (
 		<>
+
+		{isLoading ? (
+			<Stack
+			sx={{
+				width: "100%",
+				color: "grey.500",
+				marginTop: "10px",
+			}}
+			spacing={2}
+			>
+				<LinearProgress color='secondary' />
+			</Stack>
+		) : (
 		  <div className="big-container">
 			<div className="row justify-content-between">
 			  <div className="col-md-9 col-sm-12">
@@ -277,6 +300,7 @@ const TopicsPage: React.FC = () => {
 			  </div>
 			)}
 		  </div>
+		)}
 		</>
 	  );
 	  };
