@@ -32,7 +32,6 @@ const NeighborhoodPage: React.FC = () => {
 	const { articleData, queryArticleDataType } = useContext(ArticleContext)!;
 	const { articleData2, queryArticleDataType2 } = useContext(ArticleContext)!;
 	const { tractData, queryTractDataType } = useContext(TractContext)!;
-	console.log('tract data', tractData)
 	const {
 		neighborhoodMasterList,
 		neighborhood,
@@ -61,19 +60,21 @@ const NeighborhoodPage: React.FC = () => {
 
 
 	React.useEffect(() => {
-		console.log("hit this one")
+		console.log("location", location);
         const queryParams = new URLSearchParams(location.search);
         const tract = queryParams.get('tract');
 		const neighborhood = queryParams.get('neighborhood');
-		console.log('Tract: ', tract);
-		console.log('Neighborhood: ', neighborhood);
 
         if (tract) {
             // Perform actions based on tract, e.g., fetching data, displaying info, etc.
             // console.log(`Tract selected: ${tract}`);
-			setTractInfo(tract);
-			setNeighborhoodInfo(neighborhood!);
-			setNeighborhood(neighborhoodInfo);
+			if (tract !== tractInfo) {
+				setTractInfo(tract);
+			}
+			if (neighborhood !== neighborhoodInfo) {
+				setNeighborhoodInfo(neighborhood!);
+				setNeighborhood(neighborhoodInfo);
+			}
         }
 		// if no tract or neighborhood info
 		else {
@@ -81,8 +82,7 @@ const NeighborhoodPage: React.FC = () => {
 			setNeighborhood("Downtown");
 			setTractInfo("030302");
 		}
-		setSelectBarData(null);
-    }, [location, navigate]);
+    }, []);
 
 
 	React.useEffect(() => {
@@ -121,10 +121,14 @@ const NeighborhoodPage: React.FC = () => {
 	}, [tractInfo, neighborhoodInfo]);
 
 	React.useEffect(() => {
+		setSelectBarData(null);
+	}, [location]);
+
+	React.useEffect(() => {
 		if (articleData && tractData && neighborhoodMasterList) {
 			setIsLoading(false);
 		}
-		console.log('article data', articleData);
+
 	}, [articleData, tractData, neighborhoodMasterList]);
 
 
