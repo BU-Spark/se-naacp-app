@@ -79,6 +79,8 @@ const fixedLatLong = (neighborhood: any) => {
       return { latitude: 42.365006, longitude: -71.064297 };
     case "West Roxbury":
       return { latitude: 42.277277, longitude: -71.160691 };
+    case "Cambridge":
+      return { latitude: 42.373611, longitude: -71.109733 };
     default:
       return { latitude: 42.360081, longitude: -71.058884 };
   }
