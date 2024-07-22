@@ -60,7 +60,6 @@ const NeighborhoodPage: React.FC = () => {
 
 
 	React.useEffect(() => {
-		console.log("location", location);
         const queryParams = new URLSearchParams(location.search);
         const tract = queryParams.get('tract');
 		const neighborhood = queryParams.get('neighborhood');

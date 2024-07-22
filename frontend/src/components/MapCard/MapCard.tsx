@@ -86,7 +86,7 @@ const fixedLatLong = (neighborhood: any) => {
   }
 };
 
-const setTractShapes = (tracts: string[]) => {
+const setTractShapes = (tracts: string[], neighborhood: string | null) => {
   let GEOJSON_All = geoData.features;
   let features_list: any = [];
 
@@ -96,8 +96,10 @@ const setTractShapes = (tracts: string[]) => {
   }
 
   dummy.forEach((tract) => {
-    let obj = GEOJSON_All.find((v) => v.properties.TRACTCE20 === "" + tract);
-    features_list.push(obj);
+    if (tract !== neighborhood) {
+      let obj = GEOJSON_All.find((v) => v.properties.TRACTCE20 === "" + tract);
+      features_list.push(obj);
+    }
   });
 
   return {
@@ -176,7 +178,7 @@ const MapCard: React.FC<MapCardProps> = ({ clickable }) => {
                     });
                   }
                 }}
-                data={setTractShapes(neighborhoodMasterList![neighborhood!])}
+                data={setTractShapes(neighborhoodMasterList![neighborhood!], neighborhood)}
                 styleCallback={(feature: any, hover: boolean) => {
                   if (feature.properties.TRACTCE20 === tract) {
                     return hover

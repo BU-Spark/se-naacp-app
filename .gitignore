@@ -187,3 +187,6 @@ MongoDB/src/JSON_data/census.json
 rssfeed/.env
 dev_tools/scripts/env_graphql.sh
 dev_tools/scripts/env_react.sh
+
+dev_tools/scripts/bootstrap_GraphQL_Mac.sh
+dev_tools/scripts/bootstrap_React_Mac.sh
