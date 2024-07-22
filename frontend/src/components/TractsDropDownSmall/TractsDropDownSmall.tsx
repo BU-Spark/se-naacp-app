@@ -115,25 +115,19 @@ const TractsDropDownSmall: React.FC<TractsDropDownSmallProps> = ({ tracts = [] }
 
     const items: MenuItem[] = [];
     for (let index = 0; index < dummy.length; index++) {
-      const x = extractNeighborhoodTract(dummy[index]);
-      items.push(getItem(dummy[index], x[1]));
+      items.push(getItem(dummy[index], dummy[index]));
     }
     
     // get location and number
-    // const [location, number] = extractNeighborhoodTract(selectedTract);
-    const [location, number] = extractNeighborhoodTract(event.target.value);
+    // const [location, number] = extractNeighborhoodTract(event.target.value);
     setShouldRefresh(false);
 
     queryTractDataType("TRACT_DATA", {
-      tract: number,
+      tract: event.target.value,
     });
 
-    if (location) {
-      setNeighborhood(location);
-    } else {
       // console.log(getNeighborhood(number, neighborhoodMasterList!))
-      setNeighborhood(getNeighborhood(number, neighborhoodMasterList!));
-    }
+      setNeighborhood(getNeighborhood(event.target.value, neighborhoodMasterList!));
   }
 
   return (
