@@ -40,6 +40,7 @@ export const typeDefs = gql`
 		openai_labels: [String!]!
 		dateSum: Int!
 		userID: String!
+		Coordinates: [Float]
 	}
 
 	type Topics {

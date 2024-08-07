@@ -51,6 +51,7 @@ export interface IArticles {
     openai_labels: string[];
     dateSum: number
     userID: string
+    Coordinates?: [number, number];
 }
 
 export interface IDemographics {

@@ -32,6 +32,7 @@ export type Article = {
   pub_name: Scalars['String']['output'];
   tracts: Array<Scalars['String']['output']>;
   userID: Scalars['String']['output'];
+  Coordinates?:  Array<Scalars['Float']['output']>;
 };
 
 export type Demographics = {

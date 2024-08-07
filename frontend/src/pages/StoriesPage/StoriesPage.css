@@ -1,0 +1,11 @@
+.sidebar {
+    width: 35%;
+    float: left;
+    overflow-y: auto;
+    height: 100vh;
+}
+
+.map {
+    width: 65%;
+    float: left;
+}

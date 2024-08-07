@@ -30,6 +30,8 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 		React.useContext(TopicsContext)!;
 	const { articleData, queryArticleDataType, setShouldRefresh } =
 		React.useContext(ArticleContext)!;
+	const { articleData2, queryArticleDataType2 } =
+		React.useContext(ArticleContext)!;
 	const { tractData, queryTractDataType } = React.useContext(TractContext)!;
 	const { neighborhood } = React.useContext(NeighborhoodContext)!;
 	const { user } = useUser();
@@ -130,7 +132,14 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 						dateTo: parseInt(dateTo.format("YYYYMMDD")),
 						area: tractData?.tract,
 						userId: user?.id,
+				  }) 
+				queryArticleDataType2("ARTICLE_DATA", {
+					dateFrom: parseInt(minDate.format("YYYYMMDD")),
+					dateTo: parseInt(maxDate.format("YYYYMMDD")),
+					area: "all",
+					userId: user?.id,
 				  });
+				  console.log('user id', user?.id)
 		}
 	}, [tractData]);
 
@@ -150,6 +159,13 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 						area: tractData?.tract,
 						userId: organization.id,
 				  });
+				  queryArticleDataType2("ARTICLE_DATA", {
+					dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+					dateTo: parseInt(dateTo.format("YYYYMMDD")),
+					area: "all",
+					userId: organization.id,
+				  });
+				  console.log('organization id', organization.id)
 		} else if (user) {
 			isTopicsPage
 				? queryArticleDataType("ARTICLE_BY_LABEL_OR_TOPIC", {
@@ -164,6 +180,12 @@ const DateField: React.FC<DateFieldProps> = ({ isTopicsPage }) => {
 						dateTo: parseInt(dateTo.format("YYYYMMDD")),
 						area: tractData?.tract,
 						userId: user?.id,
+				  });
+				  queryArticleDataType2("ARTICLE_DATA", {
+					dateFrom: parseInt(dateFrom.format("YYYYMMDD")),
+					dateTo: parseInt(dateTo.format("YYYYMMDD")),
+					area: "all",
+					userId: user?.id,
 				  });
 		}
 		setShouldRefresh(true);
