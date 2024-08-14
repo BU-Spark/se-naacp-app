@@ -5,15 +5,9 @@ import dayjs from "dayjs";
 
 //Components
 import MapStories from "../../components/MapStories/MapStories";
-import TractsDropDownSmall from "../../components/TractsDropDownSmall/TractsDropDownSmall";
-import SearchBarDropDown from "../../components/SearchFields/SearchBarDropdown/SearchBarDropdown";
 import DateField from "../../components/SearchFields/DateBar/DateBar";
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
-import FrequencyBarChart from "../../components/FrequencyBarChart/FrequencyBarChart";
-import NeighborhoodDemographicsBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
-import AtGlance from "../../components/AtGlance/atGlance";
-import Button from "@mui/material/Button";
-import MapCard from "../../components/MapCard/MapCard";
+
 
 //CSS
 import "./StoriesPage.css";
@@ -25,18 +19,15 @@ import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../contexts/topics_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
-import TopThreeDemographics from "../../components/TopThreeDemographics/TopThreeDemographics";
 import { useLocation, useNavigate } from "react-router-dom";
-import { gridColumnLookupSelector } from "@mui/x-data-grid";
 
 const StoriesPage: React.FC = () => {
     
   //Context
-	const { articleData, queryArticleDataType } = useContext(ArticleContext)!;
+  	const { articleData, queryArticleDataType } = useContext(ArticleContext)!;
 	const { articleData2, queryArticleDataType2 } = useContext(ArticleContext)!;
 	const { tractData, queryTractDataType } = useContext(TractContext)!;
-	console.log('tract data', tractData)
-	console.log('article data', articleData)
+
 	const minDate = dayjs("2021-01-01");
 	const maxDate = dayjs();
 	const {
