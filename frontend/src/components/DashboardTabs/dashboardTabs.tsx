@@ -25,9 +25,8 @@ const DashboardTabs: React.FC<dashboardTabs> = ({ articles }) => {
 
   const uniqueOpenaiLabels = new Set<string>();
   articles.forEach((article) => {
-    article.openai_labels.forEach((label) => {
-      uniqueOpenaiLabels.add(label);
-    });
+    const label = article.openai_labels;
+    uniqueOpenaiLabels.add(label);
   });
   const uniqueTracts = new Set<string>();
 

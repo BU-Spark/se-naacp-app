@@ -31,10 +31,9 @@ const ARTICLE_DATA_QUERY = gql`
       link
       neighborhoods
       openai_labels
-      position_section
       pub_date
       tracts
-      Coordinates
+      coordinates
     }
   }
 `;
@@ -60,7 +59,6 @@ const ARTICLE_BY_LABEL_OR_TOPIC = gql`
       link
       neighborhoods
       openai_labels
-      position_section
       pub_date
       tracts
     }

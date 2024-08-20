@@ -53,8 +53,8 @@ const getLabelDetailsWithLimitedTracts = (articles: Article[], neighborhoods: { 
 
   // Counting labels, tracts, and storing articles for each tract
   articles.forEach((article) => {
-    article.openai_labels.forEach((label) => {
-      if (!labelDetails[label]) {
+    const label = article.openai_labels;
+    if (!labelDetails[label]) {
         labelDetails[label] = { totalCount: 0, tracts: {} };
       }
       labelDetails[label].totalCount += article.tracts.length;
@@ -66,7 +66,6 @@ const getLabelDetailsWithLimitedTracts = (articles: Article[], neighborhoods: { 
         labelDetails[label].tracts[tract].count++;
         labelDetails[label].tracts[tract].articles.push(article);
       });
-    });
   });
 
   // Transforming to the desired structure
@@ -132,13 +131,13 @@ const getTractDetailsWithTotalCount = (
         tractDetails[tract] = { totalLabelCount: 0, labels: {} };
       }
 
-      article.openai_labels.forEach((label) => {
+      const label = article.openai_labels
+
         if (!tractDetails[tract].labels[label]) {
           tractDetails[tract].labels[label] = { count: 0, articles: [] };
         }
         tractDetails[tract].labels[label].count++;
         tractDetails[tract].labels[label].articles.push(article);
-      });
 
       tractDetails[tract].totalLabelCount++;
     });

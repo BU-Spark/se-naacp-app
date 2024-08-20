@@ -10,6 +10,7 @@ import { TractContext } from "../../contexts/tract_context";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { lchown } from "fs";
 import { ArticleContext } from "../../contexts/article_context";
+import { get } from "http";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -86,7 +87,6 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
   }
 
   const onSelectItem: MenuProps["onClick"] = (keys) => {
-    // console.log(keys);
     const match = /([\w\s]+ - )?(\d+)/.exec(keys.key);
     let location = "";
     let number = "";
@@ -96,9 +96,13 @@ const TractsDropDown: React.FC<TractsDropDownProps> = ({ tracts }) => {
       number = match[2];
     }
     setShouldRefresh(false);
-
     if (getNeighborhood(number, neighborhoodMasterList!) === "") {
       toast.error("Greater Boston Coming Soon!");
+      return;
+    }
+
+    if (getNeighborhood(number, neighborhoodMasterList!) === "Unknown Neighborhood") {
+      toast.error("Unknown Neighborhood!");
       return;
     }
 

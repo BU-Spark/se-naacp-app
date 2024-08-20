@@ -84,14 +84,14 @@ const getTractDetailsWithTotalCount = (
 
   // Count of Articles, Article[] within each openAI label
   articles.forEach((article) => {
-    article.openai_labels.forEach((openai_label) => {
-      if (!labelDetails[openai_label]) {
+    const openai_label = article.openai_labels;
+    if (!labelDetails[openai_label]) {
         labelDetails[openai_label] = { count: 0, articles: [] };
       }
       labelDetails[openai_label].count++;
       labelDetails[openai_label].articles.push(article)
+    
     });
-  });
 
   // Article is dynamic based on context, so does labelDetails
   // console.log("labelDetails", labelDetails);

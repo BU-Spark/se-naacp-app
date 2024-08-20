@@ -47,23 +47,14 @@ function countArticlesByKeyWord(
 	articles.forEach((article) => {
 		if (listOfTopics && listOfTopics.indexOf(positionSection) == -1) {
 			if (
-				article.openai_labels[0] === positionSection &&
+				article.openai_labels === positionSection &&
 				article.tracts
 			) {
 				article.tracts.forEach((tract) => {
 					counts[tract] = (counts[tract] || 0) + 1;
 				});
 			}
-		} else {
-			if (
-				article.position_section === positionSection &&
-				article.tracts
-			) {
-				article.tracts.forEach((tract) => {
-					counts[tract] = (counts[tract] || 0) + 1;
-				});
-			}
-		}
+		} 
 	});
 
 	let sortedCounts = Object.entries(counts).sort(
@@ -223,7 +214,6 @@ const TopicsPage: React.FC = () => {
 		if (articleData && tractData && neighborhoodMasterList) {
 			setIsLoading(false);
 		}
-		console.log('article data', articleData);
 	}, [articleData, tractData, neighborhoodMasterList]);
 
 	return (

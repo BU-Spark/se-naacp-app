@@ -27,7 +27,7 @@ const MapStories = () => {
     const [activeCoordinates, setActiveCoordinates] = useState<[number, number]>([0,0]);
     const [activeHl1, setActiveHl1] = useState<string>("");
     const [activeDateSum, setActiveDateSum] = useState<number>(0);
-    const [activeTopic, setActiveTopic] = useState<string[]>([])
+    const [activeTopic, setActiveTopic] = useState<string>()
     const [selectedArticles, setSelectedArticles] = useState<Article[]>([]); 
 
     const [zoom, setZoom] = useState(13);
@@ -36,13 +36,13 @@ const MapStories = () => {
 
 
     const points: Array<PointFeature<GeoJsonProperties>> =  articles
-        .filter(article => article.Coordinates && article.Coordinates.length >= 2)
+        .filter(article => article.coordinates && article.coordinates.length > 0)
         .map(article => ({
             type: "Feature",
-            properties: { cluster: false, articleId: article.link, hl1: article.hl1, dateSum: article.dateSum, openai_labels: article.openai_labels, neighborhoods:article.neighborhoods, pub_date: article.pub_date , tracts: article.tracts},
+            properties: { cluster: false, articleId: article.link, hl1: article.hl1, dateSum: article.dateSum, openai_labels: article.openai_labels, neighborhoods:article.neighborhoods, pub_date: article.pub_date , tracts: article.tracts, link: article.link},
             geometry: {
                 type: "Point",
-                coordinates: [article.Coordinates![0], article.Coordinates![1]]
+                coordinates: article.coordinates ? article.coordinates[0] : [] // Default coordinates if undefined
             }
         }));
 
@@ -52,15 +52,11 @@ const MapStories = () => {
         zoom,
         options: { radius: 40, maxZoom: 20 }
     });
-
-
-    
  
     useEffect(() => {
         if (articleData2) {
             setArticles(articleData2);
         }
-      
     }, [articleData2]);  
 
     const handleClusterClick = (cluster_id:any) => {
@@ -119,7 +115,7 @@ return (
                         <Marker
                             key={`article-${properties.articleId}`}
                             anchor={[latitude, longitude]}
-                            onClick={() => { window.open(properties.articleId) }}
+                            onClick={() => { window.open(properties.link) }}
                             onMouseOver={() => {
                                 setShowPopup(true);
                                 setActiveCoordinates([latitude, longitude]);
@@ -137,7 +133,7 @@ return (
                     <Box sx={{ border: 1, p: 1, bgcolor: 'background.paper' }}>
                         <div>{activeHl1}</div>
                         <div>{formatDate(activeDateSum)}</div>
-                        <div>{activeTopic.join(", ")}</div>
+                        <div>{activeTopic}</div>
                     </Box>
                 </Overlay>
             }

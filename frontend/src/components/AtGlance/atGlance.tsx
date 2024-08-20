@@ -15,9 +15,8 @@ const AtGlance: React.FC<AtGlanceProps> = ({ articles, height }) => {
 
   const uniqueOpenaiLabels = new Set<string>();
   articles.forEach((article) => {
-    article.openai_labels.forEach((label) => {
-      uniqueOpenaiLabels.add(label);
-    });
+    const label = article.openai_labels;
+    uniqueOpenaiLabels.add(label);
   });
 
   // Count unique neighborhoods globally

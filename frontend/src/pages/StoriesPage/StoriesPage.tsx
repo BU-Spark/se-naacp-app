@@ -20,6 +20,7 @@ import { LinearProgress, Stack } from "@mui/material";
 import { TopicsContext } from "../../contexts/topics_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { minDate, maxDate } from "../../App";
 
 const StoriesPage: React.FC = () => {
     
@@ -28,8 +29,6 @@ const StoriesPage: React.FC = () => {
 	const { articleData2, queryArticleDataType2 } = useContext(ArticleContext)!;
 	const { tractData, queryTractDataType } = useContext(TractContext)!;
 
-	const minDate = dayjs("2021-01-01");
-	const maxDate = dayjs();
 	const {
 		neighborhoodMasterList,
 		neighborhood,
@@ -52,7 +51,6 @@ const StoriesPage: React.FC = () => {
 
 	// handle click
 
-	console.log('neighborhood master list', neighborhoodMasterList)
 
 	useEffect(() => {
 			setNeighborhoodInfo("Downtown");
@@ -96,10 +94,11 @@ const StoriesPage: React.FC = () => {
 	}, [tractInfo, neighborhoodInfo]);
 
 	useEffect(() => {
-		if (articleData && tractData && neighborhoodMasterList) {
+		if (articleData && tractData && neighborhoodMasterList && articleData2) {
 			setIsLoading(false);
 		}
-	}, [articleData, tractData, neighborhoodMasterList]);
+
+	}, [articleData, tractData, neighborhoodMasterList, articleData2]);
 
     return (
         <div>
