@@ -47,7 +47,7 @@ export const typeDefs = gql`
 	}
 
 	type Neighborhoods {
-		articles: [String!]!
+		articles: [String]
 		value: String!
 		tracts: [String!]!
 	}

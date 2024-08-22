@@ -21,7 +21,7 @@ export interface DemographicsByTractsArgs {
 
 // Define output type for Resolver getAllTopics
 export interface ITopics {
-    articles: string[];
+    articles?: string[];
     value: string;
 }
 

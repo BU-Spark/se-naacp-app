@@ -37,14 +37,16 @@ const MapStories = () => {
 
     const points: Array<PointFeature<GeoJsonProperties>> =  articles
         .filter(article => article.coordinates && article.coordinates.length > 0)
-        .map(article => ({
-            type: "Feature",
-            properties: { cluster: false, articleId: article.link, hl1: article.hl1, dateSum: article.dateSum, openai_labels: article.openai_labels, neighborhoods:article.neighborhoods, pub_date: article.pub_date , tracts: article.tracts, link: article.link},
-            geometry: {
-                type: "Point",
-                coordinates: article.coordinates ? article.coordinates[0] : [] // Default coordinates if undefined
-            }
-        }));
+        .flatMap(article => 
+            article.coordinates?.map(coord => ({
+                type: "Feature",
+                properties: { cluster: false, articleId: article.link, hl1: article.hl1, dateSum: article.dateSum, openai_labels: article.openai_labels, neighborhoods: article.neighborhoods, pub_date: article.pub_date, tracts: article.tracts, link: article.link },
+                geometry: {
+                    type: "Point",
+                    coordinates: coord // Use each coordinate
+                }
+            })) || [] // Ensure it returns an empty array if undefined
+        );
 
     const { clusters, supercluster } = useSupercluster({
         points,
@@ -113,8 +115,8 @@ return (
 
                     return (
                         <Marker
-                            key={`article-${properties.articleId}`}
-                            anchor={[latitude, longitude]}
+                        key={`article-${properties.articleId}-${latitude}-${longitude}`} // Updated key
+                        anchor={[latitude, longitude]}
                             onClick={() => { window.open(properties.link) }}
                             onMouseOver={() => {
                                 setShowPopup(true);
@@ -123,6 +125,7 @@ return (
                                 setActiveDateSum(properties.dateSum);
                                 setActiveTopic(properties.openai_labels);
                             }}
+                            color={showPopup && activeHl1 === properties.hl1 ? 'red' : ''} // Updated color logic
                             onMouseOut={() => { setShowPopup(false) }}
                         />
                     );

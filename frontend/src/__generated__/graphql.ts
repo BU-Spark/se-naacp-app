@@ -49,7 +49,7 @@ export type Demographics = {
 
 export type Neighborhoods = {
   __typename?: 'Neighborhoods';
-  articles: Array<Scalars['String']['output']>;
+  articles?: Array<Scalars['String']['output']>;
   tracts: Array<Scalars['String']['output']>;
   value: Scalars['String']['output'];
 };
