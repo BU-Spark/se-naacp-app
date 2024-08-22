@@ -27,20 +27,18 @@ export const typeDefs = gql`
 
 	type Article {
 		neighborhoods: [String!]!
-		position_section: String!
 		tracts: [String!]!
 		author: String!
 		body: String!
 		content_id: String!
 		hl1: String!
-		hl2: String!
 		pub_date: String!
 		pub_name: String!
 		link: String!
-		openai_labels: [String!]!
+		openai_labels: String!
 		dateSum: Int!
 		userID: String!
-		Coordinates: [Float]
+		coordinates: [[Float]]
 	}
 
 	type Topics {
@@ -49,7 +47,7 @@ export const typeDefs = gql`
 	}
 
 	type Neighborhoods {
-		articles: [String!]!
+		articles: [String]
 		value: String!
 		tracts: [String!]!
 	}

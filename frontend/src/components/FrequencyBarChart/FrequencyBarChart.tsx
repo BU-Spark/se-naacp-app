@@ -39,7 +39,7 @@ const FrequencyBarChart: React.FC<FrequencyBarChartProps> = ({
 
   const listOfLabels = articles
     .map((article) =>
-      openAI ? article.openai_labels[0] : article.position_section
+      article.openai_labels 
     )
     .filter((label) => label); // This filter step ensures that empty labels are disregarded.
 

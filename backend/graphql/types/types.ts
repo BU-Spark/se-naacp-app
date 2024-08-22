@@ -21,7 +21,7 @@ export interface DemographicsByTractsArgs {
 
 // Define output type for Resolver getAllTopics
 export interface ITopics {
-    articles: string[];
+    articles?: string[];
     value: string;
 }
 
@@ -38,20 +38,18 @@ export interface ITracts {
 // Define output type for getAllArticles
 export interface IArticles {
     neighborhoods: string[];
-    position_section: string;
     tracts: string[];
     author: string;
     body: string;
     content_id: string;
     hl1: string;
-    hl2: string;
     pub_date: string;
     pub_name: string;
     link: string;
-    openai_labels: string[];
+    openai_labels: string;
     dateSum: number
     userID: string
-    Coordinates?: [number, number];
+    coordinates?: [number, number][];
 }
 
 export interface IDemographics {

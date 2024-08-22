@@ -23,16 +23,14 @@ export type Article = {
   content_id: Scalars['String']['output'];
   dateSum: Scalars['Int']['output'];
   hl1: Scalars['String']['output'];
-  hl2: Scalars['String']['output'];
   link: Scalars['String']['output'];
   neighborhoods: Array<Scalars['String']['output']>;
-  openai_labels: Array<Scalars['String']['output']>;
-  position_section: Scalars['String']['output'];
+  openai_labels: Scalars['String']['output'];
   pub_date: Scalars['String']['output'];
   pub_name: Scalars['String']['output'];
   tracts: Array<Scalars['String']['output']>;
   userID: Scalars['String']['output'];
-  Coordinates?:  Array<Scalars['Float']['output']>;
+  coordinates?: Array<Array<Scalars['Float']['output']>>; 
 };
 
 export type Demographics = {
@@ -51,7 +49,7 @@ export type Demographics = {
 
 export type Neighborhoods = {
   __typename?: 'Neighborhoods';
-  articles: Array<Scalars['String']['output']>;
+  articles?: Array<Scalars['String']['output']>;
   tracts: Array<Scalars['String']['output']>;
   value: Scalars['String']['output'];
 };

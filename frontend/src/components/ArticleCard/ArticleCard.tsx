@@ -58,7 +58,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ selectBarData, optionalArticl
   
   const selectedArticles = selectBarData 
   ? articles.filter(article => 
-      article.openai_labels && article.openai_labels[0] === selectBarData.id)
+      article.openai_labels && article.openai_labels === selectBarData.id)
   : articles;
 
   selectedArticles.forEach((article, index) => {
@@ -69,7 +69,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ selectBarData, optionalArticl
       publishingDate: `${dayjs(article.pub_date).format("MMM D, YYYY")}`,
       neighborhood: `${article.neighborhoods}`,
       censusTract: `${article.tracts}`,
-      category: `${article.openai_labels[0]}`,
+      category: `${article.openai_labels}`,
     });
   });
 
