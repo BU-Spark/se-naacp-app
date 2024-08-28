@@ -29,6 +29,7 @@ import emptyAstro from "../../assets/lottieFiles/astro_empty.json";
 
 interface MapCardProps {
   clickable: boolean;
+  coordinates?: [number,number];
 }
 
 const fixedLatLong = (neighborhood: any) => {
@@ -100,7 +101,9 @@ const setTractShapes = (tracts: string[], neighborhood: string | null) => {
   dummy.forEach((tract) => {
     if (tract !== neighborhood) {
       let obj = GEOJSON_All.find((v) => v.properties.TRACTCE20 === "" + tract);
-      features_list.push(obj);
+      if (obj) {
+        features_list.push(obj);
+      }
     }
   });
 
@@ -115,7 +118,7 @@ const setTractShapes = (tracts: string[], neighborhood: string | null) => {
   };
 };
 
-const MapCard: React.FC<MapCardProps> = ({ clickable }) => {
+const MapCard: React.FC<MapCardProps> = ({ clickable, coordinates }) => {
   //Context
   const { neighborhoodMasterList, neighborhood, setNeighborhood } =
     React.useContext(NeighborhoodContext)!;
@@ -132,21 +135,28 @@ const MapCard: React.FC<MapCardProps> = ({ clickable }) => {
   });
 
   React.useEffect(() => {
-    if (!neighborhood || !tractData) {
+    if ((!neighborhood || !tractData || neighborhood === "Unknown Neighborhood") && !coordinates) {
       setIsNoData(true);
     } else {
       setIsNoData(false);
       const latLong = fixedLatLong(neighborhood);
+
       const defaultLocation = {
         name: neighborhood,
         latitude: latLong.latitude,
         longitude: latLong.longitude,
       };
+      if (tractData) {
+        setTract(tractData!.tract);
 
-      setTract(tractData!.tract);
-      setLocation(defaultLocation);
+      }
+      setLocation(coordinates ? { // Update location based on coordinates
+        name: neighborhood,
+        latitude: coordinates[1],
+        longitude: coordinates[0],
+      } : defaultLocation);
     }
-  }, [neighborhood, tractData]);
+  }, [neighborhood, tractData, coordinates]);
 
   return (
     <>
@@ -169,35 +179,36 @@ const MapCard: React.FC<MapCardProps> = ({ clickable }) => {
               center={[location.latitude, location.longitude]}
             >
               <ZoomControl />
-              <GeoJson
-                onClick={(v) => {
-                  // console.log(v.payload.properties.TRACTCE20);
+              {!coordinates && (
+                <GeoJson
+                  onClick={(v) => {
+                    // console.log(v.payload.properties.TRACTCE20);
 
-                  if (clickable) {
-                    // console.log(clickable);
-                    queryTractDataType("TRACT_DATA", {
-                      tract: v.payload.properties.TRACTCE20,
-                    });
-                  }
-                }}
-                data={setTractShapes(neighborhoodMasterList![neighborhood!], neighborhood)}
-                styleCallback={(feature: any, hover: boolean) => {
-                  if (feature.properties.TRACTCE20 === tract) {
-                    return hover
-                      ? { fill: "#93c0d099", strokeWidth: "2" }
-                      : { fill: "#ff0000", strokeWidth: "1", opacity: "0.5" };
-                  } else {
-                    return hover
-                      ? { fill: "#93c0d099", strokeWidth: "2" }
-                      : { fill: "#0026ff", strokeWidth: "1", opacity: "0.5" };
-                  }
-                }}
-              />
-
+                    if (clickable) {
+                      // console.log(clickable);
+                      queryTractDataType("TRACT_DATA", {
+                        tract: v.payload.properties.TRACTCE20,
+                      });
+                    }
+                  }}
+                  data={setTractShapes(neighborhoodMasterList![neighborhood!], neighborhood)}
+                  styleCallback={(feature: any, hover: boolean) => {
+                    if (feature.properties.TRACTCE20 === tract) {
+                      return hover
+                        ? { fill: "#93c0d099", strokeWidth: "2" }
+                        : { fill: "#ff0000", strokeWidth: "1", opacity: "0.5" };
+                    } else {
+                      return hover
+                        ? { fill: "#93c0d099", strokeWidth: "2" }
+                        : { fill: "#0026ff", strokeWidth: "1", opacity: "0.5" };
+                    }
+                  }}
+                />
+              )}
               <Marker
                 key={uniqid()}
                 width={30}
-                anchor={[location.latitude, location.longitude]}
+                anchor={[location.latitude, location.longitude]} 
               />
             </Map>
           )}

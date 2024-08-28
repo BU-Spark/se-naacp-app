@@ -64,33 +64,33 @@ const StoriesPage: React.FC = () => {
 		queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
 		setNeighborhood(neighborhoodInfo);
 		queryTractDataType("TRACT_DATA", { tract: tractInfo });
-		if (organization) {
-			queryArticleDataType("ARTICLE_DATA", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: tractInfo,
-				userId: organization.id,
-			});
-			queryArticleDataType2("ARTICLE_DATA", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "all",
-				userId: organization.id,
-			});
-		} else {
-			queryArticleDataType("ARTICLE_DATA", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: tractInfo,
-				userId: user?.id,
-			});
-			queryArticleDataType2("ARTICLE_DATA", {
-				dateFrom: parseInt(minDate.format("YYYYMMDD")),
-				dateTo: parseInt(maxDate.format("YYYYMMDD")),
-				area: "all",
-				userId: user?.id,
-			});
-		}
+		// if (organization) {
+		// 	queryArticleDataType("ARTICLE_DATA", {
+		// 		dateFrom: parseInt(minDate.format("YYYYMMDD")),
+		// 		dateTo: parseInt(maxDate.format("YYYYMMDD")),
+		// 		area: tractInfo,
+		// 		userId: organization.id,
+		// 	});
+		// 	queryArticleDataType2("ARTICLE_DATA", {
+		// 		dateFrom: parseInt(minDate.format("YYYYMMDD")),
+		// 		dateTo: parseInt(maxDate.format("YYYYMMDD")),
+		// 		area: "all",
+		// 		userId: organization.id,
+		// 	});
+		// } else {
+		// 	queryArticleDataType("ARTICLE_DATA", {
+		// 		dateFrom: parseInt(minDate.format("YYYYMMDD")),
+		// 		dateTo: parseInt(maxDate.format("YYYYMMDD")),
+		// 		area: tractInfo,
+		// 		userId: user?.id,
+		// 	});
+		// 	queryArticleDataType2("ARTICLE_DATA", {
+		// 		dateFrom: parseInt(minDate.format("YYYYMMDD")),
+		// 		dateTo: parseInt(maxDate.format("YYYYMMDD")),
+		// 		area: "all",
+		// 		userId: user?.id,
+		// 	});
+		// }
 	}, [tractInfo, neighborhoodInfo]);
 
 	useEffect(() => {

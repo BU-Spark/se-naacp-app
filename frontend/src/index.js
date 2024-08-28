@@ -14,6 +14,7 @@ import ArticleProvider from "./contexts/article_context";
 import NeighborhoodProvider from "./contexts/neighborhood_context";
 import TopicsProvider from "./contexts/topics_context";
 import UploadProvider from "./contexts/upload_context";
+import LocationsProvider from "./contexts/location_context";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -25,9 +26,11 @@ root.render(
 					<TractProvider>
 						<NeighborhoodProvider>
 							<TopicsProvider>
+								<LocationsProvider>
 								<UploadProvider>
 									<App />
 								</UploadProvider>
+								</LocationsProvider>
 							</TopicsProvider>
 						</NeighborhoodProvider>
 					</TractProvider>

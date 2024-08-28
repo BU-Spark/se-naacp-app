@@ -155,9 +155,7 @@ const NeighborhoodPage: React.FC = () => {
 							<div className='col-md-3 col-sm-12'>
 								<SearchBarDropDown
 									title='Neighborhoods'
-									listOfWords={Object.keys(
-										neighborhoodMasterList!,
-									)}
+									listOfWords={Object.keys(neighborhoodMasterList!).filter(neighborhood => neighborhood !== "Other")}
 								></SearchBarDropDown>
 							</div>
 

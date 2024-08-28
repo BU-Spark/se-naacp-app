@@ -52,6 +52,12 @@ export interface IArticles {
     coordinates?: [number, number][];
 }
 
+export interface ILocations {
+    coordinates: [number, number];
+    articles: string[];
+    value: string;
+}
+
 export interface IDemographics {
     p2_001n: string
     p2_002n: string
