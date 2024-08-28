@@ -3,6 +3,7 @@ import {
 	TractsByNeighborhoodArgs,
 	ITracts,
 	IArticles,
+  ILocations,
 	DemographicsByTractsArgs,
 } from "../types/types";
 import { Collection } from "mongodb";
@@ -415,5 +416,26 @@ export const resolvers = {
       const articles: IArticles[] = await article_data.find({ userID: args.userID }).toArray();
       return articles;
     },
+    // Location Resolvers
+    getAllLocations: async (_, __, { db, req, res }): Promise<ILocations[]> => {
+      // // await authMiddleware(req, res, () => {});
+
+      // const userHeader = req.headers.user;
+      // if (!userHeader) {
+      //   throw new Error('Unauthorized');
+      // }
+
+      // const decodedToken = JSON.parse(userHeader as string);
+      // if (!decodedToken) {
+      //   throw new Error('Unauthorized');
+      // }
+      try {
+        const location_data: Collection<ILocations> = db.collection("locations_data");
+        const locations: ILocations[] = await location_data.find({}).toArray();
+        return locations;
+      } catch (error) {
+        console.log(error);
+      } 
+    }
   },
 };

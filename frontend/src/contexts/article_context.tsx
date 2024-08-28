@@ -34,6 +34,7 @@ const ARTICLE_DATA_QUERY = gql`
       pub_date
       tracts
       coordinates
+      content_id
     }
   }
 `;

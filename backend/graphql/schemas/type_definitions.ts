@@ -52,6 +52,12 @@ export const typeDefs = gql`
 		tracts: [String!]!
 	}
 
+	type Locations {
+		coordinates: [Float]
+		articles: [String]
+		value: String!
+	}
+
 	type Demographics {
 		p2_001n: String
 		p2_002n: String
@@ -98,6 +104,7 @@ export const typeDefs = gql`
 		getAllArticles: [Article!]!
 		getAllTopics(userID: String!): [String!]!
 		getAllLabels(userID: String!): [String!]!
+		getAllLocations: [Locations!]!
 	}
 
 	type Mutation {

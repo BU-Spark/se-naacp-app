@@ -33,6 +33,13 @@ export type Article = {
   coordinates?: Array<Array<Scalars['Float']['output']>>; 
 };
 
+export type Locations = {
+  __typename?: 'Locations';
+  articles: Array<Scalars['String']['output']>;
+  coordinates: Array<Scalars['Float']['output']>;
+  value: Scalars['String']['output'];
+};
+
 export type Demographics = {
   __typename?: 'Demographics';
   p2_001n: Scalars['String']['output'];

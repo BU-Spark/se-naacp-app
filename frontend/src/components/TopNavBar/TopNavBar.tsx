@@ -53,6 +53,11 @@ const TopNavBar = () => {
 					<NavLink to='/Stories'>Explore Stories</NavLink>
 				</li>
                 )}
+                {currentUserOrg && (
+                <li>
+                    <NavLink to='/Locations'>Locations</NavLink>
+                </li>
+                )}
                 {noAccess && currentUserOrg && (
                     <li>
                         <NavLink to='/Upload'>Upload</NavLink>
