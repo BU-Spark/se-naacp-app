@@ -50,6 +50,7 @@ export interface IArticles {
     dateSum: number
     userID: string
     coordinates?: [number, number][];
+    locations?:[string]
 }
 
 export interface ILocations {

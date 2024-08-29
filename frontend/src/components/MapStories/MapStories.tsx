@@ -28,6 +28,7 @@ const MapStories = () => {
     const [activeHl1, setActiveHl1] = useState<string>("");
     const [activeDateSum, setActiveDateSum] = useState<number>(0);
     const [activeTopic, setActiveTopic] = useState<string>()
+    const [activeLocations, setActiveLocations] = useState<string[]>([]);
     const [selectedArticles, setSelectedArticles] = useState<Article[]>([]); 
 
     const [zoom, setZoom] = useState(13);
@@ -40,7 +41,7 @@ const MapStories = () => {
         .flatMap(article => 
             article.coordinates?.map(coord => ({
                 type: "Feature",
-                properties: { cluster: false, articleId: article.link, hl1: article.hl1, dateSum: article.dateSum, openai_labels: article.openai_labels, neighborhoods: article.neighborhoods, pub_date: article.pub_date, tracts: article.tracts, link: article.link },
+                properties: { cluster: false, articleId: article.link, hl1: article.hl1, dateSum: article.dateSum, openai_labels: article.openai_labels, neighborhoods: article.neighborhoods, pub_date: article.pub_date, tracts: article.tracts, link: article.link, locations:article.locations },
                 geometry: {
                     type: "Point",
                     coordinates: coord // Use each coordinate
@@ -67,6 +68,8 @@ const MapStories = () => {
             setSelectedArticles(articles.map((article:any) => article.properties));
         }
     };
+
+    console.log(activeLocations)
 
 
 return (
@@ -124,19 +127,25 @@ return (
                                 setActiveHl1(properties.hl1);
                                 setActiveDateSum(properties.dateSum);
                                 setActiveTopic(properties.openai_labels);
+                                setActiveLocations(properties.locations);
                             }}
                             color={showPopup && activeHl1 === properties.hl1 ? 'red' : ''} // Updated color logic
                             onMouseOut={() => { setShowPopup(false) }}
                         />
                     );
                 })}
+
             
             {showPopup && 
                 <Overlay anchor={activeCoordinates}>
                     <Box sx={{ border: 1, p: 1, bgcolor: 'background.paper' }}>
                         <div>{activeHl1}</div>
-                        <div>{formatDate(activeDateSum)}</div>
-                        <div>{activeTopic}</div>
+                        <div>Date: {formatDate(activeDateSum)}</div>
+                        <div>Topic: {activeTopic}</div>
+                        <div>Locations:</div>
+                        {activeLocations.map((location, index) => (
+                                <div key={index}>{index + 1}. {location}</div>
+                            ))}
                     </Box>
                 </Overlay>
             }
