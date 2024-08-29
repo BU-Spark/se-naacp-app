@@ -31,6 +31,7 @@ export type Article = {
   tracts: Array<Scalars['String']['output']>;
   userID: Scalars['String']['output'];
   coordinates?: Array<Array<Scalars['Float']['output']>>; 
+  locations?:Array<Scalars['String']['output']>;
 };
 
 export type Locations = {

@@ -39,6 +39,7 @@ export const typeDefs = gql`
 		dateSum: Int!
 		userID: String!
 		coordinates: [[Float]]
+		locations: [String]
 	}
 
 	type Topics {
