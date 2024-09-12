@@ -9,12 +9,19 @@
     "react-spinners": "^0.13.8",
     "xmldom": "^0.6.0"
   },
+  "scripts": {
+    "build": "tsc",
+    "start": "node backend/dist/index.js",
+    "dev": "npm start"
+  },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^15.0.5",
     "@types/jest": "^29.5.12",
     "@types/xmldom": "^0.1.33",
     "jest": "^29.7.0",
-    "ts-jest": "^29.1.2"
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
   }
 }

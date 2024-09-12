@@ -21,15 +21,17 @@ echo "Starting GraphQL server..."
 # Find GraphQL folder
 DIR_NAME="se-naacp-app"
 #SEARCH_PATH="/" # Root is the default, but you can change it
-SEARCH_PATH="/Users/zacharyg/Documents/Github" # For me
+SEARCH_PATH="/Users/User/raheeqi/" # For me
 
 # Find the directory and read the first result into a variable
 PROJECT_ROOT_DIR=$(find "$SEARCH_PATH" -type d -name "$DIR_NAME" 2>&1 | grep -v "Permission denied" | head -n 1)
 
 # Check if the directory was found and print its path
 if [ -n "$PROJECT_ROOT_DIR" ]; then
-    cd $PROJECT_ROOT_DIR/backend
+cd /c/Users/User/se-naacp-app
+    #cd $PROJECT_ROOT_DIR/backend
     npm install # Just incase
+    pwd
     npm start
 else
     echo "Project directory not found. GraphQL Bootstrap Failed!"
