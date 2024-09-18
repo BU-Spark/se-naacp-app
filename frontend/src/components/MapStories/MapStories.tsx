@@ -1,16 +1,20 @@
 import { GeoJson, Map, Marker, Overlay, ZoomControl } from "pigeon-maps";
 // import { Cluster } from "pigeon-maps-cluster";
 import { useState, useContext, useEffect } from "react";
-import useSupercluster from "use-supercluster";
 import { ArticleContext } from "../../contexts/article_context";
 import { Article } from "../../__generated__/graphql";
 import Box from '@mui/material/Box';
 import { BBox, GeoJsonProperties } from "geojson"; 
 import { PointFeature, ClusterProperties} from 'supercluster';
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
+import { Modal } from '@mui/material'; // Import Modal
+import { Link } from 'react-router-dom'; // Add this import
+import useSupercluster from "use-supercluster";
+
+
+
 
 import "./MapStories.css";
-import { trace } from "console";
 
 
 const formatDate = (dateSum: number) => {
@@ -18,6 +22,52 @@ const formatDate = (dateSum: number) => {
     const formattedDateStr = `${dateStr.substring(0, 4)}-${dateStr.substring(4, 6)}-${dateStr.substring(6, 8)}`;
     return new Date(formattedDateStr).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
 };
+
+
+
+const getMostCommonLocation = (articles:Article[]) => {
+    const locationCount: { [key: string]: number } = {};
+    articles.forEach(article => {
+        article.locations?.forEach(location => {
+            locationCount[location] = (locationCount[location] || 0) + 1;
+        });
+    });
+
+    const mostCommonLocation = Object.keys(locationCount).reduce((a, b) => 
+        locationCount[a] > locationCount[b] ? a : b
+    );
+
+    return mostCommonLocation;
+};
+
+const getNeighborhoodAndTract = (articles:Article[], commonLocation:string) => {
+
+    let articleIndex = -1
+
+    for (let i = 0; i < articles.length; i++) {
+        if (articles[i].locations?.includes(commonLocation)) {
+            articleIndex = i
+            break;
+        }
+    }
+
+    if (articleIndex === -1) {
+        return;
+    }
+
+    const locationIndex = articles[articleIndex].locations?.indexOf(commonLocation);
+    const tract = articles[articleIndex].tracts[locationIndex!];
+    const neighborhood = articles[articleIndex].neighborhoods[locationIndex!];
+
+    return { neighborhood, tract };
+}
+
+const getRecentArticles = (articles: Article[]) => {
+    return articles
+        .sort((a, b) => new Date(b.pub_date).getTime() - new Date(a.pub_date).getTime()) // Sort by date published
+        .slice(0, 3); // Get the top 3 most recent articles
+};
+    
 
 const MapStories = () => {
     const [articles, setArticles] = useState<Article[]>([]);
@@ -30,6 +80,11 @@ const MapStories = () => {
     const [activeTopic, setActiveTopic] = useState<string>()
     const [activeLocations, setActiveLocations] = useState<string[]>([]);
     const [selectedArticles, setSelectedArticles] = useState<Article[]>([]); 
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalData, setModalData] = useState<any>(null); // State to hold modal data
+
+
 
     const [zoom, setZoom] = useState(13);
     const [center, setCenter] = useState<[number, number]>([42.3601, -71.0589]);
@@ -65,11 +120,31 @@ const MapStories = () => {
     const handleClusterClick = (cluster_id:any) => {
         if (supercluster) {
             const articles = supercluster.getLeaves(cluster_id, Infinity);
-            setSelectedArticles(articles.map((article:any) => article.properties));
-        }
+
+
+            const commonLocation = getMostCommonLocation(articles.map((article:any) => article.properties))
+            const neighborhoodAndTract = getNeighborhoodAndTract(articles.map((article:any) => article.properties), commonLocation);
+            const commonNeighborhood = neighborhoodAndTract?.neighborhood; 
+            const commonTract = neighborhoodAndTract?.tract; 
+            const recentArticles = getRecentArticles(articles.map((article:any) => article.properties));
+
+            console.log(recentArticles);
+
+            setModalData({
+                location: commonLocation,
+                neighborhood: commonNeighborhood,
+                tract: commonTract,
+                articles:recentArticles
+            })
+
+
+            setModalOpen(true); // Open the modal
+
+        
+    }
     };
 
-    console.log(activeLocations)
+    console.log("modal",modalData);
 
 
 return (
@@ -135,7 +210,62 @@ return (
                     );
                 })}
 
-            
+                <Modal
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={{ 
+                        position: 'absolute' as 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 900,
+                        bgcolor: 'background.paper',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 10, 
+                        }}>
+                        <div>
+                            <h2>Cluster Information</h2>
+                            <div>
+                                <strong>Location:</strong> <Link to= {`/Locations?location=${encodeURIComponent(modalData?.location)}`}>{modalData?.location}</Link>
+                            </div>
+                            <div>
+                                <strong>Neighborhood:</strong> {modalData?.neighborhood}
+                            </div>
+                            <div>
+                                <strong>Tract:</strong> {modalData?.tract}
+                            </div>
+                            <div>
+                                <h2>Recent Articles:</h2>
+                                <table style={{ padding: '10px' }} >
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Topic</th>
+                                            <th>Date Published</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {modalData?.articles.map((article: any, index: number) => (
+                                            <tr key={index}>
+                                                <td style={{ padding: '10px' }}>
+                                                    <Link to={article.link}>{article.hl1}</Link>
+                                                </td>
+                                                <td style={{ padding: '10px' }}><Link to={`/Topics?topic=${encodeURIComponent(article.openai_labels)}`}>{article.openai_labels}</Link></td> {/* Display topic */}
+                                                <td style={{ padding: '10px' }}>{formatDate(article.dateSum)}</td> {/* Display date */}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                      
+                    </Box>
+                </Modal>
+
             {showPopup && 
                 <Overlay anchor={activeCoordinates}>
                     <Box sx={{ border: 1, p: 1, bgcolor: 'background.paper' }}>
