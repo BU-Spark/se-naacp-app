@@ -1,7 +1,6 @@
 import { GeoJson, Map, Marker, Overlay, ZoomControl } from "pigeon-maps";
 // import { Cluster } from "pigeon-maps-cluster";
 import { useState, useContext, useEffect } from "react";
-import useSupercluster from "use-supercluster";
 import { ArticleContext } from "../../contexts/article_context";
 import { Article } from "../../__generated__/graphql";
 import Box from '@mui/material/Box';
@@ -10,6 +9,8 @@ import { PointFeature, ClusterProperties} from 'supercluster';
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
 import { Modal } from '@mui/material'; // Import Modal
 import { Link } from 'react-router-dom'; // Add this import
+import useSupercluster from "use-supercluster";
+
 
 
 
