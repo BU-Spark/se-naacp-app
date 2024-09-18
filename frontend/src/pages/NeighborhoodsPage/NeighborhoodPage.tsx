@@ -152,6 +152,7 @@ const NeighborhoodPage: React.FC = () => {
 									Explore Neighborhoods
 						</div>
 						
+						
 						<div className='col d-flex justify-content-start'>
 							<div className='col-md-3 col-sm-12'>
 								<Autocomplete
