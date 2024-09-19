@@ -11,14 +11,31 @@ import { useOrganization, useUser } from "@clerk/clerk-react";
 import { minDate, maxDate } from "../../App";
 import { Article } from '../../__generated__/graphql';
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
+import TopicCount from '../../components/TopicCount/TopicCount';
+import NeighborhoodDemographicsBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
+import { TractContext } from "../../contexts/tract_context"; // Import TractContext
 
 
+const getMostCommonTract = (articles: Article[]) => {
+    const tractCount: { [key: string]: number } = {};
+    
+    articles.forEach(article => {
+        article.tracts.forEach(tract => {
+            tractCount[tract] = (tractCount[tract] || 0) + 1;
+        });
+    });
 
+    return Object.keys(tractCount).reduce((a, b) => 
+        tractCount[a] > tractCount[b] ? a : b
+    );
+};
 
 
 const LocationsPage: React.FC = () => {
 
     const { locationsData, queryLocationsData } = React.useContext(LocationContext)!;
+    const { queryTractDataType } = React.useContext(TractContext)!; // Get query function from TractContext
+
 
 
     const [selectedLocation, setSelectedLocation] = useState<Locations | null>(null);
@@ -85,25 +102,23 @@ const LocationsPage: React.FC = () => {
                 params.set('location', selectedLocation?.value as string);
                 navigate({ search: params.toString() }); 
             }
-                const newLocationArticles = articleData2.filter(article => 
-                    selectedLocation.articles.includes(article.content_id)
-                );                
-                setLocationArticles(newLocationArticles);
+            const newLocationArticles = articleData2.filter(article => 
+                selectedLocation.articles.includes(article.content_id)
+            );                
+            setLocationArticles(newLocationArticles);
+            const mostCommonTract = getMostCommonTract(newLocationArticles);
+            queryTractDataType("TRACT_DATA", {
+                dateFrom: parseInt(minDate.format("YYYYMMDD")),
+                dateTo: parseInt(maxDate.format("YYYYMMDD")),
+                tract: mostCommonTract,
+            });
+
+
     }
 
         
     },[selectedLocation, articleData2]);
 
-    React.useEffect(() => {
-        console.log("articleData",articleData)
-        console.log("articleData2",articleData2)
-
-    }, [articleData,articleData2]);
-
-    React.useEffect(() => {
-
-        console.log(locationArticles)
-    }, [locationArticles]);
 
 
 
@@ -133,8 +148,23 @@ const LocationsPage: React.FC = () => {
                     </div>
 
                     {locationArticles.length > 0 && (
-                        <ArticleCard optionalArticles={locationArticles} />
+                        <div>
+                            <div className="row justify-content-evenly">
+                                <div className="col-md-5 col-sm-12">
+                                <h1 className="titles"> Topics Count</h1>
+                                    <TopicCount articles={locationArticles} />
+                                </div>
+                                <div className="col-md-7 col-sm-12">
+                                    <h1 className="titles">Demographics</h1>
+                                    <NeighborhoodDemographicsBoard />
+                                </div>
+                            </div>
+                            <h1 className="titles"> Articles</h1>
+                            <ArticleCard optionalArticles={locationArticles} />
+                        </div>
+
                     )}
+
                 </div>
 
         )}
