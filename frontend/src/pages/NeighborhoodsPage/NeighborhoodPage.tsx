@@ -153,8 +153,8 @@ const NeighborhoodPage: React.FC = () => {
 						</div>
 						
 						
-						<div className='col d-flex justify-content-start'>
-							<div className='col-md-3 col-sm-12'>
+						<div className='col d-flex justify-content-between align-items-center'>
+							<div>
 								<Autocomplete
 									options={Object.keys(neighborhoodMasterList!).filter(neighborhood => neighborhood !== "Other")}
 									renderInput={(params) => <TextField {...params} label="Neighborhoods" />}
@@ -170,7 +170,7 @@ const NeighborhoodPage: React.FC = () => {
 								/>
 							</div>
 
-							<div className='col-md-3 col-sm-12'>
+							<div>
 								<TractsDropDownSmall
 									tracts={neighborhoodMasterList![neighborhood!]}
 								></TractsDropDownSmall>
