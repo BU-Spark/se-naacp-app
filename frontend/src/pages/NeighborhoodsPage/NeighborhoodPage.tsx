@@ -26,7 +26,6 @@ import { useOrganization, useUser } from "@clerk/clerk-react";
 import { minDate, maxDate } from "../../App";
 import TopThreeDemographics from "../../components/TopThreeDemographics/TopThreeDemographics";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Autocomplete, TextField } from "@mui/material";
 
 const NeighborhoodPage: React.FC = () => {
 	//Context
@@ -152,25 +151,15 @@ const NeighborhoodPage: React.FC = () => {
 									Explore Neighborhoods
 						</div>
 						
-						
-						<div className='col d-flex justify-content-between align-items-center'>
-							<div>
-								<Autocomplete
-									options={Object.keys(neighborhoodMasterList!).filter(neighborhood => neighborhood !== "Other")}
-									renderInput={(params) => <TextField {...params} label="Neighborhoods" />}
-									onChange={(event, newValue) => {
-										if (newValue) {
-											setNeighborhoodInfo(newValue);
-											setNeighborhood(newValue);
-											navigate(`?neighborhood=${newValue}&tract=${tractInfo}`);
-										}
-									}}
-									value={neighborhoodInfo}
-									sx={{ width: 300 }}
-								/>
+						<div className='col d-flex justify-content-start'>
+							<div className='col-md-3 col-sm-12'>
+								<SearchBarDropDown
+									title='Neighborhoods'
+									listOfWords={Object.keys(neighborhoodMasterList!).filter(neighborhood => neighborhood !== "Other")}
+								></SearchBarDropDown>
 							</div>
 
-							<div>
+							<div className='col-md-3 col-sm-12'>
 								<TractsDropDownSmall
 									tracts={neighborhoodMasterList![neighborhood!]}
 								></TractsDropDownSmall>
