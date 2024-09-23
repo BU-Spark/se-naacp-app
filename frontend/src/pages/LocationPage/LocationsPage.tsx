@@ -85,9 +85,9 @@ const LocationsPage: React.FC = () => {
                 setSelectedLocation(foundLocation);
             }
         } else if (!selectedLocation && locationsData && locationsData.length > 0) {
-            console.log("no location in param")
-            setSelectedLocation(locationsData[0]);
-            params.set('location', locationsData[0].value);
+            const sortedLocations = [...locationsData].sort((a, b) => b.articles.length - a.articles.length);
+            setSelectedLocation(sortedLocations[0]);
+            params.set('location', sortedLocations[0].value);
             navigate({ search: params.toString() });
         }
     }, [locationsData]);

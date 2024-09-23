@@ -9,3 +9,9 @@
     cursor: pointer;
     position: absolute;
 }
+
+.full-screen-container {
+    height: 75vh; /* Full height of the viewport */
+    width: 100vw;  /* Full width of the viewport */
+    position: relative; /* Ensure positioning context for child elements */
+}
