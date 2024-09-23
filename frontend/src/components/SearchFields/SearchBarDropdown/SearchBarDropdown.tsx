@@ -1,16 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import "./SearchBarDropdown.css";
 
-// MUI UI
-import FormControl from "@mui/material/FormControl";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-
-// Uniqid for unique keys
-import uniqid from "uniqid";
-
-// Context
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 import { NeighborhoodContext } from "../../../contexts/neighborhood_context";
 import { TractContext } from "../../../contexts/tract_context";
 
@@ -23,38 +15,28 @@ const SearchBarDropDown: React.FC<SearchBarDropDownPros> = ({
   listOfWords,
   title,
 }) => {
-  var {neighborhoodMasterList,neighborhood, setNeighborhood } = React.useContext(NeighborhoodContext)!;
+  var {neighborhoodMasterList, neighborhood, setNeighborhood } = React.useContext(NeighborhoodContext)!;
   var {tractData, queryTractDataType } = React.useContext(TractContext)!;
 
-  const [selectedWord, setSelectedWord] = React.useState<string>(neighborhood!);
- 
+  const [selectedWord, setSelectedWord] = React.useState<string | null>(neighborhood || null);
 
-  const handleChange = (event: any) => {
-    setNeighborhood(event.target.value);
-    setSelectedWord(event.target.value);
-    queryTractDataType("TRACT_DATA", {tract: neighborhoodMasterList![event.target.value][0]});
+  const handleChange = (event: React.SyntheticEvent, newValue: string | null) => {
+    if (newValue) {
+      setNeighborhood(newValue);
+      setSelectedWord(newValue);
+      queryTractDataType("TRACT_DATA", {tract: neighborhoodMasterList![newValue][0]});
+    }
   };
 
   return (
     <div className="search">
-      <FormControl sx={{ m: 1, minWidth: 120, marginTop: 0.9 }}>
-        <InputLabel id="neighborhood-select-label">Neighborhood</InputLabel>
-        <Select
-          style={{ height: "32px", borderRadius: 0, backgroundColor: "white" }}
-          value={selectedWord}
-          onChange={handleChange}
-          displayEmpty
-          inputProps={{ "aria-label": "Without label" }}
-        >
-          {listOfWords.map((v) => {
-            return (
-              <MenuItem key={uniqid()} value={v}>
-                {v}
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </FormControl>
+      <Autocomplete
+        value={selectedWord}
+        onChange={handleChange}
+        options={listOfWords}
+        renderInput={(params) => <TextField {...params} label={title} />}
+        sx={{ width: 250, m: 1, marginTop: 0.9 }}
+      />
     </div>
   );
 };
