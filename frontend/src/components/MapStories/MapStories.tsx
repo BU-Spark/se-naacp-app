@@ -84,11 +84,48 @@ const MapStories = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalData, setModalData] = useState<any>(null); // State to hold modal data
 
+    const [isMounted, setIsMounted] = useState(false);
+
+    const [lastClickedClusterId, setLastClickedClusterId] = useState<number | null>(null);
 
 
     const [zoom, setZoom] = useState(13);
     const [center, setCenter] = useState<[number, number]>([42.3601, -71.0589]);
     const [bounds, setBounds] = useState<BBox>();
+
+
+
+    useEffect(() => {
+        // Retrieve saved position from localStorage
+        const savedCenter = localStorage.getItem('mapCenter');
+        const savedZoom = localStorage.getItem('mapZoom');
+        const storedClusterId = localStorage.getItem('lastClickedClusterId');
+        if (storedClusterId) {
+            setLastClickedClusterId(parseInt(storedClusterId));
+        }
+        if (savedCenter) {
+            setCenter(JSON.parse(savedCenter));
+        }
+        if (savedZoom) {
+            setZoom(Number(savedZoom));
+        }
+    }, []);
+
+
+    useEffect(() => {
+        if (isMounted) {
+            localStorage.setItem('mapZoom', zoom.toString());
+            localStorage.setItem('mapCenter', JSON.stringify(center));
+        } else {
+            setIsMounted(true);
+        }
+    }, [center, zoom]);
+
+
+    const resetMap = () => {
+        setZoom(13); // Reset to initial zoom
+        setCenter([42.3601, -71.0589]); // Reset to initial center
+    };
 
 
     const points: Array<PointFeature<GeoJsonProperties>> =  articles
@@ -119,6 +156,8 @@ const MapStories = () => {
 
     const handleClusterClick = (cluster_id:any) => {
         if (supercluster) {
+            setLastClickedClusterId(cluster_id)
+            localStorage.setItem('lastClickedClusterId', (cluster_id)); // Store in localStorage
             const articles = supercluster.getLeaves(cluster_id, Infinity);
 
 
@@ -128,7 +167,6 @@ const MapStories = () => {
             const commonTract = neighborhoodAndTract?.tract; 
             const recentArticles = getRecentArticles(articles.map((article:any) => article.properties));
 
-            console.log(recentArticles);
 
             setModalData({
                 location: commonLocation,
@@ -144,13 +182,14 @@ const MapStories = () => {
     }
     };
 
-    console.log("modal",modalData);
 
 
 return (
-    <div>
+    <div className="full-screen-container">
+         <button onClick={resetMap} style={{ margin: '10px', padding: '10px' }}>
+                Reset Map
+        </button>
         <Map
-            height={900}
             center={center}
             zoom={zoom}
             onBoundsChanged={({ center, zoom, bounds }) => {
@@ -170,6 +209,7 @@ return (
             {clusters.map(cluster => {
                     const [longitude, latitude] = cluster.geometry.coordinates;
                     const properties = cluster.properties as GeoJsonProperties & { cluster: boolean, point_count: number };
+                    const isLastClicked = lastClickedClusterId === cluster.id; // Check if this is the last clicked cluster
 
                     if (properties.cluster) {
                         const size = 10 + (properties.point_count / points.length) * 80;
@@ -181,6 +221,7 @@ return (
                                 <div className="cluster-marker" style={{
                                     width: `${size}px`,
                                     height: `${size}px`,
+                                    backgroundColor: isLastClicked ? 'red' : '#1978c8', 
                                 }}
                                 onClick={() => handleClusterClick(cluster.id)}
                                 >
@@ -254,8 +295,8 @@ return (
                                                 <td style={{ padding: '10px' }}>
                                                     <Link to={article.link}>{article.hl1}</Link>
                                                 </td>
-                                                <td style={{ padding: '10px' }}><Link to={`/Topics?topic=${encodeURIComponent(article.openai_labels)}`}>{article.openai_labels}</Link></td> {/* Display topic */}
-                                                <td style={{ padding: '10px' }}>{formatDate(article.dateSum)}</td> {/* Display date */}
+                                                <td style={{ padding: '10px' }}><Link to={`/Topics?topic=${encodeURIComponent(article.openai_labels)}`}>{article.openai_labels}</Link></td>
+                                                <td style={{ padding: '10px' }}>{formatDate(article.dateSum)}</td>
                                             </tr>
                                         ))}
                                     </tbody>
