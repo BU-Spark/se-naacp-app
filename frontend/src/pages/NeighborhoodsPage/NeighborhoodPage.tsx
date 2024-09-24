@@ -152,7 +152,7 @@ const NeighborhoodPage: React.FC = () => {
 						</div>
 						
 						<div className='col d-flex justify-content-start'>
-							<div className='col-md-3 col-sm-12'>
+							<div className='col-md-3 col-sm-12' style={{marginRight:'100px'}}>
 								<SearchBarDropDown
 									title='Neighborhoods'
 									listOfWords={Object.keys(neighborhoodMasterList!).filter(neighborhood => neighborhood !== "Other")}
