@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, renderActionsCell } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 
 import Card from "@mui/material/Card";
@@ -30,11 +30,21 @@ const columns = [
         {params.row.title.title}
       </Link>
     ),
+    sortable: false,
   },
   { field: "category", headerName: "Topic", width: 250 },
   { field: "neighborhood", headerName: "Neighborhood", width: 200 },
   { field: "censusTract", headerName: "Census Tract", width: 200 },
-  { field: "publishingDate", headerName: "Publishing Date", width: 120 },
+  { field: "publishingDate", headerName: "Publishing Date", width: 120, type: "date",
+    valueGetter: (params: any) => {
+      const dateParts = params.value
+        .split("/")
+        .map((str: string) => parseInt(str, 10));
+      return new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
+    },
+    renderCell: (params: any) => dayjs(params.value).format("MMM D, YYYY"),
+
+  },
   // { field: "author", headerName: "Author", width: 130 },
 ];
 
@@ -64,9 +74,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ selectBarData, optionalArticl
   selectedArticles.forEach((article, index) => {
     articleRow.push({
       id: uniqid(),
-      title: { link: article.link, title: article.hl1 },
+      title: { title: article.hl1, link: article.link},
       author: `${article.author}`,
-      publishingDate: `${dayjs(article.pub_date).format("MMM D, YYYY")}`,
+      publishingDate: `${dayjs(article.pub_date).format("MM/DD/YYYY")}`,
       neighborhood: `${article.neighborhoods}`,
       censusTract: `${article.tracts}`,
       category: `${article.openai_labels}`,
