@@ -6,7 +6,8 @@ import TopNavBar from "../components/TopNavBar/TopNavBar";
 import Dashboard from "../pages/DashboardPage/Dashboard";
 import NeighborhoodPage from "../pages/NeighborhoodsPage/NeighborhoodPage"; 
 import StoriesPage from "../pages/StoriesPage/StoriesPage";
-import LocationsPage from "../pages/LocationPage/LocationsPage";
+import LocationsPage from "../pages/LocationsPage/LocationsPage";
+import LocationPage from "../pages/LocationPage/LocationPage";
 
 import TopicsPage from "../pages/TopicsPage/TopicsPage/TopicsPage";
 import TopicsSearchPage from "../pages/TopicsPage/TopicsSearchPage/TopicsSearchPage";
@@ -140,6 +141,10 @@ export default function MainNavigator() {
 		  <Route
 			path='/Stories'
 			element={<ProtectedRoute child={<StoriesPage />} />}
+		  />
+		  <Route
+			path='/Location'
+			element={<ProtectedRoute child={<LocationPage />} />}
 		  />
 		  <Route
 			path='/Locations'
