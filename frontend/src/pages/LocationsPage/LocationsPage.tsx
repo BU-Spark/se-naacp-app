@@ -118,7 +118,7 @@ const LocationsPage: React.FC = () => {
 
         
     },[selectedLocation, articleData2]);
-
+    
 
 
 
