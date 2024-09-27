@@ -34,8 +34,8 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
       throw error;
     }
 
-    // Decode the org token without verifying it
-    const decodedOrgToken: any = jwt.decode(orgToken);
+    // Decode the org token 
+    const decodedOrgToken: any = jwt.decode(typeof orgToken === 'string' ? orgToken : orgToken[0]);
     if (!decodedOrgToken) {
       const error = new Error("Forbidden");
       (error as any).code = 403;
@@ -43,7 +43,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     }
 
     // Check if the user is part of the required organization
-    const userOrgs = decodedOrgToken.orgs; // Assuming `orgs` contains the user's organization IDs
+    const userOrgs = decodedOrgToken.orgs; 
     const allowedOrgs = ["org_2bHDzl2Zax0nILIzDhui2DLWdH6", "org_2ZN4MA41LAA9l4j0rZBC5Olsr3Y"];
     if (!allowedOrgs.includes(userOrgs)) {
       const error = new Error("Forbidden: Not part of the organization");
