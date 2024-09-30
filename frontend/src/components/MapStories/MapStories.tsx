@@ -271,7 +271,7 @@ return (
                         <div>
                             <h2>Cluster Information</h2>
                             <div>
-                                <strong>Location:</strong> <Link to= {`/Location?location=${encodeURIComponent(modalData?.location)}`}>{modalData?.location}</Link>
+                                <strong>Location:</strong> <Link to= {`/Locations?location=${encodeURIComponent(modalData?.location)}`}>{modalData?.location}</Link>
                             </div>
                             <div>
                                 <strong>Neighborhood:</strong> {modalData?.neighborhood}

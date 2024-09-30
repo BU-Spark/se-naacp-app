@@ -14,6 +14,7 @@ import ArticleCard from "../../components/ArticleCard/ArticleCard";
 import TopicCount from '../../components/TopicCount/TopicCount';
 import NeighborhoodDemographicsBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
 import { TractContext } from "../../contexts/tract_context"; // Import TractContext
+import LocationInfo from '../../components/LocationsInfo/LocationsInfo'; // Import LocationInfo
 
 
 const getMostCommonTract = (articles: Article[]) => {
@@ -41,6 +42,8 @@ const LocationsPage: React.FC = () => {
     const [selectedLocation, setSelectedLocation] = useState<Locations | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [locationArticles, setLocationArticles] = useState<Article[]>([]);
+    const [mostCommonTract, setMostCommonTract] = useState<string>("");
+
 
 
     const { articleData,articleData2, queryArticleDataType2 } = React.useContext(ArticleContext)!;
@@ -106,18 +109,21 @@ const LocationsPage: React.FC = () => {
                 selectedLocation.articles.includes(article.content_id)
             );                
             setLocationArticles(newLocationArticles);
-            const mostCommonTract = getMostCommonTract(newLocationArticles);
-            queryTractDataType("TRACT_DATA", {
-                dateFrom: parseInt(minDate.format("YYYYMMDD")),
-                dateTo: parseInt(maxDate.format("YYYYMMDD")),
-                tract: mostCommonTract,
-            });
-
+            setMostCommonTract(getMostCommonTract(newLocationArticles));
 
     }
 
         
     },[selectedLocation, articleData2]);
+
+    useEffect(() => {
+        queryTractDataType("TRACT_DATA", {
+            dateFrom: parseInt(minDate.format("YYYYMMDD")),
+            dateTo: parseInt(maxDate.format("YYYYMMDD")),
+            tract: mostCommonTract,
+        });
+       }, [mostCommonTract]);
+    
     
 
 
@@ -139,8 +145,8 @@ const LocationsPage: React.FC = () => {
 
                 <div className="row justify-content-evenly">
                     <div className="col-md-5 col-sm-12">
-                        <h1 className="titles">Locations page</h1>
                         <LocationsDropDown selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation}/>
+                        <LocationInfo location={selectedLocation} tract={mostCommonTract} />
                         </div>
                     <div className="col-md-7 col-sm-12">
                          <h1 className="titles">Map</h1>
