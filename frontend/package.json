@@ -79,7 +79,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules/(?!(axios|@mui/x-charts|@mui/material|@babel/runtime|d3-(color|format|interpolate|scale|shape|time|time-format|path|array)|internmap|@nivo|d3-.*|)/)"
+      "/node_modules/(?!(axios|@mui/x-charts|@mui/material|@babel/runtime|d3-(color|format|interpolate|scale|shape|time|time-format|path|array)|internmap|@nivo|d3-.*|use-supercluster|)/)"
     ],
     "moduleNameMapper": {
       "\\.(css|less|scss|sass)$": "identity-obj-proxy",
