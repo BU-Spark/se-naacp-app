@@ -17,16 +17,16 @@ function isNumber(str: any) {
 export const resolvers = {
 	Mutation: {
 	  addRssFeed: async (_, { url, userID }, { db, req, res }) => {
-		// await authMiddleware(req, res, () => {});
+		await authMiddleware(req, res, () => {});
   
-		// const decodedToken = JSON.parse(req.headers.user as string);
-		// if (!decodedToken) {
-		//   throw new Error('Unauthorized');
-		// }
+		const decodedToken = JSON.parse(req.headers.user as string);
+		if (!decodedToken) {
+		  throw new Error('Unauthorized');
+		}
   
-		// if (decodedToken.sub !== userID) {
-		//   throw new Error('Forbidden');
-		// }
+		if (decodedToken.sub !== userID) {
+		  throw new Error('Forbidden');
+		}
   
 		const rss_data = db.collection("rss_links");
   
@@ -48,17 +48,17 @@ export const resolvers = {
   Query: {
     // RSS Resolver
     getRssLinkByUserId: async (_, args, { db, req, res }) => {
-      // // await authMiddleware(req, res, () => {});
+      await authMiddleware(req, res, () => {});
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
 
       const rss_data = db.collection("rss_links");
       const queryResult = await rss_data.find({ userID: args.user_id }).toArray();
@@ -66,17 +66,17 @@ export const resolvers = {
     },
     // CSV Upload Resolver
     getUploadByUserId: async (_, args, { db, req, res }) => {
-      // // await authMiddleware(req, res, () => {});
+      await authMiddleware(req, res, () => {});
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
 
       const upload_data = db.collection("uploads");
       const queryResult = await upload_data.find({ userID: args.user_id }).toArray();
@@ -84,34 +84,36 @@ export const resolvers = {
     },
     // Topic Resolvers
     getAllTopics: async (_, args, { db, req, res }): Promise<String[]> => {
-      // // await authMiddleware(req, res, () => {});
+      await authMiddleware(req, res, () => {});
+      
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+    
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
 
       const articles_data = db.collection("articles_data");
       const topics: string[] = await articles_data.distinct("position_section", { userID: args.userID });
       return topics;
     },
     getAllLabels: async (_, args, { db, req, res }): Promise<String[]> => {
-      // // await authMiddleware(req, res, () => {});
+       await authMiddleware(req, res, () => {});
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
 
       const topic_data = db.collection("articles_data");
 
@@ -136,17 +138,17 @@ export const resolvers = {
     },
     // Tract Resolvers
     demographicsByTracts: async (_, args: DemographicsByTractsArgs, { db, req, res }): Promise<ITracts[]> => {
-      // // await authMiddleware(req, res, () => {});
+       await authMiddleware(req, res, () => {});
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
 
       const tracts_data: Collection<ITracts> = db.collection("tracts_data");
 
@@ -171,17 +173,17 @@ export const resolvers = {
     },
     // Neighborhood Resolvers
     tractsByNeighborhood: async (_, args: TractsByNeighborhoodArgs, { db, req, res }): Promise<INeighborhoods[]> => {
-      // // await authMiddleware(req, res, () => {});
+       await authMiddleware(req, res, () => {});
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
 
       const neighborhood_data: Collection<INeighborhoods> = db.collection("neighborhood_data");
 
@@ -194,17 +196,17 @@ export const resolvers = {
       return queryResult;
     },
     getAllNeighborhoods: async (_, __, { db, req, res }): Promise<INeighborhoods[]> => {
-      // // await authMiddleware(req, res, () => {});
+       await authMiddleware(req, res, () => {});
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
 
       const neighborhood_data: Collection<INeighborhoods> = db.collection("neighborhood_data");
       const neighborhoods: INeighborhoods[] = await neighborhood_data.find({}).toArray();
@@ -212,17 +214,17 @@ export const resolvers = {
     },
     // Article Resolvers
     articleByDate: async (_, args, { db, req, res }): Promise<IArticles[]> => {
-      // // await authMiddleware(req, res, () => {});
+       await authMiddleware(req, res, () => {});
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
 
       const articles_data = db.collection("articles_data");
 
@@ -268,17 +270,17 @@ export const resolvers = {
     },
 
     orgArticlesPastWeek: async (_, args, { db, req, res }): Promise<IArticles[]> => {
-      // // await authMiddleware(req, res, () => {});
+      await authMiddleware(req, res, () => {});
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
 
       const articles_data = db.collection("articles_data");
       const today = new Date();
@@ -301,17 +303,17 @@ export const resolvers = {
     },
 
     articleByTopicsOrLabels: async (_, args, { db, req, res }): Promise<IArticles[]> => {
-      // // await authMiddleware(req, res, () => {});
+      await authMiddleware(req, res, () => {});
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
 
       const articles_data = db.collection("articles_data");
 
@@ -383,34 +385,34 @@ export const resolvers = {
       }
     },
     getAllArticles: async (_, __, { db, req, res }): Promise<IArticles[]> => {
-      // // await authMiddleware(req, res, () => {});
+       await authMiddleware(req, res, () => {});
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
 
       const article_data: Collection<IArticles> = db.collection("articles_data");
       const articles: IArticles[] = await article_data.find({}).toArray();
       return articles;
     },
     getArticlesByOrg: async (_, args, { db, req, res }): Promise<IArticles[]> => {
-      // // await authMiddleware(req, res, () => {});
+      await authMiddleware(req, res, () => {});
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
 
       const article_data: Collection<IArticles> = db.collection("articles_data");
       const articles: IArticles[] = await article_data.find({ userID: args.userID }).toArray();
@@ -418,17 +420,17 @@ export const resolvers = {
     },
     // Location Resolvers
     getAllLocations: async (_, __, { db, req, res }): Promise<ILocations[]> => {
-      // // await authMiddleware(req, res, () => {});
+       await authMiddleware(req, res, () => {});
 
-      // const userHeader = req.headers.user;
-      // if (!userHeader) {
-      //   throw new Error('Unauthorized');
-      // }
+      const userHeader = req.headers.user;
+      if (!userHeader) {
+        throw new Error('Unauthorized');
+      }
 
-      // const decodedToken = JSON.parse(userHeader as string);
-      // if (!decodedToken) {
-      //   throw new Error('Unauthorized');
-      // }
+      const decodedToken = JSON.parse(userHeader as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
       try {
         const location_data: Collection<ILocations> = db.collection("locations_data");
         const locations: ILocations[] = await location_data.find({}).toArray();
