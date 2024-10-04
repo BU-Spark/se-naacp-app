@@ -13,8 +13,20 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
   }
   // Extract the token and organization token from request headers
   const token = req.headers['x-org-token'];
-  // const orgToken = req.headers['x-org-token'];
-  // Check if token or organization token is missing
+  // Swap the values of the `authorization` and `x-org-token` headers
+if (req.headers.authorization && req.headers['x-org-token']) {
+  // Extract the token value from `x-org-token` and format it as a Bearer token
+  const temp = `Bearer ${req.headers['x-org-token']}`;
+    // Set `x-org-token` to the original token from the `authorization` header
+    req.headers['x-org-token'] = req.headers.authorization.split(' ')[1];
+  // Set `authorization` header to the new Bearer token
+  req.headers.authorization = temp;
+
+
+}
+
+  console.log("testing ", req.headers);
+
   if (!token) {
     const error = new Error("Unauthorized");
     (error as any).code = 401;

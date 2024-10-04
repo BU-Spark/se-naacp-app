@@ -8,6 +8,14 @@ import {
 } from "../types/types";
 import { Collection } from "mongodb";
 import { authMiddleware } from "../../authMiddleware.js";
+import axios from "axios";
+import { error } from "console";
+const proxy_Url = process.env.REACT_APP_ML_PIP_URL;
+import FormData from 'form-data';
+import fs from 'fs';
+
+
+
 
 // helper function to check if a string is a number
 function isNumber(str: any) {
@@ -15,7 +23,85 @@ function isNumber(str: any) {
 }
 
 export const resolvers = {
-	Mutation: {
+  Mutation: {
+	uploadCSV: async (_, { file, user_id }, { db, req, res }) => {
+    // Authenticate user using a middleware
+    await authMiddleware(req, res, () => {});
+
+    // Verify user from headers
+    const userHeader = req.headers.user;
+    if (!userHeader) {
+      throw new error('Unauthorized');
+    }
+
+    // Decode and verify user token
+    const decodedToken = JSON.parse(userHeader as string);
+    if (!decodedToken) {
+      throw new error('Unauthorized');
+    }
+
+    // if (decodedToken.sub !== user_id) {
+    //   throw new error('Forbidden');
+    // }
+
+    // Extract file details and read the stream
+    const { createReadStream, filename } = await file;
+    const fileStream = createReadStream();
+    let buffer = Buffer.alloc(0);
+
+    // Read file stream and convert to buffer
+    for await (const chunk of fileStream) {
+      buffer = Buffer.concat([buffer, chunk]);
+    }
+
+    console.log('File:', filename, 'User ID:', user_id);
+
+    // Create a File object using the constructor from fetch-blob
+    const fileObject = new File([buffer], filename);
+
+    // Create FormData and append the file object
+    const formData = new FormData();
+    formData.append('file', fileObject);
+    formData.append('user_id', user_id);
+
+    // Add secret key to the headers for additional security
+    const secretKey = 'beri-stronk-key';
+
+    try {
+      // Send the file to the FastAPI server
+      const response = await axios.post('http://35.229.106.189:80/upload_csv', formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+            "X-API-KEY": secretKey,
+        },
+      });
+
+      console.log('Response headers:', response.headers);
+
+      if (response.status === 200) {
+        // Log the successful upload in the database
+        const uploadData = db.collection('uploads');
+        const result = await uploadData.insertOne({
+          user_id,
+          filename,
+          timestamp: new Date(),
+          status: 'Success',
+        });
+
+        return {
+          success: true,
+          message: 'CSV uploaded successfully!',
+          uploadID: result.insertedId,
+        };
+      } else {
+        console.error('Upload failed with status:', response.status);
+        throw new error('Failed to upload CSV.');
+      }
+    } catch (error) {
+      console.error('Error uploading CSV:', error);
+      throw new error('Error uploading CSV.');
+    }
+  },
 	  addRssFeed: async (_, { url, userID }, { db, req, res }) => {
 		await authMiddleware(req, res, () => {});
   
@@ -61,7 +147,7 @@ export const resolvers = {
       }
 
       const rss_data = db.collection("rss_links");
-      const queryResult = await rss_data.find({ userID: args.user_id }).toArray();
+      const queryResult = await rss_data.find({ userID: args.userID }).toArray();
       return queryResult;
     },
     // CSV Upload Resolver
@@ -79,7 +165,7 @@ export const resolvers = {
       }
 
       const upload_data = db.collection("uploads");
-      const queryResult = await upload_data.find({ userID: args.user_id }).toArray();
+      const queryResult = await upload_data.find({ userID: args.userID }).toArray();
       return queryResult;
     },
     // Topic Resolvers

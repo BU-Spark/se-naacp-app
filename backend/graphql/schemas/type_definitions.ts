@@ -1,6 +1,9 @@
 import { gql } from "apollo-server-express";
 
+
 export const typeDefs = gql`
+	scalar Upload
+	
 	type Rss_links {
 		url: String!
 		userID: String!
@@ -15,6 +18,7 @@ export const typeDefs = gql`
 		contents: String!
 		rssLink: String!
 	}
+	
 
 	type Uploads {
 		userID: String!
@@ -24,6 +28,25 @@ export const typeDefs = gql`
 		status: String!
 		message: String!
 	}
+
+	type Mutation {
+  		# Define a new mutation for uploading a CSV file
+  		uploadCSV(file: Upload!, user_id: String!): UploadStatus!
+		addRssFeed(url: String!, user_id: String!): Rss_links
+	}
+	
+
+	type UploadResponse {
+  		success: Boolean!
+  		message: String!
+  		uploadID: ID
+	}
+
+	type UploadStatus {
+		filename: String!
+  		status: String!
+	}
+
 
 	type Article {
 		neighborhoods: [String!]!
@@ -108,7 +131,5 @@ export const typeDefs = gql`
 		getAllLocations: [Locations!]!
 	}
 
-	type Mutation {
-		addRssFeed(url: String!, userID: String!): Rss_links
-	}
+
 `;
