@@ -13,6 +13,9 @@ const GET_ALL_LOCATIONS = gql`
       coordinates
       articles
       value
+      city
+      tract
+      neighborhood
     }
   }
 `;

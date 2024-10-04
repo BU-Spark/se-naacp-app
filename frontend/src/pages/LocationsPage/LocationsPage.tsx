@@ -17,19 +17,19 @@ import { TractContext } from "../../contexts/tract_context"; // Import TractCont
 import LocationInfo from '../../components/LocationsInfo/LocationsInfo'; // Import LocationInfo
 
 
-const getMostCommonTract = (articles: Article[]) => {
-    const tractCount: { [key: string]: number } = {};
+// const getMostCommonTract = (articles: Article[]) => {
+//     const tractCount: { [key: string]: number } = {};
     
-    articles.forEach(article => {
-        article.tracts.forEach(tract => {
-            tractCount[tract] = (tractCount[tract] || 0) + 1;
-        });
-    });
+//     articles.forEach(article => {
+//         article.tracts.forEach(tract => {
+//             tractCount[tract] = (tractCount[tract] || 0) + 1;
+//         });
+//     });
 
-    return Object.keys(tractCount).reduce((a, b) => 
-        tractCount[a] > tractCount[b] ? a : b
-    );
-};
+//     return Object.keys(tractCount).reduce((a, b) => 
+//         tractCount[a] > tractCount[b] ? a : b
+//     );
+// };
 
 
 const LocationsPage: React.FC = () => {
@@ -42,7 +42,6 @@ const LocationsPage: React.FC = () => {
     const [selectedLocation, setSelectedLocation] = useState<Locations | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [locationArticles, setLocationArticles] = useState<Article[]>([]);
-    const [mostCommonTract, setMostCommonTract] = useState<string>("");
 
 
 
@@ -93,6 +92,7 @@ const LocationsPage: React.FC = () => {
             params.set('location', sortedLocations[0].value);
             navigate({ search: params.toString() });
         }
+
     }, [locationsData]);
 
     React.useEffect(() => {
@@ -109,21 +109,22 @@ const LocationsPage: React.FC = () => {
                 selectedLocation.articles.includes(article.content_id)
             );                
             setLocationArticles(newLocationArticles);
-            setMostCommonTract(getMostCommonTract(newLocationArticles));
+
+            queryTractDataType("TRACT_DATA", {
+                dateFrom: parseInt(minDate.format("YYYYMMDD")),
+                dateTo: parseInt(maxDate.format("YYYYMMDD")),
+                tract: selectedLocation?.tract,
+            });
 
     }
 
         
     },[selectedLocation, articleData2]);
 
-    useEffect(() => {
-        queryTractDataType("TRACT_DATA", {
-            dateFrom: parseInt(minDate.format("YYYYMMDD")),
-            dateTo: parseInt(maxDate.format("YYYYMMDD")),
-            tract: mostCommonTract,
-        });
-       }, [mostCommonTract]);
-    
+
+
+
+
     
 
 
@@ -146,7 +147,7 @@ const LocationsPage: React.FC = () => {
                 <div className="row justify-content-evenly">
                     <div className="col-md-5 col-sm-12">
                         <LocationsDropDown selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation}/>
-                        <LocationInfo location={selectedLocation} tract={mostCommonTract} />
+                        <LocationInfo location={selectedLocation} />
                         </div>
                     <div className="col-md-7 col-sm-12">
                          <h1 className="titles">Map</h1>

@@ -57,6 +57,9 @@ export const typeDefs = gql`
 		coordinates: [Float]
 		articles: [String]
 		value: String!
+		city: String
+		tract: String
+		neighborhood: String
 	}
 
 	type Demographics {
