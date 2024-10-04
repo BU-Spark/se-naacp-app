@@ -8,11 +8,12 @@ import "./CSVUploadPage.css";
 import { UploadContext } from "../../contexts/upload_context";
 import { Uploads } from "../../__generated__/graphql";
 import { useOrganization, useUser, useAuth } from "@clerk/clerk-react";
-
+import { useMutation } from "@apollo/client";
 import HelpIcon from '@mui/icons-material/Help';
 import Tooltip from '@mui/material/Tooltip';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
+import { gql } from "@apollo/client";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 //import image from 'frontend/public/image1.png';
 
@@ -26,7 +27,18 @@ type UploadedFile = {
 	file: File; // store a reference to the File object
 };
 
-const CSVUploadBox = () => {
+export const UPLOAD_CSV_MUTATION = gql`
+  mutation UploadCSV($file: Upload!, $userId: String!) {
+    uploadCSV(file: $file, user_id: $user_id) {
+      success
+      message
+      uploadID
+    }
+  } 
+`;
+
+
+export const CSVUploadBox = () => {
 	const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 	const [validatedFiles, setUpValidatedFiles] = useState<UploadedFile[]>([]);
 	// This file list is mapped from validated Files' reference to file object.
@@ -38,6 +50,9 @@ const CSVUploadBox = () => {
 	const [uploads, setUpload] = useState<Uploads[]>([]);
 	const { user, isSignedIn } = useUser();
 	const { organization } = useOrganization();
+
+	
+	
 	//permission check for uploading CSVs
 	const {has} = useAuth();
 	const canManageSettings = has ? has({ permission: "org:test:limit" }) : false;
@@ -115,13 +130,13 @@ const CSVUploadBox = () => {
 			//for lines we want this regex for the HTLM data on 'content' header
 			const lines = text.split(/\r?\n/).map(line => line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
 			const expectedHeaders = [
-				"Title",
-				"Author",
-				"Category",
-				"Article ID",
-				"URL Link",
-				"Publication Date",
-				"Content",
+				"Headline",
+                "Publisher",
+                "Byline",
+                "content_id",
+                "Paths",
+                "Publish Date",
+                "Body",
 			];
 	
 			const headers = lines[0];
@@ -146,6 +161,7 @@ const CSVUploadBox = () => {
 		reader.readAsText(file);
 	};
 	
+
 	
 	// Drag and drop event handlers
 	const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -188,56 +204,35 @@ const CSVUploadBox = () => {
 		}
 	};
 
-	// After upload successful, user can submit file to server.
+	const [uploadCSV] = useMutation(UPLOAD_CSV_MUTATION);
+	console.log("about to submit a file");
 	const submitFile = () => {
-		for (let i = 0; i < submittedFiles.length; i++) {
-			const formData = new FormData();
-			formData.append("file", submittedFiles[i]);
-			if (user && isSignedIn) {
-				if (organization) {
-					formData.append("user_id", organization.id);
-				} else {
-					formData.append("user_id", user.id);
-				}
-			} else {
-				console.error("User is not signed in");
-			}
-			axios
-				.post(proxy_Url, formData, {
-					headers: {
-						"Content-Type": "multipart/form-data",
-					},
-				})
-				.then((response) => {
-					console.log(response);
-					// update the uploaded file status
-					setUploadedFiles((currentFiles) =>
-						currentFiles.map((f) => {
-							if (f.name === submittedFiles[i].name) {
-								return { ...f, status: "Submit Successful" };
-							}
-							return f;
-						}),
-					);
-					setSuccessMessage("Successfully submitted!");
-					setTimeout(() => setSuccessMessage(""), 3000);
-				})
-				.catch((error) => {
-					console.error(error);
-					setUploadedFiles((currentFiles) =>
-						currentFiles.map((f) => {
-							if (f.name === submittedFiles[i].name) {
-								return {
-									...f,
-									status: "Submit Failed",
-									error: error.toString(),
-								};
-							}
-							return f;
-						}),
-					);
-				});
+		console.log("submitting file");
+	  for (let i = 0; i < submittedFiles.length; i++) {
+		const file = submittedFiles[i];
+		if (user && isSignedIn) {
+		  const variables = {
+			file,
+			user_id: organization ? organization.id : user.id,
+		  };
+
+		  console.log("logging variables: ", variables);
+	
+		  uploadCSV({ variables })
+			.then((response) => {
+			  console.log("Upload response:", response);
+			  setSuccessMessage("Successfully submitted!");
+			  setTimeout(() => setSuccessMessage(""), 3000);
+			})
+			.catch((error) => {
+			  console.error("Error during CSV upload:", error);
+			  setAlertMessage("Failed to upload CSV.");
+			  setTimeout(() => setAlertMessage(""), 3000);
+			});
+		} else {
+		  console.error("User is not signed in");
 		}
+	  }
 	};
 
 	// Function that simulates file upload and updates progress
