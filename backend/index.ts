@@ -8,7 +8,7 @@ import { graphql, GraphQLError } from "graphql";
 import { authMiddleware } from "./authMiddleware.js"; // Import your middleware
 import {GraphQLUpload} from 'graphql-upload-minimal';
 import { graphqlUploadExpress } from 'graphql-upload-minimal';
-
+import fileUpload from 'express-fileupload';
 import 'dotenv/config';
 
 interface Context {
@@ -47,14 +47,17 @@ const app = express();
 app.use(authMiddleware);
 
 app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
+app.use(fileUpload());
 
 // Apollo Server
 const server = new ApolloServer<Context>({
+  
   typeDefs,
+  csrfPrevention: false,
   resolvers:{
     ...resolvers,
-    Upload: GraphQLUpload,
   },
+
   formatError: (err) => {
     return { message: err.message };
   },

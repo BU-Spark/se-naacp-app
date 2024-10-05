@@ -24,7 +24,7 @@ echo "Starting React Client server..."
 # Find GraphQL folder
 DIR_NAME="se-naacp-app"
 #SEARCH_PATH="/" # Root is the default, but you can change it
-SEARCH_PATH="/Users/zacharyg/Documents/Github" # For me
+SEARCH_PATH="/Users/raheeq/Documents" # For me
 
 # Find the directory and read the first result into a variable
 PROJECT_ROOT_DIR=$(find "$SEARCH_PATH" -type d -name "$DIR_NAME" 2>&1 | grep -v "Permission denied" | head -n 1)

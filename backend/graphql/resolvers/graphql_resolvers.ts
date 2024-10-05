@@ -14,6 +14,7 @@ const proxy_Url = process.env.REACT_APP_ML_PIP_URL;
 import FormData from 'form-data';
 import fs from 'fs';
 import { GraphQLUpload } from "graphql-upload-minimal";
+import { GraphQLScalarType, GraphQLError} from 'graphql';
 import { FileUpload } from 'graphql-upload-minimal';
 
 
@@ -25,7 +26,19 @@ function isNumber(str: any) {
 }
 
 export const resolvers = {
-  Upload: GraphQLUpload,
+  Upload: new GraphQLScalarType({
+    name: 'Upload',
+    description: 'The `Upload` scalar type represents a file upload.',
+    parseValue(value) {
+        return value;
+    },
+    parseLiteral(ast) {
+        throw new GraphQLError('Upload literal unsupported.', ast);
+    },
+    serialize() {
+        throw new GraphQLError('Upload serialization unsupported.');
+    },
+}),
   Mutation: {
 	uploadCSV: async (
     _: any,
@@ -75,6 +88,7 @@ export const resolvers = {
       const response = await axios.post('http://35.229.106.189:80/upload_csv', formData, {
         headers: {
          "Content-Type": "multipart/form-data",
+         "apollo-require-preflight": "true",
           //"X-API-KEY": secretKey,
         },
 });
