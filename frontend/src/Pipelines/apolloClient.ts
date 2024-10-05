@@ -1,12 +1,15 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { createUploadLink } from 'apollo-upload-client';
+
 
 const deployment_uri = process.env.REACT_APP_NAACP_DEPLOYMENT_URI;
 
-const queryURI = `${deployment_uri}/queryValues`;
-const httpLink = createHttpLink({
+const queryURI = `${deployment_uri}/graphql`;
+const httpLink = createUploadLink({
   uri: queryURI,
 });
+
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('clerk-db-jwt'); // Use the clerk-db-jwt token
@@ -16,7 +19,7 @@ const authLink = setContext((_, { headers }) => {
     headers: {
       ...headers,
       authorization: token ? `Bearer ${token}` : "",
-      'x-org-token': orgToken // Add org token to headers
+      'x-org-token': orgToken, // Add org token to headers
     }
   };
 });

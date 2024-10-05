@@ -13,6 +13,8 @@ import { error } from "console";
 const proxy_Url = process.env.REACT_APP_ML_PIP_URL;
 import FormData from 'form-data';
 import fs from 'fs';
+import { GraphQLUpload } from "graphql-upload-minimal";
+import { FileUpload } from 'graphql-upload-minimal';
 
 
 
@@ -23,46 +25,47 @@ function isNumber(str: any) {
 }
 
 export const resolvers = {
+  Upload: GraphQLUpload,
   Mutation: {
-	uploadCSV: async (_, { file, user_id }, { db, req, res }) => {
+	uploadCSV: async (
+    _: any,
+    { file, userId }: { file: any; userId: string },
+    { db, req, res }: { db: any, req: any, res:any } 
+  ) => {
+    console.log("Type of file:", file instanceof File); 
     // Authenticate user using a middleware
-    await authMiddleware(req, res, () => {});
+
+   // await authMiddleware(req, res, () => {});
 
     // Verify user from headers
-    const userHeader = req.headers.user;
-    if (!userHeader) {
-      throw new error('Unauthorized');
-    }
+    // const userHeader = req.headers.user;
+    // if (!userHeader) {
+    //   throw new error('Unauthorized');
+    // }
 
     // Decode and verify user token
-    const decodedToken = JSON.parse(userHeader as string);
-    if (!decodedToken) {
-      throw new error('Unauthorized');
-    }
+    //const decodedToken = JSON.parse(userHeader as string);
+    //if (!decodedToken) {
+  //    throw new error('Unauthorized');
+    //}
 
     // if (decodedToken.sub !== user_id) {
     //   throw new error('Forbidden');
     // }
 
     // Extract file details and read the stream
-    const { createReadStream, filename } = await file;
-    const fileStream = createReadStream();
-    let buffer = Buffer.alloc(0);
+    const { createReadStream, filename, mimetype, encoding } = await file;
+    console.log('Received file: ${filename}');
 
-    // Read file stream and convert to buffer
-    for await (const chunk of fileStream) {
-      buffer = Buffer.concat([buffer, chunk]);
-    }
+    const stream = createReadStream();
 
-    console.log('File:', filename, 'User ID:', user_id);
-
-    // Create a File object using the constructor from fetch-blob
-    const fileObject = new File([buffer], filename);
-
-    // Create FormData and append the file object
+    // Set up FormData to send the file and user ID directly to the API
     const formData = new FormData();
-    formData.append('file', fileObject);
-    formData.append('user_id', user_id);
+    formData.append('file', file);
+    formData.append('user_id', userId);
+
+    console.log('FormData prepared for POST request.');
+
 
     // Add secret key to the headers for additional security
     const secretKey = 'beri-stronk-key';
@@ -71,10 +74,10 @@ export const resolvers = {
       // Send the file to the FastAPI server
       const response = await axios.post('http://35.229.106.189:80/upload_csv', formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
-            "X-API-KEY": secretKey,
+         "Content-Type": "multipart/form-data",
+          //"X-API-KEY": secretKey,
         },
-      });
+});
 
       console.log('Response headers:', response.headers);
 
@@ -82,16 +85,15 @@ export const resolvers = {
         // Log the successful upload in the database
         const uploadData = db.collection('uploads');
         const result = await uploadData.insertOne({
-          user_id,
+          userId,
           filename,
           timestamp: new Date(),
           status: 'Success',
         });
 
         return {
-          success: true,
-          message: 'CSV uploaded successfully!',
-          uploadID: result.insertedId,
+          filename: filename,
+          message: "",
         };
       } else {
         console.error('Upload failed with status:', response.status);
@@ -99,7 +101,7 @@ export const resolvers = {
       }
     } catch (error) {
       console.error('Error uploading CSV:', error);
-      throw new error('Error uploading CSV.');
+      throw new Error('Error uploading CSV.');
     }
   },
 	  addRssFeed: async (_, { url, userID }, { db, req, res }) => {

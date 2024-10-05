@@ -4,8 +4,11 @@ import express from "express";
 import { typeDefs } from "./graphql/schemas/type_definitions.js";
 import { resolvers } from "./graphql/resolvers/graphql_resolvers.js";
 import { MongoClient, Db } from "mongodb";
-import { GraphQLError } from "graphql";
-import { authMiddleware } from "./authMiddleware.js" // Import your middleware
+import { graphql, GraphQLError } from "graphql";
+import { authMiddleware } from "./authMiddleware.js"; // Import your middleware
+import {GraphQLUpload} from 'graphql-upload-minimal';
+import { graphqlUploadExpress } from 'graphql-upload-minimal';
+
 import 'dotenv/config';
 
 interface Context {
@@ -43,10 +46,15 @@ const app = express();
 // Apply your auth middleware to all requests
 app.use(authMiddleware);
 
+app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
+
 // Apollo Server
 const server = new ApolloServer<Context>({
   typeDefs,
-  resolvers,
+  resolvers:{
+    ...resolvers,
+    Upload: GraphQLUpload,
+  },
   formatError: (err) => {
     return { message: err.message };
   },
