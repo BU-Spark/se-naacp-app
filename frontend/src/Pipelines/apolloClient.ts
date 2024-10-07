@@ -10,6 +10,7 @@ const queryURI = `${deployment_uri}/graphql`;
 //const queryURI = temp_uri;
 const uploadLink = createUploadLink({
   uri: queryURI,
+  credentials: 'include',
 });
 
 

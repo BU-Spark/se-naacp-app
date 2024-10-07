@@ -215,11 +215,19 @@ export const CSVUploadBox = () => {
       for (let i = 0; i < submittedFiles.length; i++) {
         const file = submittedFiles[i];
         console.log("Type of file:", file instanceof File); 
+		var userId;
+
+		// if (organization) {
+		// 	 userId = organization.id;
+		// } else {
+		// 	 userId =  user?.id;
+		// }
 
         if (user && isSignedIn) {
           const variables = {
             file,
-            userId: organization ? organization.id : user.id,
+            userId: organization ? organization.id : user.id, 
+			
           };
 
           console.log("logging variables: ", variables);

@@ -12,13 +12,15 @@ import axios from "axios";
 import { error } from "console";
 const proxy_Url = process.env.REACT_APP_ML_PIP_URL;
 import FormData from 'form-data';
-import fs from 'fs';
+import {createWriteStream} from 'fs';
 import { GraphQLUpload } from "graphql-upload-minimal";
 import { GraphQLScalarType, GraphQLError} from 'graphql';
 import { FileUpload } from 'graphql-upload-minimal';
+import path from 'path';
 
 
-
+//const __filename = fileURLToPath(import.meta.url);
+//const __dirname = path.dirname(__filename);
 
 // helper function to check if a string is a number
 function isNumber(str: any) {
@@ -26,97 +28,83 @@ function isNumber(str: any) {
 }
 
 export const resolvers = {
-  Upload: new GraphQLScalarType({
-    name: 'Upload',
-    description: 'The `Upload` scalar type represents a file upload.',
-    parseValue(value) {
-        return value;
-    },
-    parseLiteral(ast) {
-        throw new GraphQLError('Upload literal unsupported.', ast);
-    },
-    serialize() {
-        throw new GraphQLError('Upload serialization unsupported.');
-    },
-}),
+  Upload: GraphQLUpload,
   Mutation: {
-	uploadCSV: async (
-    _: any,
-    { file, userId }: { file: any; userId: string },
-    { db, req, res }: { db: any, req: any, res:any } 
-  ) => {
-    console.log("Type of file:", file instanceof File); 
-    // Authenticate user using a middleware
+      uploadCSV: async (_, { file, userId }, { db }) => {
+      try {
+        // Step 1: Process the `file` upload input
+        const { createReadStream, filename, mimetype } = await file;
+        userId = "org_2bHDzl2Zax0nILIzDhui2DLWdH6";
+        // Log file information for debugging
+        console.log(`Uploading file: ${filename} (Type: ${mimetype}) for user: ${userId}`);
 
-   // await authMiddleware(req, res, () => {});
-
-    // Verify user from headers
-    // const userHeader = req.headers.user;
-    // if (!userHeader) {
-    //   throw new error('Unauthorized');
-    // }
-
-    // Decode and verify user token
-    //const decodedToken = JSON.parse(userHeader as string);
-    //if (!decodedToken) {
-  //    throw new error('Unauthorized');
-    //}
-
-    // if (decodedToken.sub !== user_id) {
-    //   throw new error('Forbidden');
-    // }
-
-    // Extract file details and read the stream
-    const { createReadStream, filename, mimetype, encoding } = await file;
-    console.log('Received file: ${filename}');
-
-    const stream = createReadStream();
-
-    // Set up FormData to send the file and user ID directly to the API
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('user_id', userId);
-
-    console.log('FormData prepared for POST request.');
+          // Step 2: Save the file locally (optional) or send it to another API
+        const stream = createReadStream();
+          //const outputFilePath = path.join(__dirname, 'uploads', filename);
+  /*
+          // Optional: Save file to local server for testing purposes
+          await new Promise((resolve, reject) => {
+            const writeStream = createWriteStream(outputFilePath);
+            stream
+              .pipe(writeStream)
+              .on('finish', resolve)
+              .on('error', reject);
+          });
+  
+          console.log(`File saved successfully to ${outputFilePath}`);
+  */
+          // Step 3: Prepare FormData for sending to an external service (optional)
+        const formData = new FormData();
 
 
-    // Add secret key to the headers for additional security
-    const secretKey = 'beri-stronk-key';
+          const map = JSON.stringify({ "1": ["variables.file"] });
+          formData.append("operations", JSON.stringify({
+          query: `mutation UploadCSV($file: Upload!, $userId: String!) {
+            uploadCSV(file: $file, user_id: $userId) {
+              filename
+              status
+            }
+          }`,
+          variables: { file: null, userId: "org_2bHDzl2Zax0nILIzDhui2DLWdH6"},
+          }));
+        formData.append("map", map);
+          formData.append("1", stream);
 
-    try {
-      // Send the file to the FastAPI server
-      const response = await axios.post('http://35.229.106.189:80/upload_csv', formData, {
-        headers: {
-         "Content-Type": "multipart/form-data",
-         "apollo-require-preflight": "true",
-          //"X-API-KEY": secretKey,
-        },
-});
+          formData.append('file', stream, { filename });
+          formData.append('user_id', userId);
 
-      console.log('Response headers:', response.headers);
+          // Step 4: Send the file to an external API (if needed)
+        const response = await axios.post(
+            'http://35.229.106.189:80/upload_csv',
+          formData,
+          {
+              headers: {
+                ...formData.getHeaders(),
+              },
+          }
+        );
 
-      if (response.status === 200) {
-        // Log the successful upload in the database
-        const uploadData = db.collection('uploads');
-        const result = await uploadData.insertOne({
-          userId,
-          filename,
-          timestamp: new Date(),
-          status: 'Success',
-        });
+        // Handle API response
+        if (response.status === 200) {
+          console.log('File uploaded successfully to external API.');
 
-        return {
-          filename: filename,
-          message: "",
-        };
-      } else {
-        console.error('Upload failed with status:', response.status);
-        throw new error('Failed to upload CSV.');
+          // Step 5: Save upload metadata to the database (if needed)
+          const uploadData = db.collection('uploads');
+            const result = await uploadData.insertOne({
+            userId,
+            filename,
+            timestamp: new Date(),
+            status: 'Success',
+          });
+
+          return { filename: filename, status: 'Success' };
+        } else {
+            throw new GraphQLError('Failed to upload CSV.');
+        }
+      } catch (error) {
+        console.error('Error uploading CSV:', error);
+          throw new GraphQLError('Error uploading CSV.');
       }
-    } catch (error) {
-      console.error('Error uploading CSV:', error);
-      throw new Error('Error uploading CSV.');
-    }
   },
 	  addRssFeed: async (_, { url, userID }, { db, req, res }) => {
 		await authMiddleware(req, res, () => {});

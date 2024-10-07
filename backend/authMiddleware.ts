@@ -11,19 +11,20 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     console.error("CLERK_PEM_PUBLIC_KEY is not set in the environment variables");
     throw new Error("Internal Server Error");
   }
+
+    // Check if the request is for the `uploadCSV` mutation
+    if (req.path === '/graphql' && req.body?.operationName === 'UploadCSV') {
+      console.log("Skipping authMiddleware for uploadCSV mutation");
+      return next(); // Skip the auth middleware for this mutation
+    }
   // Extract the token and organization token from request headers
-  const token = req.headers['x-org-token'];
-  // Swap the values of the `authorization` and `x-org-token` headers
-if (req.headers.authorization && req.headers['x-org-token']) {
-  // Extract the token value from `x-org-token` and format it as a Bearer token
-  const temp = `Bearer ${req.headers['x-org-token']}`;
-    // Set `x-org-token` to the original token from the `authorization` header
-    req.headers['x-org-token'] = req.headers.authorization.split(' ')[1];
-  // Set `authorization` header to the new Bearer token
-  req.headers.authorization = temp;
+   // Extract the token and organization token from request headers
+   let token = req.headers['x-org-token'] as string | undefined;
 
-
-}
+   // If `x-org-token` is not present, check for `authorization` header and swap values if necessary
+   if (!token && req.headers.authorization) {
+     token = req.headers.authorization.split(' ')[1]; // Extract the token from `authorization` header
+   }
 
   console.log("testing ", req.headers);
 

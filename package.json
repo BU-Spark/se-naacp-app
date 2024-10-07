@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@apollo/server": "^4.9.3",
+    "apollo-upload-client": "^18.0.1",
     "express-fileupload": "^1.5.1",
     "font-awesome": "^4.7.0",
     "graphql": "^16.8.1",
