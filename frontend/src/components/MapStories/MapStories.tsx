@@ -17,15 +17,31 @@ import useSupercluster from "use-supercluster";
 import "./MapStories.css";
 
 
+interface MapStoriesProps {
+    selctedTopics: string[];
+    setSelectedTopics: (topics: string[]) => void;
+    zoom: number;
+    setZoom: (zoom: number) => void;
+    center: [number, number];
+    setCenter: (center: [number, number]) => void;
+}
+
 const formatDate = (dateSum: number) => {
     const dateStr = dateSum.toString();
     const formattedDateStr = `${dateStr.substring(0, 4)}-${dateStr.substring(4, 6)}-${dateStr.substring(6, 8)}`;
     return new Date(formattedDateStr).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
 };
 
+const generateColor = (topic: string) => {
+    // Generate a color based on the topic string
+    const hash = Array.from(topic).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const hue = hash % 360; // Get a hue value based on the hash
+    return `hsl(${hue}, 70%, 50%)`; // Return a color in HSL format
+};
 
 
-const getMostCommonLocation = (articles:Article[]) => {
+
+const getMostCommonLocations = (articles:Article[]) => {
     const locationCount: { [key: string]: number } = {};
     articles.forEach(article => {
         article.locations?.forEach(location => {
@@ -33,11 +49,11 @@ const getMostCommonLocation = (articles:Article[]) => {
         });
     });
 
-    const mostCommonLocation = Object.keys(locationCount).reduce((a, b) => 
-        locationCount[a] > locationCount[b] ? a : b
-    );
+    return Object.entries(locationCount)
+    .sort(([, countA], [, countB]) => countB - countA)
+    .slice(0, 5)
+    .map(([location]) => location);
 
-    return mostCommonLocation;
 };
 
 const getNeighborhoodAndTract = (articles:Article[], commonLocation:string) => {
@@ -69,7 +85,7 @@ const getRecentArticles = (articles: Article[]) => {
 };
     
 
-const MapStories = () => {
+const MapStories: React.FC<MapStoriesProps> = ({ selctedTopics, setSelectedTopics, zoom, setZoom, center, setCenter}) => {
     const [articles, setArticles] = useState<Article[]>([]);
 	const { articleData, queryArticleDataType } = useContext(ArticleContext)!;
     const { articleData2, queryArticleDataType2 } = useContext(ArticleContext)!;
@@ -88,10 +104,8 @@ const MapStories = () => {
 
     const [lastClickedClusterId, setLastClickedClusterId] = useState<number | null>(null);
 
-
-    const [zoom, setZoom] = useState(13);
-    const [center, setCenter] = useState<[number, number]>([42.3601, -71.0589]);
     const [bounds, setBounds] = useState<BBox>();
+
 
 
 
@@ -122,14 +136,14 @@ const MapStories = () => {
     }, [center, zoom]);
 
 
-    const resetMap = () => {
-        setZoom(13); // Reset to initial zoom
-        setCenter([42.3601, -71.0589]); // Reset to initial center
-    };
+
 
 
     const points: Array<PointFeature<GeoJsonProperties>> =  articles
-        .filter(article => article.coordinates && article.coordinates.length > 0)
+        .filter(article => 
+            article.coordinates && article.coordinates.length > 0 &&
+            (selctedTopics.length === 0 || selctedTopics.includes(article.openai_labels!))
+        )
         .flatMap(article => 
             article.coordinates?.map(coord => ({
                 type: "Feature",
@@ -161,15 +175,15 @@ const MapStories = () => {
             const articles = supercluster.getLeaves(cluster_id, Infinity);
 
 
-            const commonLocation = getMostCommonLocation(articles.map((article:any) => article.properties))
-            const neighborhoodAndTract = getNeighborhoodAndTract(articles.map((article:any) => article.properties), commonLocation);
+            const commonLocations = getMostCommonLocations(articles.map((article:any) => article.properties))
+            const neighborhoodAndTract = getNeighborhoodAndTract(articles.map((article:any) => article.properties), commonLocations[0]);
             const commonNeighborhood = neighborhoodAndTract?.neighborhood; 
             const commonTract = neighborhoodAndTract?.tract; 
             const recentArticles = getRecentArticles(articles.map((article:any) => article.properties));
 
 
             setModalData({
-                location: commonLocation,
+                location: commonLocations,
                 neighborhood: commonNeighborhood,
                 tract: commonTract,
                 articles:recentArticles
@@ -177,8 +191,6 @@ const MapStories = () => {
 
 
             setModalOpen(true); // Open the modal
-
-        
     }
     };
 
@@ -186,9 +198,7 @@ const MapStories = () => {
 
 return (
     <div className="full-screen-container">
-         <button onClick={resetMap} style={{ margin: '10px', padding: '10px' }}>
-                Reset Map
-        </button>
+ 
         <Map
             center={center}
             zoom={zoom}
@@ -232,6 +242,7 @@ return (
                         );
                     }
 
+                    const pinColor = selctedTopics.length > 0 ? generateColor(properties.openai_labels!) : ''; // Default color if no topics selected
                     return (
                         <Marker
                         key={`article-${properties.articleId}-${latitude}-${longitude}`} // Updated key
@@ -245,7 +256,7 @@ return (
                                 setActiveTopic(properties.openai_labels);
                                 setActiveLocations(properties.locations);
                             }}
-                            color={showPopup && activeHl1 === properties.hl1 ? 'red' : ''} // Updated color logic
+                            color={showPopup && activeHl1 === properties.hl1 ? 'red' : pinColor} // Updated color logic
                             onMouseOut={() => { setShowPopup(false) }}
                         />
                     );
@@ -271,7 +282,12 @@ return (
                         <div>
                             <h2>Cluster Information</h2>
                             <div>
-                                <strong>Location:</strong> <Link to= {`/Locations?location=${encodeURIComponent(modalData?.location)}`}>{modalData?.location}</Link>
+                                <strong>Location:</strong> 
+                                <ul>
+                                    {modalData?.location.map((location: string, index: number) => (
+                                        <li key={index}><Link to={`/Locations?location=${encodeURIComponent(location)}`}>{location}</Link></li>
+                                    ))}
+                                </ul>
                             </div>
                             <div>
                                 <strong>Neighborhood:</strong> {modalData?.neighborhood}
