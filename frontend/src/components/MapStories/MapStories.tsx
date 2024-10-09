@@ -11,6 +11,8 @@ import ArticleCard from "../../components/ArticleCard/ArticleCard";
 import { Modal } from '@mui/material'; // Import Modal
 import { Link } from 'react-router-dom'; // Add this import
 import useSupercluster from "use-supercluster";
+import { Typography } from '@mui/material'; // Import Typography for better text styling
+
 
 
 
@@ -27,6 +29,25 @@ interface MapStoriesProps {
     setCenter: (center: [number, number]) => void;
 }
 
+const ColorLegend: React.FC<{ selectedTopics: string[] }> = ({ selectedTopics }) => (
+    <div style={{ margin: '10px', padding: '10px', backgroundColor: '#fff', border: '1px solid #ccc', opacity: 0.8}}>
+        {selectedTopics.map(topic => (
+            <div key={topic} style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ width: '20px', height: '20px', backgroundColor: generateColor(topic), marginRight: '5px' }}></div>
+                <Typography style={{color: 'black'}}>{topic}</Typography>
+            </div>
+        ))}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ width: '20px', height: '20px', backgroundColor: '#1978c8', marginRight: '5px' }}></div>
+            <Typography style={{ color: 'black' }}>Cluster </Typography>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ width: '20px', height: '20px', backgroundColor: 'red', marginRight: '5px' }}></div>
+            <Typography style={{color: 'black'}}>Last Clicked Cluster</Typography>
+        </div>
+    </div>
+);
+
 const formatDate = (dateSum: number) => {
     const dateStr = dateSum.toString();
     const formattedDateStr = `${dateStr.substring(0, 4)}-${dateStr.substring(4, 6)}-${dateStr.substring(6, 8)}`;
@@ -36,8 +57,8 @@ const formatDate = (dateSum: number) => {
 const generateColor = (topic: string) => {
     // Generate a color based on the topic string
     const hash = Array.from(topic).reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const hue = hash % 360; // Get a hue value based on the hash
-    return `hsl(${hue}, 70%, 50%)`; // Return a color in HSL format
+    const hue = (hash * 137 + 50) % 360; // Adjusted to add a constant for more variation
+    return `hsl(${hue}, 90%, 50%)`; // Increased saturation to 90% for better contrast
 };
 
 
@@ -181,7 +202,6 @@ const MapStories: React.FC<MapStoriesProps> = ({ selctedTopics, setSelectedTopic
 
 return (
     <div className="full-screen-container">
- 
         <Map
             center={center}
             zoom={zoom}
@@ -322,6 +342,9 @@ return (
 
             
         </Map>
+        <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 1000 }}> {/* Added absolute positioning for the legend */}
+            <ColorLegend selectedTopics={selctedTopics} />
+        </div>
 
         {selectedArticles.length > 0 && (
             <ArticleCard optionalArticles={selectedArticles} />
