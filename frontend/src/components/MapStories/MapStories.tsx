@@ -2,7 +2,8 @@ import { GeoJson, Map, Marker, Overlay, ZoomControl } from "pigeon-maps";
 // import { Cluster } from "pigeon-maps-cluster";
 import { useState, useContext, useEffect } from "react";
 import { ArticleContext } from "../../contexts/article_context";
-import { Article } from "../../__generated__/graphql";
+import { LocationContext } from "../../contexts/location_context";
+import { Article, Locations } from "../../__generated__/graphql";
 import Box from '@mui/material/Box';
 import { BBox, GeoJsonProperties } from "geojson"; 
 import { PointFeature, ClusterProperties} from 'supercluster';
@@ -41,43 +42,6 @@ const generateColor = (topic: string) => {
 
 
 
-const getMostCommonLocations = (articles:Article[]) => {
-    const locationCount: { [key: string]: number } = {};
-    articles.forEach(article => {
-        article.locations?.forEach(location => {
-            locationCount[location] = (locationCount[location] || 0) + 1;
-        });
-    });
-
-    return Object.entries(locationCount)
-    .sort(([, countA], [, countB]) => countB - countA)
-    .slice(0, 5)
-    .map(([location]) => location);
-
-};
-
-const getNeighborhoodAndTract = (articles:Article[], commonLocation:string) => {
-
-    let articleIndex = -1
-
-    for (let i = 0; i < articles.length; i++) {
-        if (articles[i].locations?.includes(commonLocation)) {
-            articleIndex = i
-            break;
-        }
-    }
-
-    if (articleIndex === -1) {
-        return;
-    }
-
-    const locationIndex = articles[articleIndex].locations?.indexOf(commonLocation);
-    const tract = articles[articleIndex].tracts[locationIndex!];
-    const neighborhood = articles[articleIndex].neighborhoods[locationIndex!];
-
-    return { neighborhood, tract };
-}
-
 const getRecentArticles = (articles: Article[]) => {
     return articles
         .sort((a, b) => new Date(b.pub_date).getTime() - new Date(a.pub_date).getTime()) // Sort by date published
@@ -86,9 +50,13 @@ const getRecentArticles = (articles: Article[]) => {
     
 
 const MapStories: React.FC<MapStoriesProps> = ({ selctedTopics, setSelectedTopics, zoom, setZoom, center, setCenter}) => {
-    const [articles, setArticles] = useState<Article[]>([]);
 	const { articleData, queryArticleDataType } = useContext(ArticleContext)!;
     const { articleData2, queryArticleDataType2 } = useContext(ArticleContext)!;
+    const { locationsData } = useContext(LocationContext)!;
+
+    const [articles, setArticles] = useState<Article[]>([]);
+    const [locations, setLocations] = useState<Locations[]>([]);
+
     const [showPopup, setShowPopup] = useState(false);
     const [activeCoordinates, setActiveCoordinates] = useState<[number, number]>([0,0]);
     const [activeHl1, setActiveHl1] = useState<string>("");
@@ -168,22 +136,34 @@ const MapStories: React.FC<MapStoriesProps> = ({ selctedTopics, setSelectedTopic
         }
     }, [articleData2]);  
 
+    useEffect(() => {
+        if (locationsData) {
+            setLocations(locationsData);
+        }
+    }, [locationsData]);
+
     const handleClusterClick = (cluster_id:any) => {
         if (supercluster) {
             setLastClickedClusterId(cluster_id)
             localStorage.setItem('lastClickedClusterId', (cluster_id)); // Store in localStorage
             const articles = supercluster.getLeaves(cluster_id, Infinity);
+            
+            const uniqueCords = new Set(articles.map((article:any) => article.geometry.coordinates.toString()));
+            const matchingLocations = locations.filter(location => 
+                uniqueCords.has(location.coordinates.toString())
+            );
+
+            const commonLocations = matchingLocations.sort((a, b) => b.articles.length - a.articles.length).slice(0, 5);
+            const commonNeighborhood = commonLocations[0]?.neighborhood;
+            const commonTract = commonLocations[0]?.tract;
 
 
-            const commonLocations = getMostCommonLocations(articles.map((article:any) => article.properties))
-            const neighborhoodAndTract = getNeighborhoodAndTract(articles.map((article:any) => article.properties), commonLocations[0]);
-            const commonNeighborhood = neighborhoodAndTract?.neighborhood; 
-            const commonTract = neighborhoodAndTract?.tract; 
             const recentArticles = getRecentArticles(articles.map((article:any) => article.properties));
 
+            const locationValues = commonLocations.map(location => location.value);
 
             setModalData({
-                location: commonLocations,
+                location: locationValues,
                 neighborhood: commonNeighborhood,
                 tract: commonTract,
                 articles:recentArticles
@@ -194,6 +174,9 @@ const MapStories: React.FC<MapStoriesProps> = ({ selctedTopics, setSelectedTopic
     }
     };
 
+    useEffect(() => {
+        console.log(modalData);
+    }, [modalData]);
 
 
 return (

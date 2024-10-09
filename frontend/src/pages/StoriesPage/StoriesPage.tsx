@@ -21,6 +21,7 @@ import { TractContext } from "../../contexts/tract_context";
 import { ArticleContext } from "../../contexts/article_context";
 import { NeighborhoodContext } from "../../contexts/neighborhood_context";
 import { TopicsContext } from "../../contexts/topics_context";
+import { LocationContext } from "../../contexts/location_context";
 import { useOrganization, useUser } from "@clerk/clerk-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { minDate, maxDate } from "../../App";
@@ -31,6 +32,7 @@ const StoriesPage: React.FC = () => {
   	const { articleData, queryArticleDataType } = useContext(ArticleContext)!;
 	const { articleData2, queryArticleDataType2 } = useContext(ArticleContext)!;
 	const { tractData, queryTractDataType } = useContext(TractContext)!;
+	const { locationsData, queryLocationsData } = useContext(LocationContext);
 
 	const {
 		neighborhoodMasterList,
@@ -75,6 +77,7 @@ const StoriesPage: React.FC = () => {
 				userId: user?.id,
 			});
 		}
+		queryLocationsData();
 		queryNeighborhoodDataType("NEIGHBORHOOD_DATA");
 		setNeighborhood(neighborhoodInfo);
 		queryTractDataType("TRACT_DATA", { tract: tractInfo });
@@ -108,7 +111,7 @@ const StoriesPage: React.FC = () => {
 	}, [tractInfo, neighborhoodInfo]);
 
 	useEffect(() => {
-		if (articleData && tractData && neighborhoodMasterList && articleData2) {
+		if (articleData && tractData && neighborhoodMasterList && articleData2 && locationsData) {
 			setIsLoading(false);
 		}
 
