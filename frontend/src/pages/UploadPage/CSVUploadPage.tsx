@@ -216,45 +216,35 @@ export const CSVUploadBox = () => {
         const file = submittedFiles[i];
         console.log("Type of file:", file instanceof File); 
 
-		// if (organization) {
-		// 	 userId = organization.id;
-		// } else {
-		// 	 userId =  user?.id;
-		// }
-        //const passed = organization ? organization.id : user?.id;
-        // if (user && isSignedIn) {
-        //     if (organization) {
-        //         uploadCSV(file, organization.id);
-        //     } else {
-        //         uploadCSV(file, user.id);
-        //     }
-        // }
-
         if (user && isSignedIn) {
           const variables = {
             file,
-            //userId: organization ? organization.id : user.id, 
-			userId: organization?.id
+            userId: organization ? organization.id : user.id, 
           };
           console.log( typeof user.id);
 
           console.log("logging variables: ", variables);
     
           uploadCSV({ variables })
-            .then((response) => {
-              console.log("Upload response:", response);
+          .then((response) => {
+            // Check if the response contains the expected data
+            if (response?.data?.uploadCSV?.status === 'Success') {
               setSuccessMessage("Successfully submitted!");
-              setTimeout(() => setSuccessMessage(""), 3000);
-            })
-            .catch((error) => {
-              //console.error("Error during CSV upload:", error);
-              console.error(error);
+              setTimeout(() => setSuccessMessage(""), 3000); 
+            } else {
+              console.error("Unexpected response:", response);
               setAlertMessage("Failed to upload CSV.");
               setTimeout(() => setAlertMessage(""), 3000);
-            });
-        } else {
-          console.error("User is not signed in");
-        }
+            }
+          })
+          .catch((error) => {
+            console.error("Error during CSV upload:", error);
+            setAlertMessage("Failed to upload CSV.");
+            setTimeout(() => setAlertMessage(""), 3000);
+          });
+      } else {
+        console.error("User is not signed in");
+      }
       }
     };
 

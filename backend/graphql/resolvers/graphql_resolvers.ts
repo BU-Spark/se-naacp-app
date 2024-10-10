@@ -10,7 +10,7 @@ import { Collection } from "mongodb";
 import { authMiddleware } from "../../authMiddleware.js";
 import axios from "axios";
 import { error } from "console";
-const proxy_Url = process.env.REACT_APP_ML_PIP_URL;
+const proxy_Url = process.env.REACT_APP_ML_PIP_URL; 
 import FormData from 'form-data';
 import {createWriteStream} from 'fs';
 import { GraphQLUpload } from "graphql-upload-minimal";
@@ -82,7 +82,7 @@ export const resolvers = {
 
           // Step 4: Send the file to an external API 
         const response = await axios.post(
-            'http://35.229.106.189:80/upload_csv',
+            proxy_Url,
           formData,
           {
               headers: {
