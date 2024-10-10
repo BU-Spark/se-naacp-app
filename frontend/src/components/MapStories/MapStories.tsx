@@ -2,7 +2,8 @@ import { GeoJson, Map, Marker, Overlay, ZoomControl } from "pigeon-maps";
 // import { Cluster } from "pigeon-maps-cluster";
 import { useState, useContext, useEffect } from "react";
 import { ArticleContext } from "../../contexts/article_context";
-import { Article } from "../../__generated__/graphql";
+import { LocationContext } from "../../contexts/location_context";
+import { Article, Locations } from "../../__generated__/graphql";
 import Box from '@mui/material/Box';
 import { BBox, GeoJsonProperties } from "geojson"; 
 import { PointFeature, ClusterProperties} from 'supercluster';
@@ -10,6 +11,8 @@ import ArticleCard from "../../components/ArticleCard/ArticleCard";
 import { Modal } from '@mui/material'; // Import Modal
 import { Link } from 'react-router-dom'; // Add this import
 import useSupercluster from "use-supercluster";
+import { Typography } from '@mui/material'; // Import Typography for better text styling
+
 
 
 
@@ -17,50 +20,48 @@ import useSupercluster from "use-supercluster";
 import "./MapStories.css";
 
 
+interface MapStoriesProps {
+    selctedTopics: string[];
+    setSelectedTopics: (topics: string[]) => void;
+    zoom: number;
+    setZoom: (zoom: number) => void;
+    center: [number, number];
+    setCenter: (center: [number, number]) => void;
+}
+
+const ColorLegend: React.FC<{ selectedTopics: string[] }> = ({ selectedTopics }) => (
+    <div style={{ margin: '10px', padding: '10px', backgroundColor: '#fff', border: '1px solid #ccc', opacity: 0.8}}>
+        {selectedTopics.map(topic => (
+            <div key={topic} style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ width: '20px', height: '20px', backgroundColor: generateColor(topic), marginRight: '5px' }}></div>
+                <Typography style={{color: 'black'}}>{topic}</Typography>
+            </div>
+        ))}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ width: '20px', height: '20px', backgroundColor: '#1978c8', marginRight: '5px' }}></div>
+            <Typography style={{ color: 'black' }}>Cluster </Typography>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ width: '20px', height: '20px', backgroundColor: 'red', marginRight: '5px' }}></div>
+            <Typography style={{color: 'black'}}>Last Clicked Cluster</Typography>
+        </div>
+    </div>
+);
+
 const formatDate = (dateSum: number) => {
     const dateStr = dateSum.toString();
     const formattedDateStr = `${dateStr.substring(0, 4)}-${dateStr.substring(4, 6)}-${dateStr.substring(6, 8)}`;
     return new Date(formattedDateStr).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
 };
 
-
-
-const getMostCommonLocation = (articles:Article[]) => {
-    const locationCount: { [key: string]: number } = {};
-    articles.forEach(article => {
-        article.locations?.forEach(location => {
-            locationCount[location] = (locationCount[location] || 0) + 1;
-        });
-    });
-
-    const mostCommonLocation = Object.keys(locationCount).reduce((a, b) => 
-        locationCount[a] > locationCount[b] ? a : b
-    );
-
-    return mostCommonLocation;
+const generateColor = (topic: string) => {
+    // Generate a color based on the topic string
+    const hash = Array.from(topic).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const hue = (hash * 137 + 50) % 360; // Adjusted to add a constant for more variation
+    return `hsl(${hue}, 90%, 50%)`; // Increased saturation to 90% for better contrast
 };
 
-const getNeighborhoodAndTract = (articles:Article[], commonLocation:string) => {
 
-    let articleIndex = -1
-
-    for (let i = 0; i < articles.length; i++) {
-        if (articles[i].locations?.includes(commonLocation)) {
-            articleIndex = i
-            break;
-        }
-    }
-
-    if (articleIndex === -1) {
-        return;
-    }
-
-    const locationIndex = articles[articleIndex].locations?.indexOf(commonLocation);
-    const tract = articles[articleIndex].tracts[locationIndex!];
-    const neighborhood = articles[articleIndex].neighborhoods[locationIndex!];
-
-    return { neighborhood, tract };
-}
 
 const getRecentArticles = (articles: Article[]) => {
     return articles
@@ -69,10 +70,14 @@ const getRecentArticles = (articles: Article[]) => {
 };
     
 
-const MapStories = () => {
-    const [articles, setArticles] = useState<Article[]>([]);
+const MapStories: React.FC<MapStoriesProps> = ({ selctedTopics, setSelectedTopics, zoom, setZoom, center, setCenter}) => {
 	const { articleData, queryArticleDataType } = useContext(ArticleContext)!;
     const { articleData2, queryArticleDataType2 } = useContext(ArticleContext)!;
+    const { locationsData } = useContext(LocationContext)!;
+
+    const [articles, setArticles] = useState<Article[]>([]);
+    const [locations, setLocations] = useState<Locations[]>([]);
+
     const [showPopup, setShowPopup] = useState(false);
     const [activeCoordinates, setActiveCoordinates] = useState<[number, number]>([0,0]);
     const [activeHl1, setActiveHl1] = useState<string>("");
@@ -88,10 +93,8 @@ const MapStories = () => {
 
     const [lastClickedClusterId, setLastClickedClusterId] = useState<number | null>(null);
 
-
-    const [zoom, setZoom] = useState(13);
-    const [center, setCenter] = useState<[number, number]>([42.3601, -71.0589]);
     const [bounds, setBounds] = useState<BBox>();
+
 
 
 
@@ -122,14 +125,14 @@ const MapStories = () => {
     }, [center, zoom]);
 
 
-    const resetMap = () => {
-        setZoom(13); // Reset to initial zoom
-        setCenter([42.3601, -71.0589]); // Reset to initial center
-    };
+
 
 
     const points: Array<PointFeature<GeoJsonProperties>> =  articles
-        .filter(article => article.coordinates && article.coordinates.length > 0)
+        .filter(article => 
+            article.coordinates && article.coordinates.length > 0 &&
+            (selctedTopics.length === 0 || selctedTopics.includes(article.openai_labels!))
+        )
         .flatMap(article => 
             article.coordinates?.map(coord => ({
                 type: "Feature",
@@ -154,22 +157,34 @@ const MapStories = () => {
         }
     }, [articleData2]);  
 
+    useEffect(() => {
+        if (locationsData) {
+            setLocations(locationsData);
+        }
+    }, [locationsData]);
+
     const handleClusterClick = (cluster_id:any) => {
         if (supercluster) {
             setLastClickedClusterId(cluster_id)
             localStorage.setItem('lastClickedClusterId', (cluster_id)); // Store in localStorage
             const articles = supercluster.getLeaves(cluster_id, Infinity);
+            
+            const uniqueCords = new Set(articles.map((article:any) => article.geometry.coordinates.toString()));
+            const matchingLocations = locations.filter(location => 
+                uniqueCords.has(location.coordinates.toString())
+            );
+
+            const commonLocations = matchingLocations.sort((a, b) => b.articles.length - a.articles.length).slice(0, 5);
+            const commonNeighborhood = commonLocations[0]?.neighborhood;
+            const commonTract = commonLocations[0]?.tract;
 
 
-            const commonLocation = getMostCommonLocation(articles.map((article:any) => article.properties))
-            const neighborhoodAndTract = getNeighborhoodAndTract(articles.map((article:any) => article.properties), commonLocation);
-            const commonNeighborhood = neighborhoodAndTract?.neighborhood; 
-            const commonTract = neighborhoodAndTract?.tract; 
             const recentArticles = getRecentArticles(articles.map((article:any) => article.properties));
 
+            const locationValues = commonLocations.map(location => location.value);
 
             setModalData({
-                location: commonLocation,
+                location: locationValues,
                 neighborhood: commonNeighborhood,
                 tract: commonTract,
                 articles:recentArticles
@@ -177,18 +192,16 @@ const MapStories = () => {
 
 
             setModalOpen(true); // Open the modal
-
-        
     }
     };
 
+    useEffect(() => {
+        console.log(modalData);
+    }, [modalData]);
 
 
 return (
     <div className="full-screen-container">
-         <button onClick={resetMap} style={{ margin: '10px', padding: '10px' }}>
-                Reset Map
-        </button>
         <Map
             center={center}
             zoom={zoom}
@@ -232,6 +245,7 @@ return (
                         );
                     }
 
+                    const pinColor = selctedTopics.length > 0 ? generateColor(properties.openai_labels!) : ''; // Default color if no topics selected
                     return (
                         <Marker
                         key={`article-${properties.articleId}-${latitude}-${longitude}`} // Updated key
@@ -245,7 +259,7 @@ return (
                                 setActiveTopic(properties.openai_labels);
                                 setActiveLocations(properties.locations);
                             }}
-                            color={showPopup && activeHl1 === properties.hl1 ? 'red' : ''} // Updated color logic
+                            color={showPopup && activeHl1 === properties.hl1 ? 'red' : pinColor} // Updated color logic
                             onMouseOut={() => { setShowPopup(false) }}
                         />
                     );
@@ -271,7 +285,12 @@ return (
                         <div>
                             <h2>Cluster Information</h2>
                             <div>
-                                <strong>Location:</strong> <Link to= {`/Locations?location=${encodeURIComponent(modalData?.location)}`}>{modalData?.location}</Link>
+                                <strong>Location:</strong> 
+                                <ul>
+                                    {modalData?.location.map((location: string, index: number) => (
+                                        <li key={index}><Link to={`/Locations?location=${encodeURIComponent(location)}`}>{location}</Link></li>
+                                    ))}
+                                </ul>
                             </div>
                             <div>
                                 <strong>Neighborhood:</strong> {modalData?.neighborhood}
@@ -323,6 +342,9 @@ return (
 
             
         </Map>
+        <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 1000 }}> {/* Added absolute positioning for the legend */}
+            <ColorLegend selectedTopics={selctedTopics} />
+        </div>
 
         {selectedArticles.length > 0 && (
             <ArticleCard optionalArticles={selectedArticles} />

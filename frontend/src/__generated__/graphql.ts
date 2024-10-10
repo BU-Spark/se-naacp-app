@@ -39,6 +39,9 @@ export type Locations = {
   articles: Array<Scalars['String']['output']>;
   coordinates: Array<Scalars['Float']['output']>;
   value: Scalars['String']['output'];
+  city: Scalars['String']['output'];
+  tract: Scalars['String']['output'];
+  neighborhood: Scalars['String']['output'];
 };
 
 export type Demographics = {

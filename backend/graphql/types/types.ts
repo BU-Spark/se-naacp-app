@@ -76,6 +76,9 @@ export interface ILocations {
     coordinates: [number, number];
     articles: string[];
     value: string;
+    city: string;
+    tract: string;
+    neighborhood: string;
 }
 
 export interface IDemographics {
