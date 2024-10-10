@@ -190,3 +190,6 @@ dev_tools/scripts/env_react.sh
 
 dev_tools/scripts/bootstrap_GraphQL_Mac.sh
 dev_tools/scripts/bootstrap_React_Mac.sh
+dev_tools/scripts/env_graphql
+dev_tools/scripts/env_react
+backend/.env

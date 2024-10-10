@@ -20,8 +20,6 @@ import path from 'path';
 import { gql } from "@apollo/client";
 
 
-//const __filename = fileURLToPath(import.meta.url);
-//const __dirname = path.dirname(__filename);
 
 // helper function to check if a string is a number
 function isNumber(str: any) {
@@ -42,9 +40,7 @@ export const resolvers = {
       try {
      //   await authMiddleware(req, res, () => {});
         console.log(userId);
-      
-       // userId = "org_2bHDzl2Zax0nILIzDhui2DLWdH6";
-        // Await the file upload promise to resolve it into an object with `createReadStream`, `filename`, etc.
+  
         const upload = await file; // Resolve the file promise to get Upload object
 
         if (!upload) {
