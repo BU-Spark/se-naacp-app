@@ -27,17 +27,18 @@ const mongo_url = process.env.NAACP_MONGODB;
 // Function to start the server
 async function startServer() {
     const app = express();
-    // Connect to MongoDB
-    const dbInstance = await connectWithMongoDB(mongo_url, dbName);
     // Apply necessary middlewares
-    app.use(authMiddleware); // Apply your auth middleware
-    app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 })); // Handle file uploads
     app.use(cors({
         origin: 'http://localhost:3000', // Allow requests from this origin
         credentials: true, // Allow credentials such as cookies or authorization headers
+        allowedHeaders: ['Content-Type', 'x-org-token', 'Authorization'], // Allow the custom header
     }));
+    // Connect to MongoDB
+    const dbInstance = await connectWithMongoDB(mongo_url, dbName);
     app.use(express.json()); // For parsing JSON requests
     app.use(express.urlencoded({ extended: true })); // For parsing URL-encoded data
+    app.use(authMiddleware);
+    app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 })); // Handle file uploads
     // Initialize Apollo Server
     const server = new ApolloServer({
         typeDefs,

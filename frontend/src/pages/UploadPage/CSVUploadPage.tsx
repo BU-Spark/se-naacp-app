@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+//import axios from "axios";
 import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 // import CsvUploadComponent from '../../components/Upload/CSVUpload';
@@ -29,7 +29,7 @@ type UploadedFile = {
 
 export const UPLOAD_CSV_MUTATION = gql`
 mutation UploadCSV($file: Upload!, $userId: String!) {
-  uploadCSV(file: $file, user_id: $userId) {
+  uploadCSV(file: $file, userId: $userId) {
     filename
     status
   }
@@ -215,20 +215,28 @@ export const CSVUploadBox = () => {
       for (let i = 0; i < submittedFiles.length; i++) {
         const file = submittedFiles[i];
         console.log("Type of file:", file instanceof File); 
-		var userId;
 
 		// if (organization) {
 		// 	 userId = organization.id;
 		// } else {
 		// 	 userId =  user?.id;
 		// }
+        //const passed = organization ? organization.id : user?.id;
+        // if (user && isSignedIn) {
+        //     if (organization) {
+        //         uploadCSV(file, organization.id);
+        //     } else {
+        //         uploadCSV(file, user.id);
+        //     }
+        // }
 
         if (user && isSignedIn) {
           const variables = {
             file,
-            userId: organization ? organization.id : user.id, 
-			
+            //userId: organization ? organization.id : user.id, 
+			userId: organization?.id
           };
+          console.log( typeof user.id);
 
           console.log("logging variables: ", variables);
     

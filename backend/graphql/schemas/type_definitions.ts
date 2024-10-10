@@ -31,7 +31,7 @@ export const typeDefs = gql`
 
 	type Mutation {
   		# Define a new mutation for uploading a CSV file
-  		uploadCSV(file: Upload!, user_id: String!): UploadStatus!
+  		uploadCSV(file: Upload!, userId: String!): UploadStatus!
 		addRssFeed(url: String!, user_id: String!): Rss_links
 	}
 	

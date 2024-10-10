@@ -17,6 +17,7 @@ import { GraphQLUpload } from "graphql-upload-minimal";
 import { GraphQLScalarType, GraphQLError} from 'graphql';
 import { FileUpload } from 'graphql-upload-minimal';
 import path from 'path';
+import { gql } from "@apollo/client";
 
 
 //const __filename = fileURLToPath(import.meta.url);
@@ -27,59 +28,70 @@ function isNumber(str: any) {
 	return !isNaN(str);
 }
 
+// Define the type for the arguments object
+interface UploadCSVArgs {
+  file: Promise<FileUpload>; // `file` should be a promise that resolves to a FileUpload type
+  userId: string;
+}
+
 export const resolvers = {
   Upload: GraphQLUpload,
   Mutation: {
-      uploadCSV: async (_, { file, userId }, { db }) => {
+      uploadCSV: async (_, { file, userId }: UploadCSVArgs, { db, req, res }) => {
+        
       try {
-        // Step 1: Process the `file` upload input
-        const { createReadStream, filename, mimetype } = await file;
-        userId = "org_2bHDzl2Zax0nILIzDhui2DLWdH6";
-        // Log file information for debugging
+     //   await authMiddleware(req, res, () => {});
+        console.log(userId);
+      
+       // userId = "org_2bHDzl2Zax0nILIzDhui2DLWdH6";
+        // Await the file upload promise to resolve it into an object with `createReadStream`, `filename`, etc.
+        const upload = await file; // Resolve the file promise to get Upload object
+
+        if (!upload) {
+          throw new Error("No file uploaded");
+        }
+
+        // Destructure the resolved `upload` object to get file properties
+        const { createReadStream, filename, mimetype } = upload;
+
+        // Check if `createReadStream` is defined
+        if (!createReadStream) {
+          throw new Error("Invalid file upload. `createReadStream` is not defined.");
+        }
+
         console.log(`Uploading file: ${filename} (Type: ${mimetype}) for user: ${userId}`);
 
-          // Step 2: Save the file locally (optional) or send it to another API
+        // Step 2: Create a read stream from the file
         const stream = createReadStream();
-          //const outputFilePath = path.join(__dirname, 'uploads', filename);
-  /*
-          // Optional: Save file to local server for testing purposes
-          await new Promise((resolve, reject) => {
-            const writeStream = createWriteStream(outputFilePath);
-            stream
-              .pipe(writeStream)
-              .on('finish', resolve)
-              .on('error', reject);
-          });
-  
-          console.log(`File saved successfully to ${outputFilePath}`);
-  */
-          // Step 3: Prepare FormData for sending to an external service (optional)
+
+        // Step 3: Prepare FormData for sending to an external service (optional)
         const formData = new FormData();
 
 
           const map = JSON.stringify({ "1": ["variables.file"] });
           formData.append("operations", JSON.stringify({
-          query: `mutation UploadCSV($file: Upload!, $userId: String!) {
+          query: `mutation UploadCSV($file: Upload!, $userId: String!): UploadStatus! {
             uploadCSV(file: $file, user_id: $userId) {
               filename
               status
             }
           }`,
-          variables: { file: null, userId: "org_2bHDzl2Zax0nILIzDhui2DLWdH6"},
+          variables: { file: null, userId},
           }));
         formData.append("map", map);
-          formData.append("1", stream);
+        formData.append("1", stream, { filename, contentType: mimetype });
 
           formData.append('file', stream, { filename });
           formData.append('user_id', userId);
 
-          // Step 4: Send the file to an external API (if needed)
+          // Step 4: Send the file to an external API 
         const response = await axios.post(
             'http://35.229.106.189:80/upload_csv',
           formData,
           {
               headers: {
                 ...formData.getHeaders(),
+                "X-API-KEY": "beri-stronk-key"
               },
           }
         );
