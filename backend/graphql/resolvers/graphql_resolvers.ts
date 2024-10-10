@@ -8,14 +8,112 @@ import {
 } from "../types/types";
 import { Collection } from "mongodb";
 import { authMiddleware } from "../../authMiddleware.js";
+import axios from "axios";
+import { error } from "console";
+const proxy_Url = process.env.REACT_APP_ML_PIP_URL; 
+import FormData from 'form-data';
+import {createWriteStream} from 'fs';
+import { GraphQLUpload } from "graphql-upload-minimal";
+import { GraphQLScalarType, GraphQLError} from 'graphql';
+import { FileUpload } from 'graphql-upload-minimal';
+import path from 'path';
+import { gql } from "@apollo/client";
+
+
 
 // helper function to check if a string is a number
 function isNumber(str: any) {
 	return !isNaN(str);
 }
 
+// Define the type for the arguments object
+interface UploadCSVArgs {
+  file: Promise<FileUpload>; // `file` should be a promise that resolves to a FileUpload type
+  userId: string;
+}
+
 export const resolvers = {
-	Mutation: {
+  Upload: GraphQLUpload,
+  Mutation: {
+      uploadCSV: async (_, { file, userId }: UploadCSVArgs, { db, req, res }) => {
+        
+      try {
+     //   await authMiddleware(req, res, () => {});
+        console.log(userId);
+  
+        const upload = await file; // Resolve the file promise to get Upload object
+
+        if (!upload) {
+          throw new Error("No file uploaded");
+        }
+
+        // Destructure the resolved `upload` object to get file properties
+        const { createReadStream, filename, mimetype } = upload;
+
+        // Check if `createReadStream` is defined
+        if (!createReadStream) {
+          throw new Error("Invalid file upload. `createReadStream` is not defined.");
+        }
+
+        console.log(`Uploading file: ${filename} (Type: ${mimetype}) for user: ${userId}`);
+
+        // Step 2: Create a read stream from the file
+        const stream = createReadStream();
+
+        // Step 3: Prepare FormData for sending to an external service (optional)
+        const formData = new FormData();
+
+
+          const map = JSON.stringify({ "1": ["variables.file"] });
+          formData.append("operations", JSON.stringify({
+          query: `mutation UploadCSV($file: Upload!, $userId: String!): UploadStatus! {
+            uploadCSV(file: $file, user_id: $userId) {
+              filename
+              status
+            }
+          }`,
+          variables: { file: null, userId},
+          }));
+        formData.append("map", map);
+        formData.append("1", stream, { filename, contentType: mimetype });
+
+          formData.append('file', stream, { filename });
+          formData.append('user_id', userId);
+
+          // Step 4: Send the file to an external API 
+        const response = await axios.post(
+            proxy_Url,
+          formData,
+          {
+              headers: {
+                ...formData.getHeaders(),
+                "X-API-KEY": "beri-stronk-key"
+              },
+          }
+        );
+
+        // Handle API response
+        if (response.status === 200) {
+          console.log('File uploaded successfully to external API.');
+
+          // Step 5: Save upload metadata to the database (if needed)
+          const uploadData = db.collection('uploads');
+            const result = await uploadData.insertOne({
+            userId,
+            filename,
+            timestamp: new Date(),
+            status: 'Success',
+          });
+
+          return { filename: filename, status: 'Success' };
+        } else {
+            throw new GraphQLError('Failed to upload CSV.');
+        }
+      } catch (error) {
+        console.error('Error uploading CSV:', error);
+          throw new GraphQLError('Error uploading CSV.');
+      }
+  },
 	  addRssFeed: async (_, { url, userID }, { db, req, res }) => {
 		await authMiddleware(req, res, () => {});
   
@@ -61,7 +159,7 @@ export const resolvers = {
       }
 
       const rss_data = db.collection("rss_links");
-      const queryResult = await rss_data.find({ userID: args.user_id }).toArray();
+      const queryResult = await rss_data.find({ userID: args.userID }).toArray();
       return queryResult;
     },
     // CSV Upload Resolver
@@ -79,7 +177,7 @@ export const resolvers = {
       }
 
       const upload_data = db.collection("uploads");
-      const queryResult = await upload_data.find({ userID: args.user_id }).toArray();
+      const queryResult = await upload_data.find({ userID: args.userID }).toArray();
       return queryResult;
     },
     // Topic Resolvers
