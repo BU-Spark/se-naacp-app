@@ -61,11 +61,18 @@ const StoriesPage: React.FC = () => {
 
 
 
+
 	useEffect(() => {
 			setNeighborhoodInfo("Downtown");
 			setNeighborhood("Downtown");
 			setTractInfo("030302");
 		}, []);
+
+	useEffect(() => {
+		const queryParams = new URLSearchParams(location.search);
+		const topics = queryParams.getAll('topic');
+		setSelectedTopics(topics);
+	}, []); // Add location to dependencies
 
 	useEffect(() => {
 		if (organization) {
@@ -109,6 +116,14 @@ const StoriesPage: React.FC = () => {
 		// 	});
 		// }
 	}, [tractInfo, neighborhoodInfo]);
+
+
+	useEffect(() => {
+        // Update the URL with selected topics
+        const queryParams = new URLSearchParams();
+        selectedTopics.forEach(topic => queryParams.append('topic', topic));
+        navigate(`?${queryParams.toString()}`); // Update the URL
+    }, [selectedTopics, navigate]); // Add navigate to dependencies
 
 	useEffect(() => {
 		if (articleData && tractData && neighborhoodMasterList && articleData2 && locationsData) {
@@ -159,7 +174,10 @@ const StoriesPage: React.FC = () => {
 								multiple
 								value={selectedTopics}
 								onChange={(event: SelectChangeEvent<typeof selectedTopics>) => {
-									setSelectedTopics(Array.isArray(event.target.value) ? event.target.value : [event.target.value]);
+									const value = Array.isArray(event.target.value) ? event.target.value : [event.target.value];
+									if (value.length <= 5) { // Limit to a maximum of 5 topics
+										setSelectedTopics(value);
+									}
 								}}
 								renderValue={(selected) => selected.join(', ')}
 								fullWidth  sx={{ width: '500px' }}
@@ -174,7 +192,7 @@ const StoriesPage: React.FC = () => {
 						</FormControl>
 					</div>
 		
-					<MapStories selctedTopics={selectedTopics} setSelectedTopics={setSelectedTopics} zoom={zoom} setZoom={setZoom} center={center} setCenter={setCenter}/>
+					<MapStories selectedTopics={selectedTopics} setSelectedTopics={setSelectedTopics} zoom={zoom} setZoom={setZoom} center={center} setCenter={setCenter}/>
                 </div>
             </div>
 
