@@ -64,8 +64,9 @@ describe('CSVUploadPage Permissions', () => {
   it('should handle file upload process correctly', async () => {
     render(<Wrapper hasPermission={true}><CSVUploadBox /></Wrapper>);
   
-    const file = new File([`Title,Author,Category,Article ID,URL Link,Publication Date,Content
-      Test Title,Test Author,Test Category,12345,/test-url,2021-01-01,Test Content`], 'test.csv', { type: 'text/csv' });
+    const file = new File([`Headline,Publisher,Byline,content_id,Paths,Publish Date,Body
+      Test Headline,Test Publisher,Test Byline,12345,/test-path,2021-01-01,Test Body`], 'test.csv', { type: 'text/csv' });
+    
   
     const input = screen.getByLabelText(/Click to upload/i);
     
