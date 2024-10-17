@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 // import CsvUploadComponent from '../../components/Upload/CSVUpload';
 import "./CSVUploadPage.css";
-import { UploadContext } from "../../contexts/upload_context";
+import { UploadContext, UPLOAD_CSV_MUTATION } from "../../contexts/upload_context";
 import { Uploads } from "../../__generated__/graphql";
 import { useOrganization, useUser, useAuth } from "@clerk/clerk-react";
 import { useMutation } from "@apollo/client";
@@ -15,6 +15,7 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { gql } from "@apollo/client";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 //import image from 'frontend/public/image1.png';
 
 // Define a type for the file with progress information
@@ -26,15 +27,6 @@ type UploadedFile = {
     error?: string; // fail to pass test
     file: File; // store a reference to the File object
 };
-
-export const UPLOAD_CSV_MUTATION = gql`
-mutation UploadCSV($file: Upload!, $userId: String!) {
-  uploadCSV(file: $file, userId: $userId) {
-    filename
-    status
-  }
-}
-`;
 
 
 export const CSVUploadBox = () => {

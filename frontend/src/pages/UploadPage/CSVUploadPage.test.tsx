@@ -16,7 +16,8 @@ jest.mock('@clerk/clerk-react', () => ({
 const mockUploadData = {
   uploadData: null,
   queryUploadDataType: jest.fn(),
-  addRssFeed: jest.fn()
+  addRssFeed: jest.fn(),
+  uploadCSV: jest.fn()  
 };
 
 // Define wrapper component to include BrowserRouter and UploadContext

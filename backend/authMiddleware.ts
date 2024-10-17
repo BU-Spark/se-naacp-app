@@ -35,7 +35,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     // Check if the user is part of the required organization
     const userOrgs = decodedAuthToken.orgs
 
-    console.log("userOrgs", userOrgs)
    // console.log("userOrgs",userOrgs)
     const allowedOrgs = ["org_2bHDzl2Zax0nILIzDhui2DLWdH6", "org_2ZN4MA41LAA9l4j0rZBC5Olsr3Y"];
     if (!allowedOrgs.includes(userOrgs)) {
@@ -45,7 +44,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     }
     // Store the decoded token in the request headers
     req.headers.user = JSON.stringify(decodedAuthToken); // Store the decoded token in the request headers
-    console.log("6")
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
     console.error("Error verifying token:", error);
