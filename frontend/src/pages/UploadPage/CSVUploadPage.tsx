@@ -16,7 +16,6 @@ import Box from '@mui/material/Box';
 import { gql } from "@apollo/client";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-//import image from 'frontend/public/image1.png';
 
 // Define a type for the file with progress information
 type UploadedFile = {
