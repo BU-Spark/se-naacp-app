@@ -6,6 +6,7 @@ type UploadContextType = {
   uploadData: Uploads[] | null;
   queryUploadDataType: (queryType: any, options?: any) => void;
   addRssFeed: (url: string, userID: string) => void;
+  uploadCSV: (file: File, userID: string) => void;
 };
 
 /* Upload Queries */
@@ -21,6 +22,15 @@ const UPLOAD_DATA_QUERY = gql`
       userID
     }
   }
+`;
+
+export const UPLOAD_CSV_MUTATION = gql`
+mutation UploadCSV($file: Upload!, $userId: String!) {
+  uploadCSV(file: $file, userId: $userId) {
+    filename
+    status
+  }
+}
 `;
 
 const ADD_RSS_FEED_MUTATION = gql`
@@ -41,6 +51,9 @@ const UploadProvider: React.FC = ({ children }: any) => {
     addRssFeedMutation,
     { loading: addingRssFeed, error: addRssFeedError },
   ] = useMutation(ADD_RSS_FEED_MUTATION);
+
+  const [uploadCSVMutation, { loading: uploadingCSV, error: uploadCSVError }] = useMutation(UPLOAD_CSV_MUTATION);
+
 
   const [
     queryUploadData,
@@ -64,6 +77,17 @@ const UploadProvider: React.FC = ({ children }: any) => {
       });
   };
 
+  const uploadCSV = (file: File, userID: string) => {
+    uploadCSVMutation({ variables: { file, userID } })
+      .then((response) => {
+        console.log("CSV file uploaded successfully");
+      })
+      .catch((err) => {
+        console.error("CSV upload failed", err);
+      });
+  };
+
+
   const queryUploadDataType = (queryType: "UPLOAD_DATA", options?: any) => {
     switch (queryType) {
       case "UPLOAD_DATA":
@@ -79,7 +103,7 @@ const UploadProvider: React.FC = ({ children }: any) => {
 
   return (
     <UploadContext.Provider
-      value={{ uploadData: uploads, queryUploadDataType, addRssFeed }}
+      value={{ uploadData: uploads, queryUploadDataType, addRssFeed, uploadCSV }}
     >
       {children}
     </UploadContext.Provider>
