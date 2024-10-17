@@ -284,7 +284,11 @@ return (
                                 <strong>Location:</strong> 
                                 <ul>
                                     {modalData?.location.map((location: string, index: number) => (
-                                        <li key={index}><Link to={`/Locations?location=${encodeURIComponent(location)}`}>{location}</Link></li>
+                                        <li key={index}>
+                                            <Link to={`/Locations?location=${encodeURIComponent(location)}${selectedTopics.length > 0 ? `&topic=${selectedTopics.map(topic => encodeURIComponent(topic)).join('&topic=')}` : ''}`}>
+                                                {location}
+                                            </Link>
+                                        </li>
                                     ))}
                                 </ul>
                             </div>

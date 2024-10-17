@@ -11,6 +11,7 @@ import { Button } from "@mui/material";
 import MapStories from "../../components/MapStories/MapStories";
 import DateField from "../../components/SearchFields/DateBar/DateBar";
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
+import TopicSelector from "../../components/TopicSelector/TopicSelector"; 
 
 
 //CSS
@@ -118,12 +119,7 @@ const StoriesPage: React.FC = () => {
 	}, [tractInfo, neighborhoodInfo]);
 
 
-	useEffect(() => {
-        // Update the URL with selected topics
-        const queryParams = new URLSearchParams();
-        selectedTopics.forEach(topic => queryParams.append('topic', topic));
-        navigate(`?${queryParams.toString()}`); // Update the URL
-    }, [selectedTopics, navigate]); // Add navigate to dependencies
+
 
 	useEffect(() => {
 		if (articleData && tractData && neighborhoodMasterList && articleData2 && locationsData) {
@@ -167,29 +163,12 @@ const StoriesPage: React.FC = () => {
 						<Button onClick={resetMap} variant="contained" color="primary" sx={{ margin: '10px' }}>
 							Reset Map
 						</Button>
-						<FormControl fullWidth>
-							<InputLabel id="select-topics-label">Select Topics</InputLabel>
-							<Select
-								labelId="select-topics-label"
-								multiple
-								value={selectedTopics}
-								onChange={(event: SelectChangeEvent<typeof selectedTopics>) => {
-									const value = Array.isArray(event.target.value) ? event.target.value : [event.target.value];
-									if (value.length <= 5) { // Limit to a maximum of 5 topics
-										setSelectedTopics(value);
-									}
-								}}
-								renderValue={(selected) => selected.join(', ')}
-								fullWidth  sx={{ width: '500px' }}
-							>
-								{labelsMasterList?.map((topic) => (
-									<MenuItem key={topic} value={topic}>
-										<Checkbox checked={selectedTopics.indexOf(topic) > -1} />
-										<ListItemText primary={topic} />
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
+						<TopicSelector 
+                            selectedTopics={selectedTopics} 
+                            setSelectedTopics={setSelectedTopics} 
+                            labelsMasterList={labelsMasterList ?? []} 
+                        />
+						
 					</div>
 		
 					<MapStories selectedTopics={selectedTopics} setSelectedTopics={setSelectedTopics} zoom={zoom} setZoom={setZoom} center={center} setCenter={setCenter}/>

@@ -13,8 +13,11 @@ import { Article } from '../../__generated__/graphql';
 import ArticleCard from "../../components/ArticleCard/ArticleCard";
 import TopicCount from '../../components/TopicCount/TopicCount';
 import NeighborhoodDemographicsBoard from "../../components/NeighborhoodDemoBoard/NeighborhoodDemoBoard";
+import TopicSelector from "../../components/TopicSelector/TopicSelector"; // Import the new component
 import { TractContext } from "../../contexts/tract_context"; // Import TractContext
 import LocationInfo from '../../components/LocationsInfo/LocationsInfo'; // Import LocationInfo
+import { TopicsContext } from "../../contexts/topics_context";
+
 
 
 // const getMostCommonTract = (articles: Article[]) => {
@@ -37,12 +40,14 @@ const LocationsPage: React.FC = () => {
     const { locationsData, queryLocationsData } = React.useContext(LocationContext)!;
     const { queryTractDataType } = React.useContext(TractContext)!; // Get query function from TractContext
 
+    const { labelsMasterList, queryTopicsDataType } = React.useContext(TopicsContext);
 
 
     const [selectedLocation, setSelectedLocation] = useState<Locations | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [locationArticles, setLocationArticles] = useState<Article[]>([]);
-
+    const [filteredLocationArticles, setFilteredLocationArticles] = useState<Article[]>([]);
+    const [selectedTopics, setSelectedTopics] = useState<string[]>([]); // Add state for selected topics
 
 
     const { articleData,articleData2, queryArticleDataType2 } = React.useContext(ArticleContext)!;
@@ -74,23 +79,40 @@ const LocationsPage: React.FC = () => {
 				userId: user?.id,
 			});
         }
+        if (organization) {
+			queryTopicsDataType("LABELS_DATA", {
+				userId: organization.id,
+			});
+		} else {
+			queryTopicsDataType("LABELS_DATA", {
+				userId: user?.id,
+			});
+		}
     }, []);
 
     React.useEffect(() => {
         const params = new URLSearchParams(location.search);
         const locationParam = params.get('location');
+        const topicsParam = params.getAll('topic');
+        
         console.log("param",locationParam)
         if (locationParam && locationsData) {
             const foundLocation = locationsData?.find(loc => loc.value === locationParam);
             console.log("foundLocation",foundLocation)
             if (foundLocation) {
                 setSelectedLocation(foundLocation);
+            } else {
+                setSelectedLocation(locationsData[0]);
             }
         } else if (!selectedLocation && locationsData && locationsData.length > 0) {
             const sortedLocations = [...locationsData].sort((a, b) => b.articles.length - a.articles.length);
             setSelectedLocation(sortedLocations[0]);
             params.set('location', sortedLocations[0].value);
             navigate({ search: params.toString() });
+        }
+
+        if (topicsParam.length > 0) {
+            setSelectedTopics(topicsParam);
         }
 
     }, [locationsData]);
@@ -118,16 +140,19 @@ const LocationsPage: React.FC = () => {
 
     }
 
-        
-    },[selectedLocation, articleData2]);
+    },[selectedLocation, articleData2, selectedTopics]);
 
 
-
-
-
-    
-
-
+    React.useEffect(() => {
+        if (selectedTopics.length > 0) {
+            const newFilteredArticles = locationArticles.filter(article => 
+                selectedTopics.some(topic => article.openai_labels.includes(topic))
+            );
+            setFilteredLocationArticles(newFilteredArticles);
+        } else {
+            setFilteredLocationArticles(locationArticles);
+        }
+    }, [selectedTopics, locationArticles]);
 
     return (
         <>
@@ -147,7 +172,10 @@ const LocationsPage: React.FC = () => {
                 <div className="row justify-content-evenly">
                     <div className="col-md-5 col-sm-12">
                         <LocationsDropDown selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation}/>
-                        <LocationInfo location={selectedLocation} />
+                        <LocationInfo location={selectedLocation} filteredArticlesLength={filteredLocationArticles.length} />
+
+                        <h1 className="titles">Topics</h1>
+                        <TopicSelector selectedTopics={selectedTopics} setSelectedTopics={setSelectedTopics} labelsMasterList={labelsMasterList ?? []} />
                         </div>
                     <div className="col-md-7 col-sm-12">
                          <h1 className="titles">Map</h1>
@@ -167,7 +195,7 @@ const LocationsPage: React.FC = () => {
                                 </div>
                             </div>
                             <h1 className="titles"> Articles</h1>
-                            <ArticleCard optionalArticles={locationArticles} />
+                            <ArticleCard optionalArticles={filteredLocationArticles} />
                         </div>
 
                     )}
