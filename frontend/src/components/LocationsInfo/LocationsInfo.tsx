@@ -1,7 +1,6 @@
 import React from 'react';
 import { Locations } from "../../__generated__/graphql";
 import { Card, CardContent } from '@mui/material';
-import { filter } from 'lodash';
 
 
 interface LocationInfoProps {
