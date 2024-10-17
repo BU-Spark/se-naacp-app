@@ -5,6 +5,8 @@ import { BrowserRouter } from 'react-router-dom';
 import CSVUploadBox from './CSVUploadPage';
 import { UploadContext } from "../../contexts/upload_context";
 import { useAuth, useUser, useOrganization } from '@clerk/clerk-react';
+import { MockedProvider } from '@apollo/client/testing';
+
 
 // Mock Clerk hooks with jest.fn() to enable use of mockReturnValue
 jest.mock('@clerk/clerk-react', () => ({
@@ -33,13 +35,15 @@ const Wrapper: React.FC<{ children: React.ReactNode, hasPermission: boolean }> =
     organization: { id: 'org1' }
   });
 
-  return (
-    <BrowserRouter>
+return (
+  <BrowserRouter>
+    <MockedProvider mocks={[]} addTypename={false}>
       <UploadContext.Provider value={mockUploadData}>
         {children}
       </UploadContext.Provider>
-    </BrowserRouter>
-  );
+    </MockedProvider>
+  </BrowserRouter>
+);
 };
 
 describe('CSVUploadPage Permissions', () => {
