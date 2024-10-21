@@ -1,4 +1,5 @@
 // Define interface for static type checking
+import { GraphQLUpload, FileUpload } from 'graphql-upload/public/GraphQLUpload.js';
 
 // Define input type for TractsByNeighborhood
 export interface TractsByNeighborhoodArgs {
@@ -14,8 +15,26 @@ export interface INeighborhoods {
 
 // Define input type for DemographicsByTracts
 export interface DemographicsByTractsArgs {
-    tract: string;
+    tract: string;F
 }
+
+export interface IUploadedFile {
+    name: string;
+    size: number;
+    progress: number;
+    status: string;
+    file: FileUpload;
+    error?: string;
+}
+
+type UploadedFile = {
+    name: string;
+    size: number;
+    progress: number;
+    status: string;
+    error?: string; // fail to pass test
+    file: File; // store a reference to the File object
+};	
 
 // *** Data Types derived from the collections ***
 

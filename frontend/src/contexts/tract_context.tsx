@@ -35,7 +35,8 @@ const TractProvider: React.FC = ({children}: any) => {
     const [tracts, setTractData] = React.useState<Tracts | null>(null);
 
     React.useEffect(() => {
-        if (tractData && !tractDataLoading && !tractDataError) {
+        if (tractData?.demographicsByTracts?.[0] && tractData && !tractDataLoading && !tractDataError) {
+      //  if (tractData && !tractDataLoading && !tractDataError) {
         
             setTractData(tractData.demographicsByTracts[0]);
         }

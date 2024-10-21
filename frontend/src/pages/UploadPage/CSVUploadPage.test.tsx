@@ -5,6 +5,8 @@ import { BrowserRouter } from 'react-router-dom';
 import CSVUploadBox from './CSVUploadPage';
 import { UploadContext } from "../../contexts/upload_context";
 import { useAuth, useUser, useOrganization } from '@clerk/clerk-react';
+import { MockedProvider } from '@apollo/client/testing';
+
 
 // Mock Clerk hooks with jest.fn() to enable use of mockReturnValue
 jest.mock('@clerk/clerk-react', () => ({
@@ -16,7 +18,8 @@ jest.mock('@clerk/clerk-react', () => ({
 const mockUploadData = {
   uploadData: null,
   queryUploadDataType: jest.fn(),
-  addRssFeed: jest.fn()
+  addRssFeed: jest.fn(),
+  uploadCSV: jest.fn()  
 };
 
 // Define wrapper component to include BrowserRouter and UploadContext
@@ -32,13 +35,15 @@ const Wrapper: React.FC<{ children: React.ReactNode, hasPermission: boolean }> =
     organization: { id: 'org1' }
   });
 
-  return (
-    <BrowserRouter>
+return (
+  <BrowserRouter>
+    <MockedProvider mocks={[]} addTypename={false}>
       <UploadContext.Provider value={mockUploadData}>
         {children}
       </UploadContext.Provider>
-    </BrowserRouter>
-  );
+    </MockedProvider>
+  </BrowserRouter>
+);
 };
 
 describe('CSVUploadPage Permissions', () => {
@@ -59,8 +64,9 @@ describe('CSVUploadPage Permissions', () => {
   it('should handle file upload process correctly', async () => {
     render(<Wrapper hasPermission={true}><CSVUploadBox /></Wrapper>);
   
-    const file = new File([`Title,Author,Category,Article ID,URL Link,Publication Date,Content
-      Test Title,Test Author,Test Category,12345,/test-url,2021-01-01,Test Content`], 'test.csv', { type: 'text/csv' });
+    const file = new File([`Headline,Publisher,Byline,content_id,Paths,Publish Date,Body
+      Test Headline,Test Publisher,Test Byline,12345,/test-path,2021-01-01,Test Body`], 'test.csv', { type: 'text/csv' });
+    
   
     const input = screen.getByLabelText(/Click to upload/i);
     
