@@ -12,16 +12,11 @@ import { Modal } from '@mui/material'; // Import Modal
 import { Link } from 'react-router-dom'; // Add this import
 import useSupercluster from "use-supercluster";
 import { Typography } from '@mui/material'; // Import Typography for better text styling
-
-
-
-
-
 import "./MapStories.css";
 
 
 interface MapStoriesProps {
-    selctedTopics: string[];
+    selectedTopics: string[];
     setSelectedTopics: (topics: string[]) => void;
     zoom: number;
     setZoom: (zoom: number) => void;
@@ -31,9 +26,9 @@ interface MapStoriesProps {
 
 const ColorLegend: React.FC<{ selectedTopics: string[] }> = ({ selectedTopics }) => (
     <div style={{ margin: '10px', padding: '10px', backgroundColor: '#fff', border: '1px solid #ccc', opacity: 0.8}}>
-        {selectedTopics.map(topic => (
+        {selectedTopics.map((topic,index) => (
             <div key={topic} style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ width: '20px', height: '20px', backgroundColor: generateColor(topic), marginRight: '5px' }}></div>
+                <div style={{ width: '20px', height: '20px', backgroundColor: presetColors[index], marginRight: '5px' }}></div>
                 <Typography style={{color: 'black'}}>{topic}</Typography>
             </div>
         ))}
@@ -54,12 +49,13 @@ const formatDate = (dateSum: number) => {
     return new Date(formattedDateStr).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
 };
 
-const generateColor = (topic: string) => {
-    // Generate a color based on the topic string
-    const hash = Array.from(topic).reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const hue = (hash * 137 + 50) % 360; // Adjusted to add a constant for more variation
-    return `hsl(${hue}, 90%, 50%)`; // Increased saturation to 90% for better contrast
-};
+const presetColors = [
+    '#FF5733', // Color for topic 1
+    '#33FF57', // Color for topic 2
+    '#3357FF', // Color for topic 3
+    '#F1C40F', // Color for topic 4
+    '#8E44AD'  // Color for topic 5
+];
 
 
 
@@ -70,7 +66,7 @@ const getRecentArticles = (articles: Article[]) => {
 };
     
 
-const MapStories: React.FC<MapStoriesProps> = ({ selctedTopics, setSelectedTopics, zoom, setZoom, center, setCenter}) => {
+const MapStories: React.FC<MapStoriesProps> = ({ selectedTopics, setSelectedTopics, zoom, setZoom, center, setCenter}) => {
 	const { articleData, queryArticleDataType } = useContext(ArticleContext)!;
     const { articleData2, queryArticleDataType2 } = useContext(ArticleContext)!;
     const { locationsData } = useContext(LocationContext)!;
@@ -131,7 +127,7 @@ const MapStories: React.FC<MapStoriesProps> = ({ selctedTopics, setSelectedTopic
     const points: Array<PointFeature<GeoJsonProperties>> =  articles
         .filter(article => 
             article.coordinates && article.coordinates.length > 0 &&
-            (selctedTopics.length === 0 || selctedTopics.includes(article.openai_labels!))
+            (selectedTopics.length === 0 || selectedTopics.includes(article.openai_labels!))
         )
         .flatMap(article => 
             article.coordinates?.map(coord => ({
@@ -245,7 +241,7 @@ return (
                         );
                     }
 
-                    const pinColor = selctedTopics.length > 0 ? generateColor(properties.openai_labels!) : ''; // Default color if no topics selected
+                    const pinColor = selectedTopics.length > 0 ? presetColors[selectedTopics.indexOf(properties.openai_labels!)] : ''; // Default color if no topics selected
                     return (
                         <Marker
                         key={`article-${properties.articleId}-${latitude}-${longitude}`} // Updated key
@@ -288,7 +284,11 @@ return (
                                 <strong>Location:</strong> 
                                 <ul>
                                     {modalData?.location.map((location: string, index: number) => (
-                                        <li key={index}><Link to={`/Locations?location=${encodeURIComponent(location)}`}>{location}</Link></li>
+                                        <li key={index}>
+                                            <Link to={`/Locations?location=${encodeURIComponent(location)}${selectedTopics.length > 0 ? `&topic=${selectedTopics.map(topic => encodeURIComponent(topic)).join('&topic=')}` : ''}`}>
+                                                {location}
+                                            </Link>
+                                        </li>
                                     ))}
                                 </ul>
                             </div>
@@ -343,7 +343,7 @@ return (
             
         </Map>
         <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 1000 }}> {/* Added absolute positioning for the legend */}
-            <ColorLegend selectedTopics={selctedTopics} />
+            <ColorLegend selectedTopics={selectedTopics} />
         </div>
 
         {selectedArticles.length > 0 && (
