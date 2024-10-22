@@ -40,6 +40,8 @@ async function startServer() {
 
   const allowedOrigins = ['http://localhost:3000', 'https://bu-naacp.up.railway.app'];
 
+  //app.options('*', cors());
+
   app.use(cors({
     origin: function (origin, callback) {
       if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
@@ -51,7 +53,7 @@ async function startServer() {
     credentials: true,
     allowedHeaders: ['Content-Type', 'x-org-token', 'Authorization'], // Allow the custom headers
   }));
-  
+
   // Connect to MongoDB
   const dbInstance = await connectWithMongoDB(mongo_url, dbName);
 
@@ -61,6 +63,7 @@ async function startServer() {
   app.use(express.urlencoded({ extended: true }));  // For parsing URL-encoded data
   app.use(authMiddleware);  
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 })); // Handle file uploads
+
 
 
   // Initialize Apollo Server

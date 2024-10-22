@@ -219,14 +219,21 @@ export const CSVUploadBox = () => {
           uploadCSV({ variables })
           .then((response) => {
             // Check if the response contains the expected data
-            if (response?.data?.uploadCSV?.status === 'Success') {
-              setSuccessMessage("Successfully submitted!");
-              setTimeout(() => setSuccessMessage(""), 3000); 
-            } else {
-              console.error("Unexpected response:", response);
-              setAlertMessage("Failed to upload CSV.");
-              setTimeout(() => setAlertMessage(""), 3000);
-            }
+            if (response.data && response.data.uploadCSV && response.data.uploadCSV.status === 'Success') {
+                setSuccessMessage("Successfully submitted!");
+                setTimeout(() => setSuccessMessage(""), 3000);
+              } else if (response.errors) {
+                // Handle GraphQL errors
+                console.error("GraphQL Errors:", response.errors);
+                const errorMessage = response.errors[0]?.message || "Failed to upload CSV."; // Extract the error message
+                setAlertMessage(errorMessage);
+                setTimeout(() => setAlertMessage(""), 3000);
+              } else {
+                // Handle unexpected responses
+                console.error("Unexpected response:", response);
+                setAlertMessage("Failed to upload CSV: Unexpected response.");
+                setTimeout(() => setAlertMessage(""), 3000);
+              }
           })
           .catch((error) => {
             console.error("Error during CSV upload:", error);
