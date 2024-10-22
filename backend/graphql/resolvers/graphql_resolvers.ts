@@ -39,7 +39,6 @@ export const resolvers = {
         
       try {
      //   await authMiddleware(req, res, () => {});
-        console.log(userId);
   
         const upload = await file; // Resolve the file promise to get Upload object
 

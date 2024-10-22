@@ -5,9 +5,7 @@ import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 // Define the authentication middleware function
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  console.log("Request Headers:", req.headers);
   const token = req.headers['x-org-token'];
-  console.log("Token from headers:", token);
 
 
   // Retrieve the public key from environment variables
@@ -31,7 +29,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
       (error as any).code = 401;
       throw error;
     }
-    console.log("decoded", decodedAuthToken)
     // Check if the user is part of the required organization
     const userOrgs = decodedAuthToken.orgs
 
