@@ -10,7 +10,7 @@ import { Collection } from "mongodb";
 import { authMiddleware } from "../../authMiddleware.js";
 import axios from "axios";
 import { error } from "console";
-const proxy_Url = process.env.REACT_APP_ML_PIP_URL; 
+const proxy_Url = process.env.REACT_APP_ML_PIP_URL || ""
 import FormData from 'form-data';
 import {createWriteStream} from 'fs';
 import { GraphQLUpload } from "graphql-upload-minimal";
@@ -80,6 +80,8 @@ export const resolvers = {
           formData.append('user_id', userId);
 
           // Step 4: Send the file to an external API 
+
+          console.log('URL being used in production:', proxy_Url);
         const response = await axios.post(
             proxy_Url,
           formData,
