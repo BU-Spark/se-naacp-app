@@ -314,7 +314,7 @@ return (
                                                 <td style={{ padding: '10px' }}>
                                                     <Link to={article.link}>{article.hl1}</Link>
                                                 </td>
-                                                <td style={{ padding: '10px' }}><Link to={`/Topics?topic=${encodeURIComponent(article.openai_labels)}`}>{article.openai_labels}</Link></td>
+                                                <td style={{ padding: '10px' }}>{article.openai_labels}</td>
                                                 <td style={{ padding: '10px' }}>{formatDate(article.dateSum)}</td>
                                             </tr>
                                         ))}

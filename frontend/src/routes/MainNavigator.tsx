@@ -102,7 +102,7 @@ export default function MainNavigator() {
 		<Routes>
 		  <Route
 			path='/'
-			element={<ProtectedRoute child={<NeighborhoodPage />} />}
+			element={<ProtectedRoute child={<StoriesPage />} />}
 		  />
 		  <Route
 			path='/sign-in/*'
@@ -136,10 +136,10 @@ export default function MainNavigator() {
 			path='/Neighborhoods'
 			element={<ProtectedRoute child={<NeighborhoodPage />} />}
 		  />
-		  <Route
+		  {/* <Route
 			path='/Stories'
 			element={<ProtectedRoute child={<StoriesPage />} />}
-		  />
+		  /> */}
 		  <Route
 			path='/Locations'
 			element={<ProtectedRoute child={<LocationsPage />} />}
