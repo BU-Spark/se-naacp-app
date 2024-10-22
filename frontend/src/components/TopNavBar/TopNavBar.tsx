@@ -38,19 +38,19 @@ const TopNavBar = () => {
 			</div>
             {/* check if they are a member of an organization to have access to the dashboard and upload page */}
 			<ul className={menuOpen ? "open" : ""}>
-                {currentUserOrg && (
+                {/* {currentUserOrg && (
 				<li>
 					<NavLink to='/TopicsSearchPage'>Explore Topics</NavLink>
 				</li>
-                )}
-                {currentUserOrg && (
+                )} */}
+                {/* {currentUserOrg && (
 				<li>
 					<NavLink to='/'>Neighborhoods</NavLink>
 				</li>
-                )}
+                )} */}
                 {currentUserOrg && (
 				<li>
-					<NavLink to='/Stories'>Explore Stories</NavLink>
+					<NavLink to='/'>Explore Stories</NavLink>
 				</li>
                 )}
                 {currentUserOrg && (
