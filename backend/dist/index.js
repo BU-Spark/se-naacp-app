@@ -28,10 +28,19 @@ const mongo_url = process.env.NAACP_MONGODB;
 async function startServer() {
     const app = express();
     // Apply necessary middlewares
+    const allowedOrigins = ['http://localhost:3000', 'https://bu-naacp.up.railway.app'];
+    //app.options('*', cors());
     app.use(cors({
-        origin: 'http://localhost:3000', // Allow requests from this origin
-        credentials: true, // Allow credentials such as cookies or authorization headers
-        allowedHeaders: ['Content-Type', 'x-org-token', 'Authorization'], // Allow the custom header
+        origin: function (origin, callback) {
+            if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+                callback(null, true);
+            }
+            else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        credentials: true,
+        allowedHeaders: ['Content-Type', 'x-org-token', 'Authorization'], // Allow the custom headers
     }));
     // Connect to MongoDB
     const dbInstance = await connectWithMongoDB(mongo_url, dbName);
