@@ -4,14 +4,16 @@ import { ToastContainer, toast } from 'react-toastify';
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Article } from '../../__generated__/graphql';
 
 interface TopicSelectorProps {
     selectedTopics: string[];
     setSelectedTopics: React.Dispatch<React.SetStateAction<string[]>>;
     labelsMasterList: string[];
+    locationArticles?: Article[];
 }
 
-const TopicSelector: React.FC<TopicSelectorProps> = ({ selectedTopics, setSelectedTopics, labelsMasterList }) => {
+const TopicSelector: React.FC<TopicSelectorProps> = ({ selectedTopics, setSelectedTopics, labelsMasterList, locationArticles }) => {
 
     const navigate = useNavigate();
 
@@ -31,12 +33,22 @@ const TopicSelector: React.FC<TopicSelectorProps> = ({ selectedTopics, setSelect
         }
     };
 
+    const filteredLabelsMasterList = locationArticles 
+    ? labelsMasterList.filter(topic => locationArticles.some(article => article.openai_labels === topic)) 
+    : labelsMasterList; // Filter topics if locationArticles is present
+
+
+    const getArticleCount = (topic: string) => {
+        return locationArticles ? locationArticles.filter(article => article.openai_labels === topic).length : 0;
+    };
+    
+
     return (
             <FormControl fullWidth>
                 <ToastContainer />
                 <Autocomplete
                     multiple
-                    options={labelsMasterList}
+                    options={filteredLabelsMasterList}
                     value={selectedTopics}
                     onChange={handleChange}
                     renderInput={(params) => (
@@ -45,7 +57,7 @@ const TopicSelector: React.FC<TopicSelectorProps> = ({ selectedTopics, setSelect
                     renderOption={(props, option, { selected }) => (
                         <li {...props}>
                             <Checkbox checked={selected} />
-                            {option}
+                            {option} ({getArticleCount(option)})
                         </li>
                     )}
                 />
