@@ -39,7 +39,7 @@ const TopicSelector: React.FC<TopicSelectorProps> = ({ selectedTopics, setSelect
 
 
     const getArticleCount = (topic: string) => {
-        return locationArticles ? locationArticles.filter(article => article.openai_labels === topic).length : 0;
+        return locationArticles?.filter(article => article.openai_labels === topic).length;
     };
     
 
@@ -57,8 +57,7 @@ const TopicSelector: React.FC<TopicSelectorProps> = ({ selectedTopics, setSelect
                     renderOption={(props, option, { selected }) => (
                         <li {...props}>
                             <Checkbox checked={selected} />
-                            {option} ({getArticleCount(option)})
-                        </li>
+                            {option} {locationArticles ? `(${getArticleCount(option)})` : ''}                        </li>
                     )}
                 />
             </FormControl>
