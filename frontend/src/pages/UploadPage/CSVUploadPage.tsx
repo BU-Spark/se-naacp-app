@@ -13,9 +13,36 @@ import HelpIcon from '@mui/icons-material/Help';
 import Tooltip from '@mui/material/Tooltip';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import { gql } from "@apollo/client";
+import { gql, useSubscription } from "@apollo/client";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import LinearProgress from '@mui/material/LinearProgress';
 
+
+
+
+
+
+const UPLOAD_PROGRESS_SUBSCRIPTION = gql`
+  subscription uploadProgress($userId: String!) {
+    uploadProgress(userId: $userId) {
+      filename
+      progress
+      status
+    }
+  }
+`;
+
+const LAST_TEN_UPLOADS_QUERY = gql`
+    query lastTenUploads($userId: String!) {
+        lastTenUploads(userId: $userId) {
+            uploadID
+            timestamp
+            article_cnt
+            status
+            filename
+        }
+    }
+`;
 
 // Define a type for the file with progress information
 type UploadedFile = {
@@ -40,6 +67,7 @@ export const CSVUploadBox = () => {
     const [uploads, setUpload] = useState<Uploads[]>([]);
     const { user, isSignedIn } = useUser();
     const { organization } = useOrganization();
+    
 
     
     
@@ -51,6 +79,24 @@ export const CSVUploadBox = () => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);   
+
+    const { data: progressData } = useSubscription(UPLOAD_PROGRESS_SUBSCRIPTION, {
+        variables: { userId: organization ? organization.id : user?.id },
+        shouldResubscribe: true,
+        onSubscriptionData: ({ subscriptionData }) => {
+          const uploadProgress = subscriptionData.data.uploadProgress;
+          if (uploadProgress) {
+            const { filename, progress, status } = uploadProgress;
+            setUploadedFiles((prevFiles) =>
+              prevFiles.map((file) =>
+                file.name === filename
+                  ? { ...file, progress, status: status || file.status }
+                  : file
+              )
+            );
+          }
+        },
+      });
 
     useEffect(() => {
         if (isSignedIn && user) {
@@ -201,61 +247,137 @@ export const CSVUploadBox = () => {
 		},
 	  });
     
-    const submitFile = () => {
-        console.log("submitting file");
-      for (let i = 0; i < submittedFiles.length; i++) {
-        const file = submittedFiles[i];
-        console.log("Type of file:", file instanceof File); 
-
-        if (user && isSignedIn) {
-          const variables = {
-            file,
-            userId: organization ? organization.id : user.id, 
-          };
-          console.log( typeof user.id);
-
-          console.log("logging variables: ", variables);
+      const submitFile = () => {
+        for (let i = 0; i < submittedFiles.length; i++) {
+            const file = submittedFiles[i];
     
-          uploadCSV({ variables })
-          .then((response) => {
-            // Check if the response contains the expected data
-            if (response.data && response.data.uploadCSV && response.data.uploadCSV.status === 'Success') {
-                setSuccessMessage("Successfully submitted!");
-                setTimeout(() => setSuccessMessage(""), 3000);
-              } else if (response.errors) {
-                // Handle GraphQL errors
-                console.error("GraphQL Errors:", response.errors);
-                const errorMessage = response.errors[0]?.message || "Failed to upload CSV."; // Extract the error message
-                setAlertMessage(errorMessage);
-                setTimeout(() => setAlertMessage(""), 3000);
-              } else {
-                // Handle unexpected responses
-                console.error("Unexpected response:", response);
-                setAlertMessage("Failed to upload CSV: Unexpected response.");
-                setTimeout(() => setAlertMessage(""), 3000);
-              }
-          })
-          .catch((error) => {
-            console.error("Error during CSV upload:", error);
-            setAlertMessage("Failed to upload CSV.");
-            setTimeout(() => setAlertMessage(""), 3000);
-          });
-      } else {
-        console.error("User is not signed in");
-      }
-      }
+            if (user && isSignedIn) {
+                const variables = {
+                    file,
+                    userId: organization ? organization.id : user.id,
+                };
+    
+                // Set initial progress to indicate the upload has started
+                setUploadedFiles((prevFiles) =>
+                    prevFiles.map((f) =>
+                        f.name === file.name ? { ...f, progress: 10, status: 'Uploading...' } : f
+                    )
+                );
+    
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const text = reader.result as string;
+                    const lines = text.split(/\r?\n/);
+                    const articleCount = lines.length - 1;
+    
+                    uploadCSV({ variables })
+                        .then((response) => {
+                            if (response.data && response.data.uploadCSV && response.data.uploadCSV.status === 'Success') {
+                                // Simulate gradual progress update
+                                let progress = 10;
+                                const interval = setInterval(() => {
+                                    progress += 15;
+                                    setUploadedFiles((prevFiles) =>
+                                        prevFiles.map((f) =>
+                                            f.name === file.name
+                                                ? { ...f, progress: Math.min(progress, 100) }
+                                                : f
+                                        )
+                                    );
+    
+                                    // Finalize when progress reaches 100%
+                                    if (progress >= 100) {
+                                        clearInterval(interval);
+    
+                                        // Set final status to complete
+                                        setUploadedFiles((prevFiles) =>
+                                            prevFiles.map((f) =>
+                                                f.name === file.name ? { ...f, progress: 100, status: 'Upload complete!' } : f
+                                            )
+                                        );
+    
+                                        // Display success message
+                                        setSuccessMessage("File uploaded successfully!");
+    
+                                        // Delay file removal from 'uploaded files' table
+                                        setTimeout(() => {
+                                            setSuccessMessage("");
+    
+                                            // Add to upload history
+                                            setUpload((prevUploads) => [
+                                                ...prevUploads,
+                                                {
+                                                    uploadID: Math.random().toString(36).substr(2, 9),
+                                                    timestamp: new Date().toISOString(),
+                                                    article_cnt: articleCount,
+                                                    status: 'Success',
+                                                    userID: user.id,
+                                                    message: '',
+                                                },
+                                            ]);
+    
+                                            // Now remove the file from the 'uploaded files' table
+                                            setUploadedFiles((prevFiles) =>
+                                                prevFiles.filter((f) => f.name !== file.name)
+                                            );
+                                        }, 3000); // Delay for the green success message to display
+                                    }
+                                }, 500); // Adjust interval for progress update frequency
+                            } else {
+                                throw new Error("Unexpected response"); // Force catch for unexpected responses
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error during CSV upload:", error);
+    
+                            // Update progress to stop at failure and set status to failed
+                            setUploadedFiles((prevFiles) =>
+                                prevFiles.map((f) =>
+                                    f.name === file.name
+                                        ? { ...f, progress: 0, status: 'Upload failed!' }
+                                        : f
+                                )
+                            );
+    
+                            // Show alert message
+                            setAlertMessage("Failed to upload CSV.");
+                            setTimeout(() => setAlertMessage(""), 3000);
+                        });
+                };
+    
+                // Start reading the file to calculate line count
+                reader.readAsText(file);
+            } else {
+                console.error("User is not signed in");
+            }
+        }
     };
+    
+    
+    
+    
 
+
+    
+    
+    
     // Function that simulates file upload and updates progress
     // Need to change this to real func converting csv into json as input to backend
+
+
+    
     const uploadFile = (file: File) => {
+        const sizeKB = (file.size / 1024).toFixed(1); // Convert size to KB
+    
         const newFile: UploadedFile = {
             name: file.name,
-            size: file.size,
+            size: Number(sizeKB), // Store size in KB directly for easier rendering
             progress: 0,
             status: "Uploading...",
             file: file,
         };
+    
+        console.log(`File name: ${file.name}, File size in KB: ${sizeKB}`); // Confirm formatted size here
     
         setUploadedFiles((prevFiles) => [...prevFiles, newFile]);
 
@@ -296,8 +418,14 @@ export const CSVUploadBox = () => {
 
     // Handle file selection
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) {
-            Array.from(event.target.files).forEach(uploadFile);
+        const files = event.target.files;
+        if (files && files.length > 0) {
+            const file = files[0];
+            const fileSize = file.size; // Get the file size directly
+            console.log(`File size: ${fileSize} bytes`);
+
+            // Call your upload function with the file and its size
+            uploadFile(file);
         }
     };
 
@@ -315,6 +443,7 @@ export const CSVUploadBox = () => {
     // Handle file submit
     const handleFileSubmit = (files: File[]) => {
         submitFile();
+        /*
         // clear out uploaded Files, validated files (submitted files listen onto validated files)
         for (let i = 0; i < files.length; i++) {
             setUploadedFiles((prevFiles) =>
@@ -324,6 +453,7 @@ export const CSVUploadBox = () => {
                 prevFiles.filter((f) => f.name != files[i].name),
             );
         }
+            */
         // need some logic to handle file history
     };
     //If the user is does not have access to the upload page
@@ -557,45 +687,38 @@ export const CSVUploadBox = () => {
                             <span>ACTIONS</span>
                         </div>
                         {uploadedFiles.map((file, index) => (
-                            <div key={index} className='file-upload-status'>
-                                {/* File Name Column */}
-                                <div className='file-name'>
-                                    <span>{file.name}</span>
-                                </div>
+                        <div key={index} className='file-upload-status'>
+                            {/* File Name Column */}
+                            <div className='file-name'>
+                                <span>{file.name}</span>
+                            </div>
 
-                                {/* File Size Column */}
-                                <div className='file-size'>
-                                    <span>
-                                        {(file.size / (1024 * 1024)).toFixed(1)}{" "}
-                                        MB
-                                    </span>
-                                </div>
+                            {/* File Size Column */}
+                            <div className='file-size'>
+    <span>{file.size} KB</span>
+</div>
 
-                                {/* Upload Status Column */}
-                                <div className='file-upload-progress-wrapper'>
-                                    <div className='file-status'>
-                                        {file.status}
-                                    </div>
-                                {file.error && (
-                                    <div className='error-message'>
-                                        {file.error}
-                                    </div>
-                                )}
-                                </div>
-                                {/* Action Column */}
-                                <div className='file-actions'>
-                                    {(file.status === "Passed" ||
-                                        file.error) && (
-                                        <Button
+                            {/* Validation Status Column */}
+                            <div className='file-status'>
+                                {file.status}
+                            </div>
+
+                            {/* Progress Column */}
+                            <div className='file-progress'>
+                                <LinearProgress variant="determinate" value={file.progress} />
+                            </div>
+
+                            {/* Action Column */}
+                            <div className='file-actions'>
+                                {(file.status === "Passed" || file.error) && (
+                                    <Button
                                         variant="outlined"
                                         color="error"
                                         size="small"
-                                        onClick={() =>
-                                            handleFileRemoval(file.name)
-                                        }
-                                        >
-                                            Delete
-                                        </Button>
+                                        onClick={() => handleFileRemoval(file.name)}
+                                    >
+                                        Delete
+                                    </Button>
                                     )}
                                 </div>
                             </div>
@@ -624,30 +747,19 @@ export const CSVUploadBox = () => {
                         </div>
                         {uploads.map((file, index) => (
                             <div key={index} className='file-upload-status'>
-                                {/* Upload ID Column */}
                                 <div className='file-uploadId'>
                                     <span>{file.uploadID}</span>
                                 </div>
-
-                                {/* Time Stamp Column */}
                                 <div className='file-timeStamp'>
                                     <span>
-                                        {new Date(
-                                            file.timestamp,
-                                        ).toLocaleString()}
+                                        {new Date(file.timestamp).toLocaleString()}
                                     </span>
                                 </div>
-
-                                {/* Article cnt Column */}
                                 <div className='file-articleCnt'>
                                     <span>
-                                        {file.article_cnt === -1
-                                            ? 0
-                                            : file.article_cnt}
+                                        {file.article_cnt === -1 ? 0 : file.article_cnt}
                                     </span>
                                 </div>
-
-                                {/* http status Column */}
                                 <div className='file-httpStatus'>
                                     <span>{file.status}</span>
                                 </div>

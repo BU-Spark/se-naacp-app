@@ -5,6 +5,7 @@
     "express-fileupload": "^1.5.1",
     "font-awesome": "^4.7.0",
     "graphql": "^16.8.1",
+    "graphql-subscriptions": "^2.0.0",
     "graphql-upload-minimal": "^1.6.1",
     "koa": "^2.15.3",
     "node-fetch": "^2.7.0",

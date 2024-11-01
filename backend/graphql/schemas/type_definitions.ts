@@ -9,6 +9,17 @@ export const typeDefs = gql`
 		userID: String!
 	}
 
+	type Subscription {
+  	uploadProgress(userId: String!): UploadProgress
+	}
+
+	type UploadProgress {
+  		userId: String!
+  		filename: String!
+  		progress: Int!
+  		status: String
+	}
+
 	type Rss_data {
 		userID: String!
 		title: String!
@@ -46,6 +57,19 @@ export const typeDefs = gql`
 		filename: String!
   		status: String!
 	}
+	
+	type Query {
+    lastTenUploads(userId: String!): [UploadHistory!]!
+}
+
+type UploadHistory {
+    uploadID: String
+    timestamp: String
+    article_cnt: Int
+    status: String
+    filename: String
+}
+
 
 
 	type Article {

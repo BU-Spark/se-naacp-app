@@ -24,6 +24,15 @@ const UPLOAD_DATA_QUERY = gql`
   }
 `;
 
+export const GET_UPLOAD_PROGRESS = gql`
+    query GetUploadProgress($userId: String!) {
+        uploadProgress(userId: $userId) {
+            progress
+            status
+        }
+    }
+`;
+
 export const UPLOAD_CSV_MUTATION = gql`
 mutation UploadCSV($file: Upload!, $userId: String!) {
   uploadCSV(file: $file, userId: $userId) {
