@@ -33,16 +33,14 @@ const TopicCount: React.FC<TopicCountProps> = ({ articles }) => {
   const handleClose = () => setOpen(false);
 
   // Navigate to topic page
-  const handleTopicClick = (topic: string) => {
-    navigate(`/Topics?topic=${encodeURIComponent(topic)}`);
-  };
+
 
   return (
     <Card sx={{ height: "62vh" }}>
       <CardContent sx={{ height: "100%" }}>
         <List> {/* Use List component */}
           {topTopics.map(([topic, count]) => (
-            <ListItem key={topic} onClick={() => handleTopicClick(topic)} style={{ cursor: 'pointer', color:'#1E90FF' }}>
+            <ListItem key={topic}>
               <ListItemText primary={`${topic}: ${count}`} />
             </ListItem>
           ))}
@@ -71,7 +69,7 @@ const TopicCount: React.FC<TopicCountProps> = ({ articles }) => {
             {Object.entries(topicCounts)
             .sort(([, countA], [, countB]) => countB - countA) // Sort by count in descending order
             .map(([topic, count]) => (
-                <ListItem key={topic} onClick={() => handleTopicClick(topic)} style={{ cursor: 'pointer', width: '23%', color:'#1E90FF' }}>
+                <ListItem key={topic}>
                     <ListItemText primary={`${topic}: ${count}`} />
                 </ListItem>
             ))}

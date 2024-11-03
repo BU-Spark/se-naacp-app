@@ -175,7 +175,7 @@ const LocationsPage: React.FC = () => {
                         <LocationInfo location={selectedLocation} filteredArticlesLength={filteredLocationArticles.length} />
 
                         <h1 className="titles">Topics</h1>
-                        <TopicSelector selectedTopics={selectedTopics} setSelectedTopics={setSelectedTopics} labelsMasterList={labelsMasterList ?? []} />
+                        <TopicSelector selectedTopics={selectedTopics} setSelectedTopics={setSelectedTopics} labelsMasterList={labelsMasterList ?? []} locationArticles={locationArticles} />
                         </div>
                     <div className="col-md-7 col-sm-12">
                          <h1 className="titles">Map</h1>
