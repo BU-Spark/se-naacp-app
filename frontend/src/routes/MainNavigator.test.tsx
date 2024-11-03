@@ -89,8 +89,8 @@ describe('MainNavigator', () => {
       <Wrapper hasPermission={true}></Wrapper>
     );
 
-    expect(screen.getByText('Explore Topics')).toBeInTheDocument();
-    expect(screen.getByText('Neighborhoods')).toBeInTheDocument();
+    expect(screen.getByText('Explore Stories')).toBeInTheDocument();
+    expect(screen.getByText('Locations')).toBeInTheDocument();
     // cannot access Upload and Dashboard if no access in this org
     expect(screen.queryByText('Upload')).not.toBeInTheDocument();
     expect(screen.queryByText('Dashboard')).not.toBeInTheDocument();

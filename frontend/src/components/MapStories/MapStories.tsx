@@ -12,6 +12,7 @@ import { Modal } from '@mui/material'; // Import Modal
 import { Link } from 'react-router-dom'; // Add this import
 import useSupercluster from "use-supercluster";
 import { Typography } from '@mui/material'; // Import Typography for better text styling
+import DownloadCSV from "../../components/DownloadCSV/DownloadCSV";
 import "./MapStories.css";
 
 
@@ -90,7 +91,6 @@ const MapStories: React.FC<MapStoriesProps> = ({ selectedTopics, setSelectedTopi
     const [lastClickedClusterId, setLastClickedClusterId] = useState<number | null>(null);
 
     const [bounds, setBounds] = useState<BBox>();
-
 
 
 
@@ -191,13 +191,15 @@ const MapStories: React.FC<MapStoriesProps> = ({ selectedTopics, setSelectedTopi
     }
     };
 
-    useEffect(() => {
-        console.log(modalData);
-    }, [modalData]);
-
 
 return (
     <div className="full-screen-container">
+
+        <DownloadCSV articles={articles.filter(article => 
+            article.coordinates && article.coordinates.length > 0 &&
+            (selectedTopics.length === 0 || selectedTopics.includes(article.openai_labels!))
+        )} />
+
         <Map
             center={center}
             zoom={zoom}
