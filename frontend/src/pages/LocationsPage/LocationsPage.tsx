@@ -17,6 +17,7 @@ import TopicSelector from "../../components/TopicSelector/TopicSelector"; // Imp
 import { TractContext } from "../../contexts/tract_context"; // Import TractContext
 import LocationInfo from '../../components/LocationsInfo/LocationsInfo'; // Import LocationInfo
 import { TopicsContext } from "../../contexts/topics_context";
+import DownloadCSV from '../../components/DownloadCSV/DownloadCSV';
 
 
 
@@ -194,6 +195,7 @@ const LocationsPage: React.FC = () => {
                                     <NeighborhoodDemographicsBoard />
                                 </div>
                             </div>
+                            <DownloadCSV articles={filteredLocationArticles} />
                             <h1 className="titles"> Articles</h1>
                             <ArticleCard optionalArticles={filteredLocationArticles} />
                         </div>
