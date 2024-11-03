@@ -18,23 +18,15 @@ export interface DemographicsByTractsArgs {
     tract: string;F
 }
 
-export interface IUploadedFile {
-    name: string;
-    size: number;
-    progress: number;
-    status: string;
-    file: FileUpload;
-    error?: string;
-}
 
 type UploadedFile = {
     name: string;
     size: number;
-    progress: number;
+    progress: number; // Track upload progress here
     status: string;
-    error?: string; // fail to pass test
-    file: File; // store a reference to the File object
-};	
+    error?: string;
+    file: File;
+};
 
 // *** Data Types derived from the collections ***
 

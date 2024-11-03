@@ -10,7 +10,7 @@ import { Collection } from "mongodb";
 import { authMiddleware } from "../../authMiddleware.js";
 import axios from "axios";
 import { error } from "console";
-const proxy_Url = "http://35.229.106.189:80/upload_csv";
+const proxy_Url = process.env.REACT_APP_ML_PIP_URL || "";
 import FormData from 'form-data';
 import {createWriteStream} from 'fs';
 import { GraphQLUpload } from "graphql-upload-minimal";
@@ -18,6 +18,13 @@ import { GraphQLScalarType, GraphQLError} from 'graphql';
 import { FileUpload } from 'graphql-upload-minimal';
 import path from 'path';
 import { gql } from "@apollo/client";
+import { Readable } from 'stream';
+import { PubSub } from 'graphql-subscriptions';
+
+const pubsub = new PubSub();
+const UPLOAD_PROGRESS = 'UPLOAD_PROGRESS';
+const UPLOAD_STATUS_UPDATED = 'UPLOAD_STATUS_UPDATED';
+
 
 
 
@@ -31,119 +38,160 @@ interface UploadCSVArgs {
   file: Promise<FileUpload>; // `file` should be a promise that resolves to a FileUpload type
   userId: string;
 }
+// Helper function to simulate delayed progress
+const simulateProgressUpdate = (userId, filename, progress) => {
+  pubsub.publish("UPLOAD_PROGRESS", {
+    uploadProgress: { userId, filename, progress, status: "Uploading" },
+  });
+};
+
+// const getLastTenUploads = async (userId, db) => {
+//   const uploadData = db.collection("uploads");
+//   return await uploadData
+//     .find({ userId })
+//     .sort({ timestamp: -1 })
+//     .limit(10)
+//     .map(upload => ({ ...upload, article_cnt: upload.article_cnt || 0 })) // Set default value to 0 if null
+//     .toArray();
+
+    
+// };
 
 export const resolvers = {
   Upload: GraphQLUpload,
   Mutation: {
-      uploadCSV: async (_, { file, userId }: UploadCSVArgs, { db, req, res }) => {
-        
+    uploadCSV: async (_, { file, userId }, { db }) => {
       try {
-     //   await authMiddleware(req, res, () => {});
-  
-        const upload = await file; // Resolve the file promise to get Upload object
-
+        const upload = await file; // Resolve the file promise to get the Upload object
         if (!upload) {
           throw new Error("No file uploaded");
         }
 
-        // Destructure the resolved `upload` object to get file properties
         const { createReadStream, filename, mimetype } = upload;
-
-        // Check if `createReadStream` is defined
         if (!createReadStream) {
           throw new Error("Invalid file upload. `createReadStream` is not defined.");
         }
 
         console.log(`Uploading file: ${filename} (Type: ${mimetype}) for user: ${userId}`);
 
-        // Step 2: Create a read stream from the file
+        // Step 1: Buffer the file to calculate size
         const stream = createReadStream();
+        const chunks = [];
+        let fileSize = 0;
 
-        // Step 3: Prepare FormData for sending to an external service (optional)
+        for await (const chunk of stream) {
+          chunks.push(chunk);
+          fileSize += chunk.length;
+        }
+
+        const fileBuffer = Buffer.concat(chunks); // File is now fully buffered
+        const fileSizeKB = (fileSize / 1024).toFixed(1);
+        console.log(`File size: ${fileSizeKB} KB`);
+
+        // Step 2: Create a new stream from the buffer for uploading
+        const uploadStream = Readable.from(fileBuffer);
         const formData = new FormData();
+        formData.append("file", uploadStream, { filename });
+        formData.append("user_id", userId);
 
+        // Step 3: Upload with progress updates
+        const response = await axios.post(proxy_Url, formData, {
+          headers: {
+            ...formData.getHeaders(),
+            "X-API-KEY": "beri-stronk-key",
+          },
+          onUploadProgress: function (progressEvent) {
+            const progress = Math.min(
+              Math.round((progressEvent.loaded / fileSize) * 100),
+              100
+            );
 
-          const map = JSON.stringify({ "1": ["variables.file"] });
-          formData.append("operations", JSON.stringify({
-          query: `mutation UploadCSV($file: Upload!, $userId: String!): UploadStatus! {
-            uploadCSV(file: $file, user_id: $userId) {
-              filename
-              status
-            }
-          }`,
-          variables: { file: null, userId},
-          }));
-        formData.append("map", map);
-        formData.append("1", stream, { filename, contentType: mimetype });
+            // Emit progress update for the client
+            simulateProgressUpdate(userId, filename, progress);
 
-          formData.append('file', stream, { filename });
-          formData.append('user_id', userId);
-
-          // Step 4: Send the file to an external API 
-
-          console.log('URL being used in production:' , proxy_Url);
-        const response = await axios.post(
-            proxy_Url,
-          formData,
-          {
-              headers: {
-                ...formData.getHeaders(),
-                "X-API-KEY": "beri-stronk-key"
-              },
-          }
-        );
+            console.log(`Upload Progress: ${progress}%`);
+          },
+        });
 
         // Handle API response
         if (response.status === 200) {
-          console.log('File uploaded successfully to external API.');
+          console.log("File uploaded successfully to external API.");
 
-          // Step 5: Save upload metadata to the database (if needed)
-          const uploadData = db.collection('uploads');
-            const result = await uploadData.insertOne({
-            userId,
-            filename,
-            timestamp: new Date(),
-            status: 'Success',
+          // Publish completion message
+          pubsub.publish("UPLOAD_PROGRESS", {
+            uploadProgress: {
+              userId,
+              filename,
+              progress: 100,
+              status: "Upload complete!",
+            },
           });
 
-          return { filename: filename, status: 'Success' };
+          const uploadData = db.collection("uploads");
+          // const result = await uploadData.insertOne({
+          //   userId,
+          //   filename,
+          //   timestamp: new Date(),
+          //   status: "Success",
+          //   size: fileSizeKB, 
+          // });
+
+          await db.collection("uploads").watch().on('change', (change) => {
+            const updatedUpload = change.fullDocument;
+            pubsub.publish(UPLOAD_STATUS_UPDATED, {
+              uploadStatusUpdated: updatedUpload,
+            });
+          });
+
+          return { filename, status: "Success" };
         } else {
-            throw new GraphQLError('Failed to upload CSV.');
+          throw new GraphQLError("Failed to upload CSV.");
         }
       } catch (error) {
-        console.error('Error uploading CSV:', error);
-          throw new GraphQLError('Error uploading CSV.');
+        console.error("Error uploading CSV:", error);
+        throw new GraphQLError("Error uploading CSV.");
       }
-  },
-	  addRssFeed: async (_, { url, userID }, { db, req, res }) => {
-		await authMiddleware(req, res, () => {});
-  
-		const decodedToken = JSON.parse(req.headers.user as string);
-		if (!decodedToken) {
-		  throw new Error('Unauthorized');
-		}
-  
-		if (decodedToken.sub !== userID) {
-		  throw new Error('Forbidden');
-		}
-  
-		const rss_data = db.collection("rss_links");
-  
-		// Create or update the RSS feed for the given userID
-		const filter = { userID: userID };
-		const update = {
-		  $set: { url: url, userID: userID },
-		};
-		const options = {
-		  upsert: true, // create a new document if no document matches the filter
-		  returnDocument: "after", // return the modified document
-		};
-  
-		const result = await rss_data.findOneAndUpdate(filter, update, options);
+    },
 
-    return result.value;
-	  },
-	},
+    addRssFeed: async (_, { url, userID }, { db, req, res }) => {
+      await authMiddleware(req, res, () => {});
+    
+      const decodedToken = JSON.parse(req.headers.user as string);
+      if (!decodedToken) {
+        throw new Error('Unauthorized');
+      }
+    
+      if (decodedToken.sub !== userID) {
+        throw new Error('Forbidden');
+      }
+    
+      const rss_data = db.collection("rss_links");
+    
+      // Create or update the RSS feed for the given userID
+      const filter = { userID: userID };
+      const update = {
+        $set: { url: url, userID: userID },
+      };
+      const options = {
+        upsert: true, // create a new document if no document matches the filter
+        returnDocument: "after", // return the modified document
+      };
+    
+      const result = await rss_data.findOneAndUpdate(filter, update, options);
+  
+      return result.value;
+      },
+    },
+
+  Subscription: {
+    uploadProgress: {
+      subscribe: (_, { userId }) => pubsub.asyncIterator("UPLOAD_PROGRESS"),
+    },
+    uploadStatusUpdated: {
+      subscribe: () => pubsub.asyncIterator([UPLOAD_STATUS_UPDATED]),
+    },
+  },
+
   Query: {
     // RSS Resolver
     getRssLinkByUserId: async (_, args, { db, req, res }) => {
@@ -162,6 +210,18 @@ export const resolvers = {
       const rss_data = db.collection("rss_links");
       const queryResult = await rss_data.find({ userID: args.userID }).toArray();
       return queryResult;
+    },
+      lastTenUploads: async (_, { userId }, { db }) => {
+        const uploads = await db.collection("uploads")
+          .find({ userID: userId })
+          .sort({ timestamp: -1 })
+          .limit(10)
+          .toArray();
+  
+        return uploads.map(upload => ({
+          ...upload,
+          uploadID: upload.uploadID  
+        }));
     },
     // CSV Upload Resolver
     getUploadByUserId: async (_, args, { db, req, res }) => {
