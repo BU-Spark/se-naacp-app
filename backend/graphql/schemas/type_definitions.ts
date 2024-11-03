@@ -40,6 +40,10 @@ export const typeDefs = gql`
 		message: String!
 	}
 
+	type Subscription {
+  uploadStatusUpdated: Uploads
+}
+
 	type Mutation {
   		# Define a new mutation for uploading a CSV file
   		uploadCSV(file: Upload!, userId: String!): UploadStatus!
@@ -63,11 +67,13 @@ export const typeDefs = gql`
 }
 
 type UploadHistory {
-    uploadID: String
-    timestamp: String
-    article_cnt: Int
-    status: String
-    filename: String
+    uploadID: String!
+	article_cnt: Int!
+	message: String!
+	status: String!
+    timestamp: String!
+    userID: String!
+	
 }
 
 

@@ -8,7 +8,7 @@ import "./CSVUploadPage.css";
 import { UploadContext, UPLOAD_CSV_MUTATION } from "../../contexts/upload_context";
 import { Uploads } from "../../__generated__/graphql";
 import { useOrganization, useUser, useAuth } from "@clerk/clerk-react";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import HelpIcon from '@mui/icons-material/Help';
 import Tooltip from '@mui/material/Tooltip';
 import Modal from '@mui/material/Modal';
@@ -16,9 +16,7 @@ import Box from '@mui/material/Box';
 import { gql, useSubscription } from "@apollo/client";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LinearProgress from '@mui/material/LinearProgress';
-
-
-
+import { DateTime } from "luxon";
 
 
 
@@ -36,12 +34,26 @@ const LAST_TEN_UPLOADS_QUERY = gql`
     query lastTenUploads($userId: String!) {
         lastTenUploads(userId: $userId) {
             uploadID
-            timestamp
             article_cnt
+            message
             status
-            filename
+            timestamp
+            userID
+            
         }
     }
+`;
+
+
+const UPLOAD_STATUS_UPDATED_SUBSCRIPTION = gql`
+  subscription OnUploadStatusUpdated {
+    uploadStatusUpdated {
+      uploadID
+      status
+      message
+      article_cnt
+    }
+  }
 `;
 
 // Define a type for the file with progress information
@@ -97,6 +109,48 @@ export const CSVUploadBox = () => {
           }
         },
       });
+
+      const { data, loading, error, refetch: refetchLastTenUploads } = useQuery(LAST_TEN_UPLOADS_QUERY, {
+        variables: { userId: organization ? organization.id : user?.id },
+        skip: !isSignedIn,
+        onCompleted: (data) => {
+            console.log("Fetched data for last ten uploads:", data);
+        },
+    });
+    
+
+    useSubscription(UPLOAD_STATUS_UPDATED_SUBSCRIPTION, {
+        onSubscriptionData: ({ subscriptionData }) => {
+            const updatedUpload = subscriptionData.data.uploadStatusUpdated;
+            setUpload((prevUploads: any) =>
+                prevUploads.map((upload: any) =>
+                    upload.uploadID === updatedUpload.uploadID
+                        ? {
+                            ...upload,
+                            status: updatedUpload.status,
+                            message: updatedUpload.message,
+                            article_cnt: updatedUpload.article_cnt,
+                        }
+                        : upload
+                )
+            );
+        },
+    });
+
+    const extractProgress = (message: any) => {
+        const match = message?.match(/\[(\d+\/\d+)\]/);
+        return match ? match[0] : "[0/0]";
+    };
+    
+
+
+      useEffect(() => {
+        if (data) {
+          setUpload(data.lastTenUploads);
+        }
+      }, [data]);
+
+
 
     useEffect(() => {
         if (isSignedIn && user) {
@@ -169,7 +223,6 @@ export const CSVUploadBox = () => {
                 "Headline",
                 "Publisher",
                 "Byline",
-                "content_id",
                 "Paths",
                 "Publish Date",
                 "Body",
@@ -257,7 +310,6 @@ export const CSVUploadBox = () => {
                     userId: organization ? organization.id : user.id,
                 };
     
-                // Set initial progress to indicate the upload has started
                 setUploadedFiles((prevFiles) =>
                     prevFiles.map((f) =>
                         f.name === file.name ? { ...f, progress: 10, status: 'Uploading...' } : f
@@ -266,14 +318,9 @@ export const CSVUploadBox = () => {
     
                 const reader = new FileReader();
                 reader.onload = () => {
-                    const text = reader.result as string;
-                    const lines = text.split(/\r?\n/);
-                    const articleCount = lines.length - 1;
-    
                     uploadCSV({ variables })
                         .then((response) => {
-                            if (response.data && response.data.uploadCSV && response.data.uploadCSV.status === 'Success') {
-                                // Simulate gradual progress update
+                            if (response.data?.uploadCSV?.status === 'Success') {
                                 let progress = 10;
                                 const interval = setInterval(() => {
                                     progress += 15;
@@ -285,73 +332,50 @@ export const CSVUploadBox = () => {
                                         )
                                     );
     
-                                    // Finalize when progress reaches 100%
                                     if (progress >= 100) {
                                         clearInterval(interval);
-    
-                                        // Set final status to complete
                                         setUploadedFiles((prevFiles) =>
                                             prevFiles.map((f) =>
                                                 f.name === file.name ? { ...f, progress: 100, status: 'Upload complete!' } : f
                                             )
                                         );
     
-                                        // Display success message
                                         setSuccessMessage("File uploaded successfully!");
-    
-                                        // Delay file removal from 'uploaded files' table
                                         setTimeout(() => {
                                             setSuccessMessage("");
-    
-                                            // Add to upload history
-                                            setUpload((prevUploads) => [
-                                                ...prevUploads,
-                                                {
-                                                    uploadID: Math.random().toString(36).substr(2, 9),
-                                                    timestamp: new Date().toISOString(),
-                                                    article_cnt: articleCount,
-                                                    status: 'Success',
-                                                    userID: user.id,
-                                                    message: '',
-                                                },
-                                            ]);
-    
-                                            // Now remove the file from the 'uploaded files' table
                                             setUploadedFiles((prevFiles) =>
                                                 prevFiles.filter((f) => f.name !== file.name)
                                             );
-                                        }, 3000); // Delay for the green success message to display
+    
+                                            // Refetch the latest uploads from MongoDB after each successful upload
+                                            refetchLastTenUploads();
+                                        }, 3000);
                                     }
-                                }, 500); // Adjust interval for progress update frequency
+                                }, 500);
                             } else {
-                                throw new Error("Unexpected response"); // Force catch for unexpected responses
+                                throw new Error("Unexpected response");
                             }
                         })
                         .catch((error) => {
                             console.error("Error during CSV upload:", error);
-    
-                            // Update progress to stop at failure and set status to failed
                             setUploadedFiles((prevFiles) =>
                                 prevFiles.map((f) =>
-                                    f.name === file.name
-                                        ? { ...f, progress: 0, status: 'Upload failed!' }
-                                        : f
+                                    f.name === file.name ? { ...f, progress: 0, status: 'Upload failed!' } : f
                                 )
                             );
-    
-                            // Show alert message
                             setAlertMessage("Failed to upload CSV.");
                             setTimeout(() => setAlertMessage(""), 3000);
                         });
                 };
     
-                // Start reading the file to calculate line count
                 reader.readAsText(file);
             } else {
                 console.error("User is not signed in");
             }
         }
     };
+    
+    
     
     
     
@@ -468,6 +492,12 @@ export const CSVUploadBox = () => {
             </div>
         </div>
         );
+    }
+
+    function parseTimestamp(timestamp: any) {
+        // Insert "T" between date and time to make it ISO-compliant
+        const isoTimestamp = timestamp.replace(" ", "T");
+        return new Date(isoTimestamp + "Z");
     }
 
     return (
@@ -752,7 +782,7 @@ export const CSVUploadBox = () => {
                                 </div>
                                 <div className='file-timeStamp'>
                                     <span>
-                                        {new Date(file.timestamp).toLocaleString()}
+                                    {file.timestamp ? parseTimestamp(file.timestamp).toLocaleString() : "No Timestamp Available"}
                                     </span>
                                 </div>
                                 <div className='file-articleCnt'>
@@ -761,7 +791,10 @@ export const CSVUploadBox = () => {
                                     </span>
                                 </div>
                                 <div className='file-httpStatus'>
-                                    <span>{file.status}</span>
+                                    <span>{file.status === "PROCESSING"
+                                            ? `PROCESSING ${extractProgress(file.message)} ARTICLES`
+                                            : file.status}
+                                    </span>
                                 </div>
                             </div>
                         ))}

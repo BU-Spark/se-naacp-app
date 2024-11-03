@@ -23,6 +23,7 @@ import { PubSub } from 'graphql-subscriptions';
 
 const pubsub = new PubSub();
 const UPLOAD_PROGRESS = 'UPLOAD_PROGRESS';
+const UPLOAD_STATUS_UPDATED = 'UPLOAD_STATUS_UPDATED';
 
 
 
@@ -44,14 +45,17 @@ const simulateProgressUpdate = (userId, filename, progress) => {
   });
 };
 
-const getLastTenUploads = async (userId, db) => {
-  const uploadData = db.collection("uploads");
-  return await uploadData
-      .find({ userId })
-      .sort({ timestamp: -1 })
-      .limit(10)
-      .toArray();
-};
+// const getLastTenUploads = async (userId, db) => {
+//   const uploadData = db.collection("uploads");
+//   return await uploadData
+//     .find({ userId })
+//     .sort({ timestamp: -1 })
+//     .limit(10)
+//     .map(upload => ({ ...upload, article_cnt: upload.article_cnt || 0 })) // Set default value to 0 if null
+//     .toArray();
+
+    
+// };
 
 export const resolvers = {
   Upload: GraphQLUpload,
@@ -124,12 +128,19 @@ export const resolvers = {
           });
 
           const uploadData = db.collection("uploads");
-          const result = await uploadData.insertOne({
-            userId,
-            filename,
-            timestamp: new Date(),
-            status: "Success",
-            size: fileSizeKB, 
+          // const result = await uploadData.insertOne({
+          //   userId,
+          //   filename,
+          //   timestamp: new Date(),
+          //   status: "Success",
+          //   size: fileSizeKB, 
+          // });
+
+          await db.collection("uploads").watch().on('change', (change) => {
+            const updatedUpload = change.fullDocument;
+            pubsub.publish(UPLOAD_STATUS_UPDATED, {
+              uploadStatusUpdated: updatedUpload,
+            });
           });
 
           return { filename, status: "Success" };
@@ -176,6 +187,9 @@ export const resolvers = {
     uploadProgress: {
       subscribe: (_, { userId }) => pubsub.asyncIterator("UPLOAD_PROGRESS"),
     },
+    uploadStatusUpdated: {
+      subscribe: () => pubsub.asyncIterator([UPLOAD_STATUS_UPDATED]),
+    },
   },
 
   Query: {
@@ -197,8 +211,17 @@ export const resolvers = {
       const queryResult = await rss_data.find({ userID: args.userID }).toArray();
       return queryResult;
     },
-    lastTenUploads: async (_, { userId }, { db }) => {
-      return getLastTenUploads(userId, db);
+      lastTenUploads: async (_, { userId }, { db }) => {
+        const uploads = await db.collection("uploads")
+          .find({ userID: userId })
+          .sort({ timestamp: -1 })
+          .limit(10)
+          .toArray();
+  
+        return uploads.map(upload => ({
+          ...upload,
+          uploadID: upload.uploadID  
+        }));
     },
     // CSV Upload Resolver
     getUploadByUserId: async (_, args, { db, req, res }) => {
