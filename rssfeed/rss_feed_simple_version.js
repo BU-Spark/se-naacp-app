@@ -4,13 +4,14 @@ const cron = require("node-cron");
 
 const papa = require("papaparse");
 const sha256 = require("js-sha256");
+require('dotenv').config(); 
+
 
 const { MongoClient } = require("mongodb");
 
-const mongoUrl =
-  "mongodb+srv://naacpUser:naacpUser@cluster0.8yebjzr.mongodb.net/";
-const proxy_Url = "https://ml-cloud-run-toswle5frq-ue.a.run.app/upload_csv";
-const dbName = "se_naacp_db";
+const mongoUrl = process.env.NAACP_MONGODB;
+const proxy_Url = process.env.PROXY_URL;
+const dbName = process.env.DB_NAME;
 
 async function get_links() {
   const client = new MongoClient(mongoUrl);
@@ -67,12 +68,9 @@ const convertDateFormat = (dateString) => {
 };
 
 const scrap_data_to_csv = async (url) => {
-  let type = [];
-  let label = [];
   let headline = [];
+  let publisher = [];
   let byline = [];
-  let section = [];
-  let tagging = [];
   let paths = [];
   let publishDate = [];
   let body = [];
@@ -85,50 +83,38 @@ const scrap_data_to_csv = async (url) => {
     $("item").each(function () {
       headline.push($("title", this).text());
       byline.push("GBH News");
-      section.push("Politics");
-      tagging.push(sha256($("content\\:encoded", this).text()));
+      publisher.push("GBH News");
       paths.push($("guid", this).text());
       publishDate.push(convertDateFormat($("pubDate", this).text()));
       body.push($("content\\:encoded", this).text());
-      type.push("Article");
-      label.push($("title", this).text());
     });
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 
   const myHeadline = headline.map((headline) => [headline]);
+  const myPublisher = publisher.map((publisher) => [publisher]);
   const myByline = byline.map((byline) => [byline]);
-  const mySection = section.map((section) => [section]);
-  const myTagging = tagging.map((tagging) => [tagging]);
   const myPaths = paths.map((paths) => [paths]);
   const myPublishDate = publishDate.map((publishDate) => [publishDate]);
   const myBody = body.map((body) => [body]);
-  const myType = type.map((type) => [type]);
-  const mylabel = label.map((label) => [label]);
 
   const myarr = myHeadline.map((myHeadline, index) => [
     myHeadline,
+    myPublisher[index],
     myByline[index],
-    mySection[index],
-    myTagging[index],
     myPaths[index],
     myPublishDate[index],
     myBody[index],
-    myType[index],
-    mylabel[index],
   ]);
 
   const headers = [
     "Headline",
+    "Publisher",
     "Byline",
-    "Section",
-    "Tagging",
     "Paths",
     "Publish Date",
     "Body",
-    "Type",
-    "Label",
   ];
   const arr = [headers, ...myarr];
   const csv = papa.unparse(arr, {
