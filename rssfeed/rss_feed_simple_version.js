@@ -12,6 +12,7 @@ const { MongoClient } = require("mongodb");
 const mongoUrl = process.env.NAACP_MONGODB;
 const proxy_Url = process.env.PROXY_URL;
 const dbName = process.env.DB_NAME;
+const x_api_key = process.env.X_API_KEY;
 
 async function get_links() {
   const client = new MongoClient(mongoUrl);
@@ -132,6 +133,7 @@ const scrap_data_to_csv = async (url) => {
     .post(proxy_Url, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
+        "X-API-KEY": x_api_key,
       },
     })
     .catch((error) => {
