@@ -62,6 +62,7 @@ export const resolvers = {
   Mutation: {
     uploadCSV: async (_, { file, userId }, { db }) => {
       try {
+        console.log(db);
         const upload = await file; // Resolve the file promise to get the Upload object
         if (!upload) {
           throw new Error("No file uploaded");
