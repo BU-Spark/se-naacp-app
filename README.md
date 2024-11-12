@@ -70,11 +70,6 @@ https://bu-naacp-media-bias.gitbook.io/sparkmediabias/
         <img src="https://avatars.githubusercontent.com/u/60375185?v=4" width="110px;" alt="asad"/>
         <br /><sub><b>asad</b></sub></a>
       </td>
-      <td align="center" valign="top" width="14.28%">
-        <a href="https://github.com/IanSaucy">
-        <img src="https://avatars.githubusercontent.com/u/30986157?v=4" width="110px;" alt="Ian"/>
-        <br /><sub><b>Ian</b></sub></a>
-      </td>
     </tr>
   </tbody>
 </table>
