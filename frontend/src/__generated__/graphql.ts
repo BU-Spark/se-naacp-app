@@ -135,6 +135,7 @@ export type Tracts = {
 };
 
 export type Uploads = {
+  filename: string;
   __typename?: 'Uploads';
   article_cnt: Scalars['Int']['output'];
   message: Scalars['String']['output'];
