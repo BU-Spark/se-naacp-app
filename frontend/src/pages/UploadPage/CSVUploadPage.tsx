@@ -91,111 +91,89 @@ export const CSVUploadBox = () => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);   
 
-    const { data: progressData } = useSubscription(UPLOAD_PROGRESS_SUBSCRIPTION, {
-        variables: { userId: organization ? organization.id : user?.id },
-        shouldResubscribe: true,
-        onSubscriptionData: ({ subscriptionData }) => {
-          const uploadProgress = subscriptionData.data.uploadProgress;
-          if (uploadProgress) {
-            const { filename, progress, status } = uploadProgress;
-            setUploadedFiles((prevFiles) =>
-              prevFiles.map((file) =>
-                file.name === filename
-                  ? { ...file, progress, status: status || file.status }
-                  : file
-              )
-            );
-          }
-        },
-      });
+  // GraphQL Hooks
+  const { data, loading, error, refetch: refetchLastTenUploads } = useQuery(LAST_TEN_UPLOADS_QUERY, {
+    variables: { userId: organization?.id || user?.id },
+    skip: !isSignedIn,
+    onCompleted: (data) => {
+      setUpload(data?.lastTenUploads || []);
+    },
+  });
 
-    //   const { data, loading, error, refetch: refetchLastTenUploads } = useQuery(LAST_TEN_UPLOADS_QUERY, {
-    //     variables: { userId: organization ? organization.id : user?.id },
-    //     skip: !isSignedIn,
-    //     onCompleted: (data) => {
-    //         console.log("Fetched data for last ten uploads:", data);
-    //     },
-    // });
-    
+  useSubscription(UPLOAD_PROGRESS_SUBSCRIPTION, {
+    variables: { userId: organization?.id || user?.id },
+    skip: !isSignedIn,
+    onSubscriptionData: ({ subscriptionData }) => {
+      const uploadProgress = subscriptionData.data?.uploadProgress;
+  
+      if (uploadProgress) {
+        const { filename, progress, status } = uploadProgress;
+        setUploadedFiles((prevFiles) =>
+          prevFiles.map((file) =>
+            file.name === filename ? { ...file, progress, status: status || file.status } : file
+          )
+        );
+      } else {
+        console.warn("No data received in uploadProgress subscription.");
+      }
+    },
+  });
+  
 
-    useSubscription(UPLOAD_STATUS_UPDATED_SUBSCRIPTION, {
-        onSubscriptionData: ({ subscriptionData }) => {
-            const updatedUpload = subscriptionData.data.uploadStatusUpdated;
-            setUpload((prevUploads: any) =>
-                prevUploads.map((upload: any) =>
-                    upload.uploadID === updatedUpload.uploadID
-                        ? {
-                            ...upload,
-                            status: updatedUpload.status,
-                            message: updatedUpload.message,
-                            article_cnt: updatedUpload.article_cnt,
-                        }
-                        : upload
-                )
-            );
-        },
-    });
+//   useSubscription(UPLOAD_STATUS_UPDATED_SUBSCRIPTION, {
+//     onSubscriptionData: ({ subscriptionData }) => {
+//       const updatedUpload = subscriptionData.data.uploadStatusUpdated;
+//       setUpload((prevUploads) =>
+//         prevUploads.map((upload) =>
+//           upload.uploadID === updatedUpload.uploadID ? { ...upload, ...updatedUpload } : upload
+//         )
+//       );
+//     },
+//   });
 
-    const extractProgress = (message: any) => {
-        const match = message?.match(/\[(\d+\/\d+)\]/);
-        return match ? match[0] : "[0/0]";
-    };
-    
+  const [uploadCSV] = useMutation(UPLOAD_CSV_MUTATION, {
+    onError: (error) => console.error("Error during CSV upload mutation:", error),
+  });
 
+  // Effects
+  useEffect(() => {
+    if (uploadData) {
+      setUpload(uploadData);
+    }
+  }, [uploadData]);
 
-    //   useEffect(() => {
-    //     if (data) {
-    //       setUpload(data.lastTenUploads);
-    //     }
-    //   }, [data]);
+  useEffect(() => {
+    if (validatedFiles.length > 0) {
+      setUpsubmittedFiles(validatedFiles.map((f) => f.file));
+    }
+  }, [validatedFiles]);
 
+  useEffect(() => {
+    if (isSignedIn && user) {
+      const userId = organization?.id || user.id;
+      queryUploadDataType("UPLOAD_DATA", { userId });
+    }
+  }, [isSignedIn, user, organization, queryUploadDataType]);
 
+  useEffect(() => {
+    if (submittedFiles.length > 0) {
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+        e.returnValue = "Are you sure you want to leave? The request is still processing.";
+      };
 
-    useEffect(() => {
-        if (isSignedIn && user) {
-            if (organization) {
-                queryUploadDataType("UPLOAD_DATA", {
-                    userId: organization.id,
-                });
-            } else {
-                queryUploadDataType("UPLOAD_DATA", {
-                    userId: user.id,
-                });
-            }
-        }
+      window.addEventListener("beforeunload", handleBeforeUnload);
 
-        if (submittedFiles.length > 0) {
-            // Warning to users before closing tab or refreshing
-            const handleBeforeUnload = (e: any) => {
-                e.preventDefault();
-                // The message becomes the chrome/firefox default. Do not support safari.
-                e.returnValue = 'Are you sure you want to leave? The request is still processing.';
-                return 'Are you sure you want to leave? The request is still processing.';
-            };
-        
-            // Add event listener for beforeunload
-            window.addEventListener('beforeunload', handleBeforeUnload);
-        
-            // Clean up
-            return () => {
-                window.removeEventListener('beforeunload', handleBeforeUnload);
-            };
-        };
-        
-    }, []);
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+    }
+  }, [submittedFiles]);
 
-    useEffect(() => {
-        if (uploadData) {
-            setUpload(uploadData);
-            console.log(uploadData);
-        }
-    }, [uploadData]);
-
-    useEffect(() => {
-        const files = validatedFiles.map((f) => f.file);
-        setUpsubmittedFiles(files);
-    }, [validatedFiles]);
-
+  const extractProgress = (message: any) => {
+    const match = message?.match(/\[(\d+\/\d+)\]/);
+    return match ? match[0] : "[0/0]";
+};
     // set up cors proxy for POST csv to api
     // const corsProxy = "https://corsproxy.io/?";
     // const url = "https://dummy-server-toswle5frq-uc.a.run.app/upload_csv";
@@ -293,11 +271,11 @@ export const CSVUploadBox = () => {
     };
     console.log("about to submit a file");
 
-    const [uploadCSV] = useMutation(UPLOAD_CSV_MUTATION, {
-		onError: (error) => {
-		  console.error("Error during CSV upload mutation:", error);
-		},
-	  });
+    // const [uploadCSV] = useMutation(UPLOAD_CSV_MUTATION, {
+	// 	onError: (error) => {
+	// 	  console.error("Error during CSV upload mutation:", error);
+	// 	},
+	//   });
     
       const submitFile = () => {
         for (let i = 0; i < submittedFiles.length; i++) {
@@ -347,7 +325,7 @@ export const CSVUploadBox = () => {
                                             );
     
                                             // Refetch the latest uploads from MongoDB after each successful upload
-                                        //    refetchLastTenUploads();
+                                            refetchLastTenUploads();
                                         }, 3000);
                                     }
                                 }, 500);
