@@ -34,6 +34,7 @@ export const typeDefs = gql`
 	type Uploads {
 		userID: String!
 		uploadID: String!
+		filename: String
 		timestamp: String!
 		article_cnt: Int!
 		status: String!
@@ -68,6 +69,7 @@ export const typeDefs = gql`
 
 type UploadHistory {
     uploadID: String!
+	filename: String
 	article_cnt: Int!
 	message: String!
 	status: String!

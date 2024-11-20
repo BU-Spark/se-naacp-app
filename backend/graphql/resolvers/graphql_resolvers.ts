@@ -221,7 +221,9 @@ export const resolvers = {
   
         return uploads.map(upload => ({
           ...upload,
-          uploadID: upload.uploadID  
+          uploadID: upload.uploadID, 
+          filename: upload.filename || "No file name", // Default value for missing filenames
+
         }));
     },
     // CSV Upload Resolver
