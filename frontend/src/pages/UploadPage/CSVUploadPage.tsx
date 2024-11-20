@@ -109,13 +109,13 @@ export const CSVUploadBox = () => {
         },
       });
 
-      const { data, loading, error, refetch: refetchLastTenUploads } = useQuery(LAST_TEN_UPLOADS_QUERY, {
-        variables: { userId: organization ? organization.id : user?.id },
-        skip: !isSignedIn,
-        onCompleted: (data) => {
-            console.log("Fetched data for last ten uploads:", data);
-        },
-    });
+    //   const { data, loading, error, refetch: refetchLastTenUploads } = useQuery(LAST_TEN_UPLOADS_QUERY, {
+    //     variables: { userId: organization ? organization.id : user?.id },
+    //     skip: !isSignedIn,
+    //     onCompleted: (data) => {
+    //         console.log("Fetched data for last ten uploads:", data);
+    //     },
+    // });
     
 
     useSubscription(UPLOAD_STATUS_UPDATED_SUBSCRIPTION, {
@@ -143,11 +143,11 @@ export const CSVUploadBox = () => {
     
 
 
-      useEffect(() => {
-        if (data) {
-          setUpload(data.lastTenUploads);
-        }
-      }, [data]);
+    //   useEffect(() => {
+    //     if (data) {
+    //       setUpload(data.lastTenUploads);
+    //     }
+    //   }, [data]);
 
 
 
@@ -347,7 +347,7 @@ export const CSVUploadBox = () => {
                                             );
     
                                             // Refetch the latest uploads from MongoDB after each successful upload
-                                            refetchLastTenUploads();
+                                        //    refetchLastTenUploads();
                                         }, 3000);
                                     }
                                 }, 500);
